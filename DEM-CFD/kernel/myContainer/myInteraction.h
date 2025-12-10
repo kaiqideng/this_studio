@@ -531,7 +531,7 @@ private:
   }
 
   void upLoad() {
-    if (d_size == 0 || d_size != h_isBonded.size())
+    if (d_size == 0 || d_size > h_isBonded.size())
       return;
 
     cuda_copy_sync(h_contactNormal.data(), contactNormal, d_size, CopyDir::D2H);

@@ -485,23 +485,3 @@ solidContactModelParameter& contactModelParameters, const double timeStep, const
 	clumps.position(), clumps.pebbleStartIndex, clumps.pebbleEndIndex, 
 	solidParticles.force, solidParticles.torque, solidParticles.position(), clumps.deviceSize());
 }
-
-extern "C" void solidParticleIntegrateBeforeContact(solidParticle& solidParticles, clump& clumps, const double3 gravity, const double timeStep, 
-    const size_t maxThreadsPerBlock, cudaStream_t stream)
-{
-	launchSolidParticleIntegrateBeforeContact(solidParticles, clumps, gravity, timeStep, maxThreadsPerBlock, stream);
-}
-
-extern "C" void solidParticleIntegrateAfterContact(solidParticle& solidParticles, clump& clumps, const double3 gravity, const double timeStep, 
-    const size_t maxThreadsPerBlock, cudaStream_t stream)
-{
-	launchSolidParticleIntegrateAfterContact(solidParticles, clumps, gravity, timeStep, maxThreadsPerBlock, stream);
-}
-
-extern "C" void solidParticleInteractionCalculation(interactionSpringSystem& solidParticleInteractions, interactionBonded& bondedSolidParticleInteractions, 
-    solidParticle& solidParticles, clump& clumps,
-    solidContactModelParameter& contactModelParameters, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream)
-{
-	launchSolidParticleInteractionCalculation(solidParticleInteractions, bondedSolidParticleInteractions, solidParticles, clumps,
-    contactModelParameters, timeStep, maxThreadsPerBlock, stream);
-}

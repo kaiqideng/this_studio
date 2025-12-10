@@ -9,7 +9,7 @@ public:
     double c_d = 0.1;
 
     problem(): DEMSolver(0) {}
-    bool handleHostArray() override
+    bool handleDEMHostArray() override
     {
         if(getStep() ==0 ) return false;
 

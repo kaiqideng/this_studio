@@ -2,6 +2,7 @@
 #include "myContainer/myParticle.h"
 #include "myContainer/myInteraction.h"
 #include "myContainer/mySpatialGrid.h"
+#include "myContainer/myWall.h"
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #include <thrust/scan.h>
@@ -32,9 +33,16 @@ __device__ __forceinline__ int calculateHash(int3 gridPosition, const int3 gridS
     return gridPosition.z * gridSize.y * gridSize.x + gridPosition.y * gridSize.x + gridPosition.x;
 }
 
-extern "C" void solidParticleNeighborSearch(interactionSpringSystem& solidParticleInteractions, solidParticle& solidParticles, 
+extern "C" void launchSolidParticleNeighborSearch(interactionSpringSystem& solidParticleInteractions, solidParticle& solidParticles, 
 spatialGrid& spatialGrids, const size_t maxThreadsPerBlock, cudaStream_t stream = 0);
 
+extern "C" void launchSolidParticleInfiniteWallNeighborSearch(interactionSpringSystem& solidParticleInfiniteWallInteractions, 
+solidParticle& solidParticles, 
+infiniteWall& infiniteWalls, 
+objectNeighborPrefix& neighbor_si,
+sortedHashValueIndex& interactionIndexRange_si,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
 
 __host__ __device__
 inline bool cellCutByInfinitePlane(const double3& cellMin,

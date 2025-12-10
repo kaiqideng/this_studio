@@ -1,7 +1,6 @@
 #pragma once
 #include "solidParticleHandler.h"
 #include "wallHandler.h"
-#include <cstddef>
 
 struct HertzianParamsList
 {
@@ -47,18 +46,16 @@ struct BondedParamsList
 };
 
 class DEMHandler:
-    public solidParticleHandler, public wallHandler
+    public solidParticleHandler
 {
-public:
-    DEMHandler(cudaStream_t s) : solidParticleHandler(s), wallHandler(s)
+public: 
+    DEMHandler(cudaStream_t s) : solidParticleHandler(s)
     {
-        dir = "DEMOutput";
+        DEMStream = s;
         solidContactModelParametersHostArrayChangedFlag = false;
     }
 
     ~DEMHandler() = default;
-
-    void setDir(const std::string& name) {dir = name + "Output";}
 
     void setHerzianModel(int materialIndexA, int materialIndexB, 
         double effectiveYoungsModulus, double effectiveShearModulus, double restitution,
@@ -118,6 +115,36 @@ public:
     }
 
 protected:
+    virtual bool handleDEMHostArray() {return false;};
+
+    void DEMInitialize(const double3 domainOrigin, const double3 domainSize, const size_t maxThreadsPerBlock)
+    {
+        downLoadSolidContactModelParameters();
+        solidParticleInitialize(domainOrigin, domainSize);
+
+        solidParticleNeighborSearch(maxThreadsPerBlock);
+
+        handleDEMHostArray();
+    }
+
+    void DEMUpdate(const double3 domainOrigin, const double3 domainSize, const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        solidParticleNeighborSearch(maxThreadsPerBlock);
+
+        solidParticleIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
+
+        solidParticleInteractionCalculation(solidContactModelParameters, timeStep, maxThreadsPerBlock);
+
+        if(handleDEMHostArray())
+        {
+            downLoadSolidContactModelParameters();
+            solidParticleInitialize(domainOrigin, domainSize);
+        }
+
+        solidParticleIntegrateAfterContact(gravity, timeStep, maxThreadsPerBlock);
+    }
+
+private:
     void downLoadSolidContactModelParameters()
     {
         if(!solidContactModelParametersHostArrayChangedFlag) return;
@@ -146,7 +173,7 @@ protected:
         num = std::max(num,num2B);
         num += 1;
 
-        solidContactModelParameters.setNumberOfMaterials(num,stream);
+        solidContactModelParameters.setNumberOfMaterials(num,DEMStream);
 
         for(size_t i = 0; i < HertzianContactModelParameters.E.size(); i++)
         {
@@ -160,7 +187,7 @@ protected:
             HertzianContactModelParameters.mu_s[i], 
             HertzianContactModelParameters.mu_r[i], 
             HertzianContactModelParameters.mu_t[i], 
-            stream);
+            DEMStream);
         }
 
         for(size_t i = 0; i < LinearContactModelParameters.k_n.size(); i++)
@@ -178,7 +205,7 @@ protected:
             LinearContactModelParameters.mu_s[i], 
             LinearContactModelParameters.mu_r[i], 
             LinearContactModelParameters.mu_t[i], 
-            stream);
+            DEMStream);
         }
 
         for(size_t i = 0; i < BondedContactModelParameters.E.size(); i++)
@@ -191,74 +218,11 @@ protected:
             BondedContactModelParameters.sigma_s[i], 
             BondedContactModelParameters.C[i], 
             BondedContactModelParameters.mu[i], 
-            stream);
+            DEMStream);
         }
     }
 
-    std::string getDir() {return dir;}
-
-    void outputSolidParticleVTU(const size_t iFrame, const size_t iStep, const double timeStep);
-
-    virtual bool handleHostArray() {return false;};
-
-    void DEMInitialize(const double3 domainOrigin, const double3 domainSize)
-    {
-        handleHostArray();
-
-        downLoadSolidContactModelParameters();
-
-        downLoadSolidParticlesInteractions();
-
-        downloadSpatialGrids(domainOrigin, domainSize);
-
-        outputSolidParticleVTU(0, 0, 0.);
-    }
-
-    void DEMUpdate(const double3 domainOrigin, const double3 domainSize, const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
-    {
-        DEMNeighborSearch(maxThreadsPerBlock);
-
-        DEMIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
-
-        clearParticleForceTorque();
-
-        DEMInteractionCalculation(timeStep, maxThreadsPerBlock);
-
-        if(handleHostArray())
-        {
-            downLoadSolidContactModelParameters();
-
-            downLoadSolidParticlesInteractions();
-
-            downloadSpatialGrids(domainOrigin, domainSize);
-        }
-
-        DEMIntegrateAfterContact(gravity, timeStep, maxThreadsPerBlock);
-    }
-
-private:
-    void DEMNeighborSearch(const size_t maxThreadsPerBlock)
-    {
-        solidParticleNeighborSearch(solidParticleInteractions, solidParticles, spatialGrids, maxThreadsPerBlock, stream);
-    }
-
-    void DEMIntegrateBeforeContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
-    {
-        solidParticleIntegrateBeforeContact(solidParticles, clumps, gravity, timeStep, maxThreadsPerBlock, stream);
-    }
-
-    void DEMInteractionCalculation(const double timeStep, const size_t maxThreadsPerBlock)
-    {
-        solidParticleInteractionCalculation(solidParticleInteractions, bondedSolidParticleInteractions, solidParticles, clumps, 
-        solidContactModelParameters, timeStep, maxThreadsPerBlock, stream);
-    }
-
-    void DEMIntegrateAfterContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
-    {
-        solidParticleIntegrateAfterContact(solidParticles, clumps, gravity, timeStep, maxThreadsPerBlock, stream);
-    }
-
-    std::string dir;
+    cudaStream_t DEMStream;
     bool solidContactModelParametersHostArrayChangedFlag;
     HertzianParamsList HertzianContactModelParameters;
     LinearParamsList LinearContactModelParameters;

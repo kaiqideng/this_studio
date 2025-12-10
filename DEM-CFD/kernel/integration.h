@@ -256,12 +256,12 @@ __device__ __forceinline__ void HertzianMindlinContact(double3& contactForce, do
 	}
 }
 
-extern "C" void solidParticleIntegrateBeforeContact(solidParticle& solidParticles, clump& clumps, const double3 gravity, const double timeStep, 
+extern "C" void launchSolidParticleIntegrateBeforeContact(solidParticle& solidParticles, clump& clumps, const double3 gravity, const double timeStep, 
     const size_t maxThreadsPerBlock, cudaStream_t stream);
 
-extern "C" void solidParticleIntegrateAfterContact(solidParticle& solidParticles, clump& clumps, const double3 gravity, const double timeStep, 
+extern "C" void launchSolidParticleIntegrateAfterContact(solidParticle& solidParticles, clump& clumps, const double3 gravity, const double timeStep, 
     const size_t maxThreadsPerBlock, cudaStream_t stream);
 
-extern "C" void solidParticleInteractionCalculation(interactionSpringSystem& solidParticleInteractions, interactionBonded& bondedSolidParticleInteractions, 
+extern "C" void launchSolidParticleInteractionCalculation(interactionSpringSystem& solidParticleInteractions, interactionBonded& bondedSolidParticleInteractions, 
     solidParticle& solidParticles, clump& clumps,
     solidContactModelParameter& contactModelParameters, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream);

@@ -1,33 +1,33 @@
 #include "DEMSolver.h"
-#include "myContainer/myUtility/myFileEdit.h"
 
 bool DEMSolver::initialize() {
-  std::cout << "DEM solver: Initializing..." << std::endl;
+  std::cout << "DEM solver: initializing..." << std::endl;
 
-  std::cout << "DEM solver: Using GPU Device " << getGPUDeviceIndex() << std::endl;
+  std::cout << "DEM solver: using GPU Device " << getGPUDeviceIndex() << std::endl;
   cudaError_t cudaStatus;
   cudaStatus = cudaSetDevice(getGPUDeviceIndex());
   if (cudaStatus != cudaSuccess) {
-    std::cout << "DEM solver: Function cudaSetDevice( " << getGPUDeviceIndex()
+    std::cout << "DEM solver: cudaSetDevice( " << getGPUDeviceIndex()
               << " ) failed!  Do you have a CUDA-capable GPU installed?"
               << std::endl;
     exit(1);
   }
-  std::cout << "DEM solver: Downloading array from host to device..."
+  std::cout << "DEM solver: downloading array from host to device..."
             << std::endl;
-  DEMInitialize(getDomainOrigin(), getDomainSize());
+  DEMInitialize(getDomainOrigin(), getDomainSize(), getGPUThreadsPerBlock());
 
-  std::cout << "DEM solver: Initialization completed." << std::endl;
+  std::cout << "DEM solver: initialization completed." << std::endl;
   return true;
 }
 
 void DEMSolver::solve() {
-  removeVtuFiles(getDir());
-  removeDatFiles(getDir());
+  removeVtuFiles(dir);
+  removeDatFiles(dir);
 
   const double timeStep = getTimeStep();
 
   if (initialize()) {
+    outputSolidParticleVTU(dir, iFrame, iStep, timeStep);
     numSteps = size_t((getMaximumTime()) / timeStep) + 1;
     frameInterval = numSteps / getNumFrames();
     if (frameInterval < 1)
@@ -38,9 +38,9 @@ void DEMSolver::solve() {
                 timeStep, getGPUThreadsPerBlock());
       if (iStep % frameInterval == 0) {
         iFrame++;
-        std::cout << "DEM solver: Frame " << iFrame << " at time " << iStep * timeStep
+        std::cout << "DEM solver: frame " << iFrame << " at time " << iStep * timeStep
                   << std::endl;
-        outputSolidParticleVTU(iFrame, iStep, timeStep);
+        outputSolidParticleVTU(dir, iFrame, iStep, timeStep);
       }
     }
   }

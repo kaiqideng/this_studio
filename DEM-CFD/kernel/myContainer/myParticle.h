@@ -109,7 +109,7 @@ public:
     if (n == 0)
       return;
 
-    if (hostSize() != n)
+    if (hostSize() < n)
       return;
 
     cuda_copy(h_position.data(), position, n, CopyDir::D2H, stream);
@@ -333,7 +333,7 @@ public:
     if (n == 0)
       return;
 
-    if (hostSize() != n)
+    if (hostSize() < n)
       return;
 
     base.upload(stream);
@@ -593,7 +593,7 @@ public:
     if (n == 0)
       return;
 
-    if (hostSize() != n)
+    if (hostSize() < n)
       return;
 
     base.upload(stream);

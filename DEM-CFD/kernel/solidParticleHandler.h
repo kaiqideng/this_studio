@@ -3,17 +3,17 @@
 #include "myContainer/myInteraction.h"
 #include "myContainer/mySpatialGrid.h"
 #include "myContainer/myContactModelParams.h"
-#include "myContainer/myUtility/myFileEdit.h"
 #include "myContainer/myUtility/myMat.h"
+#include "myContainer/myUtility/myFileEdit.h"
 #include "integration.h"
-#include <vector>
+#include "neighborSearch.h"
 
 class solidParticleHandler
 {
 public:
     solidParticleHandler(cudaStream_t s)
     {
-        stream = s;
+        solidParticleStream = s;
         solidParticlesHostArrayChangedFlag = false;
         clumpsHostArrayChangedFlag = false;
         bondedSolidParticleInteractionsHostArrayChangedFlag = false;
@@ -26,7 +26,7 @@ public:
     {
         if(!solidParticlesHostArrayChangedFlag)
         {
-            solidParticles.upload(stream);
+            solidParticles.upload(solidParticleStream);
             solidParticlesHostArrayChangedFlag = true;
         }
         
@@ -45,7 +45,7 @@ public:
     {
         if(!solidParticlesHostArrayChangedFlag)
         {
-            solidParticles.upload(stream);
+            solidParticles.upload(solidParticleStream);
             solidParticlesHostArrayChangedFlag = true;
         }
 
@@ -63,12 +63,12 @@ public:
     {
         if(!solidParticlesHostArrayChangedFlag)
         {
-            solidParticles.upload(stream);
+            solidParticles.upload(solidParticleStream);
             solidParticlesHostArrayChangedFlag = true;
         }
         if(!clumpsHostArrayChangedFlag)
         {
-            clumps.upload(stream);
+            clumps.upload(solidParticleStream);
             clumpsHostArrayChangedFlag = true;
         }
 
@@ -104,12 +104,12 @@ public:
     {
         if(!solidParticlesHostArrayChangedFlag)
         {
-            solidParticles.upload(stream);
+            solidParticles.upload(solidParticleStream);
             solidParticlesHostArrayChangedFlag = true;
         }
         if(!clumpsHostArrayChangedFlag)
         {
-            clumps.upload(stream);
+            clumps.upload(solidParticleStream);
             clumpsHostArrayChangedFlag = true;
         }
 
@@ -131,6 +131,7 @@ public:
 
     void addBondedSolidParticleInteractions(int object0, int object1)
     {
+        // Do not need to upload at first because the bondedInteraction host array is not changed in this function
         bondedObjects0.push_back(object0);
         bondedObjects1.push_back(object1);
 
@@ -138,41 +139,6 @@ public:
     }
 
 protected:
-    void downLoadSolidParticlesInteractions()
-    {
-        if(solidParticlesHostArrayChangedFlag)
-        {
-            solidParticles.download(stream);
-            solidParticleInteractions.current.allocDeviceArray(6 * solidParticles.hostSize(), stream);
-            solidParticlesHostArrayChangedFlag = false;
-        }
-        if(clumpsHostArrayChangedFlag)
-        {
-            clumps.download(stream);
-            clumpsHostArrayChangedFlag = false;
-        }
-        if(bondedSolidParticleInteractionsHostArrayChangedFlag)
-        {
-            if(solidParticles.hostSize() == 0) return;
-            bondedSolidParticleInteractions.add(bondedObjects0, bondedObjects1, getSolidParticlePosition(), stream);
-            bondedObjects0.clear();
-            bondedObjects1.clear();
-            bondedSolidParticleInteractionsHostArrayChangedFlag = false;
-        }
-    }
-
-    void downloadSpatialGrids(double3 domainOrigin, double3 domainSize)
-    {
-        double cellSizeOneDim = 0.0;
-        std::vector<double> radii = solidParticles.getEffectiveRadii();
-        if(radii.size() > 0) cellSizeOneDim = *std::max_element(radii.begin(), radii.end()) * 2.0;
-        double3 cellSize = spatialGrids.getCellSize();
-        if(cellSizeOneDim > cellSize.x || cellSizeOneDim > cellSize.y || cellSizeOneDim > cellSize.z)
-        {
-            spatialGrids.set(domainOrigin, domainSize, cellSizeOneDim, stream);
-        }
-    }
-
     void addSolidParticleExternalForce(const std::vector<double3> externalForce)
     {
         if(externalForce.size() > solidParticles.hostSize()) return;
@@ -215,14 +181,75 @@ protected:
 
     const std::vector<int> getSolidParticleInteractionObjectPointing() {return solidParticleInteractions.getObjectPointingVectors();}
 
-    void clearParticleForceTorque()
+    void solidParticleInitialize(const double3 domainOrigin, const double3 domainSize)
     {
-        solidParticles.clearForceTorque(stream);
-        clumps.clearForceTorque(stream);
-        cudaDeviceSynchronize();
+        downLoadSolidParticlesInteractions();
+        downloadSolidParticleSpatialGrids(domainOrigin, domainSize);
     }
 
-    cudaStream_t stream;
+    void solidParticleNeighborSearch(const size_t maxThreadsPerBlock)
+    {
+        launchSolidParticleNeighborSearch(solidParticleInteractions, solidParticles, solidParticleSpatialGrids, maxThreadsPerBlock, solidParticleStream);
+    }
+
+    void solidParticleIntegrateBeforeContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        launchSolidParticleIntegrateBeforeContact(solidParticles, clumps, gravity, timeStep, maxThreadsPerBlock, solidParticleStream);
+    }
+
+    void solidParticleInteractionCalculation(solidContactModelParameter& solidContactModelParameters, const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        solidParticles.clearForceTorque(solidParticleStream);
+        clumps.clearForceTorque(solidParticleStream);
+        cudaDeviceSynchronize();
+        launchSolidParticleInteractionCalculation(solidParticleInteractions, bondedSolidParticleInteractions, solidParticles, clumps, 
+        solidContactModelParameters, timeStep, maxThreadsPerBlock, solidParticleStream);
+    }
+
+    void solidParticleIntegrateAfterContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        launchSolidParticleIntegrateAfterContact(solidParticles, clumps, gravity, timeStep, maxThreadsPerBlock, solidParticleStream);
+    }
+
+    void outputSolidParticleVTU(const std::string dir, const size_t iFrame, const size_t iStep, const double timeStep);
+
+private:
+    void downLoadSolidParticlesInteractions()
+    {
+        if(solidParticlesHostArrayChangedFlag)
+        {
+            solidParticles.download(solidParticleStream);
+            solidParticleInteractions.current.allocDeviceArray(6 * solidParticles.hostSize(), solidParticleStream);
+            solidParticlesHostArrayChangedFlag = false;
+        }
+        if(clumpsHostArrayChangedFlag)
+        {
+            clumps.download(solidParticleStream);
+            clumpsHostArrayChangedFlag = false;
+        }
+        if(bondedSolidParticleInteractionsHostArrayChangedFlag)
+        {
+            if(solidParticles.hostSize() == 0) return;
+            bondedSolidParticleInteractions.add(bondedObjects0, bondedObjects1, getSolidParticlePosition(), solidParticleStream);
+            bondedObjects0.clear();
+            bondedObjects1.clear();
+            bondedSolidParticleInteractionsHostArrayChangedFlag = false;
+        }
+    }
+
+    void downloadSolidParticleSpatialGrids(double3 domainOrigin, double3 domainSize)
+    {
+        double cellSizeOneDim = 0.0;
+        std::vector<double> radii = solidParticles.getEffectiveRadii();
+        if(radii.size() > 0) cellSizeOneDim = *std::max_element(radii.begin(), radii.end()) * 2.0;
+        double3 cellSize = solidParticleSpatialGrids.getCellSize();
+        if(cellSizeOneDim > cellSize.x || cellSizeOneDim > cellSize.y || cellSizeOneDim > cellSize.z)
+        {
+            solidParticleSpatialGrids.set(domainOrigin, domainSize, cellSizeOneDim, solidParticleStream);
+        }
+    }
+
+    cudaStream_t solidParticleStream;
     
     bool solidParticlesHostArrayChangedFlag;
     bool clumpsHostArrayChangedFlag;
@@ -232,7 +259,7 @@ protected:
 
     solidParticle solidParticles;
     clump clumps;
-    spatialGrid spatialGrids;
+    spatialGrid solidParticleSpatialGrids;
     interactionSpringSystem solidParticleInteractions;
     interactionBonded bondedSolidParticleInteractions;
 };

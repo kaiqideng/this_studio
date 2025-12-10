@@ -8,6 +8,8 @@ class DEMSolver:
 public:
     DEMSolver(cudaStream_t s) : solverParams(), DEMHandler(s)
 	{
+		setName = false;
+		dir = "DEMSolver_output";
 		numSteps = 1;
 		iStep = 0;
 		iFrame = 0;
@@ -16,6 +18,8 @@ public:
 	}
 
 	~DEMSolver() = default;
+
+	void setProblemName(const std::string& name) {if(!setName) dir = name + "_output"; setName = true;}
 
     void solve();
 
@@ -27,6 +31,8 @@ protected:
 private:
     bool initialize();
 
+    bool setName;
+    std::string dir;
     size_t numSteps;
     size_t iStep;
     size_t iFrame;;
