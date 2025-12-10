@@ -1,0 +1,4 @@
+/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles/demcfd_core.dir
+/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles/problem.dir
+/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles/edit_cache.dir
+/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles/rebuild_cache.dir

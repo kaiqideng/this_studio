@@ -1,0 +1,1 @@
+/usr/bin/g++-12 -O3 -DNDEBUG CMakeFiles/problem.dir/problem.cpp.o CMakeFiles/problem.dir/cmake_device_link.o -o bin/problem   -L/usr/lib/x86_64-linux-gnu/stubs  lib/libdemcfd_core.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl 
