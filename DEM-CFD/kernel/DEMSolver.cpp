@@ -15,7 +15,7 @@ bool DEMSolver::initialize() {
   }
   std::cout << "DEM solver: Downloading array from host to device..."
             << std::endl;
-  DEMinitialize(getDomainOrigin(), getDomainSize());
+  DEMInitialize(getDomainOrigin(), getDomainSize());
 
   std::cout << "DEM solver: Initialization completed." << std::endl;
   return true;
@@ -34,7 +34,7 @@ void DEMSolver::solve() {
       frameInterval = 1;
     while (iStep <= numSteps) {
       iStep++;
-      DEMupdate(getDomainOrigin(), getDomainSize(), getGravity(),
+      DEMUpdate(getDomainOrigin(), getDomainSize(), getGravity(),
                 timeStep, getGPUThreadsPerBlock());
       if (iStep % frameInterval == 0) {
         iFrame++;

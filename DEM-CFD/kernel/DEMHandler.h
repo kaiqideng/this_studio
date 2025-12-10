@@ -201,7 +201,7 @@ protected:
 
     virtual bool handleHostArray() {return false;};
 
-    void DEMinitialize(const double3 domainOrigin, const double3 domainSize)
+    void DEMInitialize(const double3 domainOrigin, const double3 domainSize)
     {
         handleHostArray();
 
@@ -214,7 +214,7 @@ protected:
         outputSolidParticleVTU(0, 0, 0.);
     }
 
-    void DEMupdate(const double3 domainOrigin, const double3 domainSize, const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    void DEMUpdate(const double3 domainOrigin, const double3 domainSize, const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
     {
         DEMNeighborSearch(maxThreadsPerBlock);
 
