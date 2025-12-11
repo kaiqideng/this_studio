@@ -1,10 +1,12 @@
 #pragma once
+#include "integration.h"
 #include "myContainer/myHash.h"
 #include "myContainer/myInteraction.h"
 #include "myContainer/myParticle.h"
 #include "myContainer/myWall.h"
 #include "solidParticleHandler.h"
 #include "wallHandler.h"
+#include <cuda_runtime_api.h>
 
 struct HertzianParamsList
 {
@@ -148,15 +150,17 @@ protected:
         solidParticleNeighborSearch(maxThreadsPerBlock);
 
         solidParticleInfiniteWallNeighborSearch(maxThreadsPerBlock);
+        
+        wallIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
 
         solidParticleIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
 
-        wallIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
-
-        solidParticleInteractionCalculation(solidContactModelParameters_, timeStep, maxThreadsPerBlock);
-
         solidParticleInfiniteWallInteractionCalculation(timeStep, maxThreadsPerBlock);
 
+        // In solidParticleInteractionCalculation(...), clump force/toque will be sum up. 
+        // Therefore, other interaction calculations must be finished before solidParticleInteractionCalculation(...)
+        solidParticleInteractionCalculation(solidContactModelParameters_, timeStep, maxThreadsPerBlock);
+        
         if(handleDEMHostArray())
         {
             downLoadSolidContactModelParameters();
@@ -269,7 +273,14 @@ private:
 
     void solidParticleInfiniteWallInteractionCalculation(const double timeStep, const size_t maxThreadsPerBlock)
     {
-
+        launchSolidParticleInfiniteWallInteractionCalculation(solidParticleInfiniteWallInteractions_, 
+        solidParticles(), 
+        infiniteWalls(), 
+        solidContactModelParameters_, 
+        solidParticleInfiniteWallNeighbor_, 
+        timeStep, 
+        maxThreadsPerBlock, 
+        DEMStream_);
     }
 
     cudaStream_t DEMStream_;

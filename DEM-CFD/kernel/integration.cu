@@ -1,4 +1,6 @@
 #include "integration.h"
+#include "myContainer/myHash.h"
+#include "myContainer/myUtility/myQua.h"
 #include "myContainer/myUtility/myVec.h"
 #include "myContainer/myWall.h"
 
@@ -76,6 +78,120 @@ __global__ void calSolidParticleContactForceTorqueKernel(double3* contactForce, 
 	double3 epsilon_t = torsionSpring[idx];
 
 	const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], materialID[idx_j], 
+	numMaterials, contactParaArraySize);
+	if (contactParaArraySize <= 0) return;
+
+	if (linearK_n[param_ij] > 1.e-20)
+	{
+		LinearContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+			v_c_ij,
+			w_ij,
+			n_ij,
+			delta,
+			m_ij,
+			rad_ij,
+			dt,
+			linearK_n[param_ij],
+			linearK_s[param_ij],
+			linearK_r[param_ij],
+			linearK_t[param_ij],
+			linearD_n[param_ij],
+			linearD_s[param_ij],
+			linearD_r[param_ij],
+			linearD_t[param_ij],
+			linearMu_s[param_ij],
+			linearMu_r[param_ij],
+			linearMu_t[param_ij]);
+	}
+	else
+	{
+		const double logR = log(hertzianRes[param_ij]);
+		const double D = -logR / sqrt(logR * logR + pi() * pi());
+		HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+			v_c_ij,
+			w_ij,
+			n_ij,
+			delta,
+			m_ij,
+			rad_ij,
+			dt,
+			D,
+			hertzianE[param_ij],
+			hertzianG[param_ij],
+			hertzianK_r_k_s[param_ij],
+			hertzianK_t_k_s[param_ij],
+			hertzianMu_s[param_ij],
+			hertzianMu_r[param_ij],
+			hertzianMu_t[param_ij]);
+	}
+
+	contactForce[idx] = F_c;
+	contactTorque[idx] = T_c;
+	slidingSpring[idx] = epsilon_s;
+	rollingSpring[idx] = epsilon_r;
+	torsionSpring[idx] = epsilon_t;
+}
+
+__global__ void calSolidParticleInfiniteWallContactForceTorqueKernel(double3* contactForce, double3* contactTorque,
+	double3* slidingSpring, double3* rollingSpring, double3* torsionSpring, int* objectPointed, int* objectPointing, 
+    double3* position, double3* velocity, double3* angularVelocity, double* radius, double* inverseMass, int* materialID,
+	double3* position_iw, double3* velocity_iw, double3* axis_iw, double* axisAngularVelocity_iw, double* radius_iw, int* materialID_iw,
+	double* hertzianE, double* hertzianG, double* hertzianRes, double* hertzianK_r_k_s, double* hertzianK_t_k_s, 
+	double* hertzianMu_s, double* hertzianMu_r, double* hertzianMu_t, 
+	double* linearK_n, double* linearK_s, double* linearK_r, double* linearK_t, 
+	double* linearD_n, double* linearD_s, double* linearD_r, double* linearD_t, double* linearMu_s, double* linearMu_r, double* linearMu_t, 
+	const size_t numMaterials,
+	const size_t contactParaArraySize,
+	const double dt,
+    const size_t numInteractions)
+{
+	size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx >= numInteractions) return;
+
+    //!!!
+	contactForce[idx] = make_double3(0, 0, 0);
+	contactTorque[idx] = make_double3(0, 0, 0);
+
+	const int idx_i = objectPointed[idx];
+	const int idx_j = objectPointing[idx];
+	const double rad_i = radius[idx_i];
+	const double rad_j = radius_iw[idx_j];
+	const double3 r_i = position[idx_i];
+	const double3 r_j = position_iw[idx_j];
+
+    const double3 n = normalize(axis_iw[idx_j]);
+	const double t = dot(r_i - r_j, n);
+    double delta = rad_i - fabs(t);
+	double3 n_ij = n;
+	if(t < 0) n_ij = -n;
+	double3 r_c = r_i - n_ij * (rad_i - delta);
+	double rad_ij = rad_i;
+    if(rad_j > 1.e-20)
+    {
+        double3 p = dot(r_i - r_j,n) * n + r_j;
+        delta = rad_i + rad_j - length(r_i - p) ;
+		n_ij = normalize(r_i - p);
+        if(delta > rad_i) delta = length(r_i - p) + rad_i - rad_j;// inside
+		r_c = r_i - n_ij * (rad_i - 0.5 * delta);
+		rad_ij = rad_i * rad_j / (rad_i + rad_j);
+    }
+
+	const double m_ij = 1. / inverseMass[idx_i];
+
+	const double3 v_i = velocity[idx_i];
+	const double3 v_j = velocity_iw[idx_j];
+	const double3 w_i = angularVelocity[idx_i];
+	const double3 w_j = axisAngularVelocity_iw[idx_j] * n;
+	const double3 v_c_ij = v_i + cross(w_i, r_c - r_i) - (v_j + cross(w_j, r_c - r_j));
+	const double3 w_ij = w_i - w_j;
+
+	double3 F_c = make_double3(0, 0, 0);
+	double3 T_c = make_double3(0, 0, 0);
+	double3 epsilon_s = slidingSpring[idx];
+	double3 epsilon_r = rollingSpring[idx];
+	double3 epsilon_t = torsionSpring[idx];
+
+	const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], materialID_iw[idx_j], 
 	numMaterials, contactParaArraySize);
 	if (contactParaArraySize <= 0) return;
 
@@ -294,9 +410,10 @@ __global__ void sumForceTorqueFromSolidParticleInfiniteWallInteractionKernel(dou
 		double3 r_j = position_iw[idx_j];
 
         double3 n = normalize(axis_iw[idx_j]);
-        double delta = rad_i - fabs(dot(r_i - r_j, n));
+		double t = dot(r_i - r_j, n);
+        double delta = rad_i - fabs(t);
 		double3 n_ij = n;
-		if(dot(r_i - r_j, n) < 0) n_ij = -n;
+		if(t < 0) n_ij = -n;
 		double3 r_c = r_i - n_ij * (rad_i - delta);
         if(rad_j > 1.e-20)
         {
@@ -528,6 +645,77 @@ solidContactModelParameter& contactModelParameters, const double timeStep, const
 	sumClumpForceTorqueKernel <<<grid, block, 0, stream>>> (clumps.force, clumps.torque, 
 	clumps.position(), clumps.pebbleStartIndex, clumps.pebbleEndIndex, 
 	solidParticles.force, solidParticles.torque, solidParticles.position(), clumps.deviceSize());
+}
+
+extern "C" void launchSolidParticleInfiniteWallInteractionCalculation(interactionSpringSystem& solidParticleInfiniteWallInteractions, 
+solidParticle& solidParticles, 
+infiniteWall& infiniteWalls,
+solidContactModelParameter& contactModelParameters, 
+objectNeighborPrefix &solidParticleInfiniteWallNeighbor,
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+    size_t grid = 1, block = 1;
+
+	computeGPUGridSizeBlockSize(grid, block, solidParticleInfiniteWallInteractions.getActiveNumber(), maxThreadsPerBlock);
+	calSolidParticleInfiniteWallContactForceTorqueKernel <<<grid, block, 0, stream>>> (solidParticleInfiniteWallInteractions.current.force(),
+	solidParticleInfiniteWallInteractions.current.torque,
+	solidParticleInfiniteWallInteractions.current.slidingSpring,
+	solidParticleInfiniteWallInteractions.current.rollingSpring,
+	solidParticleInfiniteWallInteractions.current.torsionSpring,
+	solidParticleInfiniteWallInteractions.current.objectPointed(),
+	solidParticleInfiniteWallInteractions.current.objectPointing(),
+	solidParticles.position(),
+	solidParticles.velocity(),
+	solidParticles.angularVelocity,
+	solidParticles.radius,
+	solidParticles.inverseMass,
+	solidParticles.materialID,
+	infiniteWalls.position(),
+	infiniteWalls.velocity(),
+	infiniteWalls.axis(),
+	infiniteWalls.axisAngularVelocity(),
+	infiniteWalls.radius(),
+	infiniteWalls.materialID(),
+	contactModelParameters.hertzian.E,
+	contactModelParameters.hertzian.G,
+	contactModelParameters.hertzian.res,
+	contactModelParameters.hertzian.k_r_k_s,
+	contactModelParameters.hertzian.k_t_k_s,
+	contactModelParameters.hertzian.mu_s,
+	contactModelParameters.hertzian.mu_r,
+	contactModelParameters.hertzian.mu_t,
+	contactModelParameters.linear.k_n,
+	contactModelParameters.linear.k_s,
+	contactModelParameters.linear.k_r,
+	contactModelParameters.linear.k_t,
+	contactModelParameters.linear.d_n,
+	contactModelParameters.linear.d_s,
+	contactModelParameters.linear.d_r,
+	contactModelParameters.linear.d_t,
+	contactModelParameters.linear.mu_s,
+	contactModelParameters.linear.mu_r,
+	contactModelParameters.linear.mu_t,
+	contactModelParameters.getNumberOfMaterials(),
+	contactModelParameters.size(),
+	timeStep,
+	solidParticleInfiniteWallInteractions.getActiveNumber());
+
+	computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
+	sumForceTorqueFromSolidParticleInfiniteWallInteractionKernel <<<grid, block, 0, stream>>> (
+	solidParticleInfiniteWallInteractions.current.force(),
+	solidParticleInfiniteWallInteractions.current.torque,
+	solidParticleInfiniteWallInteractions.current.objectPointing(),
+	solidParticles.force,
+	solidParticles.torque,
+	solidParticles.position(),
+	solidParticles.radius,
+	solidParticleInfiniteWallNeighbor.prefixSum,
+	infiniteWalls.position(),
+	infiniteWalls.axis(),
+	infiniteWalls.radius(),
+	solidParticles.deviceSize());
 }
 
 extern "C" void launchInfiniteWallHalfIntegration(infiniteWall &infiniteWalls, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream)

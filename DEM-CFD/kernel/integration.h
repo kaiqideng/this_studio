@@ -267,4 +267,13 @@ extern "C" void launchSolidParticleInteractionCalculation(interactionSpringSyste
     solidParticle& solidParticles, clump& clumps,
     solidContactModelParameter& contactModelParameters, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream);
 
+extern "C" void launchSolidParticleInfiniteWallInteractionCalculation(interactionSpringSystem& solidParticleInfiniteWallInteractions, 
+solidParticle& solidParticles, 
+infiniteWall& infiniteWalls,
+solidContactModelParameter& contactModelParameters, 
+objectNeighborPrefix &solidParticleInfiniteWallNeighbor,
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
 extern "C" void launchInfiniteWallHalfIntegration(infiniteWall &infiniteWalls, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream);

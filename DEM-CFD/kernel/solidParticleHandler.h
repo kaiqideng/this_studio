@@ -7,6 +7,7 @@
 #include "myContainer/myUtility/myFileEdit.h"
 #include "integration.h"
 #include "neighborSearch.h"
+#include <cuda_runtime_api.h>
 
 class solidParticleHandler
 {
@@ -197,13 +198,13 @@ protected:
     void solidParticleIntegrateBeforeContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
     {
         launchSolidParticleIntegrateBeforeContact(solidParticles_, clumps_, gravity, timeStep, maxThreadsPerBlock, solidParticleStream_);
+        cudaDeviceSynchronize();
+        solidParticles_.clearForceTorque(solidParticleStream_);
+        clumps_.clearForceTorque(solidParticleStream_);
     }
 
     void solidParticleInteractionCalculation(solidContactModelParameter& solidContactModelParameters, const double timeStep, const size_t maxThreadsPerBlock)
     {
-        solidParticles_.clearForceTorque(solidParticleStream_);
-        clumps_.clearForceTorque(solidParticleStream_);
-        cudaDeviceSynchronize();
         launchSolidParticleInteractionCalculation(solidParticleInteractions_, bondedSolidParticleInteractions_, solidParticles_, clumps_, 
         solidContactModelParameters, timeStep, maxThreadsPerBlock, solidParticleStream_);
     }

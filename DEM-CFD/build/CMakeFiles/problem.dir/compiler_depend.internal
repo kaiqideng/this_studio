@@ -13,9 +13,11 @@ CMakeFiles/problem.dir/problem.cpp.o
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/mySpatialGrid.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myFileEdit.h
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myMat.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myQua.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.h
  /teamspace/studios/this_studio/DEM-CFD/kernel/solverParams.h
