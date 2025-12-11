@@ -9,10 +9,13 @@ void solidParticleHandler::outputSolidParticleVTU(const std::string dir, const s
     if (!out) throw std::runtime_error("Cannot open " + fname.str());
     out << std::fixed << std::setprecision(10);
 
-    const size_t N = solidParticles.hostSize();
-    const std::vector<double3> p = solidParticles.getPositionVectors();
-    const std::vector<double3> v = solidParticles.getVelocityVectors();
-    const std::vector<double3> a = solidParticles.getAngularVelocityVectors();
+    const size_t N = solidParticles_.hostSize();
+    const std::vector<double3> p = solidParticles_.getPositionVectors();
+    const std::vector<double3> v = solidParticles_.getVelocityVectors();
+    const std::vector<double3> a = solidParticles_.getAngularVelocityVectors();
+    const std::vector<double> r = solidParticles_.getRadiusVectors();
+    const std::vector<int> materialID = solidParticles_.getMaterialIDVectors();
+    const std::vector<int> clumpID = solidParticles_.getClumpIDVectors();
     
     out << "<?xml version=\"1.0\"?>\n"
         "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
@@ -51,11 +54,15 @@ void solidParticleHandler::outputSolidParticleVTU(const std::string dir, const s
     out << "      <PointData Scalars=\"radius\">\n";
 
     out << "        <DataArray type=\"Float32\" Name=\"radius\" format=\"ascii\">\n";
-    for (int i = 0; i < N; ++i) out << ' ' << solidParticles.getRadiusVectors()[i];
+    for (int i = 0; i < N; ++i) out << ' ' << r[i];
     out << "\n        </DataArray>\n";
 
+    out << "        <DataArray type=\"Int32\" Name=\"clumpID\" format=\"ascii\">\n";
+	for (int i = 0; i < N; ++i) out << ' ' << materialID[i];
+	out << "\n        </DataArray>\n";
+
 	out << "        <DataArray type=\"Int32\" Name=\"clumpID\" format=\"ascii\">\n";
-	for (int i = 0; i < N; ++i) out << ' ' << solidParticles.getClumpIDVectors()[i];
+	for (int i = 0; i < N; ++i) out << ' ' << clumpID[i];
 	out << "\n        </DataArray>\n";
 
     const struct {

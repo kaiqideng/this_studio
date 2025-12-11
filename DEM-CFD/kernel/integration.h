@@ -1,3 +1,4 @@
+#pragma once
 #include "neighborSearch.h"
 #include "myContainer/myContactModelParams.h"
 
@@ -265,3 +266,5 @@ extern "C" void launchSolidParticleIntegrateAfterContact(solidParticle& solidPar
 extern "C" void launchSolidParticleInteractionCalculation(interactionSpringSystem& solidParticleInteractions, interactionBonded& bondedSolidParticleInteractions, 
     solidParticle& solidParticles, clump& clumps,
     solidContactModelParameter& contactModelParameters, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream);
+
+extern "C" void launchInfiniteWallHalfIntegration(infiniteWall &infiniteWalls, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream);

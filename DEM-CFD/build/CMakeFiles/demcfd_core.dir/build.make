@@ -69,24 +69,10 @@ include CMakeFiles/demcfd_core.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/demcfd_core.dir/flags.make
 
-CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o: CMakeFiles/demcfd_core.dir/flags.make
-CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o: /teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.cpp
-CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o -MF CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o.d -o CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o -c /teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.cpp
-
-CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.i"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.cpp > CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.i
-
-CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.s"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.cpp -o CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.s
-
 CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: CMakeFiles/demcfd_core.dir/flags.make
 CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.cpp
 CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o"
 	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o -MF CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o.d -o CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o -c /teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.cpp
 
 CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.i: cmake_force
@@ -96,6 +82,20 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.i: cmake_force
 CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.s"
 	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.cpp -o CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.s
+
+CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: CMakeFiles/demcfd_core.dir/flags.make
+CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.cpp
+CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o -MF CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o.d -o CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o -c /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.cpp
+
+CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.i"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.cpp > CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.i
+
+CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.cpp -o CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s
 
 CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: CMakeFiles/demcfd_core.dir/flags.make
 CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: CMakeFiles/demcfd_core.dir/includes_CUDA.rsp
@@ -144,8 +144,8 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.s: cmake_force
 
 # Object files for target demcfd_core
 demcfd_core_OBJECTS = \
-"CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o" \
 "CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o" \
+"CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o" \
 "CMakeFiles/demcfd_core.dir/kernel/integration.cu.o" \
 "CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o" \
 "CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o"
@@ -153,8 +153,8 @@ demcfd_core_OBJECTS = \
 # External object files for target demcfd_core
 demcfd_core_EXTERNAL_OBJECTS =
 
-lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o
+lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/integration.cu.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o

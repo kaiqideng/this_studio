@@ -1,4 +1,6 @@
 #include "integration.h"
+#include "myContainer/myUtility/myVec.h"
+#include "myContainer/myWall.h"
 
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ >= 600)       // sm 6.0+
 __device__ __forceinline__ double atomicAddDouble(double* addr, double val)
@@ -271,6 +273,48 @@ __global__ void sumForceTorqueFromSolidParticleInteractionKernel(double3* contac
 	torque[idx_i] += T_i;
 }
 
+__global__ void sumForceTorqueFromSolidParticleInfiniteWallInteractionKernel(double3* contactForce, double3* contactTorque, 
+    int* objectPointing, 
+    double3* force, double3* torque, double3* position, double* radius, 
+	int* solidParticleNeighborPrefixSum, 
+	double3* position_iw, double3* axis_iw, double* radius_iw, 
+	const size_t numParticles)
+{
+	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= numParticles) return;
+
+	double rad_i = radius[idx_i];
+	double3 r_i = position[idx_i];
+	double3 F_i = make_double3(0, 0, 0);
+	double3 T_i = make_double3(0, 0, 0);
+	for (int k = idx_i > 0 ? solidParticleNeighborPrefixSum[idx_i - 1] : 0; k < solidParticleNeighborPrefixSum[idx_i]; k++)
+	{
+		int idx_j = objectPointing[k];
+		double rad_j = radius_iw[idx_j];
+		double3 r_j = position_iw[idx_j];
+
+        double3 n = normalize(axis_iw[idx_j]);
+        double delta = rad_i - fabs(dot(r_i - r_j, n));
+		double3 n_ij = n;
+		if(dot(r_i - r_j, n) < 0) n_ij = -n;
+		double3 r_c = r_i - n_ij * (rad_i - delta);
+        if(rad_j > 1.e-20)
+        {
+            double3 p = dot(r_i - r_j,n) * n + r_j;
+            delta = rad_i + rad_j - length(r_i - p) ;
+			n_ij = normalize(r_i - p);
+            if(delta > rad_i) delta = length(r_i - p) + rad_i - rad_j;
+			r_c = r_i - n_ij * (rad_i - 0.5 * delta);
+        }
+
+		F_i += contactForce[k];
+		T_i += contactTorque[k] + cross(r_c - r_i, contactForce[k]);
+	}
+
+	force[idx_i] += F_i;
+	torque[idx_i] += T_i;
+}
+
 __global__ void sumClumpForceTorqueKernel(double3* force_c, double3* torque_c, double3* position_c, 
     int* pebbleStartIndex, int* pebbleEndIndex,
 	double3* force_p, double3* torque_p, double3* position_p,
@@ -484,4 +528,15 @@ solidContactModelParameter& contactModelParameters, const double timeStep, const
 	sumClumpForceTorqueKernel <<<grid, block, 0, stream>>> (clumps.force, clumps.torque, 
 	clumps.position(), clumps.pebbleStartIndex, clumps.pebbleEndIndex, 
 	solidParticles.force, solidParticles.torque, solidParticles.position(), clumps.deviceSize());
+}
+
+extern "C" void launchInfiniteWallHalfIntegration(infiniteWall &infiniteWalls, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream)
+{
+	size_t grid = 1, block = 1;
+
+	computeGPUGridSizeBlockSize(grid, block, infiniteWalls.deviceSize(), maxThreadsPerBlock);
+	positionIntegrateKernel <<<grid, block, 0, stream>>> (infiniteWalls.position(), 
+	infiniteWalls.velocity(),
+	0.5 * timeStep, 
+	infiniteWalls.deviceSize());
 }

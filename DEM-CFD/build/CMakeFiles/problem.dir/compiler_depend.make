@@ -16,7 +16,9 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
   /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myQua.h \
   /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h \
   /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h \
+  /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.h \
   /teamspace/studios/this_studio/DEM-CFD/kernel/solverParams.h \
+  /teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -1062,6 +1064,14 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/thrust/system/detail/generic/advance.inl:
 
+/usr/include/thrust/system/detail/generic/advance.h:
+
+/usr/include/thrust/transform.h:
+
+/usr/include/thrust/system/detail/sequential/temporary_buffer.h:
+
+/usr/include/thrust/system/detail/error_condition.inl:
+
 /usr/include/nv/detail/__target_macros:
 
 /usr/include/nv/detail/__preprocessor:
@@ -1266,12 +1276,6 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/c++/12/ext/string_conversions.h:
 
-/usr/include/thrust/transform.h:
-
-/usr/include/thrust/system/detail/sequential/temporary_buffer.h:
-
-/usr/include/thrust/system/detail/error_condition.inl:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
 
 /usr/include/thrust/system/cuda/config.h:
@@ -1308,6 +1312,26 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/cub/detail/exec_check_disable.cuh:
 
+/usr/include/features.h:
+
+/usr/include/limits.h:
+
+/usr/include/c++/12/new:
+
+/usr/include/c++/12/typeinfo:
+
+/usr/include/thrust/advance.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
+
+/usr/include/cub/util_namespace.cuh:
+
+/usr/include/c++/12/cmath:
+
+/usr/include/c++/12/tr1/exp_integral.tcc:
+
+/usr/include/c++/12/bits/chrono.h:
+
 /usr/include/library_types.h:
 
 /usr/include/thrust/system/detail/generic/fill.h:
@@ -1325,14 +1349,6 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 /usr/include/thrust/detail/copy_if.h:
 
 /usr/include/thrust/mr/host_memory_resource.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
-
-/usr/include/string.h:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
-
-/usr/include/thrust/detail/allocator_aware_execution_policy.h:
 
 /usr/include/c++/12/bits/stl_uninitialized.h:
 
@@ -1356,10 +1372,6 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/c++/12/backward/binders.h:
 
-/usr/include/c++/12/tr1/exp_integral.tcc:
-
-/usr/include/c++/12/bits/chrono.h:
-
 /usr/include/c++/12/pstl/pstl_config.h:
 
 /usr/include/c++/12/bits/allocated_ptr.h:
@@ -1377,6 +1389,8 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 /usr/include/cub/util_compiler.cuh:
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/mySpatialGrid.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.h:
 
 /usr/include/c++/12/bits/locale_facets_nonio.tcc:
 
@@ -1438,8 +1452,6 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/thrust/detail/fill.inl:
 
-/usr/include/c++/12/bits/align.h:
-
 /usr/include/device_types.h:
 
 /usr/include/crt/host_defines.h:
@@ -1470,6 +1482,38 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/thrust/detail/config/host_system.h:
 
+/usr/include/c++/12/iostream:
+
+/usr/include/c++/12/backward/auto_ptr.h:
+
+/usr/include/asm-generic/int-ll64.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
+
+/usr/include/thrust/system/cuda/detail/temporary_buffer.h:
+
+/usr/include/stdio.h:
+
+/usr/include/thrust/replace.h:
+
+/usr/include/c++/12/bits/functional_hash.h:
+
+/usr/include/thrust/type_traits/remove_cvref.h:
+
+/usr/include/c++/12/unordered_map:
+
+/usr/include/c++/12/tuple:
+
+/usr/include/c++/12/streambuf:
+
+/usr/include/thrust/detail/raw_reference_cast.h:
+
+/usr/include/thrust/system/cuda/detail/copy_if.h:
+
+/usr/include/thrust/system/cuda/error.h:
+
+/usr/include/c++/12/bits/stringfwd.h:
+
 /usr/include/c++/12/compare:
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.h:
@@ -1483,6 +1527,8 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 /usr/include/cub/util_debug.cuh:
 
 /usr/include/thrust/system/cpp/detail/swap_ranges.h:
+
+/usr/include/c++/12/bits/align.h:
 
 /usr/include/c++/12/bits/concept_check.h:
 
@@ -1518,49 +1564,31 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/c++/12/cfloat:
 
+/usr/include/x86_64-linux-gnu/bits/floatn.h:
+
+/usr/include/c++/12/bits/std_abs.h:
+
+/usr/include/c++/12/bits/char_traits.h:
+
 /usr/include/c++/12/bits/exception_ptr.h:
 
+/usr/include/thrust/iterator/detail/distance_from_result.h:
+
+/usr/include/thrust/detail/allocator/fill_construct_range.inl:
+
 /usr/include/asm-generic/errno-base.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h:
+
+/usr/include/c++/12/bits/shared_ptr_base.h:
+
+/usr/include/c++/12/bits/istream.tcc:
 
 /usr/include/c++/12/bits/algorithmfwd.h:
 
 /usr/include/c++/12/bits/locale_facets_nonio.h:
 
 /usr/include/c++/12/bits/exception.h:
-
-/usr/include/asm-generic/int-ll64.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
-
-/usr/include/thrust/system/cuda/detail/temporary_buffer.h:
-
-/usr/include/stdio.h:
-
-/usr/include/thrust/replace.h:
-
-/usr/include/c++/12/bits/functional_hash.h:
-
-/usr/include/thrust/type_traits/remove_cvref.h:
-
-/usr/include/c++/12/unordered_map:
-
-/usr/include/c++/12/tuple:
-
-/usr/include/c++/12/streambuf:
-
-/usr/include/thrust/detail/raw_reference_cast.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h:
-
-/usr/include/c++/12/bits/istream.tcc:
-
-/usr/include/c++/12/bits/shared_ptr_base.h:
-
-/usr/include/thrust/system/cuda/detail/copy_if.h:
-
-/usr/include/thrust/system/cuda/error.h:
-
-/usr/include/c++/12/bits/stringfwd.h:
 
 /usr/include/c++/12/bits/erase_if.h:
 
@@ -1572,10 +1600,6 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/thrust/system/cuda/detail/reverse.h:
 
-/usr/include/c++/12/bits/hash_bytes.h:
-
-/usr/include/thrust/detail/functional/operators/operator_adaptors.h:
-
 /usr/include/c++/12/algorithm:
 
 /usr/include/thrust/detail/copy.h:
@@ -1586,13 +1610,9 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/thrust/iterator/iterator_adaptor.h:
 
-/usr/include/c++/12/iostream:
+/usr/include/c++/12/bits/hash_bytes.h:
 
-/usr/include/thrust/detail/allocator/fill_construct_range.inl:
-
-/usr/include/thrust/iterator/detail/distance_from_result.h:
-
-/usr/include/c++/12/backward/auto_ptr.h:
+/usr/include/thrust/detail/functional/operators/operator_adaptors.h:
 
 /usr/include/c++/12/ext/concurrence.h:
 
@@ -1672,6 +1692,8 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/cub/util_cpp_dialect.cuh:
 
+/teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.h:
+
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h:
 
 /usr/include/c++/12/cassert:
@@ -1704,31 +1726,9 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 
 /usr/include/c++/12/bits/ostream_insert.h:
 
-/usr/include/limits.h:
-
-/usr/include/c++/12/new:
-
-/usr/include/features.h:
-
-/usr/include/c++/12/typeinfo:
-
-/usr/include/thrust/advance.h:
-
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h:
 
 /usr/include/c++/12/bits/quoted_string.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
-
-/usr/include/cub/util_namespace.cuh:
-
-/usr/include/x86_64-linux-gnu/bits/floatn.h:
-
-/usr/include/c++/12/bits/char_traits.h:
-
-/usr/include/c++/12/bits/std_abs.h:
-
-/usr/include/c++/12/cmath:
 
 /usr/include/c++/12/bits/range_access.h:
 
@@ -1845,6 +1845,14 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 /usr/include/math.h:
 
 /usr/include/thrust/detail/functional/argument.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
+
+/usr/include/string.h:
+
+/usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/thrust/detail/allocator_aware_execution_policy.h:
 
 /usr/include/strings.h:
 
@@ -2331,5 +2339,3 @@ CMakeFiles/problem.dir/problem.cpp.o: /teamspace/studios/this_studio/DEM-CFD/pro
 /usr/include/thrust/system/detail/error_category.inl:
 
 /usr/include/thrust/system/detail/error_code.inl:
-
-/usr/include/thrust/system/detail/generic/advance.h:

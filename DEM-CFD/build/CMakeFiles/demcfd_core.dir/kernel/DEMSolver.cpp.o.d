@@ -257,6 +257,8 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/integration.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h \
  /usr/include/thrust/device_vector.h /usr/include/thrust/detail/config.h \
  /usr/include/thrust/version.h /usr/include/thrust/detail/config/config.h \
  /usr/include/thrust/detail/config/simple_defines.h \

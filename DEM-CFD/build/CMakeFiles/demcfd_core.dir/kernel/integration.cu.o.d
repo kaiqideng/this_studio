@@ -308,6 +308,8 @@ CMakeFiles/demcfd_core.dir/kernel/integration.cu.o : /teamspace/studios/this_stu
     /usr/include/c++/12/pstl/execution_defs.h \
     /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myInteraction.h \
     /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/mySpatialGrid.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h \
     /usr/include/thrust/device_vector.h \
     /usr/include/thrust/detail/config.h \
     /usr/include/thrust/version.h \

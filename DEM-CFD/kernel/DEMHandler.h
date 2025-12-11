@@ -1,4 +1,8 @@
 #pragma once
+#include "myContainer/myHash.h"
+#include "myContainer/myInteraction.h"
+#include "myContainer/myParticle.h"
+#include "myContainer/myWall.h"
 #include "solidParticleHandler.h"
 #include "wallHandler.h"
 
@@ -46,13 +50,13 @@ struct BondedParamsList
 };
 
 class DEMHandler:
-    public solidParticleHandler
+    public solidParticleHandler, public wallHandler
 {
 public: 
-    DEMHandler(cudaStream_t s) : solidParticleHandler(s)
+    DEMHandler(cudaStream_t s) : solidParticleHandler(s), wallHandler(s)
     {
-        DEMStream = s;
-        solidContactModelParametersHostArrayChangedFlag = false;
+        DEMStream_ = s;
+        solidContactModelParametersHostArrayChangedFlag_ = false;
     }
 
     ~DEMHandler() = default;
@@ -62,18 +66,18 @@ public:
         double rollingSlidingStiffnessRatio, double torsionSlidingStiffnessRatio, 
         double slidingFrictionCoefficient, double rollingFrictionCoefficient, double torsionFrictionCoefficient)
     {
-        HertzianContactModelParameters.materialIndexA.push_back(materialIndexA);
-        HertzianContactModelParameters.materialIndexB.push_back(materialIndexB);
-        HertzianContactModelParameters.E.push_back(effectiveYoungsModulus);
-        HertzianContactModelParameters.G.push_back(effectiveShearModulus);
-        HertzianContactModelParameters.res.push_back(restitution);
-        HertzianContactModelParameters.k_r_k_s.push_back(rollingSlidingStiffnessRatio);
-        HertzianContactModelParameters.k_t_k_s.push_back(torsionSlidingStiffnessRatio);
-        HertzianContactModelParameters.mu_s.push_back(slidingFrictionCoefficient);
-        HertzianContactModelParameters.mu_r.push_back(rollingFrictionCoefficient);
-        HertzianContactModelParameters.mu_t.push_back(torsionFrictionCoefficient);
+        HertzianContactModelParameters_.materialIndexA.push_back(materialIndexA);
+        HertzianContactModelParameters_.materialIndexB.push_back(materialIndexB);
+        HertzianContactModelParameters_.E.push_back(effectiveYoungsModulus);
+        HertzianContactModelParameters_.G.push_back(effectiveShearModulus);
+        HertzianContactModelParameters_.res.push_back(restitution);
+        HertzianContactModelParameters_.k_r_k_s.push_back(rollingSlidingStiffnessRatio);
+        HertzianContactModelParameters_.k_t_k_s.push_back(torsionSlidingStiffnessRatio);
+        HertzianContactModelParameters_.mu_s.push_back(slidingFrictionCoefficient);
+        HertzianContactModelParameters_.mu_r.push_back(rollingFrictionCoefficient);
+        HertzianContactModelParameters_.mu_t.push_back(torsionFrictionCoefficient);
 
-        solidContactModelParametersHostArrayChangedFlag = true;
+        solidContactModelParametersHostArrayChangedFlag_ = true;
     }
 
     void setLinearModel(int materialIndexA, int materialIndexB, 
@@ -81,48 +85,60 @@ public:
         double normalDampingCoefficient, double shearDampingCoefficient, double rollingDampingCoefficient, double torsionDampingCoefficient, 
         double slidingFrictionCoefficient, double rollingFrictionCoefficient, double torsionFrictionCoefficient)
     {
-        LinearContactModelParameters.materialIndexA.push_back(materialIndexA);
-        LinearContactModelParameters.materialIndexB.push_back(materialIndexB);
-        LinearContactModelParameters.k_n.push_back(normalStiffness);
-        LinearContactModelParameters.k_s.push_back(shearStiffness);
-        LinearContactModelParameters.k_r.push_back(rollingStiffness);
-        LinearContactModelParameters.k_t.push_back(torsionStiffness);
-        LinearContactModelParameters.d_n.push_back(normalDampingCoefficient);
-        LinearContactModelParameters.d_s.push_back(shearDampingCoefficient);
-        LinearContactModelParameters.d_r.push_back(rollingDampingCoefficient);
-        LinearContactModelParameters.d_t.push_back(torsionDampingCoefficient);
-        LinearContactModelParameters.mu_s.push_back(slidingFrictionCoefficient);
-        LinearContactModelParameters.mu_r.push_back(rollingFrictionCoefficient);
-        LinearContactModelParameters.mu_t.push_back(torsionFrictionCoefficient);
+        LinearContactModelParameters_.materialIndexA.push_back(materialIndexA);
+        LinearContactModelParameters_.materialIndexB.push_back(materialIndexB);
+        LinearContactModelParameters_.k_n.push_back(normalStiffness);
+        LinearContactModelParameters_.k_s.push_back(shearStiffness);
+        LinearContactModelParameters_.k_r.push_back(rollingStiffness);
+        LinearContactModelParameters_.k_t.push_back(torsionStiffness);
+        LinearContactModelParameters_.d_n.push_back(normalDampingCoefficient);
+        LinearContactModelParameters_.d_s.push_back(shearDampingCoefficient);
+        LinearContactModelParameters_.d_r.push_back(rollingDampingCoefficient);
+        LinearContactModelParameters_.d_t.push_back(torsionDampingCoefficient);
+        LinearContactModelParameters_.mu_s.push_back(slidingFrictionCoefficient);
+        LinearContactModelParameters_.mu_r.push_back(rollingFrictionCoefficient);
+        LinearContactModelParameters_.mu_t.push_back(torsionFrictionCoefficient);
 
-        solidContactModelParametersHostArrayChangedFlag = true;
+        solidContactModelParametersHostArrayChangedFlag_ = true;
     }
 
     void setBondedModel(int materialIndexA, int materialIndexB, 
         double bondRadiusMultiplier, double bondYoungsModulus, double normalToShearStiffnessRatio, 
         double tensileStrength, double cohesion, double frictionCoefficient)
     {
-        BondedContactModelParameters.materialIndexA.push_back(materialIndexA);
-        BondedContactModelParameters.materialIndexB.push_back(materialIndexB);
-        BondedContactModelParameters.gamma.push_back(bondRadiusMultiplier);
-        BondedContactModelParameters.E.push_back(bondYoungsModulus);
-        BondedContactModelParameters.k_n_k_s.push_back(normalToShearStiffnessRatio);
-        BondedContactModelParameters.sigma_s.push_back(tensileStrength);
-        BondedContactModelParameters.C.push_back(cohesion);
-        BondedContactModelParameters.mu.push_back(frictionCoefficient);
+        BondedContactModelParameters_.materialIndexA.push_back(materialIndexA);
+        BondedContactModelParameters_.materialIndexB.push_back(materialIndexB);
+        BondedContactModelParameters_.gamma.push_back(bondRadiusMultiplier);
+        BondedContactModelParameters_.E.push_back(bondYoungsModulus);
+        BondedContactModelParameters_.k_n_k_s.push_back(normalToShearStiffnessRatio);
+        BondedContactModelParameters_.sigma_s.push_back(tensileStrength);
+        BondedContactModelParameters_.C.push_back(cohesion);
+        BondedContactModelParameters_.mu.push_back(frictionCoefficient);
 
-        solidContactModelParametersHostArrayChangedFlag = true;
+        solidContactModelParametersHostArrayChangedFlag_ = true;
     }
 
 protected:
-    virtual bool handleDEMHostArray() {return false;};
+    virtual bool handleDEMHostArray() {return false;}
 
     void DEMInitialize(const double3 domainOrigin, const double3 domainSize, const size_t maxThreadsPerBlock)
     {
         downLoadSolidContactModelParameters();
+
         solidParticleInitialize(domainOrigin, domainSize);
 
+        wallInitialize();
+
+        if(infiniteWalls().deviceSize() > 0) 
+        {
+            solidParticleInfiniteWallInteractions_.current.allocDeviceArray(solidParticles().hostSize(), DEMStream_);
+            solidParticleInfiniteWallNeighbor_.alloc(solidParticles().deviceSize(), DEMStream_);
+            infiniteWallInteractionRange_.alloc(infiniteWalls().deviceSize(), DEMStream_);
+        }
+
         solidParticleNeighborSearch(maxThreadsPerBlock);
+
+        solidParticleInfiniteWallNeighborSearch(maxThreadsPerBlock);
 
         handleDEMHostArray();
     }
@@ -131,40 +147,58 @@ protected:
     {
         solidParticleNeighborSearch(maxThreadsPerBlock);
 
+        solidParticleInfiniteWallNeighborSearch(maxThreadsPerBlock);
+
         solidParticleIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
 
-        solidParticleInteractionCalculation(solidContactModelParameters, timeStep, maxThreadsPerBlock);
+        wallIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
+
+        solidParticleInteractionCalculation(solidContactModelParameters_, timeStep, maxThreadsPerBlock);
+
+        solidParticleInfiniteWallInteractionCalculation(timeStep, maxThreadsPerBlock);
 
         if(handleDEMHostArray())
         {
             downLoadSolidContactModelParameters();
+
             solidParticleInitialize(domainOrigin, domainSize);
+
+            wallInitialize();
+
+            if(infiniteWalls().deviceSize() > 0) 
+            {
+                solidParticleInfiniteWallInteractions_.current.allocDeviceArray(solidParticles().hostSize(), DEMStream_);
+                solidParticleInfiniteWallNeighbor_.alloc(solidParticles().deviceSize(), DEMStream_);
+                infiniteWallInteractionRange_.alloc(infiniteWalls().deviceSize(), DEMStream_);
+            }
         }
 
         solidParticleIntegrateAfterContact(gravity, timeStep, maxThreadsPerBlock);
+
+        wallIntegrateAfterContact(gravity, timeStep, maxThreadsPerBlock);
     }
 
 private:
     void downLoadSolidContactModelParameters()
     {
-        if(!solidContactModelParametersHostArrayChangedFlag) return;
-        else solidContactModelParametersHostArrayChangedFlag = false;
+        if(!solidContactModelParametersHostArrayChangedFlag_) return;
+        else solidContactModelParametersHostArrayChangedFlag_ = false;
         
         size_t num0A = 0, num0B = 0, num1A = 0, num1B = 0, num2A = 0, num2B = 0;
-        if(HertzianContactModelParameters.materialIndexA.size() > 0)
+        if(HertzianContactModelParameters_.materialIndexA.size() > 0)
         {
-            num0A = *std::max_element(HertzianContactModelParameters.materialIndexA.begin(), HertzianContactModelParameters.materialIndexA.end());
-            num0B = *std::max_element(HertzianContactModelParameters.materialIndexB.begin(), HertzianContactModelParameters.materialIndexB.end());
+            num0A = *std::max_element(HertzianContactModelParameters_.materialIndexA.begin(), HertzianContactModelParameters_.materialIndexA.end());
+            num0B = *std::max_element(HertzianContactModelParameters_.materialIndexB.begin(), HertzianContactModelParameters_.materialIndexB.end());
         }
-        if(LinearContactModelParameters.materialIndexA.size() > 0)
+        if(LinearContactModelParameters_.materialIndexA.size() > 0)
         {
-            num1A = *std::max_element(LinearContactModelParameters.materialIndexA.begin(), LinearContactModelParameters.materialIndexA.end());
-            num1B = *std::max_element(LinearContactModelParameters.materialIndexB.begin(), LinearContactModelParameters.materialIndexB.end());
+            num1A = *std::max_element(LinearContactModelParameters_.materialIndexA.begin(), LinearContactModelParameters_.materialIndexA.end());
+            num1B = *std::max_element(LinearContactModelParameters_.materialIndexB.begin(), LinearContactModelParameters_.materialIndexB.end());
         }
-        if(BondedContactModelParameters.materialIndexA.size() > 0)
+        if(BondedContactModelParameters_.materialIndexA.size() > 0)
         {
-            num2A = *std::max_element(BondedContactModelParameters.materialIndexA.begin(), BondedContactModelParameters.materialIndexA.end());
-            num2B = *std::max_element(BondedContactModelParameters.materialIndexB.begin(), BondedContactModelParameters.materialIndexB.end());
+            num2A = *std::max_element(BondedContactModelParameters_.materialIndexA.begin(), BondedContactModelParameters_.materialIndexA.end());
+            num2B = *std::max_element(BondedContactModelParameters_.materialIndexB.begin(), BondedContactModelParameters_.materialIndexB.end());
         }
         size_t num = std::max(num0A,num0B);
         num = std::max(num,num1A);
@@ -173,60 +207,84 @@ private:
         num = std::max(num,num2B);
         num += 1;
 
-        solidContactModelParameters.setNumberOfMaterials(num,DEMStream);
+        solidContactModelParameters_.setNumberOfMaterials(num,DEMStream_);
 
-        for(size_t i = 0; i < HertzianContactModelParameters.E.size(); i++)
+        for(size_t i = 0; i < HertzianContactModelParameters_.E.size(); i++)
         {
-            solidContactModelParameters.setHertzian(HertzianContactModelParameters.materialIndexA[i], 
-            HertzianContactModelParameters.materialIndexB[i], 
-            HertzianContactModelParameters.E[i], 
-            HertzianContactModelParameters.G[i], 
-            HertzianContactModelParameters.res[i], 
-            HertzianContactModelParameters.k_r_k_s[i], 
-            HertzianContactModelParameters.k_t_k_s[i], 
-            HertzianContactModelParameters.mu_s[i], 
-            HertzianContactModelParameters.mu_r[i], 
-            HertzianContactModelParameters.mu_t[i], 
-            DEMStream);
+            solidContactModelParameters_.setHertzian(HertzianContactModelParameters_.materialIndexA[i], 
+            HertzianContactModelParameters_.materialIndexB[i], 
+            HertzianContactModelParameters_.E[i], 
+            HertzianContactModelParameters_.G[i], 
+            HertzianContactModelParameters_.res[i], 
+            HertzianContactModelParameters_.k_r_k_s[i], 
+            HertzianContactModelParameters_.k_t_k_s[i], 
+            HertzianContactModelParameters_.mu_s[i], 
+            HertzianContactModelParameters_.mu_r[i], 
+            HertzianContactModelParameters_.mu_t[i], 
+            DEMStream_);
         }
 
-        for(size_t i = 0; i < LinearContactModelParameters.k_n.size(); i++)
+        for(size_t i = 0; i < LinearContactModelParameters_.k_n.size(); i++)
         {
-            solidContactModelParameters.setLinear(LinearContactModelParameters.materialIndexA[i], 
-            LinearContactModelParameters.materialIndexB[i], 
-            LinearContactModelParameters.k_n[i], 
-            LinearContactModelParameters.k_s[i], 
-            LinearContactModelParameters.k_r[i], 
-            LinearContactModelParameters.k_t[i], 
-            LinearContactModelParameters.d_n[i], 
-            LinearContactModelParameters.d_s[i], 
-            LinearContactModelParameters.d_r[i], 
-            LinearContactModelParameters.d_t[i],
-            LinearContactModelParameters.mu_s[i], 
-            LinearContactModelParameters.mu_r[i], 
-            LinearContactModelParameters.mu_t[i], 
-            DEMStream);
+            solidContactModelParameters_.setLinear(LinearContactModelParameters_.materialIndexA[i], 
+            LinearContactModelParameters_.materialIndexB[i], 
+            LinearContactModelParameters_.k_n[i], 
+            LinearContactModelParameters_.k_s[i], 
+            LinearContactModelParameters_.k_r[i], 
+            LinearContactModelParameters_.k_t[i], 
+            LinearContactModelParameters_.d_n[i], 
+            LinearContactModelParameters_.d_s[i], 
+            LinearContactModelParameters_.d_r[i], 
+            LinearContactModelParameters_.d_t[i],
+            LinearContactModelParameters_.mu_s[i], 
+            LinearContactModelParameters_.mu_r[i], 
+            LinearContactModelParameters_.mu_t[i], 
+            DEMStream_);
         }
 
-        for(size_t i = 0; i < BondedContactModelParameters.E.size(); i++)
+        for(size_t i = 0; i < BondedContactModelParameters_.E.size(); i++)
         {
-            solidContactModelParameters.setBonded(BondedContactModelParameters.materialIndexA[i], 
-            BondedContactModelParameters.materialIndexB[i], 
-            BondedContactModelParameters.gamma[i], 
-            BondedContactModelParameters.E[i], 
-            BondedContactModelParameters.k_n_k_s[i], 
-            BondedContactModelParameters.sigma_s[i], 
-            BondedContactModelParameters.C[i], 
-            BondedContactModelParameters.mu[i], 
-            DEMStream);
+            solidContactModelParameters_.setBonded(BondedContactModelParameters_.materialIndexA[i], 
+            BondedContactModelParameters_.materialIndexB[i], 
+            BondedContactModelParameters_.gamma[i], 
+            BondedContactModelParameters_.E[i], 
+            BondedContactModelParameters_.k_n_k_s[i], 
+            BondedContactModelParameters_.sigma_s[i], 
+            BondedContactModelParameters_.C[i], 
+            BondedContactModelParameters_.mu[i], 
+            DEMStream_);
         }
     }
 
-    cudaStream_t DEMStream;
-    bool solidContactModelParametersHostArrayChangedFlag;
-    HertzianParamsList HertzianContactModelParameters;
-    LinearParamsList LinearContactModelParameters;
-    BondedParamsList BondedContactModelParameters;
+    void solidParticleInfiniteWallNeighborSearch(const size_t maxThreadsPerBlock)
+    {
+        launchSolidParticleInfiniteWallNeighborSearch(solidParticleInfiniteWallInteractions_, 
+        solidParticles(), 
+        infiniteWalls(), 
+        solidParticleInfiniteWallNeighbor_, 
+        infiniteWallInteractionRange_, 
+        maxThreadsPerBlock, 
+        DEMStream_);
+    }
 
-    solidContactModelParameter solidContactModelParameters;
+    void solidParticleInfiniteWallInteractionCalculation(const double timeStep, const size_t maxThreadsPerBlock)
+    {
+
+    }
+
+    cudaStream_t DEMStream_;
+    bool solidContactModelParametersHostArrayChangedFlag_;
+    HertzianParamsList HertzianContactModelParameters_;
+    LinearParamsList LinearContactModelParameters_;
+    BondedParamsList BondedContactModelParameters_;
+
+    solidContactModelParameter solidContactModelParameters_;
+
+    interactionSpringSystem solidParticleInfiniteWallInteractions_;
+    objectNeighborPrefix solidParticleInfiniteWallNeighbor_;
+    sortedHashValueIndex infiniteWallInteractionRange_;
+
+    interactionSpringSystem solidParticleTriangleWallInteractions_;
+    objectNeighborPrefix solidParticleTriangleWallNeighbor_;
+    sortedHashValueIndex triangleWallInteractionRange_;
 };

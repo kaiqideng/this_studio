@@ -143,30 +143,6 @@ problem/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/problem.dir/build.make CMakeFiles/problem.dir/build
 .PHONY : problem/fast
 
-kernel/DEMHandler.o: kernel/DEMHandler.cpp.o
-.PHONY : kernel/DEMHandler.o
-
-# target to build an object file
-kernel/DEMHandler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.o
-.PHONY : kernel/DEMHandler.cpp.o
-
-kernel/DEMHandler.i: kernel/DEMHandler.cpp.i
-.PHONY : kernel/DEMHandler.i
-
-# target to preprocess a source file
-kernel/DEMHandler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.i
-.PHONY : kernel/DEMHandler.cpp.i
-
-kernel/DEMHandler.s: kernel/DEMHandler.cpp.s
-.PHONY : kernel/DEMHandler.s
-
-# target to generate assembly for a file
-kernel/DEMHandler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/DEMHandler.cpp.s
-.PHONY : kernel/DEMHandler.cpp.s
-
 kernel/DEMSolver.o: kernel/DEMSolver.cpp.o
 .PHONY : kernel/DEMSolver.o
 
@@ -263,6 +239,30 @@ kernel/neighborSearch.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.s
 .PHONY : kernel/neighborSearch.cu.s
 
+kernel/solidParticleHandler.o: kernel/solidParticleHandler.cpp.o
+.PHONY : kernel/solidParticleHandler.o
+
+# target to build an object file
+kernel/solidParticleHandler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o
+.PHONY : kernel/solidParticleHandler.cpp.o
+
+kernel/solidParticleHandler.i: kernel/solidParticleHandler.cpp.i
+.PHONY : kernel/solidParticleHandler.i
+
+# target to preprocess a source file
+kernel/solidParticleHandler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.i
+.PHONY : kernel/solidParticleHandler.cpp.i
+
+kernel/solidParticleHandler.s: kernel/solidParticleHandler.cpp.s
+.PHONY : kernel/solidParticleHandler.s
+
+# target to generate assembly for a file
+kernel/solidParticleHandler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s
+.PHONY : kernel/solidParticleHandler.cpp.s
+
 problem.o: problem.cpp.o
 .PHONY : problem.o
 
@@ -297,9 +297,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... demcfd_core"
 	@echo "... problem"
-	@echo "... kernel/DEMHandler.o"
-	@echo "... kernel/DEMHandler.i"
-	@echo "... kernel/DEMHandler.s"
 	@echo "... kernel/DEMSolver.o"
 	@echo "... kernel/DEMSolver.i"
 	@echo "... kernel/DEMSolver.s"
@@ -312,6 +309,9 @@ help:
 	@echo "... kernel/neighborSearch.o"
 	@echo "... kernel/neighborSearch.i"
 	@echo "... kernel/neighborSearch.s"
+	@echo "... kernel/solidParticleHandler.o"
+	@echo "... kernel/solidParticleHandler.i"
+	@echo "... kernel/solidParticleHandler.s"
 	@echo "... problem.o"
 	@echo "... problem.i"
 	@echo "... problem.s"

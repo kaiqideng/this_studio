@@ -2,51 +2,74 @@
 #include "myContainer/myWall.h"
 #include "myContainer/mySpatialGrid.h"
 #include "myContainer/myUtility/myMat.h"
-#include <vector>
+#include "integration.h"
 
 class wallHandler
 {
 public:
     wallHandler(cudaStream_t s)
     {
-        wallStream = s;
-        infiniteWallsHostArrayChangedFlag = false;
+        wallStream_ = s;
+        infiniteWallsHostArrayChangedFlag_ = false;
     }
 
     ~wallHandler() = default;
 
     void addInfinitePlaneWall(double3 position, double3 normal, double3 velocity, int materialID)
     {
-        if(!infiniteWallsHostArrayChangedFlag)
+        if(!infiniteWallsHostArrayChangedFlag_)
         {
-            infiniteWalls.upload(wallStream);
-            infiniteWallsHostArrayChangedFlag = true;
+            infiniteWalls_.upload(wallStream_);
+            infiniteWallsHostArrayChangedFlag_ = true;
         }
-        infiniteWalls.addPlane(position, velocity, normal, materialID);
+        infiniteWalls_.addPlane(position, velocity, normal, materialID);
     }
 
     void addInfiniteCylinderWall(double3 position, double3 velocity, double3 axis, double axisAngularVelocity, double radius, int materialID)
     {
-        if(!infiniteWallsHostArrayChangedFlag)
+        if(!infiniteWallsHostArrayChangedFlag_)
         {
-            infiniteWalls.upload(wallStream);
-            infiniteWallsHostArrayChangedFlag = true;
+            infiniteWalls_.upload(wallStream_);
+            infiniteWallsHostArrayChangedFlag_ = true;
         }
-        infiniteWalls.addCylinder(position,velocity,axis,axisAngularVelocity,radius,materialID);
+        infiniteWalls_.addCylinder(position,velocity,axis,axisAngularVelocity,radius,materialID);
+    }
+
+protected:
+    infiniteWall &infiniteWalls() {return infiniteWalls_;}
+
+    void wallInitialize()
+    {
+        downloadWall();
+    }
+
+    void wallIntegrateBeforeContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        infiniteWallHalfIntegration(timeStep, maxThreadsPerBlock);
+    }
+
+    void wallIntegrateAfterContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        infiniteWallHalfIntegration(timeStep, maxThreadsPerBlock);
     }
 
 private:
     void downloadWall()
     {
-        if(infiniteWallsHostArrayChangedFlag)
+        if(infiniteWallsHostArrayChangedFlag_)
         {
-            infiniteWalls.download(wallStream);
-            infiniteWallsHostArrayChangedFlag = false;
+            infiniteWalls_.download(wallStream_);
+            infiniteWallsHostArrayChangedFlag_ = false;
         }
     } 
 
-    cudaStream_t wallStream;
-    bool infiniteWallsHostArrayChangedFlag;
+    void infiniteWallHalfIntegration(const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        launchInfiniteWallHalfIntegration(infiniteWalls_, timeStep, maxThreadsPerBlock, wallStream_);
+    }
 
-    infiniteWall infiniteWalls;
+    cudaStream_t wallStream_;
+    bool infiniteWallsHostArrayChangedFlag_;
+
+    infiniteWall infiniteWalls_;
 };

@@ -104,6 +104,11 @@ public:
         return position_.d_ptr;
     }
 
+    double3* velocity()
+    {
+        return velocity_.d_ptr;
+    }
+
     double3* axis()
     {
         return axis_.d_ptr;
