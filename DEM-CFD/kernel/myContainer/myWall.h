@@ -1,6 +1,7 @@
 #pragma once
 #include "myUtility/myMat.h"
 #include "myUtility/myHostDeviceArray1D.h"
+#include "myUtility/myQua.h"
 #include <vector_functions.h>
 
 struct infiniteWall
@@ -157,5 +158,39 @@ public:
     const std::vector<int> getMaterialIDHost()
     {
         return materialID_.getHostData();
+    }
+};
+
+
+struct triangleWall
+{
+private:
+    HostDeviceArray1D<double3> position_;
+    HostDeviceArray1D<double3> velocity_;
+    HostDeviceArray1D<double3> angularVelocity_;
+    HostDeviceArray1D<quaternion> orientation_;
+    HostDeviceArray1D<int>     materialID_;
+
+public:
+    triangleWall() = default;
+    ~triangleWall() = default;
+    triangleWall(const triangleWall&) = delete;
+    triangleWall& operator=(const triangleWall&) = delete;
+    triangleWall(triangleWall&&) noexcept = default;
+    triangleWall& operator=(triangleWall&&) noexcept = default;
+
+    size_t hostSize() const
+    {
+        return position_.hostSize();
+    }
+
+    size_t deviceSize() const
+    {
+        return position_.deviceSize();
+    }
+
+    void download(cudaStream_t stream)
+    {
+        
     }
 };

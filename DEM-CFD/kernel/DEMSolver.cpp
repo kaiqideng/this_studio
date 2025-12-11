@@ -14,7 +14,7 @@ bool DEMSolver::initialize() {
   }
   std::cout << "DEM solver: downloading array from host to device..."
             << std::endl;
-  DEMInitialize(getDomainOrigin(), getDomainSize(), getGPUThreadsPerBlock());
+  DEMInitialize_device(getDomainOrigin(), getDomainSize(), getGPUThreadsPerBlock());
 
   std::cout << "DEM solver: initialization completed." << std::endl;
   return true;
@@ -27,6 +27,8 @@ void DEMSolver::solve() {
   const double timeStep = getTimeStep();
 
   if (initialize()) {
+    DEMNeighborSearch(getGPUThreadsPerBlock());
+    handleDEMHostArray();
     outputSolidParticleVTU(dir, iFrame, iStep, timeStep);
     numSteps = size_t((getMaximumTime()) / timeStep) + 1;
     frameInterval = numSteps / getNumFrames();

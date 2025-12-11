@@ -11,6 +11,7 @@ public:
     {
         wallStream_ = s;
         infiniteWallsHostArrayChangedFlag_ = false;
+        triangleWallsHostArrayChangedFlag_ = false;
     }
 
     ~wallHandler() = default;
@@ -38,6 +39,8 @@ public:
 protected:
     infiniteWall &infiniteWalls() {return infiniteWalls_;}
 
+    triangleWall &triangleWalls() {return triangleWalls_;}
+
     void wallInitialize()
     {
         downloadWall();
@@ -46,11 +49,13 @@ protected:
     void wallIntegrateBeforeContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
     {
         infiniteWallHalfIntegration(timeStep, maxThreadsPerBlock);
+        triangleWallHalfIntegrationBeforeContact(timeStep, maxThreadsPerBlock);
     }
 
     void wallIntegrateAfterContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
     {
         infiniteWallHalfIntegration(timeStep, maxThreadsPerBlock);
+        triangleWallHalfIntegrationAfterContact(timeStep, maxThreadsPerBlock);
     }
 
 private:
@@ -61,6 +66,11 @@ private:
             infiniteWalls_.download(wallStream_);
             infiniteWallsHostArrayChangedFlag_ = false;
         }
+        if(triangleWallsHostArrayChangedFlag_)
+        {
+            triangleWalls_.download(wallStream_);
+            triangleWallsHostArrayChangedFlag_ = false;
+        }
     } 
 
     void infiniteWallHalfIntegration(const double timeStep, const size_t maxThreadsPerBlock)
@@ -68,8 +78,20 @@ private:
         launchInfiniteWallHalfIntegration(infiniteWalls_, timeStep, maxThreadsPerBlock, wallStream_);
     }
 
+    void triangleWallHalfIntegrationBeforeContact(const double timeStep, const size_t maxThreadsPerBlock)
+    {
+
+    }
+
+    void triangleWallHalfIntegrationAfterContact(const double timeStep, const size_t maxThreadsPerBlock)
+    {
+
+    }
+
     cudaStream_t wallStream_;
     bool infiniteWallsHostArrayChangedFlag_;
+    bool triangleWallsHostArrayChangedFlag_;
 
     infiniteWall infiniteWalls_;
+    triangleWall triangleWalls_;
 };

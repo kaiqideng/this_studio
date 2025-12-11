@@ -656,6 +656,7 @@ const double timeStep,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
+	if(solidParticleInfiniteWallInteractions.getActiveNumber() == 0) return;
     size_t grid = 1, block = 1;
 
 	computeGPUGridSizeBlockSize(grid, block, solidParticleInfiniteWallInteractions.getActiveNumber(), maxThreadsPerBlock);

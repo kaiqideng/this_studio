@@ -123,7 +123,7 @@ public:
 protected:
     virtual bool handleDEMHostArray() {return false;}
 
-    void DEMInitialize(const double3 domainOrigin, const double3 domainSize, const size_t maxThreadsPerBlock)
+    void DEMInitialize_device(const double3 domainOrigin, const double3 domainSize, const size_t maxThreadsPerBlock)
     {
         downLoadSolidContactModelParameters();
 
@@ -133,53 +133,66 @@ protected:
 
         if(infiniteWalls().deviceSize() > 0) 
         {
-            solidParticleInfiniteWallInteractions_.current.allocDeviceArray(solidParticles().hostSize(), DEMStream_);
+            solidParticleInfiniteWallInteractions_.current.allocDeviceArray(solidParticles().deviceSize(), DEMStream_);
             solidParticleInfiniteWallNeighbor_.alloc(solidParticles().deviceSize(), DEMStream_);
             infiniteWallInteractionRange_.alloc(infiniteWalls().deviceSize(), DEMStream_);
         }
 
-        solidParticleNeighborSearch(maxThreadsPerBlock);
-
-        solidParticleInfiniteWallNeighborSearch(maxThreadsPerBlock);
-
-        handleDEMHostArray();
+        if(triangleWalls().deviceSize() > 0)
+        {
+            solidParticleTriangleWallInteractions_.current.allocDeviceArray(solidParticles().deviceSize(), DEMStream_);
+            solidParticleTriangleWallNeighbor_.alloc(solidParticles().deviceSize(), DEMStream_);
+            triangleWallInteractionRange_.alloc(infiniteWalls().deviceSize(), DEMStream_);
+        }
     }
 
-    void DEMUpdate(const double3 domainOrigin, const double3 domainSize, const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    void DEMNeighborSearch(const size_t maxThreadsPerBlock)
     {
         solidParticleNeighborSearch(maxThreadsPerBlock);
 
         solidParticleInfiniteWallNeighborSearch(maxThreadsPerBlock);
-        
+
+        solidParticleTirangleWallNeighborSearch(maxThreadsPerBlock);
+    }
+
+    void DEM1stHalfIntegration(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
         wallIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
 
         solidParticleIntegrateBeforeContact(gravity, timeStep, maxThreadsPerBlock);
+    }
 
+    void DEMInteractionCalculation(const double timeStep, const size_t maxThreadsPerBlock)
+    {
         solidParticleInfiniteWallInteractionCalculation(timeStep, maxThreadsPerBlock);
 
-        // In solidParticleInteractionCalculation(...), clump force/toque will be sum up. 
+        solidParticleTriangleWallInteractionCalculation(timeStep, maxThreadsPerBlock);
+        // In solidParticleInteractionCalculation(...), clump contact forces/toques will be sum up. 
         // Therefore, other interaction calculations must be finished before solidParticleInteractionCalculation(...)
         solidParticleInteractionCalculation(solidContactModelParameters_, timeStep, maxThreadsPerBlock);
-        
-        if(handleDEMHostArray())
-        {
-            downLoadSolidContactModelParameters();
+    }
 
-            solidParticleInitialize(domainOrigin, domainSize);
-
-            wallInitialize();
-
-            if(infiniteWalls().deviceSize() > 0) 
-            {
-                solidParticleInfiniteWallInteractions_.current.allocDeviceArray(solidParticles().hostSize(), DEMStream_);
-                solidParticleInfiniteWallNeighbor_.alloc(solidParticles().deviceSize(), DEMStream_);
-                infiniteWallInteractionRange_.alloc(infiniteWalls().deviceSize(), DEMStream_);
-            }
-        }
-
+    void DEM2ndHalfIntegration(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
         solidParticleIntegrateAfterContact(gravity, timeStep, maxThreadsPerBlock);
 
         wallIntegrateAfterContact(gravity, timeStep, maxThreadsPerBlock);
+    }
+
+    void DEMUpdate(const double3 domainOrigin, const double3 domainSize, const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
+    {
+        DEMNeighborSearch(maxThreadsPerBlock);
+
+        DEM1stHalfIntegration(gravity, timeStep, maxThreadsPerBlock);
+        
+        DEMInteractionCalculation(timeStep, maxThreadsPerBlock);
+
+        if(handleDEMHostArray())
+        {
+            DEMInitialize_device(domainOrigin, domainSize, maxThreadsPerBlock);
+        }
+
+        DEM2ndHalfIntegration(gravity, timeStep, maxThreadsPerBlock);
     }
 
 private:
@@ -281,6 +294,16 @@ private:
         timeStep, 
         maxThreadsPerBlock, 
         DEMStream_);
+    }
+
+    void solidParticleTirangleWallNeighborSearch(const size_t maxThreadsPerBlock)
+    {
+
+    }
+
+    void solidParticleTriangleWallInteractionCalculation(const double timeStep, const size_t maxThreadsPerBlock)
+    {
+
     }
 
     cudaStream_t DEMStream_;
