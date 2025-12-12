@@ -337,7 +337,17 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
                                   r_c1);
 			if(type == SphereTriangleContactType::Vertex)
 			{
-				if(type == type1)
+				if(length(r_c - r_c1) < 1.e-20) 
+				{
+					slidingSpring[idx] = slidingSpring[idx1];
+					rollingSpring[idx] = rollingSpring[idx1];
+					torsionSpring[idx] = torsionSpring[idx1];
+					return;
+				}
+			}
+			else if(type == SphereTriangleContactType::Edge)
+			{
+				if(type1 == SphereTriangleContactType::Vertex)
 				{
 					if(length(r_c - r_c1) < 1.e-20) 
 					{
@@ -347,34 +357,7 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 						return;
 					}
 				}
-				else 
-				{
-					if(length(cross(r_c - p01, p11 - p01)) < 1.e-20) 
-					{
-						slidingSpring[idx] = slidingSpring[idx1];
-						rollingSpring[idx] = rollingSpring[idx1];
-						torsionSpring[idx] = torsionSpring[idx1];
-						return;
-					}
-					if(length(cross(r_c - p11, p21 - p11)) < 1.e-20)
-					{
-						slidingSpring[idx] = slidingSpring[idx1];
-						rollingSpring[idx] = rollingSpring[idx1];
-						torsionSpring[idx] = torsionSpring[idx1];
-						return;
-					}
-					if(length(cross(r_c - p01, p21 - p01)) < 1.e-20) 
-					{
-						slidingSpring[idx] = slidingSpring[idx1];
-						rollingSpring[idx] = rollingSpring[idx1];
-						torsionSpring[idx] = torsionSpring[idx1];
-						return;
-					}
-				}
-			}
-			else if(type == SphereTriangleContactType::Edge)
-			{
-				if(type1 == SphereTriangleContactType::Vertex)
+				if(type1 == type)
 				{
 					if(length(r_c - r_c1) < 1.e-20) 
 					{
