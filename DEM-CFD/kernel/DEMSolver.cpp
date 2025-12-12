@@ -38,11 +38,12 @@ void DEMSolver::solve() {
       frameInterval = 1;
     while (iStep <= numSteps) {
       iStep++;
+      time += timeStep;
       DEMUpdate(getDomainOrigin(), getDomainSize(), getGravity(),
                 timeStep, getGPUThreadsPerBlock());
       if (iStep % frameInterval == 0) {
         iFrame++;
-        std::cout << "DEM solver: frame " << iFrame << " at time " << iStep * timeStep
+        std::cout << "DEM solver: frame " << iFrame << " at time " << time
                   << std::endl;
         outputSolidParticleVTU(dir, iFrame, iStep, timeStep);
         if(triangleWalls().hostSize() > 0) outputTriangleWallVTU(dir, iFrame, iStep, timeStep);

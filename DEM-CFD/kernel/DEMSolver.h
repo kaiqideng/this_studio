@@ -9,7 +9,7 @@ public:
     DEMSolver(cudaStream_t s) : solverParams(), DEMHandler(s)
 	{
 		setName = false;
-		dir = "DEMSolver_output";
+		dir = "DEMSolverOutput";
 		numSteps = 1;
 		iStep = 0;
 		iFrame = 0;
@@ -19,7 +19,7 @@ public:
 
 	~DEMSolver() = default;
 
-	void setProblemName(const std::string& name) {if(!setName) dir = name + "_output"; setName = true;}
+	void setProblemName(const std::string& name) {if(!setName) dir = name + "Output"; setName = true;}
 
     void solve();
 

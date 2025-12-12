@@ -6,7 +6,7 @@ class problem:
 public:
     double3 F_c = make_double3(0, 0, 100.e3);
     double r = 0.2;
-    double c_d = 0.1;
+    double c_d = 0.001;
 
     problem(): DEMSolver(0) {}
     bool handleDEMHostArray() override
@@ -19,8 +19,11 @@ public:
         std::vector<double3> t = getSolidParticleTorque();
         std::vector<double3> F_e(v.size(),make_double3(0, 0, 0));
         std::vector<double3> T_e(v.size(),make_double3(0, 0, 0));
-        f.back() += F_c;
-        F_e.back() += F_c;
+        double time = getTime();
+        double multiplier = time;
+        if(multiplier > 1.0) multiplier = 1.0;
+        f.back() += F_c * multiplier;
+        F_e.back() += F_c * multiplier;
         for(size_t i = 0; i < v.size(); i++)
         {
             F_e[i] -= c_d * length(f[i]) * normalize(v[i]);
@@ -35,6 +38,7 @@ public:
 int main()
 {
     problem test;
+    test.setProblemName("11BondedParticleBeamBendedByConstantVerticalForceAtEndOfBeam");
 
     std::vector<double3> positions(1,make_double3(0, 0, 0));
     std::vector<double> radius(1,test.r);

@@ -27,6 +27,9 @@
  0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000
         </DataArray>
         <DataArray type="Int32" Name="clumpID" format="ascii">
+ 0 0 0 0 0 0 0 0 0 0 0
+        </DataArray>
+        <DataArray type="Int32" Name="clumpID" format="ascii">
  -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
         </DataArray>
         <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="ascii">

@@ -502,18 +502,18 @@ spatialGrid& spatialGrids,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    updateGridCellStartEnd(spatialGrids, 
-    solidParticles.hash, 
-    solidParticles.position(), 
-    maxThreadsPerBlock, stream);
-
-    //debug_dump_device_array(solidParticles.hash.value, solidParticles.deviceSize(), "solidParticles.hash.value");
-    //debug_dump_device_array(solidParticles.hash.index, solidParticles.deviceSize(), "solidParticles.hash.index");
-    //debug_dump_device_array(spatialGrids.cellHashValue.start, spatialGrids.size(), "spatialGrids.cellHashValue.start");
-    //debug_dump_device_array(spatialGrids.cellHashValue.end, spatialGrids.size(), "spatialGrids.cellHashValue.end");
-
     if (solidParticles.deviceSize() > 0)
     {
+        updateGridCellStartEnd(spatialGrids, 
+        solidParticles.hash, 
+        solidParticles.position(), 
+        maxThreadsPerBlock, stream);
+
+        //debug_dump_device_array(solidParticles.hash.value, solidParticles.deviceSize(), "solidParticles.hash.value");
+        //debug_dump_device_array(solidParticles.hash.index, solidParticles.deviceSize(), "solidParticles.hash.index");
+        //debug_dump_device_array(spatialGrids.cellHashValue.start, spatialGrids.size(), "spatialGrids.cellHashValue.start");
+        //debug_dump_device_array(spatialGrids.cellHashValue.end, spatialGrids.size(), "spatialGrids.cellHashValue.end");
+
         size_t grid = 1, block = 1;
         computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
 
@@ -650,17 +650,17 @@ spatialGrid& triangleSpatialGrids,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    updateTriangleWallGridCellStartEnd(triangleSpatialGrids, 
-    triangleHash, 
-    triangleWalls.globalVertices(),
-    triangleWalls.triangles().index0(),
-    triangleWalls.triangles().index1(),
-    triangleWalls.triangles().index2(),
-    maxThreadsPerBlock, 
-    stream);
-
     if (triangleWalls.deviceSize() > 0)
     {
+        updateTriangleWallGridCellStartEnd(triangleSpatialGrids, 
+        triangleHash, 
+        triangleWalls.globalVertices(),
+        triangleWalls.triangles().index0(),
+        triangleWalls.triangles().index1(),
+        triangleWalls.triangles().index2(),
+        maxThreadsPerBlock, 
+        stream);
+
         size_t grid = 1, block = 1;
         computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
 

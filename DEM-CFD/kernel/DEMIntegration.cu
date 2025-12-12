@@ -619,7 +619,7 @@ __global__ void sumForceTorqueFromSolidParticleInfiniteWallInteractionKernel(dou
 
 __global__ void sumForceTorqueFromSolidParticleTriangleWallInteractionKernel(double3* contactForce, double3* contactTorque, 
     int* objectPointing, 
-    double3* force, double3* torque, double3* position, double* radius, 
+    double3* force, double3* torque, double3* position, 
 	int* solidParticleNeighborPrefixSum, 
 	int* vertIndex0_t, int* vertIndex1_t, int* vertIndex2_t, 
     double3* globalVertices,
@@ -628,7 +628,6 @@ __global__ void sumForceTorqueFromSolidParticleTriangleWallInteractionKernel(dou
 	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
 	if (idx_i >= numParticles) return;
 
-	double rad_i = radius[idx_i];
 	double3 r_i = position[idx_i];
 	double3 F_i = make_double3(0, 0, 0);
 	double3 T_i = make_double3(0, 0, 0);
@@ -1023,7 +1022,6 @@ cudaStream_t stream)
 	solidParticles.force,
 	solidParticles.torque,
 	solidParticles.position(),
-	solidParticles.radius,
 	solidParticleTriangleWallNeighbor.prefixSum,
 	triangleWalls.triangles().index0(),
 	triangleWalls.triangles().index1(),

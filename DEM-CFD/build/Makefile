@@ -131,17 +131,17 @@ demcfd_core/fast:
 .PHONY : demcfd_core/fast
 
 #=============================================================================
-# Target rules for targets named problem
+# Target rules for targets named test
 
 # Build rule for target.
-problem: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 problem
-.PHONY : problem
+test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test
+.PHONY : test
 
 # fast build rule for target.
-problem/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/problem.dir/build.make CMakeFiles/problem.dir/build
-.PHONY : problem/fast
+test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
+.PHONY : test/fast
 
 kernel/DEMIntegration.o: kernel/DEMIntegration.cu.o
 .PHONY : kernel/DEMIntegration.o
@@ -287,29 +287,29 @@ kernel/wallHandler.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.s
 .PHONY : kernel/wallHandler.cpp.s
 
-problem.o: problem.cpp.o
-.PHONY : problem.o
+test.o: test.cpp.o
+.PHONY : test.o
 
 # target to build an object file
-problem.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/problem.dir/build.make CMakeFiles/problem.dir/problem.cpp.o
-.PHONY : problem.cpp.o
+test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.o
+.PHONY : test.cpp.o
 
-problem.i: problem.cpp.i
-.PHONY : problem.i
+test.i: test.cpp.i
+.PHONY : test.i
 
 # target to preprocess a source file
-problem.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/problem.dir/build.make CMakeFiles/problem.dir/problem.cpp.i
-.PHONY : problem.cpp.i
+test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.i
+.PHONY : test.cpp.i
 
-problem.s: problem.cpp.s
-.PHONY : problem.s
+test.s: test.cpp.s
+.PHONY : test.s
 
 # target to generate assembly for a file
-problem.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/problem.dir/build.make CMakeFiles/problem.dir/problem.cpp.s
-.PHONY : problem.cpp.s
+test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.s
+.PHONY : test.cpp.s
 
 # Help Target
 help:
@@ -320,7 +320,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... demcfd_core"
-	@echo "... problem"
+	@echo "... test"
 	@echo "... kernel/DEMIntegration.o"
 	@echo "... kernel/DEMIntegration.i"
 	@echo "... kernel/DEMIntegration.s"
@@ -339,9 +339,9 @@ help:
 	@echo "... kernel/wallHandler.o"
 	@echo "... kernel/wallHandler.i"
 	@echo "... kernel/wallHandler.s"
-	@echo "... problem.o"
-	@echo "... problem.i"
-	@echo "... problem.s"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 
