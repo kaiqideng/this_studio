@@ -108,10 +108,13 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
+  /usr/include/c++/12/bits/stl_map.h \
+  /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
   /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
+  /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
   /usr/include/c++/12/bits/stream_iterator.h \
@@ -162,6 +165,7 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/locale \
+  /usr/include/c++/12/map \
   /usr/include/c++/12/memory \
   /usr/include/c++/12/memory_resource \
   /usr/include/c++/12/new \
@@ -873,10 +877,13 @@ CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: /teamspace/studios/this_stud
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
+  /usr/include/c++/12/bits/stl_map.h \
+  /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
   /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
+  /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
   /usr/include/c++/12/bits/stream_iterator.h \
@@ -924,6 +931,7 @@ CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: /teamspace/studios/this_stud
   /usr/include/c++/12/istream \
   /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
+  /usr/include/c++/12/map \
   /usr/include/c++/12/math.h \
   /usr/include/c++/12/memory \
   /usr/include/c++/12/memory_resource \
@@ -2067,10 +2075,13 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o: /teamspace/studios/this_s
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
+  /usr/include/c++/12/bits/stl_map.h \
+  /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
   /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
+  /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
   /usr/include/c++/12/bits/stream_iterator.h \
@@ -2118,6 +2129,7 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o: /teamspace/studios/this_s
   /usr/include/c++/12/istream \
   /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
+  /usr/include/c++/12/map \
   /usr/include/c++/12/math.h \
   /usr/include/c++/12/memory \
   /usr/include/c++/12/memory_resource \
@@ -2981,10 +2993,13 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
+  /usr/include/c++/12/bits/stl_map.h \
+  /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
   /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
+  /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
   /usr/include/c++/12/bits/stream_iterator.h \
@@ -3035,6 +3050,7 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/locale \
+  /usr/include/c++/12/map \
   /usr/include/c++/12/memory \
   /usr/include/c++/12/memory_resource \
   /usr/include/c++/12/new \
@@ -4165,6 +4181,14 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/thrust/system/detail/error_category.inl:
 
+/usr/include/thrust/system/detail/errno.h:
+
+/usr/include/thrust/system/detail/bad_alloc.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+
+/usr/include/thrust/system/detail/adl/transform.h:
+
 /usr/include/nv/detail/__target_macros:
 
 /usr/include/nv/detail/__preprocessor:
@@ -4221,10 +4245,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/thrust/generate.h:
 
-/usr/include/cub/warp/specializations/warp_reduce_smem.cuh:
-
-/usr/include/pthread.h:
-
 /usr/include/thrust/system/detail/sequential/uninitialized_fill.h:
 
 /usr/include/thrust/system/detail/adl/uninitialized_fill.h:
@@ -4244,8 +4264,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /usr/include/cuda/std/version:
 
 /usr/include/thrust/iterator/detail/normal_iterator.h:
-
-/usr/include/cuda/std/detail/libcxx/include/version:
 
 /usr/include/crt/device_functions.h:
 
@@ -4341,6 +4359,20 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/thrust/detail/config/debug.h:
 
+/usr/include/c++/12/map:
+
+/usr/include/c++/12/cstring:
+
+/usr/include/c++/12/bits/charconv.h:
+
+/usr/include/sm_30_intrinsics.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:
+
+/usr/include/thrust/detail/functional/actor.inl:
+
+/usr/include/thrust/device_ptr.h:
+
 /usr/include/thrust/system/detail/sequential/copy.inl:
 
 /usr/include/c++/12/locale:
@@ -4366,12 +4398,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /usr/include/thrust/system/detail/adl/find.h:
 
 /usr/include/c++/12/iosfwd:
-
-/usr/include/texture_indirect_functions.h:
-
-/usr/include/c++/12/ios:
-
-/usr/include/c++/12/bits/stream_iterator.h:
 
 /usr/include/thrust/system/detail/sequential/stable_radix_sort.h:
 
@@ -4451,6 +4477,14 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/c++/12/bits/chrono.h:
 
+/usr/include/c++/12/cassert:
+
+/usr/include/cub/util_cpp_dialect.cuh:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h:
+
 /usr/include/c++/12/bits/enable_special_members.h:
 
 /usr/include/asm-generic/posix_types.h:
@@ -4483,6 +4517,10 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/thrust/iterator/detail/any_system_tag.h:
 
+/usr/include/c++/12/bits/stl_map.h:
+
+/usr/include/thrust/detail/functional/operators.h:
+
 /teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.cpp:
 
 /usr/include/c++/12/ext/type_traits.h:
@@ -4496,6 +4534,32 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /usr/include/thrust/detail/swap.inl:
 
 /usr/include/thrust/detail/allocator/temporary_allocator.h:
+
+/usr/include/thrust/detail/get_iterator_value.h:
+
+/usr/include/thrust/detail/allocator/destroy_range.h:
+
+/usr/include/c++/12/string_view:
+
+/usr/include/c++/12/bits/locale_facets.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
+
+/usr/include/features-time64.h:
+
+/usr/include/thrust/iterator/detail/transform_iterator.inl:
+
+/usr/include/c++/12/istream:
+
+/usr/include/thrust/detail/tuple_transform.h:
+
+/usr/include/c++/12/cctype:
+
+/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
+
+/usr/include/math.h:
+
+/usr/include/thrust/detail/functional/argument.h:
 
 /usr/include/c++/12/bits/stl_vector.h:
 
@@ -4587,6 +4651,12 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/stdlib.h:
 
+/usr/include/c++/12/bits/stream_iterator.h:
+
+/usr/include/texture_indirect_functions.h:
+
+/usr/include/c++/12/ios:
+
 /usr/include/c++/12/string:
 
 /usr/include/c++/12/ext/atomicity.h:
@@ -4659,18 +4729,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/cuda/std/detail/libcxx/include/__pragma_pop:
 
-/usr/include/c++/12/cstring:
-
-/usr/include/c++/12/bits/charconv.h:
-
-/usr/include/sm_30_intrinsics.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/stdio2.h:
-
-/usr/include/thrust/detail/functional/actor.inl:
-
-/usr/include/thrust/device_ptr.h:
-
 /usr/include/c++/12/bits/uses_allocator_args.h:
 
 /usr/include/c++/12/bits/cxxabi_forced.h:
@@ -4704,14 +4762,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h:
 
 /usr/include/thrust/system/cuda/detail/temporary_buffer.h:
-
-/usr/include/c++/12/cassert:
-
-/usr/include/cub/util_cpp_dialect.cuh:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h:
 
 /usr/include/asm-generic/errno-base.h:
 
@@ -4783,6 +4833,8 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myFileEdit.h:
 
+/usr/include/cuda/std/detail/libcxx/include/version:
+
 /usr/include/c++/12/bits/locale_classes.tcc:
 
 /usr/include/cuda/std/utility:
@@ -4807,6 +4859,14 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/c++/12/bits/new_allocator.h:
 
+/usr/include/c++/12/bits/stl_tree.h:
+
+/usr/include/c++/12/bit:
+
+/usr/include/thrust/detail/for_each.inl:
+
+/usr/include/thrust/system/detail/adl/equal.h:
+
 /usr/include/c++/12/bits/cxxabi_init_exception.h:
 
 /usr/include/c++/12/bits/memoryfwd.h:
@@ -4827,25 +4887,17 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/thrust/system/detail/adl/temporary_buffer.h:
 
+/usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h:
+
+/usr/include/c++/12/utility:
+
+/usr/include/c++/12/bits/move.h:
+
 /usr/include/thrust/system/detail/sequential/merge.h:
 
 /usr/include/c++/12/bits/basic_string.h:
 
 /usr/include/stdc-predef.h:
-
-/usr/include/c++/12/bits/move.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h:
-
-/usr/include/c++/12/utility:
-
-/usr/include/c++/12/bits/locale_facets.h:
-
-/usr/include/thrust/detail/get_iterator_value.h:
-
-/usr/include/thrust/detail/allocator/destroy_range.h:
-
-/usr/include/c++/12/string_view:
 
 /usr/include/thrust/detail/allocator/destroy_range.inl:
 
@@ -4879,6 +4931,8 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/c++/12/bits/ostream_insert.h:
 
+/usr/include/c++/12/bits/functexcept.h:
+
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.h:
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h:
@@ -4887,9 +4941,13 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/c++/12/bits/range_access.h:
 
-/usr/include/cub/util_type.cuh:
+/usr/include/c++/12/stdexcept:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myContactModelParams.h:
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.h:
+
+/usr/include/cub/util_type.cuh:
 
 /usr/include/c++/12/bits/refwrap.h:
 
@@ -4904,8 +4962,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /usr/include/c++/12/bits/stl_construct.h:
 
 /usr/include/c++/12/initializer_list:
-
-/usr/include/thrust/system/detail/bad_alloc.h:
 
 /usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
 
@@ -4969,6 +5025,14 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/c++/12/bits/uses_allocator.h:
 
+/usr/include/thrust/system/detail/adl/copy.h:
+
+/usr/include/c++/12/bits/stl_iterator_base_funcs.h:
+
+/usr/include/cub/warp/specializations/warp_reduce_smem.cuh:
+
+/usr/include/pthread.h:
+
 /usr/include/c++/12/cstdint:
 
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
@@ -4990,30 +5054,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /usr/include/c++/12/bits/streambuf_iterator.h:
 
 /usr/include/c++/12/debug/assertions.h:
-
-/usr/include/c++/12/bits/functexcept.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myContactModelParams.h:
-
-/usr/include/c++/12/stdexcept:
-
-/usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
-
-/usr/include/features-time64.h:
-
-/usr/include/thrust/iterator/detail/transform_iterator.inl:
-
-/usr/include/c++/12/istream:
-
-/usr/include/thrust/detail/tuple_transform.h:
-
-/usr/include/c++/12/cctype:
-
-/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
-
-/usr/include/math.h:
-
-/usr/include/thrust/detail/functional/argument.h:
 
 /usr/include/stdio.h:
 
@@ -5113,12 +5153,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/thrust/iterator/detail/counting_iterator.inl:
 
-/usr/include/c++/12/bit:
-
-/usr/include/thrust/detail/for_each.inl:
-
-/usr/include/thrust/system/detail/adl/equal.h:
-
 /usr/include/thrust/detail/function.h:
 
 /usr/include/thrust/detail/functional.inl:
@@ -5128,12 +5162,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /usr/include/thrust/detail/functional/actor.h:
 
 /usr/include/thrust/system/cpp/pointer.h:
-
-/usr/include/thrust/detail/functional/operators.h:
-
-/usr/include/c++/12/bits/stl_iterator_base_funcs.h:
-
-/usr/include/thrust/system/detail/adl/copy.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
 
@@ -5429,6 +5457,8 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/x86_64-linux-gnu/bits/select2.h:
 
+/usr/include/c++/12/bits/stl_multimap.h:
+
 /usr/include/thrust/system/cuda/detail/assign_value.h:
 
 /usr/include/thrust/system/cuda/detail/cross_system.h:
@@ -5511,8 +5541,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 
 /usr/include/thrust/system/cuda/detail/util.h:
 
-/usr/include/thrust/system/detail/errno.h:
-
 /usr/include/cub/block/block_reduce.cuh:
 
 /usr/include/x86_64-linux-gnu/asm/posix_types_64.h:
@@ -5550,7 +5578,3 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
 /usr/include/thrust/system/cuda/detail/transform.h:
 
 /usr/include/thrust/system/detail/adl/swap_ranges.h:
-
-/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
-
-/usr/include/thrust/system/detail/adl/transform.h:

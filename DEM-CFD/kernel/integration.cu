@@ -309,8 +309,108 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
     const double3 p0 = globalVertice[vertIndex0_t[idx_j]];
 	const double3 p1 = globalVertice[vertIndex1_t[idx_j]];
 	const double3 p2 = globalVertice[vertIndex2_t[idx_j]];
-	const double3 r_c = r_i, n_ij = normalize(cross(p1 - p0, p2 -p1));
-	double delta = 0.;
+	
+    double3 r_c;
+    SphereTriangleContactType type = classifySphereTriangleContact(r_i, rad_i,
+                                  p0, p1, p2,
+                                  r_c);
+    if(type == SphereTriangleContactType::None) return;
+
+	double3 n_ij = normalize(r_i - r_c);
+	double delta = rad_i - length(r_i - r_c);
+
+	if(type != SphereTriangleContactType::Face)
+	{
+		int start = 0;
+		if(idx > 0) start = neighborPrefixSum[idx_i - 1];
+		for(int idx1 = start; idx1 < neighborPrefixSum[idx_i]; idx1++)
+		{
+			if(idx <= idx1) continue;
+			const int idx_j1 = objectPointing[idx1];
+			const double3 p01 = globalVertice[vertIndex0_t[idx_j1]];
+			const double3 p11 = globalVertice[vertIndex1_t[idx_j1]];
+			const double3 p21 = globalVertice[vertIndex2_t[idx_j1]];
+
+			double3 r_c1;
+            SphereTriangleContactType type1 = classifySphereTriangleContact(r_i, rad_i,
+                                  p01, p11, p21,
+                                  r_c1);
+			if(type == SphereTriangleContactType::Vertex)
+			{
+				if(type == type1)
+				{
+					if(length(r_c - r_c1) < 1.e-20) 
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+				}
+				else 
+				{
+					if(length(cross(r_c - p01, p11 - p01)) < 1.e-20) 
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+					if(length(cross(r_c - p11, p21 - p11)) < 1.e-20)
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+					if(length(cross(r_c - p01, p21 - p01)) < 1.e-20) 
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+				}
+			}
+			else if(type == SphereTriangleContactType::Edge)
+			{
+				if(type1 == SphereTriangleContactType::Vertex)
+				{
+					if(length(r_c - r_c1) < 1.e-20) 
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+				}
+				else 
+				{
+					if(length(cross(r_c - p01, p11 - p01)) < 1.e-20) 
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+					if(length(cross(r_c - p11, p21 - p11)) < 1.e-20)
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+					if(length(cross(r_c - p01, p21 - p01)) < 1.e-20) 
+					{
+						slidingSpring[idx] = slidingSpring[idx1];
+						rollingSpring[idx] = rollingSpring[idx1];
+						torsionSpring[idx] = torsionSpring[idx1];
+						return;
+					}
+				}
+			}
+		}
+	}
 
 	const double3 v_i = velocity[idx_i];
 	const double3 v_j = velocity_w[idx_w];
