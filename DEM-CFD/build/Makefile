@@ -143,6 +143,30 @@ problem/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/problem.dir/build.make CMakeFiles/problem.dir/build
 .PHONY : problem/fast
 
+kernel/DEMIntegration.o: kernel/DEMIntegration.cu.o
+.PHONY : kernel/DEMIntegration.o
+
+# target to build an object file
+kernel/DEMIntegration.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o
+.PHONY : kernel/DEMIntegration.cu.o
+
+kernel/DEMIntegration.i: kernel/DEMIntegration.cu.i
+.PHONY : kernel/DEMIntegration.i
+
+# target to preprocess a source file
+kernel/DEMIntegration.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.i
+.PHONY : kernel/DEMIntegration.cu.i
+
+kernel/DEMIntegration.s: kernel/DEMIntegration.cu.s
+.PHONY : kernel/DEMIntegration.s
+
+# target to generate assembly for a file
+kernel/DEMIntegration.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.s
+.PHONY : kernel/DEMIntegration.cu.s
+
 kernel/DEMSolver.o: kernel/DEMSolver.cpp.o
 .PHONY : kernel/DEMSolver.o
 
@@ -166,30 +190,6 @@ kernel/DEMSolver.s: kernel/DEMSolver.cpp.s
 kernel/DEMSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.s
 .PHONY : kernel/DEMSolver.cpp.s
-
-kernel/integration.o: kernel/integration.cu.o
-.PHONY : kernel/integration.o
-
-# target to build an object file
-kernel/integration.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/integration.cu.o
-.PHONY : kernel/integration.cu.o
-
-kernel/integration.i: kernel/integration.cu.i
-.PHONY : kernel/integration.i
-
-# target to preprocess a source file
-kernel/integration.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/integration.cu.i
-.PHONY : kernel/integration.cu.i
-
-kernel/integration.s: kernel/integration.cu.s
-.PHONY : kernel/integration.s
-
-# target to generate assembly for a file
-kernel/integration.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/integration.cu.s
-.PHONY : kernel/integration.cu.s
 
 kernel/myContainer/myUtility/myCUDAOperation.o: kernel/myContainer/myUtility/myCUDAOperation.cu.o
 .PHONY : kernel/myContainer/myUtility/myCUDAOperation.o
@@ -263,6 +263,30 @@ kernel/solidParticleHandler.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s
 .PHONY : kernel/solidParticleHandler.cpp.s
 
+kernel/wallHandler.o: kernel/wallHandler.cpp.o
+.PHONY : kernel/wallHandler.o
+
+# target to build an object file
+kernel/wallHandler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o
+.PHONY : kernel/wallHandler.cpp.o
+
+kernel/wallHandler.i: kernel/wallHandler.cpp.i
+.PHONY : kernel/wallHandler.i
+
+# target to preprocess a source file
+kernel/wallHandler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.i
+.PHONY : kernel/wallHandler.cpp.i
+
+kernel/wallHandler.s: kernel/wallHandler.cpp.s
+.PHONY : kernel/wallHandler.s
+
+# target to generate assembly for a file
+kernel/wallHandler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demcfd_core.dir/build.make CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.s
+.PHONY : kernel/wallHandler.cpp.s
+
 problem.o: problem.cpp.o
 .PHONY : problem.o
 
@@ -297,12 +321,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... demcfd_core"
 	@echo "... problem"
+	@echo "... kernel/DEMIntegration.o"
+	@echo "... kernel/DEMIntegration.i"
+	@echo "... kernel/DEMIntegration.s"
 	@echo "... kernel/DEMSolver.o"
 	@echo "... kernel/DEMSolver.i"
 	@echo "... kernel/DEMSolver.s"
-	@echo "... kernel/integration.o"
-	@echo "... kernel/integration.i"
-	@echo "... kernel/integration.s"
 	@echo "... kernel/myContainer/myUtility/myCUDAOperation.o"
 	@echo "... kernel/myContainer/myUtility/myCUDAOperation.i"
 	@echo "... kernel/myContainer/myUtility/myCUDAOperation.s"
@@ -312,6 +336,9 @@ help:
 	@echo "... kernel/solidParticleHandler.o"
 	@echo "... kernel/solidParticleHandler.i"
 	@echo "... kernel/solidParticleHandler.s"
+	@echo "... kernel/wallHandler.o"
+	@echo "... kernel/wallHandler.i"
+	@echo "... kernel/wallHandler.s"
 	@echo "... problem.o"
 	@echo "... problem.i"
 	@echo "... problem.s"

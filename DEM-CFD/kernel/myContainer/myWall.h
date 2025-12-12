@@ -642,6 +642,11 @@ public:
         return orientation_.getHostData();
     }
 
+    const std::vector<int> getMaterialIDHost()
+    {
+        return materialID_.getHostData();
+    }
+
     const std::vector<double3> getGlobalVerticesHost()
     {
         return globalVertices_.getHostData();

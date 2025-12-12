@@ -1,4 +1,4 @@
-#include "integration.h"
+#include "DEMIntegration.h"
 #include "myContainer/myHash.h"
 #include "myContainer/myUtility/myQua.h"
 #include "myContainer/myUtility/myVec.h"
@@ -34,38 +34,15 @@ __device__ __forceinline__ void atomicAddDouble3(double3* arr, size_t idx, const
 	atomicAddDouble(&(arr[idx].z), v.z);
 }
 
-__global__ void calSolidParticleContactForceTorqueKernel(double3* contactForce, 
-double3* contactTorque,
-	double3* slidingSpring, 
-	double3* rollingSpring, 
-	double3* torsionSpring, 
-	int* objectPointed, 
-	int* objectPointing, 
-    double3* position, 
-	double3* velocity, 
-	double3* angularVelocity, 
-	double* radius, 
-	double* inverseMass, 
-	int* materialID,
-	double* hertzianE, 
-	double* hertzianG, 
-	double* hertzianRes, 
-	double* hertzianK_r_k_s, 
-	double* hertzianK_t_k_s, 
-	double* hertzianMu_s, 
-	double* hertzianMu_r, 
-	double* hertzianMu_t, 
-	double* linearK_n, 
-	double* linearK_s, 
-	double* linearK_r, 
-	double* linearK_t, 
-	double* linearD_n, 
-	double* linearD_s, 
-	double* linearD_r, 
-	double* linearD_t, 
-	double* linearMu_s, 
-	double* linearMu_r, 
-	double* linearMu_t, 
+__global__ void calSolidParticleContactForceTorqueKernel(double3* contactForce, double3* contactTorque,
+	double3* slidingSpring, double3* rollingSpring, double3* torsionSpring, int* objectPointed, int* objectPointing, 
+    double3* position, double3* velocity, double3* angularVelocity, double* radius, double* inverseMass, int* materialID,
+	double* hertzianE, double* hertzianG, double* hertzianRes, 
+	double* hertzianK_r_k_s, double* hertzianK_t_k_s, 
+	double* hertzianMu_s, double* hertzianMu_r, double* hertzianMu_t, 
+	double* linearK_n, double* linearK_s, double* linearK_r, double* linearK_t, 
+	double* linearD_n, double* linearD_s, double* linearD_r, double* linearD_t, 
+	double* linearMu_s, double* linearMu_r, double* linearMu_t, 
 	const size_t numMaterials,
 	const size_t contactParaArraySize,
 	const double dt,
@@ -132,7 +109,7 @@ double3* contactTorque,
 	else
 	{
 		const double logR = log(hertzianRes[param_ij]);
-		const double D = -logR / sqrt(logR * logR + pi() * pi());
+		const double hertzianD = -logR / sqrt(logR * logR + pi() * pi());
 		HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
 			v_c_ij,
 			w_ij,
@@ -141,7 +118,7 @@ double3* contactTorque,
 			m_ij,
 			rad_ij,
 			dt,
-			D,
+			hertzianD,
 			hertzianE[param_ij],
 			hertzianG[param_ij],
 			hertzianK_r_k_s[param_ij],
@@ -246,7 +223,7 @@ __global__ void calSolidParticleInfiniteWallContactForceTorqueKernel(double3* co
 	else
 	{
 		const double logR = log(hertzianRes[param_ij]);
-		const double D = -logR / sqrt(logR * logR + pi() * pi());
+		const double hertzianD = -logR / sqrt(logR * logR + pi() * pi());
 		HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
 			v_c_ij,
 			w_ij,
@@ -255,7 +232,7 @@ __global__ void calSolidParticleInfiniteWallContactForceTorqueKernel(double3* co
 			m_ij,
 			rad_ij,
 			dt,
-			D,
+			hertzianD,
 			hertzianE[param_ij],
 			hertzianG[param_ij],
 			hertzianK_r_k_s[param_ij],
@@ -278,7 +255,7 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 	int* neighborPrefixSum,
 	double3* position_w, double3* velocity_w, double3* angularVelocity_w, int* materialID_w,
 	int* wallIndex_t, int* vertIndex0_t, int* vertIndex1_t, int* vertIndex2_t, 
-	double3* globalVertice,
+	double3* globalVertices,
 	double* hertzianE, double* hertzianG, double* hertzianRes, double* hertzianK_r_k_s, double* hertzianK_t_k_s, 
 	double* hertzianMu_s, double* hertzianMu_r, double* hertzianMu_t, 
 	double* linearK_n, double* linearK_s, double* linearK_r, double* linearK_t, 
@@ -299,16 +276,15 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 	const int idx_j = objectPointing[idx];
 	const double rad_i = radius[idx_i];
 	const size_t idx_w = wallIndex_t[idx_j];
-
 	const double3 r_i = position[idx_i];
 	const double3 r_w = position_w[idx_w];
 
 	const double m_ij = 1. / inverseMass[idx_i];
 	const double rad_ij = rad_i;
 
-    const double3 p0 = globalVertice[vertIndex0_t[idx_j]];
-	const double3 p1 = globalVertice[vertIndex1_t[idx_j]];
-	const double3 p2 = globalVertice[vertIndex2_t[idx_j]];
+    const double3 p0 = globalVertices[vertIndex0_t[idx_j]];
+	const double3 p1 = globalVertices[vertIndex1_t[idx_j]];
+	const double3 p2 = globalVertices[vertIndex2_t[idx_j]];
 	
     double3 r_c;
     SphereTriangleContactType type = classifySphereTriangleContact(r_i, rad_i,
@@ -325,19 +301,21 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 		if(idx > 0) start = neighborPrefixSum[idx_i - 1];
 		for(int idx1 = start; idx1 < neighborPrefixSum[idx_i]; idx1++)
 		{
-			if(idx <= idx1) continue;
+			if(idx1 >= idx) continue;
 			const int idx_j1 = objectPointing[idx1];
-			const double3 p01 = globalVertice[vertIndex0_t[idx_j1]];
-			const double3 p11 = globalVertice[vertIndex1_t[idx_j1]];
-			const double3 p21 = globalVertice[vertIndex2_t[idx_j1]];
+			const double3 p01 = globalVertices[vertIndex0_t[idx_j1]];
+			const double3 p11 = globalVertices[vertIndex1_t[idx_j1]];
+			const double3 p21 = globalVertices[vertIndex2_t[idx_j1]];
 
 			double3 r_c1;
             SphereTriangleContactType type1 = classifySphereTriangleContact(r_i, rad_i,
                                   p01, p11, p21,
                                   r_c1);
+			if (type1 == SphereTriangleContactType::None) continue;
+
 			if(type == SphereTriangleContactType::Vertex)
 			{
-				if(length(r_c - r_c1) < 1.e-20) 
+				if(length(r_c - r_c1) < 1.e-20) // share vertex, edge or face
 				{
 					slidingSpring[idx] = slidingSpring[idx1];
 					rollingSpring[idx] = rollingSpring[idx1];
@@ -347,19 +325,9 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 			}
 			else if(type == SphereTriangleContactType::Edge)
 			{
-				if(type1 == SphereTriangleContactType::Vertex)
-				{
-					if(length(r_c - r_c1) < 1.e-20) 
-					{
-						slidingSpring[idx] = slidingSpring[idx1];
-						rollingSpring[idx] = rollingSpring[idx1];
-						torsionSpring[idx] = torsionSpring[idx1];
-						return;
-					}
-				}
 				if(type1 == type)
 				{
-					if(length(r_c - r_c1) < 1.e-20) 
+					if(length(r_c - r_c1) < 1.e-20) // share edge
 					{
 						slidingSpring[idx] = slidingSpring[idx1];
 						rollingSpring[idx] = rollingSpring[idx1];
@@ -367,7 +335,7 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 						return;
 					}
 				}
-				else 
+				else if(type1 == SphereTriangleContactType::Face) // share face
 				{
 					if(length(cross(r_c - p01, p11 - p01)) < 1.e-20) 
 					{
@@ -437,7 +405,7 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 	else
 	{
 		const double logR = log(hertzianRes[param_ij]);
-		const double D = -logR / sqrt(logR * logR + pi() * pi());
+		const double hertzianD = -logR / sqrt(logR * logR + pi() * pi());
 		HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
 			v_c_ij,
 			w_ij,
@@ -446,7 +414,7 @@ __global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* co
 			m_ij,
 			rad_ij,
 			dt,
-			D,
+			hertzianD,
 			hertzianE[param_ij],
 			hertzianG[param_ij],
 			hertzianK_r_k_s[param_ij],
@@ -649,6 +617,39 @@ __global__ void sumForceTorqueFromSolidParticleInfiniteWallInteractionKernel(dou
 	torque[idx_i] += T_i;
 }
 
+__global__ void sumForceTorqueFromSolidParticleTriangleWallInteractionKernel(double3* contactForce, double3* contactTorque, 
+    int* objectPointing, 
+    double3* force, double3* torque, double3* position, double* radius, 
+	int* solidParticleNeighborPrefixSum, 
+	int* vertIndex0_t, int* vertIndex1_t, int* vertIndex2_t, 
+    double3* globalVertices,
+	const size_t numParticles)
+{
+	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= numParticles) return;
+
+	double rad_i = radius[idx_i];
+	double3 r_i = position[idx_i];
+	double3 F_i = make_double3(0, 0, 0);
+	double3 T_i = make_double3(0, 0, 0);
+	for (int k = idx_i > 0 ? solidParticleNeighborPrefixSum[idx_i - 1] : 0; k < solidParticleNeighborPrefixSum[idx_i]; k++)
+	{
+		int idx_j = objectPointing[k];
+		const double3 p0 = globalVertices[vertIndex0_t[idx_j]];
+		const double3 p1 = globalVertices[vertIndex1_t[idx_j]];
+		const double3 p2 = globalVertices[vertIndex2_t[idx_j]];
+		if(length(contactForce[k]) < 1.e-20) continue;
+		double3 n = cross(p1 - p0, p2 -p1);
+		double3 r_c = r_i - n * dot(r_i - p0,n);
+		
+		F_i += contactForce[k];
+		T_i += contactTorque[k] + cross(r_c - r_i, contactForce[k]);
+	}
+
+	force[idx_i] += F_i;
+	torque[idx_i] += T_i;
+}
+
 __global__ void sumClumpForceTorqueKernel(double3* force_c, double3* torque_c, double3* position_c, 
     int* pebbleStartIndex, int* pebbleEndIndex,
 	double3* force_p, double3* torque_p, double3* position_p,
@@ -665,8 +666,6 @@ __global__ void sumClumpForceTorqueKernel(double3* force_c, double3* torque_c, d
 		double3 r_c = position_c[idx_c];
 		F_c += F_i;
 		T_c += torque_p[i] + cross(r_i - r_c, F_i);
-		force_p[i] = make_double3(0, 0, 0);
-		torque_p[i] = make_double3(0, 0, 0);
 	}
 
 	force_c[idx_c] += F_c;
@@ -956,6 +955,83 @@ cudaStream_t stream)
 	solidParticles.deviceSize());
 }
 
+extern "C" void launchSolidParticletriangleWallInteractionCalculation(interactionSpringSystem& solidParticleTriangleWallInteractions, 
+solidParticle& solidParticles, 
+triangleWall& triangleWalls,
+solidContactModelParameter& contactModelParameters, 
+objectNeighborPrefix &solidParticleTriangleWallNeighbor,
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+	if(solidParticleTriangleWallInteractions.getActiveNumber() == 0) return;
+    size_t grid = 1, block = 1;
+
+	computeGPUGridSizeBlockSize(grid, block, solidParticleTriangleWallInteractions.getActiveNumber(), maxThreadsPerBlock);
+	calSolidParticleTriangleWallContactForceTorqueKernel <<<grid, block, 0, stream>>> (solidParticleTriangleWallInteractions.current.force(),
+	solidParticleTriangleWallInteractions.current.torque,
+	solidParticleTriangleWallInteractions.current.slidingSpring,
+	solidParticleTriangleWallInteractions.current.rollingSpring,
+	solidParticleTriangleWallInteractions.current.torsionSpring,
+	solidParticleTriangleWallInteractions.current.objectPointed(),
+	solidParticleTriangleWallInteractions.current.objectPointing(),
+	solidParticles.position(),
+	solidParticles.velocity(),
+	solidParticles.angularVelocity,
+	solidParticles.radius,
+	solidParticles.inverseMass,
+	solidParticles.materialID,
+	solidParticleTriangleWallNeighbor.prefixSum,
+	triangleWalls.position(),
+	triangleWalls.velocity(),
+	triangleWalls.angularVelocity(),
+	triangleWalls.materialID(),
+	triangleWalls.triangles().wallIndex(),
+	triangleWalls.triangles().index0(),
+	triangleWalls.triangles().index1(),
+	triangleWalls.triangles().index2(),
+	triangleWalls.globalVertices(),
+	contactModelParameters.hertzian.E,
+	contactModelParameters.hertzian.G,
+	contactModelParameters.hertzian.res,
+	contactModelParameters.hertzian.k_r_k_s,
+	contactModelParameters.hertzian.k_t_k_s,
+	contactModelParameters.hertzian.mu_s,
+	contactModelParameters.hertzian.mu_r,
+	contactModelParameters.hertzian.mu_t,
+	contactModelParameters.linear.k_n,
+	contactModelParameters.linear.k_s,
+	contactModelParameters.linear.k_r,
+	contactModelParameters.linear.k_t,
+	contactModelParameters.linear.d_n,
+	contactModelParameters.linear.d_s,
+	contactModelParameters.linear.d_r,
+	contactModelParameters.linear.d_t,
+	contactModelParameters.linear.mu_s,
+	contactModelParameters.linear.mu_r,
+	contactModelParameters.linear.mu_t,
+	contactModelParameters.getNumberOfMaterials(),
+	contactModelParameters.size(),
+	timeStep,
+	solidParticleTriangleWallInteractions.getActiveNumber());
+
+	computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
+	sumForceTorqueFromSolidParticleTriangleWallInteractionKernel <<<grid, block, 0, stream>>> (
+	solidParticleTriangleWallInteractions.current.force(),
+	solidParticleTriangleWallInteractions.current.torque,
+	solidParticleTriangleWallInteractions.current.objectPointing(),
+	solidParticles.force,
+	solidParticles.torque,
+	solidParticles.position(),
+	solidParticles.radius,
+	solidParticleTriangleWallNeighbor.prefixSum,
+	triangleWalls.triangles().index0(),
+	triangleWalls.triangles().index1(),
+	triangleWalls.triangles().index2(),
+	triangleWalls.globalVertices(),
+	solidParticles.deviceSize());
+}
+
 extern "C" void launchInfiniteWallHalfIntegration(infiniteWall &infiniteWalls, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream)
 {
 	size_t grid = 1, block = 1;
@@ -982,7 +1058,8 @@ cudaStream_t stream)
 
 	computeGPUGridSizeBlockSize(grid, block, triangleWalls.verticesRef().deviceSize(), maxThreadsPerBlock);
 	triangleWallGlobalVerticesIntegrateKernel <<<grid, block, 0, stream>>> (triangleWalls.globalVertices(),triangleWalls.angularVelocity(),
-	triangleWalls.orientation(),triangleWalls.position(),
+	triangleWalls.orientation(),
+	triangleWalls.position(),
 	triangleWalls.triangles().wallIndex(),
 	triangleWalls.verticesRef().localPosition(),
 	triangleWalls.verticesRef().triangleIndex(),

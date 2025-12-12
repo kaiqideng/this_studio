@@ -1,4 +1,5 @@
 #include "DEMSolver.h"
+#include "myContainer/myWall.h"
 
 bool DEMSolver::initialize() {
   std::cout << "DEM solver: initializing..." << std::endl;
@@ -30,6 +31,7 @@ void DEMSolver::solve() {
     DEMNeighborSearch(getGPUThreadsPerBlock());
     handleDEMHostArray();
     outputSolidParticleVTU(dir, iFrame, iStep, timeStep);
+    if(triangleWalls().hostSize() > 0) outputTriangleWallVTU(dir, iFrame, iStep, timeStep);
     numSteps = size_t((getMaximumTime()) / timeStep) + 1;
     frameInterval = numSteps / getNumFrames();
     if (frameInterval < 1)
@@ -43,6 +45,7 @@ void DEMSolver::solve() {
         std::cout << "DEM solver: frame " << iFrame << " at time " << iStep * timeStep
                   << std::endl;
         outputSolidParticleVTU(dir, iFrame, iStep, timeStep);
+        if(triangleWalls().hostSize() > 0) outputTriangleWallVTU(dir, iFrame, iStep, timeStep);
       }
     }
   }

@@ -97,26 +97,40 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s"
 	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.cpp -o CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.s
 
-CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: CMakeFiles/demcfd_core.dir/flags.make
-CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: CMakeFiles/demcfd_core.dir/includes_CUDA.rsp
-CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: /teamspace/studios/this_studio/DEM-CFD/kernel/integration.cu
-CMakeFiles/demcfd_core.dir/kernel/integration.cu.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CUDA object CMakeFiles/demcfd_core.dir/kernel/integration.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/integration.cu.o -MF CMakeFiles/demcfd_core.dir/kernel/integration.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM-CFD/kernel/integration.cu -o CMakeFiles/demcfd_core.dir/kernel/integration.cu.o
+CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: CMakeFiles/demcfd_core.dir/flags.make
+CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.cpp
+CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o -MF CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o.d -o CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o -c /teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.cpp
 
-CMakeFiles/demcfd_core.dir/kernel/integration.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/demcfd_core.dir/kernel/integration.cu.i"
+CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.i"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.cpp > CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.i
+
+CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.s"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.cpp -o CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.s
+
+CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: CMakeFiles/demcfd_core.dir/flags.make
+CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: CMakeFiles/demcfd_core.dir/includes_CUDA.rsp
+CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.cu
+CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CUDA object CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o"
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o -MF CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.cu -o CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o
+
+CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.i"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
 
-CMakeFiles/demcfd_core.dir/kernel/integration.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/demcfd_core.dir/kernel/integration.cu.s"
+CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
 CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o: CMakeFiles/demcfd_core.dir/flags.make
 CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o: CMakeFiles/demcfd_core.dir/includes_CUDA.rsp
 CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o: /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.cu
 CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CUDA object CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CUDA object CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o"
 	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o -MF CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.cu -o CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o
 
 CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.i: cmake_force
@@ -131,7 +145,7 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o: CMakeFiles/demcfd_core.di
 CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o: CMakeFiles/demcfd_core.dir/includes_CUDA.rsp
 CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o: /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.cu
 CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o: CMakeFiles/demcfd_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CUDA object CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CUDA object CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o"
 	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o -MF CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.cu -o CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o
 
 CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.i: cmake_force
@@ -146,7 +160,8 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.s: cmake_force
 demcfd_core_OBJECTS = \
 "CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o" \
 "CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o" \
-"CMakeFiles/demcfd_core.dir/kernel/integration.cu.o" \
+"CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o" \
+"CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o" \
 "CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o" \
 "CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o"
 
@@ -155,12 +170,13 @@ demcfd_core_EXTERNAL_OBJECTS =
 
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o
-lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/integration.cu.o
+lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o
+lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/build.make
 lib/libdemcfd_core.a: CMakeFiles/demcfd_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library lib/libdemcfd_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/teamspace/studios/this_studio/DEM-CFD/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library lib/libdemcfd_core.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/demcfd_core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/demcfd_core.dir/link.txt --verbose=$(VERBOSE)
 

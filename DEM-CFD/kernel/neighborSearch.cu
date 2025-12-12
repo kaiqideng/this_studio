@@ -448,11 +448,15 @@ const size_t numParticles)
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = triangleHashIndex[i];
-                    double3 p0B = globalVert[index0_t[idxB]];
-                    double3 p1B = globalVert[index1_t[idxB]];
-                    double3 p2B = globalVert[index2_t[idxB]];
-                    double3 n = normalize(cross(p1B - p0B, p2B - p1B));
-                    if(sphereIntersectsTriangleOneSided(p0B,p1B,p2B,n,posA,radA))
+                    double3 pos0B = globalVert[index0_t[idxB]];
+                    double3 pos1B = globalVert[index1_t[idxB]];
+                    double3 pos2B = globalVert[index2_t[idxB]];
+                    double3 n = normalize(cross(pos1B - pos0B, pos2B - pos1B));
+                    double t = dot(posA - pos0B, n);
+                    double overlap_plane = 0.0;
+                    if(t >= 0) overlap_plane = radA - t;
+                    if(t < 0) overlap_plane = radA + t;
+                    if(overlap_plane > 0)
                     {
                         if(flag == 0){
                             count++;
@@ -658,7 +662,7 @@ cudaStream_t stream)
     if (triangleWalls.deviceSize() > 0)
     {
         size_t grid = 1, block = 1;
-        computeGPUGridSizeBlockSize(grid, block, triangleWalls.deviceSize(), maxThreadsPerBlock);
+        computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
 
         solidParticleTriangleWallInteractions.recordCurrentInteractionSpring(stream);
 

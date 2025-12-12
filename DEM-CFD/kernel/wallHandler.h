@@ -1,9 +1,9 @@
 #pragma once
-#include "myContainer/myUtility/myQua.h"
 #include "myContainer/myWall.h"
 #include "myContainer/mySpatialGrid.h"
 #include "myContainer/myUtility/myMat.h"
-#include "integration.h"
+#include "myContainer/myUtility/myFileEdit.h"
+#include "DEMIntegration.h"
 
 class wallHandler
 {
@@ -70,6 +70,8 @@ protected:
         infiniteWallHalfIntegration(timeStep, maxThreadsPerBlock);
         triangleWallHalfIntegration(timeStep, maxThreadsPerBlock);
     }
+
+    void outputTriangleWallVTU(const std::string &dir, const size_t iFrame, const size_t iStep, double timeStep);
 
 private:
     void downloadWall(const double3 domainOrigin, const double3 domainSize)

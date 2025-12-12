@@ -1,5 +1,4 @@
 #pragma once
-#include "integration.h"
 #include "myContainer/myHash.h"
 #include "myContainer/myInteraction.h"
 #include "myContainer/myParticle.h"
@@ -168,8 +167,6 @@ protected:
 
         solidParticleTriangleWallInteractionCalculation(timeStep, maxThreadsPerBlock);
 
-        // In solidParticleInteractionCalculation(...), clump contact forces/toques will be sum up. 
-        // Therefore, other interaction calculations must be finished before solidParticleInteractionCalculation(...)
         solidParticleInteractionCalculation(solidContactModelParameters_, timeStep, maxThreadsPerBlock);
     }
 
@@ -312,7 +309,12 @@ private:
 
     void solidParticleTriangleWallInteractionCalculation(const double timeStep, const size_t maxThreadsPerBlock)
     {
-
+        launchSolidParticletriangleWallInteractionCalculation(solidParticleTriangleWallInteractions_,
+        solidParticles(),
+        triangleWalls(),
+        solidContactModelParameters_,
+        solidParticleTriangleWallNeighbor_,
+        timeStep,maxThreadsPerBlock,DEMStream_);
     }
 
     cudaStream_t DEMStream_;

@@ -253,7 +253,7 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: \
  /usr/include/c++/12/cstring /usr/include/string.h /usr/include/strings.h \
  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/integration.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h \

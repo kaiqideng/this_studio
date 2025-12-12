@@ -1,6 +1,6 @@
 #include "solidParticleHandler.h"
 
-void solidParticleHandler::outputSolidParticleVTU(const std::string dir, const size_t iFrame, const size_t iStep, double timeStep)
+void solidParticleHandler::outputSolidParticleVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double timeStep)
 {
     MKDIR(dir.c_str());
     std::ostringstream fname;

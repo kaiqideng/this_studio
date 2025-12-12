@@ -408,6 +408,15 @@ const double timeStep,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);
 
+extern "C" void launchSolidParticletriangleWallInteractionCalculation(interactionSpringSystem& solidParticleTriangleWallInteractions, 
+solidParticle& solidParticles, 
+triangleWall& triangleWalls,
+solidContactModelParameter& contactModelParameters, 
+objectNeighborPrefix &solidParticleTriangleWallNeighbor,
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
 extern "C" void launchInfiniteWallHalfIntegration(infiniteWall &infiniteWalls, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream);
 
 extern "C" void launchTriangleWallHalfIntegration(triangleWall &triangleWalls, 

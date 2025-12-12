@@ -5,9 +5,8 @@
 #include "myContainer/myContactModelParams.h"
 #include "myContainer/myUtility/myMat.h"
 #include "myContainer/myUtility/myFileEdit.h"
-#include "integration.h"
+#include "DEMIntegration.h"
 #include "neighborSearch.h"
-#include <cuda_runtime_api.h>
 
 class solidParticleHandler
 {
@@ -132,7 +131,7 @@ public:
 
     void addBondedSolidParticleInteractions(int object0, int object1)
     {
-        // Do not need to upload at first because the bondedInteraction host array is not changed in this function
+        // Do not need to upload because the bondedInteraction host array is not changed in this function
         bondedObjects0_.push_back(object0);
         bondedObjects1_.push_back(object1);
 
@@ -214,7 +213,7 @@ protected:
         launchSolidParticleIntegrateAfterContact(solidParticles_, clumps_, gravity, timeStep, maxThreadsPerBlock, solidParticleStream_);
     }
 
-    void outputSolidParticleVTU(const std::string dir, const size_t iFrame, const size_t iStep, const double timeStep);
+    void outputSolidParticleVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double timeStep);
 
 private:
     void downLoadSolidParticlesAndInteractions()
@@ -243,7 +242,7 @@ private:
     void downloadSolidParticleSpatialGrids(double3 domainOrigin, double3 domainSize)
     {
         double cellSizeOneDim = 0.0;
-        std::vector<double> radii = solidParticles_.getEffectiveRadii();
+        const std::vector<double> radii = solidParticles_.getEffectiveRadii();
         if(radii.size() > 0) cellSizeOneDim = *std::max_element(radii.begin(), radii.end()) * 2.0;
         double3 cellSize = solidParticleSpatialGrids_.getCellSize();
         if(cellSizeOneDim > cellSize.x || cellSizeOneDim > cellSize.y || cellSizeOneDim > cellSize.z)

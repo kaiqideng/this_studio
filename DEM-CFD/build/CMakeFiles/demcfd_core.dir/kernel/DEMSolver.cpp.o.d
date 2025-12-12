@@ -196,9 +196,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/surface_types.h /usr/include/texture_types.h \
  /usr/include/cuda_device_runtime_api.h /usr/include/vector_functions.hpp \
  /teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/integration.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myParticle.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myHash.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h \
  /usr/include/cuda_runtime.h /usr/include/crt/host_config.h \
@@ -209,6 +206,7 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/c++/12/bits/stl_vector.h \
  /usr/include/c++/12/bits/stl_bvector.h \
  /usr/include/c++/12/bits/vector.tcc \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myInteraction.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myMat.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myQua.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h \
@@ -219,9 +217,7 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/c++/12/bits/uniform_int_dist.h \
  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
  /usr/include/c++/12/pstl/execution_defs.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myInteraction.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/mySpatialGrid.h \
- /usr/include/vector_types.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myParticle.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h \
  /usr/include/c++/12/map /usr/include/c++/12/bits/stl_tree.h \
@@ -230,9 +226,48 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/c++/12/bits/stl_map.h /usr/include/c++/12/tuple \
  /usr/include/c++/12/bits/uses_allocator.h \
  /usr/include/c++/12/bits/stl_multimap.h \
- /usr/include/c++/12/bits/erase_if.h /usr/include/thrust/device_vector.h \
- /usr/include/thrust/detail/config.h /usr/include/thrust/version.h \
- /usr/include/thrust/detail/config/config.h \
+ /usr/include/c++/12/bits/erase_if.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/mySpatialGrid.h \
+ /usr/include/vector_types.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myContactModelParams.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myFileEdit.h \
+ /usr/include/c++/12/fstream /usr/include/c++/12/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/c++io.h \
+ /usr/include/c++/12/bits/fstream.tcc /usr/include/c++/12/sstream \
+ /usr/include/c++/12/bits/sstream.tcc /usr/include/c++/12/iomanip \
+ /usr/include/c++/12/locale \
+ /usr/include/c++/12/bits/locale_facets_nonio.h /usr/include/c++/12/ctime \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/12/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/12/bits/locale_conv.h \
+ /usr/include/c++/12/bits/quoted_string.h /usr/include/dirent.h \
+ /usr/include/x86_64-linux-gnu/bits/dirent.h \
+ /usr/include/x86_64-linux-gnu/bits/dirent_ext.h \
+ /usr/include/x86_64-linux-gnu/sys/stat.h \
+ /usr/include/x86_64-linux-gnu/bits/stat.h \
+ /usr/include/x86_64-linux-gnu/bits/struct_stat.h \
+ /usr/include/x86_64-linux-gnu/bits/statx.h /usr/include/linux/stat.h \
+ /usr/include/linux/types.h /usr/include/x86_64-linux-gnu/asm/types.h \
+ /usr/include/asm-generic/types.h /usr/include/asm-generic/int-ll64.h \
+ /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
+ /usr/include/asm-generic/posix_types.h \
+ /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h \
+ /usr/include/c++/12/cstring /usr/include/string.h /usr/include/strings.h \
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.h \
+ /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h \
+ /usr/include/thrust/device_vector.h /usr/include/thrust/detail/config.h \
+ /usr/include/thrust/version.h /usr/include/thrust/detail/config/config.h \
  /usr/include/thrust/detail/config/simple_defines.h \
  /usr/include/thrust/detail/config/compiler.h \
  /usr/include/thrust/detail/config/cpp_dialect.h \
@@ -406,9 +441,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/thrust/system/detail/sequential/copy.inl \
  /usr/include/thrust/system/detail/sequential/general_copy.h \
  /usr/include/thrust/system/detail/sequential/trivial_copy.h \
- /usr/include/c++/12/cstring /usr/include/string.h /usr/include/strings.h \
- /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
- /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
  /usr/include/thrust/type_traits/is_trivially_relocatable.h \
  /usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h \
  /usr/include/thrust/system/cpp/detail/copy.h \
@@ -589,7 +621,7 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/thrust/mr/memory_resource.h \
  /usr/include/c++/12/memory_resource /usr/include/c++/12/shared_mutex \
  /usr/include/c++/12/bits/chrono.h /usr/include/c++/12/ratio \
- /usr/include/c++/12/ctime /usr/include/c++/12/bits/parse_numbers.h \
+ /usr/include/c++/12/bits/parse_numbers.h \
  /usr/include/c++/12/bits/std_mutex.h \
  /usr/include/c++/12/bits/uses_allocator_args.h \
  /usr/include/thrust/mr/polymorphic_adaptor.h \
@@ -648,36 +680,4 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: \
  /usr/include/thrust/system/detail/sequential/partition.h \
  /usr/include/thrust/system/cpp/detail/sort.h \
  /usr/include/thrust/system/cuda/detail/sort.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myContactModelParams.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.h \
- /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myFileEdit.h \
- /usr/include/c++/12/fstream /usr/include/c++/12/bits/codecvt.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/c++io.h \
- /usr/include/c++/12/bits/fstream.tcc /usr/include/c++/12/sstream \
- /usr/include/c++/12/bits/sstream.tcc /usr/include/c++/12/iomanip \
- /usr/include/c++/12/locale \
- /usr/include/c++/12/bits/locale_facets_nonio.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/12/bits/locale_facets_nonio.tcc \
- /usr/include/c++/12/bits/locale_conv.h \
- /usr/include/c++/12/bits/quoted_string.h /usr/include/dirent.h \
- /usr/include/x86_64-linux-gnu/bits/dirent.h \
- /usr/include/x86_64-linux-gnu/bits/dirent_ext.h \
- /usr/include/x86_64-linux-gnu/sys/stat.h \
- /usr/include/x86_64-linux-gnu/bits/stat.h \
- /usr/include/x86_64-linux-gnu/bits/struct_stat.h \
- /usr/include/x86_64-linux-gnu/bits/statx.h /usr/include/linux/stat.h \
- /usr/include/linux/types.h /usr/include/x86_64-linux-gnu/asm/types.h \
- /usr/include/asm-generic/types.h /usr/include/asm-generic/int-ll64.h \
- /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
- /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
- /usr/include/linux/stddef.h \
- /usr/include/x86_64-linux-gnu/asm/posix_types.h \
- /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
- /usr/include/asm-generic/posix_types.h \
- /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h \
  /teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.h

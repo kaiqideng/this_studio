@@ -17,6 +17,7 @@ file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/teamspace/studios/this_studi
 set(OLD_GLOB
   "/teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.cpp"
   "/teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.cpp"
+  "/teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")
@@ -26,7 +27,7 @@ endif()
 # CORE_CUDA at CMakeLists.txt:26 (file)
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/teamspace/studios/this_studio/DEM-CFD/kernel/*.cu")
 set(OLD_GLOB
-  "/teamspace/studios/this_studio/DEM-CFD/kernel/integration.cu"
+  "/teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.cu"
   "/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.cu"
   "/teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.cu"
   )

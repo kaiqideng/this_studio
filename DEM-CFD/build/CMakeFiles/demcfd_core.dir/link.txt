@@ -1,2 +1,2 @@
-/usr/bin/ar qc lib/libdemcfd_core.a CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o CMakeFiles/demcfd_core.dir/kernel/integration.cu.o CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o
+/usr/bin/ar qc lib/libdemcfd_core.a CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o CMakeFiles/demcfd_core.dir/kernel/myContainer/myUtility/myCUDAOperation.cu.o CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o
 /usr/bin/ranlib lib/libdemcfd_core.a
