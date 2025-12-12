@@ -33,14 +33,27 @@ __device__ __forceinline__ int calculateHash(int3 gridPosition, const int3 gridS
     return gridPosition.z * gridSize.y * gridSize.x + gridPosition.y * gridSize.x + gridPosition.x;
 }
 
-extern "C" void launchSolidParticleNeighborSearch(interactionSpringSystem& solidParticleInteractions, solidParticle& solidParticles, 
-spatialGrid& spatialGrids, const size_t maxThreadsPerBlock, cudaStream_t stream = 0);
+extern "C" void launchSolidParticleNeighborSearch(interactionSpringSystem& solidParticleInteractions, 
+solidParticle& solidParticles, 
+spatialGrid& spatialGrids, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
 
 extern "C" void launchSolidParticleInfiniteWallNeighborSearch(interactionSpringSystem& solidParticleInfiniteWallInteractions, 
 solidParticle& solidParticles, 
 infiniteWall& infiniteWalls, 
-objectNeighborPrefix& neighbor_si,
-sortedHashValueIndex& interactionIndexRange_si,
+objectNeighborPrefix& neighbor_s,
+sortedHashValueIndex& interactionIndexRange_i,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
+extern "C" void launchSolidParticleTriangleWallNeighborSearch(interactionSpringSystem& solidParticleTriangleWallInteractions, 
+solidParticle& solidParticles, 
+triangleWall& triangleWalls, 
+objectNeighborPrefix& neighbor_s,
+sortedHashValueIndex& interactionIndexRange_t,
+objectHash& triangleHash,
+spatialGrid& triangleSpatialGrids, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);
 
@@ -215,4 +228,112 @@ inline bool cellCutByTriangle(const double3& cellMin,
     }
 
     return false;
+}
+
+__host__ __device__
+inline double3 closestPointOnTriangle(const double3& point,
+                                      const double3& v0,
+                                      const double3& v1,
+                                      const double3& v2)
+{
+    // Edges of the triangle
+    double3 edge01 = v1 - v0;
+    double3 edge02 = v2 - v0;
+
+    // Vector from v0 to the query point
+    double3 v0_to_point = point - v0;
+
+    // -----------------------------------------------------------------
+    // 1) Check if the closest point lies in the Voronoi region of v0
+    // -----------------------------------------------------------------
+    double dot_edge01_v0 = dot(edge01, v0_to_point);
+    double dot_edge02_v0 = dot(edge02, v0_to_point);
+    if (dot_edge01_v0 <= 0.0 && dot_edge02_v0 <= 0.0)
+        return v0;
+
+    // -----------------------------------------------------------------
+    // 2) Check if the closest point lies in the Voronoi region of v1
+    // -----------------------------------------------------------------
+    double3 v1_to_point = point - v1;
+    double dot_edge01_v1 = dot(edge01, v1_to_point);
+    double dot_edge02_v1 = dot(edge02, v1_to_point);
+    if (dot_edge01_v1 >= 0.0 && dot_edge02_v1 <= dot_edge01_v1)
+        return v1;
+
+    // -----------------------------------------------------------------
+    // 3) Check if the closest point lies on edge v0-v1
+    // -----------------------------------------------------------------
+    double vc = dot_edge01_v0 * dot_edge02_v1 - dot_edge01_v1 * dot_edge02_v0;
+    if (vc <= 0.0 && dot_edge01_v0 >= 0.0 && dot_edge01_v1 <= 0.0)
+    {
+        double t = dot_edge01_v0 / (dot_edge01_v0 - dot_edge01_v1); // interpolation on v0-v1
+        return v0 + edge01 * t;
+    }
+
+    // -----------------------------------------------------------------
+    // 4) Check if the closest point lies in the Voronoi region of v2
+    // -----------------------------------------------------------------
+    double3 v2_to_point = point - v2;
+    double dot_edge01_v2 = dot(edge01, v2_to_point);
+    double dot_edge02_v2 = dot(edge02, v2_to_point);
+    if (dot_edge02_v2 >= 0.0 && dot_edge01_v2 <= dot_edge02_v2)
+        return v2;
+
+    // -----------------------------------------------------------------
+    // 5) Check if the closest point lies on edge v0-v2
+    // -----------------------------------------------------------------
+    double vb = dot_edge01_v2 * dot_edge02_v0 - dot_edge01_v0 * dot_edge02_v2;
+    if (vb <= 0.0 && dot_edge02_v0 >= 0.0 && dot_edge02_v2 <= 0.0)
+    {
+        double t = dot_edge02_v0 / (dot_edge02_v0 - dot_edge02_v2); // interpolation on v0-v2
+        return v0 + edge02 * t;
+    }
+
+    // -----------------------------------------------------------------
+    // 6) Check if the closest point lies on edge v1-v2
+    // -----------------------------------------------------------------
+    double va = dot_edge01_v1 * dot_edge02_v2 - dot_edge01_v2 * dot_edge02_v1;
+    if (va <= 0.0 && (dot_edge02_v1 - dot_edge01_v1) >= 0.0 && (dot_edge01_v2 - dot_edge02_v2) >= 0.0)
+    {
+        double t = (dot_edge02_v1 - dot_edge01_v1) /
+                   ((dot_edge02_v1 - dot_edge01_v1) + (dot_edge01_v2 - dot_edge02_v2)); // on v1-v2
+        return v1 + (v2 - v1) * t;
+    }
+
+    // -----------------------------------------------------------------
+    // 7) Closest point lies inside the triangle (use barycentric coords)
+    // -----------------------------------------------------------------
+    double denom = 1.0 / (va + vb + vc);
+    double bary_v = vb * denom;
+    double bary_w = vc * denom;
+
+    return v0 + edge01 * bary_v + edge02 * bary_w;
+}
+
+__host__ __device__
+inline bool sphereIntersectsTriangleOneSided(const double3& v0,
+                                             const double3& v1,
+                                             const double3& v2,
+                                             const double3& normal_out,
+                                             const double3& sphereCenter,
+                                             double          sphereRadius)
+{
+    // Closest point on the triangle (in 3D) to the sphere center
+    double3 closest = closestPointOnTriangle(sphereCenter, v0, v1, v2);
+
+    // Distance from sphere center to that closest point
+    double3 diff = sphereCenter - closest;
+    double  dist2 = dot(diff, diff);
+    double  radius2 = sphereRadius * sphereRadius;
+
+    // No intersection if distance is larger than radius
+    if (dist2 > radius2)
+        return false;
+
+    // One-sided test: require the sphere to be on the "outer" side of the triangle
+    // normal_out is the outer face normal (does not strictly need to be unit length)
+    if (dot(diff, normal_out) < 0.0)
+        return false; // sphere is on the back side; ignore
+
+    return true;
 }

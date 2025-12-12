@@ -3,6 +3,7 @@
 #include "myContainer/myUtility/myQua.h"
 #include "myContainer/myUtility/myVec.h"
 #include "myContainer/myWall.h"
+#include <cstddef>
 
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ >= 600)       // sm 6.0+
 __device__ __forceinline__ double atomicAddDouble(double* addr, double val)
@@ -33,13 +34,38 @@ __device__ __forceinline__ void atomicAddDouble3(double3* arr, size_t idx, const
 	atomicAddDouble(&(arr[idx].z), v.z);
 }
 
-__global__ void calSolidParticleContactForceTorqueKernel(double3* contactForce, double3* contactTorque,
-	double3* slidingSpring, double3* rollingSpring, double3* torsionSpring, int* objectPointed, int* objectPointing, 
-    double3* position, double3* velocity, double3* angularVelocity, double* radius, double* inverseMass, int* materialID,
-	double* hertzianE, double* hertzianG, double* hertzianRes, double* hertzianK_r_k_s, double* hertzianK_t_k_s, 
-	double* hertzianMu_s, double* hertzianMu_r, double* hertzianMu_t, 
-	double* linearK_n, double* linearK_s, double* linearK_r, double* linearK_t, 
-	double* linearD_n, double* linearD_s, double* linearD_r, double* linearD_t, double* linearMu_s, double* linearMu_r, double* linearMu_t, 
+__global__ void calSolidParticleContactForceTorqueKernel(double3* contactForce, 
+double3* contactTorque,
+	double3* slidingSpring, 
+	double3* rollingSpring, 
+	double3* torsionSpring, 
+	int* objectPointed, 
+	int* objectPointing, 
+    double3* position, 
+	double3* velocity, 
+	double3* angularVelocity, 
+	double* radius, 
+	double* inverseMass, 
+	int* materialID,
+	double* hertzianE, 
+	double* hertzianG, 
+	double* hertzianRes, 
+	double* hertzianK_r_k_s, 
+	double* hertzianK_t_k_s, 
+	double* hertzianMu_s, 
+	double* hertzianMu_r, 
+	double* hertzianMu_t, 
+	double* linearK_n, 
+	double* linearK_s, 
+	double* linearK_r, 
+	double* linearK_t, 
+	double* linearD_n, 
+	double* linearD_s, 
+	double* linearD_r, 
+	double* linearD_t, 
+	double* linearMu_s, 
+	double* linearMu_r, 
+	double* linearMu_t, 
 	const size_t numMaterials,
 	const size_t contactParaArraySize,
 	const double dt,
@@ -192,6 +218,114 @@ __global__ void calSolidParticleInfiniteWallContactForceTorqueKernel(double3* co
 	double3 epsilon_t = torsionSpring[idx];
 
 	const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], materialID_iw[idx_j], 
+	numMaterials, contactParaArraySize);
+	if (contactParaArraySize <= 0) return;
+
+	if (linearK_n[param_ij] > 1.e-20)
+	{
+		LinearContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+			v_c_ij,
+			w_ij,
+			n_ij,
+			delta,
+			m_ij,
+			rad_ij,
+			dt,
+			linearK_n[param_ij],
+			linearK_s[param_ij],
+			linearK_r[param_ij],
+			linearK_t[param_ij],
+			linearD_n[param_ij],
+			linearD_s[param_ij],
+			linearD_r[param_ij],
+			linearD_t[param_ij],
+			linearMu_s[param_ij],
+			linearMu_r[param_ij],
+			linearMu_t[param_ij]);
+	}
+	else
+	{
+		const double logR = log(hertzianRes[param_ij]);
+		const double D = -logR / sqrt(logR * logR + pi() * pi());
+		HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+			v_c_ij,
+			w_ij,
+			n_ij,
+			delta,
+			m_ij,
+			rad_ij,
+			dt,
+			D,
+			hertzianE[param_ij],
+			hertzianG[param_ij],
+			hertzianK_r_k_s[param_ij],
+			hertzianK_t_k_s[param_ij],
+			hertzianMu_s[param_ij],
+			hertzianMu_r[param_ij],
+			hertzianMu_t[param_ij]);
+	}
+
+	contactForce[idx] = F_c;
+	contactTorque[idx] = T_c;
+	slidingSpring[idx] = epsilon_s;
+	rollingSpring[idx] = epsilon_r;
+	torsionSpring[idx] = epsilon_t;
+}
+
+__global__ void calSolidParticleTriangleWallContactForceTorqueKernel(double3* contactForce, double3* contactTorque,
+	double3* slidingSpring, double3* rollingSpring, double3* torsionSpring, int* objectPointed, int* objectPointing, 
+    double3* position, double3* velocity, double3* angularVelocity, double* radius, double* inverseMass, int* materialID,
+	int* neighborPrefixSum,
+	double3* position_w, double3* velocity_w, double3* angularVelocity_w, int* materialID_w,
+	int* wallIndex_t, int* vertIndex0_t, int* vertIndex1_t, int* vertIndex2_t, 
+	double3* globalVertice,
+	double* hertzianE, double* hertzianG, double* hertzianRes, double* hertzianK_r_k_s, double* hertzianK_t_k_s, 
+	double* hertzianMu_s, double* hertzianMu_r, double* hertzianMu_t, 
+	double* linearK_n, double* linearK_s, double* linearK_r, double* linearK_t, 
+	double* linearD_n, double* linearD_s, double* linearD_r, double* linearD_t, double* linearMu_s, double* linearMu_r, double* linearMu_t, 
+	const size_t numMaterials,
+	const size_t contactParaArraySize,
+	const double dt,
+    const size_t numInteractions)
+{
+	size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx >= numInteractions) return;
+
+    //!!!
+	contactForce[idx] = make_double3(0, 0, 0);
+	contactTorque[idx] = make_double3(0, 0, 0);
+
+	const int idx_i = objectPointed[idx];
+	const int idx_j = objectPointing[idx];
+	const double rad_i = radius[idx_i];
+	const size_t idx_w = wallIndex_t[idx_j];
+
+	const double3 r_i = position[idx_i];
+	const double3 r_w = position_w[idx_w];
+
+	const double m_ij = 1. / inverseMass[idx_i];
+	const double rad_ij = rad_i;
+
+    const double3 p0 = globalVertice[vertIndex0_t[idx_j]];
+	const double3 p1 = globalVertice[vertIndex1_t[idx_j]];
+	const double3 p2 = globalVertice[vertIndex2_t[idx_j]];
+	const double3 r_c = r_i, n_ij = normalize(cross(p1 - p0, p2 -p1));
+	double delta = 0.;
+
+	const double3 v_i = velocity[idx_i];
+	const double3 v_j = velocity_w[idx_w];
+	const double3 w_i = angularVelocity[idx_i];
+	const double3 w_j = angularVelocity_w[idx_w];
+	const double3 v_c_ij = v_i + cross(w_i, r_c - r_i) - (v_j + cross(w_j, r_c - r_w));
+	const double3 w_ij = w_i - w_j;
+
+	double3 F_c = make_double3(0, 0, 0);
+	double3 T_c = make_double3(0, 0, 0);
+	double3 epsilon_s = slidingSpring[idx];
+	double3 epsilon_r = rollingSpring[idx];
+	double3 epsilon_t = torsionSpring[idx];
+
+	const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], materialID_w[idx_w], 
 	numMaterials, contactParaArraySize);
 	if (contactParaArraySize <= 0) return;
 
@@ -474,6 +608,25 @@ __global__ void solidParticleVelocityAngularVelocityIntegrateKernel(double3* vel
 	angularVelocity[idx_i] += torque[idx_i] / I_i * dt;
 }
 
+__global__ void triangleWallGlobalVerticesIntegrateKernel(double3* globalVerts, double3* angularVelocity_w, quaternion* orientation_w, 
+    double3* position_w,
+	int* wallIndex_t,
+	double3* localVerts,
+	int* triangleindex_v,
+	int* numTrianglesPrefixSum_v,
+	const double dt,
+	const size_t numVerts)
+{
+	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= numVerts) return;
+
+	size_t idx_t = 0;
+	if(idx_i > 0) idx_t = triangleindex_v[numTrianglesPrefixSum_v[idx_i - 1]];
+	size_t idx_w = wallIndex_t[idx_t];
+	orientation_w[idx_w] = quaternionRotate(orientation_w[idx_w], angularVelocity_w[idx_w], dt);
+	globalVerts[idx_i] = position_w[idx_w] + rotateVectorByQuaternion(orientation_w[idx_w], globalVerts[idx_i]);
+}
+
 __global__ void clumpVelocityAngularVelocityIntegrateKernel(double3* velocity_c, double3* angularVelocity_c, double3* position_c, 
     double3* force_c, double3* torque_c, double* invMass_c, quaternion* orientation, symMatrix* inverseInertiaTensor, 
 	int* pebbleStartIndex, int* pebbleEndIndex,
@@ -489,6 +642,7 @@ __global__ void clumpVelocityAngularVelocityIntegrateKernel(double3* velocity_c,
 	double invM_c = invMass_c[idx_c];
 	if (invM_c > 0.) angularVelocity_c[idx_c] += (rotateInverseInertiaTensor(orientation[idx_c], inverseInertiaTensor[idx_c]) * torque_c[idx_c]) * dt;
 	double3 w_c = angularVelocity_c[idx_c];
+	orientation[idx_c] = quaternionRotate(orientation[idx_c],w_c,  dt);
 	for (int i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
 	{
 		double3 r_pc = position_p[i] - position_c[idx_c];
@@ -728,4 +882,28 @@ extern "C" void launchInfiniteWallHalfIntegration(infiniteWall &infiniteWalls, c
 	infiniteWalls.velocity(),
 	0.5 * timeStep, 
 	infiniteWalls.deviceSize());
+}
+
+extern "C" void launchTriangleWallHalfIntegration(triangleWall &triangleWalls, 
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+	size_t grid = 1, block = 1;
+
+	computeGPUGridSizeBlockSize(grid, block, triangleWalls.deviceSize(), maxThreadsPerBlock);
+	positionIntegrateKernel <<<grid, block, 0, stream>>> (triangleWalls.position(), 
+	triangleWalls.velocity(),
+	0.5 * timeStep, 
+	triangleWalls.deviceSize());
+
+	computeGPUGridSizeBlockSize(grid, block, triangleWalls.verticesRef().deviceSize(), maxThreadsPerBlock);
+	triangleWallGlobalVerticesIntegrateKernel <<<grid, block, 0, stream>>> (triangleWalls.globalVertices(),triangleWalls.angularVelocity(),
+	triangleWalls.orientation(),triangleWalls.position(),
+	triangleWalls.triangles().wallIndex(),
+	triangleWalls.verticesRef().localPosition(),
+	triangleWalls.verticesRef().triangleIndex(),
+	triangleWalls.verticesRef().numTrianglesPrefixSum(),
+	0.5 * timeStep,
+	triangleWalls.verticesRef().deviceSize());
 }

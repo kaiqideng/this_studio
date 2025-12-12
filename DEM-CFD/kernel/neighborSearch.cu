@@ -1,3 +1,5 @@
+#include "myContainer/myHash.h"
+#include "myContainer/myWall.h"
 #include "neighborSearch.h"
 
 void sortKeyValuePairs(int* d_keys, int* d_values,
@@ -107,6 +109,34 @@ const size_t numHashValues)
     }
 }
 
+__global__ void calculateTriangleWallHash(int* hashValue, 
+double3* globalVert, 
+int* index0, 
+int* index1, 
+int* index2, 
+const double3 minBound, 
+const double3 maxBound, 
+const double3 cellSize, 
+const int3 gridSize, 
+const size_t numGrids,
+const size_t numHashValues)
+{
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= numHashValues) return;
+    double3 pos = (globalVert[index0[idx]] + globalVert[index1[idx]] + globalVert[index2[idx]]) / 3.0;
+    if (minBound.x <= pos.x && pos.x < maxBound.x &&
+        minBound.y <= pos.y && pos.y < maxBound.y &&
+        minBound.z <= pos.z && pos.z < maxBound.z)
+    {
+        int3 gridPosition = calculateGridPosition(pos, minBound, cellSize);
+        hashValue[idx] = calculateHash(gridPosition, gridSize);
+    }
+    else
+    {
+        hashValue[idx] = numGrids - 1;
+    }
+}
+
 void updateGridCellStartEnd(spatialGrid& sptialGrids, 
 objectHash& particleHash, 
 double3* positions, 
@@ -138,18 +168,72 @@ cudaStream_t stream)
     stream);
 }
 
-__global__ void setSolidParticleInteractionsKernel(int* objectPointed, int* objectPointing, 
-    double3* contactForce, double3* contactTorque, 
-    double3* slidingSpring, double3* rollingSpring, double3* torsionSpring, 
-    int* interactionHashIndex,
-    int* objectPointed_history, double3* slidingSpring_history, double3* rollingSpring_history, double3* torsionSpring_history, 
-    double3* solidParticlePosition, double* effectiveRadii, double* invMass, int* clumpID, 
-    int* solidParticleHashIndex, int* solidParticleNeighborCount, int* solidParticleNeighborPrefixSum, 
-    int* solidParticleInteractionIndexRangeStart, int* solidParticleInteractionIndexRangeEnd,
-    int* cellHashValueStart, int* cellHashValueEnd, 
-    const double3 minBound, const double3 cellSize, const int3 gridSize, const size_t numGrids,
-    const size_t flag,
-    const size_t numParticles)
+void updateTriangleWallGridCellStartEnd(spatialGrid& sptialGrids_t, 
+objectHash& triangleHash, 
+double3* globalVert, 
+int* index0, 
+int* index1, 
+int* index2, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+    sptialGrids_t.resetCellStartEnd(stream);
+    triangleHash.reset(stream);
+
+    size_t grid = 1, block = 1;
+    computeGPUGridSizeBlockSize(grid, block, triangleHash.size(), maxThreadsPerBlock);
+
+    calculateTriangleWallHash <<< grid, block, 0, stream >>> (triangleHash.value, 
+    globalVert, 
+    index0,
+    index1, 
+    index2, 
+    sptialGrids_t.getMinBond(), 
+    sptialGrids_t.getMaxBond(), 
+    sptialGrids_t.getCellSize(), 
+    sptialGrids_t.getGridSize(), 
+    sptialGrids_t.size(), 
+    triangleHash.size());
+
+    buildHashSpans(sptialGrids_t.cellHashValue.start, 
+    sptialGrids_t.cellHashValue.end, 
+    triangleHash.index, 
+    triangleHash.value, 
+    triangleHash.aux, 
+    triangleHash.size(), 
+    maxThreadsPerBlock, 
+    stream);
+}
+
+__global__ void setSolidParticleInteractionsKernel(int* objectPointed, 
+int* objectPointing, 
+double3* contactForce, 
+double3* contactTorque, 
+double3* slidingSpring, 
+double3* rollingSpring, 
+double3* torsionSpring, 
+int* interactionHashIndex,
+int* objectPointed_history, 
+double3* slidingSpring_history, 
+double3* rollingSpring_history, 
+double3* torsionSpring_history, 
+double3* solidParticlePosition, 
+double* effectiveRadii, 
+double* invMass, 
+int* clumpID, 
+int* solidParticleHashIndex, 
+int* solidParticleNeighborCount, 
+int* solidParticleNeighborPrefixSum, 
+int* solidParticleInteractionIndexRangeStart, 
+int* solidParticleInteractionIndexRangeEnd,
+int* cellHashValueStart, 
+int* cellHashValueEnd, 
+const double3 minBound, 
+const double3 cellSize, 
+const int3 gridSize, 
+const size_t numGrids,
+const size_t flag,
+const size_t numParticles)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
     if (idxA >= numParticles) return;
@@ -224,17 +308,29 @@ __global__ void setSolidParticleInteractionsKernel(int* objectPointed, int* obje
 }
 
 __global__ void setSolidParticleInfiniteWallInteractionsKernel(int* objectPointed, int* objectPointing, 
-    double3* contactForce, double3* contactTorque, 
-    double3* slidingSpring, double3* rollingSpring, double3* torsionSpring, 
-    int* interactionHashIndex,
-    int* objectPointed_history, double3* slidingSpring_history, double3* rollingSpring_history, double3* torsionSpring_history, 
-    double3* solidParticlePosition, double* effectiveRadii, double* invMass,
-    int* solidParticleNeighborCount, int* solidParticleNeighborPrefixSum, 
-    int* infiniteWallInteractionIndexRangeStart, int* infiniteWallInteractionIndexRangeEnd,
-    double3* position_iw, double3* axis_iw, double* radius_iw,
-    const size_t numWalls,
-    const size_t flag,
-    const size_t numParticles)
+double3* contactForce, 
+double3* contactTorque, 
+double3* slidingSpring, 
+double3* rollingSpring, 
+double3* torsionSpring, 
+int* interactionHashIndex,
+int* objectPointed_history, 
+double3* slidingSpring_history, 
+double3* rollingSpring_history, 
+double3* torsionSpring_history, 
+double3* solidParticlePosition, 
+double* radius, 
+double* invMass,
+int* solidParticleNeighborCount, 
+int* solidParticleNeighborPrefixSum, 
+int* infiniteWallInteractionIndexRangeStart, 
+int* infiniteWallInteractionIndexRangeEnd,
+double3* position_iw, 
+double3* axis_iw, 
+double* radius_iw,
+const size_t numWalls,
+const size_t flag,
+const size_t numParticles)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
     if (idxA >= numParticles) return;
@@ -244,7 +340,7 @@ __global__ void setSolidParticleInfiniteWallInteractionsKernel(int* objectPointe
     int base_w = 0;
     if (idxA > 0) base_w = solidParticleNeighborPrefixSum[idxA - 1];
     double3 posA = solidParticlePosition[idxA];
-    double radA = effectiveRadii[idxA];
+    double radA = radius[idxA];
     for (size_t idxB = 0; idxB < numWalls; idxB++)
     {
         double3 posB = position_iw[idxB];
@@ -292,6 +388,107 @@ __global__ void setSolidParticleInfiniteWallInteractionsKernel(int* objectPointe
         }
     }
 
+    if(flag == 0) solidParticleNeighborCount[idxA] = count;
+}
+
+__global__ void setSolidParticleTriangleWallInteractionsKernel(int* objectPointed, int* objectPointing, 
+double3* contactForce, 
+double3* contactTorque,    
+double3* slidingSpring, 
+double3* rollingSpring, 
+double3* torsionSpring, 
+int* interactionHashIndex,
+int* objectPointed_history, 
+double3* slidingSpring_history, 
+double3* rollingSpring_history, 
+double3* torsionSpring_history, 
+double3* solidParticlePosition, 
+double* radius, 
+double* invMass, 
+int* solidParticleNeighborCount, 
+int* solidParticleNeighborPrefixSum, 
+int* index0_t, 
+int* index1_t, 
+int* index2_t, 
+double3* globalVert, 
+int* triangleWallInteractionIndexRangeStart, 
+int* triangleWallInteractionIndexRangeEnd, 
+int* triangleHashIndex, 
+int* cellHashValueStart, 
+int* cellHashValueEnd, 
+const double3 minBound, 
+const double3 cellSize, 
+const int3 gridSize, 
+const size_t numGrids,
+const size_t flag,
+const size_t numParticles)
+{
+    int idxA = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idxA >= numParticles) return;
+    if (invMass[idxA] < 1.e-20) return;
+
+    int count = 0;
+    int base_w = 0;
+    if (idxA > 0) base_w = solidParticleNeighborPrefixSum[idxA - 1];
+    double3 posA = solidParticlePosition[idxA];
+    double radA = radius[idxA];
+    int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
+    for (int zz = -1; zz <= 1; zz++)
+    {
+        for (int yy = -1; yy <= 1; yy++)
+        {
+            for (int xx = -1; xx <= 1; xx++)
+            {
+                int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
+                int hashB = calculateHash(gridPositionB, gridSize);
+                if (hashB < 0 || hashB >= numGrids) continue;
+                int startIndex = cellHashValueStart[hashB];
+                int endIndex = cellHashValueEnd[hashB];
+                if (startIndex == 0xFF) continue;
+                for (int i = startIndex; i < endIndex; i++)
+                {
+                    int idxB = triangleHashIndex[i];
+                    double3 p0B = globalVert[index0_t[idxB]];
+                    double3 p1B = globalVert[index1_t[idxB]];
+                    double3 p2B = globalVert[index2_t[idxB]];
+                    double3 n = normalize(cross(p1B - p0B, p2B - p1B));
+                    if(sphereIntersectsTriangleOneSided(p0B,p1B,p2B,n,posA,radA))
+                    {
+                        if(flag == 0){
+                            count++;
+                        }
+                        else {
+                            int offset_w = atomicAdd(&solidParticleNeighborCount[idxA], 1);
+                            int index_w = base_w + offset_w;
+                            objectPointed[index_w] = idxA;
+                            objectPointing[index_w] = idxB;
+                            contactForce[index_w] = make_double3(0, 0, 0);
+                            contactTorque[index_w] = make_double3(0, 0, 0);
+							slidingSpring[index_w] = make_double3(0, 0, 0);
+							rollingSpring[index_w] = make_double3(0, 0, 0);
+							torsionSpring[index_w] = make_double3(0, 0, 0);
+                            if (triangleWallInteractionIndexRangeStart[idxB] != 0xFFFFFFFF)
+                            {
+                                for (int j = triangleWallInteractionIndexRangeStart[idxB]; j < triangleWallInteractionIndexRangeEnd[idxB]; j++)
+                                {
+                                    int j1 = interactionHashIndex[j];
+                                    if (j1 < 0) return;
+                                    int idxA1 = objectPointed_history[j1];
+                                    if (idxA == idxA1)
+                                    {
+                                        slidingSpring[index_w] = slidingSpring_history[j1];
+                                        rollingSpring[index_w] = rollingSpring_history[j1];
+                                        torsionSpring[index_w] = torsionSpring_history[j1];
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     if(flag == 0) solidParticleNeighborCount[idxA] = count;
 }
 
@@ -360,7 +557,7 @@ cudaStream_t stream)
                 int activeNumber = 0;
                 inclusiveScan(solidParticles.neighbor.prefixSum, solidParticles.neighbor.count, solidParticles.neighbor.size(), stream);
                 cuda_copy_sync(&activeNumber, solidParticles.neighbor.prefixSum + solidParticles.neighbor.size() - 1, 1, CopyDir::D2H);
-                solidParticleInteractions.setCurrentActiveNumber(size_t(activeNumber), stream);
+                solidParticleInteractions.setCurrentActiveNumber(static_cast<size_t>(activeNumber), stream);
             }
         }
 
@@ -378,8 +575,8 @@ cudaStream_t stream)
 extern "C" void launchSolidParticleInfiniteWallNeighborSearch(interactionSpringSystem& solidParticleInfiniteWallInteractions, 
 solidParticle& solidParticles, 
 infiniteWall& infiniteWalls, 
-objectNeighborPrefix& neighbor_si,
-sortedHashValueIndex& interactionIndexRange_si,
+objectNeighborPrefix& neighbor_s,
+sortedHashValueIndex& interactionIndexRange_i,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
@@ -392,9 +589,6 @@ cudaStream_t stream)
 
         for (size_t flag = 0; flag < 2; flag++)
         {
-            //debug_dump_device_array(solidParticles.neighbor.count, solidParticles.deviceSize(), "solidParticles.neighbor.count");
-            //debug_dump_device_array(solidParticles.neighbor.prefixSum, solidParticles.deviceSize(), "solidParticles.neighbor.prefixSum");
-
             setSolidParticleInfiniteWallInteractionsKernel <<<grid, block, 0, stream>>> (
                 solidParticleInfiniteWallInteractions.current.objectPointed(),
                 solidParticleInfiniteWallInteractions.current.objectPointing(),
@@ -409,12 +603,12 @@ cudaStream_t stream)
                 solidParticleInfiniteWallInteractions.history.rollingSpring,
                 solidParticleInfiniteWallInteractions.history.torsionSpring,
                 solidParticles.position(),
-                solidParticles.effectiveRadii(),
+                solidParticles.radius,
                 solidParticles.inverseMass,
-                neighbor_si.count,
-                neighbor_si.prefixSum,
-                interactionIndexRange_si.start,
-                interactionIndexRange_si.end,
+                neighbor_s.count,
+                neighbor_s.prefixSum,
+                interactionIndexRange_i.start,
+                interactionIndexRange_i.end,
                 infiniteWalls.position(),
                 infiniteWalls.axis(),
                 infiniteWalls.radius(),
@@ -425,19 +619,101 @@ cudaStream_t stream)
             if (flag == 0)
             {
                 int activeNumber = 0;
-                inclusiveScan(neighbor_si.prefixSum, neighbor_si.count, neighbor_si.size(), stream);
-                cuda_copy_sync(&activeNumber, neighbor_si.prefixSum + neighbor_si.size() - 1, 1, CopyDir::D2H);
-                solidParticleInfiniteWallInteractions.setCurrentActiveNumber(size_t(activeNumber), stream);
+                inclusiveScan(neighbor_s.prefixSum, neighbor_s.count, neighbor_s.size(), stream);
+                cuda_copy_sync(&activeNumber, neighbor_s.prefixSum + neighbor_s.size() - 1, 1, CopyDir::D2H);
+                solidParticleInfiniteWallInteractions.setCurrentActiveNumber(static_cast<size_t>(activeNumber), stream);
             }
         }
 
-        interactionIndexRange_si.reset(stream);
+        interactionIndexRange_i.reset(stream);
         solidParticleInfiniteWallInteractions.setHashValue(stream);
-        buildHashSpans(interactionIndexRange_si.start, 
-        interactionIndexRange_si.end, 
+        buildHashSpans(interactionIndexRange_i.start, 
+        interactionIndexRange_i.end, 
         solidParticleInfiniteWallInteractions.current.hash().index, 
         solidParticleInfiniteWallInteractions.current.hash().value, 
         solidParticleInfiniteWallInteractions.current.hash().aux, 
         solidParticleInfiniteWallInteractions.getActiveNumber(), maxThreadsPerBlock, stream);
+    }
+}
+
+extern "C" void launchSolidParticleTriangleWallNeighborSearch(interactionSpringSystem& solidParticleTriangleWallInteractions, 
+solidParticle& solidParticles, 
+triangleWall& triangleWalls, 
+objectNeighborPrefix& neighbor_s,
+sortedHashValueIndex& interactionIndexRange_t,
+objectHash& triangleHash,
+spatialGrid& triangleSpatialGrids, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+    updateTriangleWallGridCellStartEnd(triangleSpatialGrids, 
+    triangleHash, 
+    triangleWalls.globalVertices(),
+    triangleWalls.triangles().index0(),
+    triangleWalls.triangles().index1(),
+    triangleWalls.triangles().index2(),
+    maxThreadsPerBlock, 
+    stream);
+
+    if (triangleWalls.deviceSize() > 0)
+    {
+        size_t grid = 1, block = 1;
+        computeGPUGridSizeBlockSize(grid, block, triangleWalls.deviceSize(), maxThreadsPerBlock);
+
+        solidParticleTriangleWallInteractions.recordCurrentInteractionSpring(stream);
+
+        for (size_t flag = 0; flag < 2; flag++)
+        {
+            setSolidParticleTriangleWallInteractionsKernel <<<grid, block, 0, stream>>> (
+                solidParticleTriangleWallInteractions.current.objectPointed(),
+                solidParticleTriangleWallInteractions.current.objectPointing(),
+                solidParticleTriangleWallInteractions.current.force(),
+                solidParticleTriangleWallInteractions.current.torque,
+                solidParticleTriangleWallInteractions.current.slidingSpring,
+                solidParticleTriangleWallInteractions.current.rollingSpring,
+                solidParticleTriangleWallInteractions.current.torsionSpring,
+                solidParticleTriangleWallInteractions.current.hash().index,
+                solidParticleTriangleWallInteractions.history.objectPointed(),
+                solidParticleTriangleWallInteractions.history.slidingSpring,
+                solidParticleTriangleWallInteractions.history.rollingSpring,
+                solidParticleTriangleWallInteractions.history.torsionSpring,
+                solidParticles.position(),
+                solidParticles.radius,
+                solidParticles.inverseMass,
+                neighbor_s.count,
+                neighbor_s.prefixSum,
+                triangleWalls.triangles().index0(),
+                triangleWalls.triangles().index1(),
+                triangleWalls.triangles().index2(),
+                triangleWalls.globalVertices(),
+                interactionIndexRange_t.start,
+                interactionIndexRange_t.end,
+                triangleHash.index,
+                triangleSpatialGrids.cellHashValue.start,
+                triangleSpatialGrids.cellHashValue.end,
+                triangleSpatialGrids.getMinBond(),
+                triangleSpatialGrids.getCellSize(),
+                triangleSpatialGrids.getGridSize(),
+                triangleSpatialGrids.size(),
+                flag,
+                solidParticles.deviceSize());
+
+            if (flag == 0)
+            {
+                int activeNumber = 0;
+                inclusiveScan(neighbor_s.prefixSum, neighbor_s.count, neighbor_s.size(), stream);
+                cuda_copy_sync(&activeNumber, neighbor_s.prefixSum + neighbor_s.size() - 1, 1, CopyDir::D2H);
+                solidParticleTriangleWallInteractions.setCurrentActiveNumber(static_cast<size_t>(activeNumber), stream);
+            }
+        }
+
+        interactionIndexRange_t.reset(stream);
+        solidParticleTriangleWallInteractions.setHashValue(stream);
+        buildHashSpans(interactionIndexRange_t.start, 
+        interactionIndexRange_t.end, 
+        solidParticleTriangleWallInteractions.current.hash().index, 
+        solidParticleTriangleWallInteractions.current.hash().value, 
+        solidParticleTriangleWallInteractions.current.hash().aux, 
+        solidParticleTriangleWallInteractions.getActiveNumber(), maxThreadsPerBlock, stream);
     }
 }

@@ -1,3 +1,4 @@
+#pragma once
 #include "myCUDA.h"
 
 template <typename T>

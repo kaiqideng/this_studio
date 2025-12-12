@@ -129,7 +129,11 @@ public:
 
     void upload(cudaStream_t stream)
     {
-        if (d_size > 0 && d_ptr && d_size <= hostSize())
+        if (d_size > hostSize())
+        {
+            h_data.resize(d_size);
+        }
+        if (d_size > 0 && d_ptr)
         {
             cuda_copy(h_data.data(), d_ptr, d_size, CopyDir::D2H, stream);
         }

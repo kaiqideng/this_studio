@@ -6,7 +6,6 @@
 #include "myContainer/myWall.h"
 #include "solidParticleHandler.h"
 #include "wallHandler.h"
-#include <cuda_runtime_api.h>
 
 struct HertzianParamsList
 {
@@ -129,7 +128,7 @@ protected:
 
         solidParticleInitialize(domainOrigin, domainSize);
 
-        wallInitialize();
+        wallInitialize(domainOrigin, domainSize);
 
         if(infiniteWalls().deviceSize() > 0) 
         {
@@ -142,7 +141,8 @@ protected:
         {
             solidParticleTriangleWallInteractions_.current.allocDeviceArray(solidParticles().deviceSize(), DEMStream_);
             solidParticleTriangleWallNeighbor_.alloc(solidParticles().deviceSize(), DEMStream_);
-            triangleWallInteractionRange_.alloc(infiniteWalls().deviceSize(), DEMStream_);
+            triangleInteractionRange_.alloc(triangleWalls().triangles().deviceSize(), DEMStream_);
+            triangleHash_.alloc(triangleWalls().triangles().deviceSize(), DEMStream_);
         }
     }
 
@@ -167,6 +167,7 @@ protected:
         solidParticleInfiniteWallInteractionCalculation(timeStep, maxThreadsPerBlock);
 
         solidParticleTriangleWallInteractionCalculation(timeStep, maxThreadsPerBlock);
+
         // In solidParticleInteractionCalculation(...), clump contact forces/toques will be sum up. 
         // Therefore, other interaction calculations must be finished before solidParticleInteractionCalculation(...)
         solidParticleInteractionCalculation(solidContactModelParameters_, timeStep, maxThreadsPerBlock);
@@ -298,7 +299,15 @@ private:
 
     void solidParticleTirangleWallNeighborSearch(const size_t maxThreadsPerBlock)
     {
-
+        launchSolidParticleTriangleWallNeighborSearch(solidParticleTriangleWallInteractions_, 
+        solidParticles(), 
+        triangleWalls(), 
+        solidParticleTriangleWallNeighbor_,
+        triangleInteractionRange_,
+        triangleHash_,
+        triangleSpatialGrids(), 
+        maxThreadsPerBlock, 
+        DEMStream_);
     }
 
     void solidParticleTriangleWallInteractionCalculation(const double timeStep, const size_t maxThreadsPerBlock)
@@ -320,5 +329,6 @@ private:
 
     interactionSpringSystem solidParticleTriangleWallInteractions_;
     objectNeighborPrefix solidParticleTriangleWallNeighbor_;
-    sortedHashValueIndex triangleWallInteractionRange_;
+    sortedHashValueIndex triangleInteractionRange_;
+    objectHash triangleHash_;
 };
