@@ -5,7 +5,7 @@
 #include "neighborSearch.h"
 
 
-void sortKeyValuePairs(int* d_keys, int* d_values,
+inline void sortKeyValuePairs(int* d_keys, int* d_values,
                        std::size_t numObjects,
                           cudaStream_t stream)
 {
@@ -35,7 +35,7 @@ const size_t numObjects)
 {
     size_t indices = blockIdx.x * blockDim.x + threadIdx.x;
     if (indices >= numObjects) return;
-    initialIndices[indices] = indices;
+    initialIndices[indices] = static_cast<int>(indices);
 }
 
 __global__ void setHashAux(int* hashAux, 
@@ -58,10 +58,10 @@ const size_t numObjects)
     if (indices >= numObjects) return;
     if (indices == 0 || hash[indices] != hashAux[indices])
     {
-        start[hash[indices]] = indices;
-        end[hashAux[indices]] = indices;
+        start[hash[indices]] = static_cast<int>(indices);
+        end[hashAux[indices]] = static_cast<int>(indices);
     }
-    if (indices == numObjects - 1) end[hash[indices]] = numObjects;
+    if (indices == numObjects - 1) end[hash[indices]] = static_cast<int>(numObjects);
 }
 
 void buildHashSpans(int* start, 
@@ -81,9 +81,10 @@ cudaStream_t stream)
     setInitialIndices <<<grid, block, 0, stream>>> (sortedIndices, numObjects);
     CUDA_CHECK(cudaGetLastError());
 
-    //debug_dump_device_array(hash, numObjects, "solidParticles.hash.value");
-    //debug_dump_device_array(sortedIndices, numObjects, "solidParticles.hash.index");
+    debug_dump_device_array(hash, numObjects, "hash.value");
+    debug_dump_device_array(sortedIndices, numObjects, "hash.index");
     sortKeyValuePairs(hash, sortedIndices, numObjects, stream);
+    
     CUDA_CHECK(cudaGetLastError());
 
     setHashAux <<<grid, block, 0, stream>>> (hashAux, hash, numObjects);
@@ -515,12 +516,13 @@ cudaStream_t stream)
     updateGridCellStartEnd(spatialGrids, 
     solidParticles.hash, 
     solidParticles.position(), 
-    maxThreadsPerBlock, stream);
+    maxThreadsPerBlock, 
+    stream);
 
     //debug_dump_device_array(solidParticles.hash.value, solidParticles.deviceSize(), "solidParticles.hash.value");
     //debug_dump_device_array(solidParticles.hash.index, solidParticles.deviceSize(), "solidParticles.hash.index");
-    //debug_dump_device_array(spatialGrids.cellHashValue.start, spatialGrids.size(), "spatialGrids.cellHashValue.start");
-    //debug_dump_device_array(spatialGrids.cellHashValue.end, spatialGrids.size(), "spatialGrids.cellHashValue.end");
+    debug_dump_device_array(spatialGrids.cellHashValue.start, spatialGrids.size(), "spatialGrids.cellHashValue.start");
+    debug_dump_device_array(spatialGrids.cellHashValue.end, spatialGrids.size(), "spatialGrids.cellHashValue.end");
 
     size_t grid = 1, block = 1;
     computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
@@ -565,6 +567,7 @@ cudaStream_t stream)
 
         if (flag == 0)
         {
+            //debug_dump_device_array(solidParticles.neighbor.count, solidParticles.neighbor.size(), "count");
             int activeNumber = 0;
             inclusiveScan(solidParticles.neighbor.prefixSum, solidParticles.neighbor.count, solidParticles.neighbor.size(), stream);
             cuda_copy_sync(&activeNumber, solidParticles.neighbor.prefixSum + solidParticles.neighbor.size() - 1, 1, CopyDir::D2H);

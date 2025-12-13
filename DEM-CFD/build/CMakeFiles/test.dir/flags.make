@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/teamspace/studios/this_studio/DEM-CFD/kernel -I/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer -I/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility
 
-CXX_FLAGS = -O3 -DNDEBUG -std=gnu++17
+CXX_FLAGS = -g -std=gnu++17
 
