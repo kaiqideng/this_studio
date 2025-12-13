@@ -689,7 +689,7 @@ __global__ void solidParticleVelocityAngularVelocityIntegrateKernel(double3* vel
 	angularVelocity[idx_i] += torque[idx_i] / I_i * dt;
 }
 
-__global__ void triangleWallGlobalVerticesIntegrateKernel(double3* globalVerts, double3* angularVelocity_w, quaternion* orientation_w, 
+__global__ void triangleWallGlobalVerticesIntegrateKernel(double3* globalVerts, quaternion* orientation_w, 
     double3* position_w,
 	int* wallIndex_t,
 	double3* localVerts,
@@ -704,7 +704,6 @@ __global__ void triangleWallGlobalVerticesIntegrateKernel(double3* globalVerts, 
 	size_t idx_t = 0;
 	if(idx_i > 0) idx_t = triangleindex_v[numTrianglesPrefixSum_v[idx_i - 1]];
 	size_t idx_w = wallIndex_t[idx_t];
-	orientation_w[idx_w] = quaternionRotate(orientation_w[idx_w], angularVelocity_w[idx_w], dt);
 	globalVerts[idx_i] = position_w[idx_w] + rotateVectorByQuaternion(orientation_w[idx_w], globalVerts[idx_i]);
 }
 
@@ -740,6 +739,17 @@ __global__ void positionIntegrateKernel(double3* position, double3* velocity,
 	if (idx_i >= num) return;
 
 	position[idx_i] += dt * velocity[idx_i];
+}
+
+__global__ void orientationIntegrateKernel(quaternion* orientation, 
+double3* angularVelocity, 
+const double dt, 
+const size_t num)
+{
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx >= num) return;
+
+	orientation[idx] = quaternionRotate(orientation[idx], angularVelocity[idx], dt);
 }
 
 extern "C" void launchSolidParticleIntegrateBeforeContact(solidParticle& solidParticles, clump& clumps, const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock, cudaStream_t stream)
@@ -1054,8 +1064,13 @@ cudaStream_t stream)
 	0.5 * timeStep, 
 	triangleWalls.deviceSize());
 
+	orientationIntegrateKernel <<<grid, block, 0, stream>>> (triangleWalls.orientation(), 
+	triangleWalls.angularVelocity(), 
+	0.5 * timeStep, 
+	triangleWalls.deviceSize());
+
 	computeGPUGridSizeBlockSize(grid, block, triangleWalls.verticesRef().deviceSize(), maxThreadsPerBlock);
-	triangleWallGlobalVerticesIntegrateKernel <<<grid, block, 0, stream>>> (triangleWalls.globalVertices(),triangleWalls.angularVelocity(),
+	triangleWallGlobalVerticesIntegrateKernel <<<grid, block, 0, stream>>> (triangleWalls.globalVertices(),
 	triangleWalls.orientation(),
 	triangleWalls.position(),
 	triangleWalls.triangles().wallIndex(),

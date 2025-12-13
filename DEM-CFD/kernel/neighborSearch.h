@@ -3,9 +3,6 @@
 #include "myContainer/myInteraction.h"
 #include "myContainer/mySpatialGrid.h"
 #include "myContainer/myWall.h"
-#include <thrust/device_vector.h>
-#include <thrust/sort.h>
-#include <thrust/scan.h>
 
 inline void computeGPUGridSizeBlockSize(size_t& gridDim, size_t& blockDim, 
     const size_t numObjects,

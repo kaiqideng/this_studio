@@ -189,135 +189,6 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/c++/12/utility \
     /usr/include/c++/12/bits/stl_relops.h \
     /usr/include/c++/12/initializer_list \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myHash.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h \
-    /usr/include/c++/12/stdexcept \
-    /usr/include/c++/12/exception \
-    /usr/include/c++/12/bits/exception_ptr.h \
-    /usr/include/c++/12/bits/cxxabi_init_exception.h \
-    /usr/include/c++/12/typeinfo \
-    /usr/include/c++/12/bits/hash_bytes.h \
-    /usr/include/c++/12/bits/nested_exception.h \
-    /usr/include/c++/12/string \
-    /usr/include/c++/12/bits/stringfwd.h \
-    /usr/include/c++/12/bits/memoryfwd.h \
-    /usr/include/c++/12/bits/char_traits.h \
-    /usr/include/c++/12/bits/postypes.h \
-    /usr/include/c++/12/cwchar \
-    /usr/include/wchar.h \
-    /usr/include/x86_64-linux-gnu/bits/wchar.h \
-    /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
-    /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
-    /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
-    /usr/include/x86_64-linux-gnu/bits/wchar2.h \
-    /usr/include/c++/12/cstdint \
-    /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h \
-    /usr/include/stdint.h \
-    /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
-    /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
-    /usr/include/c++/12/bits/allocator.h \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/c++allocator.h \
-    /usr/include/c++/12/bits/new_allocator.h \
-    /usr/include/c++/12/bits/localefwd.h \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/c++locale.h \
-    /usr/include/c++/12/clocale \
-    /usr/include/locale.h \
-    /usr/include/x86_64-linux-gnu/bits/locale.h \
-    /usr/include/c++/12/iosfwd \
-    /usr/include/c++/12/cctype \
-    /usr/include/ctype.h \
-    /usr/include/c++/12/bits/ostream_insert.h \
-    /usr/include/c++/12/bits/cxxabi_forced.h \
-    /usr/include/c++/12/bits/stl_function.h \
-    /usr/include/c++/12/backward/binders.h \
-    /usr/include/c++/12/bits/refwrap.h \
-    /usr/include/c++/12/bits/invoke.h \
-    /usr/include/c++/12/bits/range_access.h \
-    /usr/include/c++/12/bits/basic_string.h \
-    /usr/include/c++/12/ext/alloc_traits.h \
-    /usr/include/c++/12/bits/alloc_traits.h \
-    /usr/include/c++/12/bits/stl_construct.h \
-    /usr/include/c++/12/string_view \
-    /usr/include/c++/12/bits/functional_hash.h \
-    /usr/include/c++/12/bits/string_view.tcc \
-    /usr/include/c++/12/ext/string_conversions.h \
-    /usr/include/c++/12/cstdio \
-    /usr/include/c++/12/cerrno \
-    /usr/include/errno.h \
-    /usr/include/x86_64-linux-gnu/bits/errno.h \
-    /usr/include/linux/errno.h \
-    /usr/include/x86_64-linux-gnu/asm/errno.h \
-    /usr/include/asm-generic/errno.h \
-    /usr/include/asm-generic/errno-base.h \
-    /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
-    /usr/include/c++/12/bits/charconv.h \
-    /usr/include/c++/12/bits/basic_string.tcc \
-    /usr/include/c++/12/iostream \
-    /usr/include/c++/12/ostream \
-    /usr/include/c++/12/ios \
-    /usr/include/c++/12/bits/ios_base.h \
-    /usr/include/c++/12/ext/atomicity.h \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/gthr.h \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/gthr-default.h \
-    /usr/include/pthread.h \
-    /usr/include/sched.h \
-    /usr/include/x86_64-linux-gnu/bits/sched.h \
-    /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h \
-    /usr/include/x86_64-linux-gnu/bits/cpu-set.h \
-    /usr/include/x86_64-linux-gnu/bits/setjmp.h \
-    /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h \
-    /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
-    /usr/include/c++/12/bits/locale_classes.h \
-    /usr/include/c++/12/bits/locale_classes.tcc \
-    /usr/include/c++/12/system_error \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/error_constants.h \
-    /usr/include/c++/12/streambuf \
-    /usr/include/c++/12/bits/streambuf.tcc \
-    /usr/include/c++/12/bits/basic_ios.h \
-    /usr/include/c++/12/bits/locale_facets.h \
-    /usr/include/c++/12/cwctype \
-    /usr/include/wctype.h \
-    /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/ctype_base.h \
-    /usr/include/c++/12/bits/streambuf_iterator.h \
-    /usr/include/x86_64-linux-gnu/c++/12/bits/ctype_inline.h \
-    /usr/include/c++/12/bits/locale_facets.tcc \
-    /usr/include/c++/12/bits/basic_ios.tcc \
-    /usr/include/c++/12/bits/ostream.tcc \
-    /usr/include/c++/12/istream \
-    /usr/include/c++/12/bits/istream.tcc \
-    /usr/include/c++/12/vector \
-    /usr/include/c++/12/bits/stl_uninitialized.h \
-    /usr/include/c++/12/bits/stl_vector.h \
-    /usr/include/c++/12/bits/stl_bvector.h \
-    /usr/include/c++/12/bits/vector.tcc \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myMat.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myQua.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h \
-    /usr/include/c++/12/algorithm \
-    /usr/include/c++/12/bits/stl_algo.h \
-    /usr/include/c++/12/bits/algorithmfwd.h \
-    /usr/include/c++/12/bits/stl_heap.h \
-    /usr/include/c++/12/bits/stl_tempbuf.h \
-    /usr/include/c++/12/bits/uniform_int_dist.h \
-    /usr/include/c++/12/pstl/glue_algorithm_defs.h \
-    /usr/include/c++/12/pstl/execution_defs.h \
-    /usr/include/c++/12/map \
-    /usr/include/c++/12/bits/stl_tree.h \
-    /usr/include/c++/12/ext/aligned_buffer.h \
-    /usr/include/c++/12/bits/node_handle.h \
-    /usr/include/c++/12/bits/stl_map.h \
-    /usr/include/c++/12/tuple \
-    /usr/include/c++/12/bits/uses_allocator.h \
-    /usr/include/c++/12/bits/stl_multimap.h \
-    /usr/include/c++/12/bits/erase_if.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myParticle.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myInteraction.h \
-    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/mySpatialGrid.h \
     /usr/include/thrust/device_vector.h \
     /usr/include/thrust/detail/config.h \
     /usr/include/thrust/version.h \
@@ -377,6 +248,7 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/cub/util_compiler.cuh \
     /usr/include/cub/util_macro.cuh \
     /usr/include/cub/detail/detect_cuda_runtime.cuh \
+    /usr/include/c++/12/cstdio \
     /usr/include/thrust/detail/allocator_aware_execution_policy.h \
     /usr/include/thrust/detail/execute_with_allocator_fwd.h \
     /usr/include/thrust/detail/execute_with_dependencies.h \
@@ -385,13 +257,95 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/thrust/detail/preprocessor.h \
     /usr/include/thrust/type_traits/remove_cvref.h \
     /usr/include/c++/12/version \
+    /usr/include/c++/12/tuple \
+    /usr/include/c++/12/bits/uses_allocator.h \
+    /usr/include/c++/12/bits/invoke.h \
     /usr/include/thrust/detail/alignment.h \
     /usr/include/thrust/detail/dependencies_aware_execution_policy.h \
     /usr/include/thrust/iterator/iterator_categories.h \
     /usr/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h \
     /usr/include/thrust/iterator/detail/iterator_traversal_tags.h \
     /usr/include/c++/12/iterator \
+    /usr/include/c++/12/iosfwd \
+    /usr/include/c++/12/bits/stringfwd.h \
+    /usr/include/c++/12/bits/memoryfwd.h \
+    /usr/include/c++/12/bits/postypes.h \
+    /usr/include/c++/12/cwchar \
+    /usr/include/wchar.h \
+    /usr/include/x86_64-linux-gnu/bits/wchar.h \
+    /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
+    /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
+    /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+    /usr/include/x86_64-linux-gnu/bits/wchar2.h \
     /usr/include/c++/12/bits/stream_iterator.h \
+    /usr/include/c++/12/bits/streambuf_iterator.h \
+    /usr/include/c++/12/streambuf \
+    /usr/include/c++/12/bits/localefwd.h \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/c++locale.h \
+    /usr/include/c++/12/clocale \
+    /usr/include/locale.h \
+    /usr/include/x86_64-linux-gnu/bits/locale.h \
+    /usr/include/c++/12/cctype \
+    /usr/include/ctype.h \
+    /usr/include/c++/12/bits/ios_base.h \
+    /usr/include/c++/12/ext/atomicity.h \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/gthr.h \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/gthr-default.h \
+    /usr/include/pthread.h \
+    /usr/include/sched.h \
+    /usr/include/x86_64-linux-gnu/bits/sched.h \
+    /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h \
+    /usr/include/x86_64-linux-gnu/bits/cpu-set.h \
+    /usr/include/x86_64-linux-gnu/bits/setjmp.h \
+    /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h \
+    /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
+    /usr/include/c++/12/bits/locale_classes.h \
+    /usr/include/c++/12/string \
+    /usr/include/c++/12/bits/char_traits.h \
+    /usr/include/c++/12/cstdint \
+    /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h \
+    /usr/include/stdint.h \
+    /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+    /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
+    /usr/include/c++/12/bits/allocator.h \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/c++allocator.h \
+    /usr/include/c++/12/bits/new_allocator.h \
+    /usr/include/c++/12/bits/ostream_insert.h \
+    /usr/include/c++/12/bits/cxxabi_forced.h \
+    /usr/include/c++/12/bits/stl_function.h \
+    /usr/include/c++/12/backward/binders.h \
+    /usr/include/c++/12/bits/refwrap.h \
+    /usr/include/c++/12/bits/range_access.h \
+    /usr/include/c++/12/bits/basic_string.h \
+    /usr/include/c++/12/ext/alloc_traits.h \
+    /usr/include/c++/12/bits/alloc_traits.h \
+    /usr/include/c++/12/bits/stl_construct.h \
+    /usr/include/c++/12/string_view \
+    /usr/include/c++/12/bits/functional_hash.h \
+    /usr/include/c++/12/bits/hash_bytes.h \
+    /usr/include/c++/12/bits/string_view.tcc \
+    /usr/include/c++/12/ext/string_conversions.h \
+    /usr/include/c++/12/cerrno \
+    /usr/include/errno.h \
+    /usr/include/x86_64-linux-gnu/bits/errno.h \
+    /usr/include/linux/errno.h \
+    /usr/include/x86_64-linux-gnu/asm/errno.h \
+    /usr/include/asm-generic/errno.h \
+    /usr/include/asm-generic/errno-base.h \
+    /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
+    /usr/include/c++/12/bits/charconv.h \
+    /usr/include/c++/12/bits/basic_string.tcc \
+    /usr/include/c++/12/bits/locale_classes.tcc \
+    /usr/include/c++/12/system_error \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/error_constants.h \
+    /usr/include/c++/12/stdexcept \
+    /usr/include/c++/12/exception \
+    /usr/include/c++/12/bits/exception_ptr.h \
+    /usr/include/c++/12/bits/cxxabi_init_exception.h \
+    /usr/include/c++/12/typeinfo \
+    /usr/include/c++/12/bits/nested_exception.h \
+    /usr/include/c++/12/bits/streambuf.tcc \
     /usr/include/thrust/iterator/detail/universal_categories.h \
     /usr/include/thrust/iterator/detail/is_iterator_category.h \
     /usr/include/thrust/iterator/detail/iterator_category_to_traversal.h \
@@ -415,6 +369,8 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/thrust/detail/type_traits/has_member_function.h \
     /usr/include/thrust/detail/memory_wrapper.h \
     /usr/include/c++/12/memory \
+    /usr/include/c++/12/bits/stl_uninitialized.h \
+    /usr/include/c++/12/bits/stl_tempbuf.h \
     /usr/include/c++/12/bits/stl_raw_storage_iter.h \
     /usr/include/c++/12/bits/align.h \
     /usr/include/c++/12/bit \
@@ -422,12 +378,14 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/c++/12/bits/shared_ptr.h \
     /usr/include/c++/12/bits/shared_ptr_base.h \
     /usr/include/c++/12/bits/allocated_ptr.h \
+    /usr/include/c++/12/ext/aligned_buffer.h \
     /usr/include/c++/12/ext/concurrence.h \
     /usr/include/c++/12/bits/shared_ptr_atomic.h \
     /usr/include/c++/12/bits/atomic_base.h \
     /usr/include/c++/12/bits/atomic_lockfree_defines.h \
     /usr/include/c++/12/backward/auto_ptr.h \
     /usr/include/c++/12/pstl/glue_memory_defs.h \
+    /usr/include/c++/12/pstl/execution_defs.h \
     /usr/include/thrust/detail/allocator/allocator_traits.inl \
     /usr/include/thrust/detail/type_traits/is_call_possible.h \
     /usr/include/thrust/detail/integer_traits.h \
@@ -452,9 +410,19 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/c++/12/bits/hashtable.h \
     /usr/include/c++/12/bits/hashtable_policy.h \
     /usr/include/c++/12/bits/enable_special_members.h \
+    /usr/include/c++/12/bits/node_handle.h \
     /usr/include/c++/12/bits/unordered_map.h \
+    /usr/include/c++/12/bits/erase_if.h \
+    /usr/include/c++/12/vector \
+    /usr/include/c++/12/bits/stl_vector.h \
+    /usr/include/c++/12/bits/stl_bvector.h \
+    /usr/include/c++/12/bits/vector.tcc \
     /usr/include/c++/12/array \
     /usr/include/c++/12/compare \
+    /usr/include/c++/12/bits/stl_algo.h \
+    /usr/include/c++/12/bits/algorithmfwd.h \
+    /usr/include/c++/12/bits/stl_heap.h \
+    /usr/include/c++/12/bits/uniform_int_dist.h \
     /usr/include/thrust/detail/functional/placeholder.h \
     /usr/include/thrust/detail/functional/actor.h \
     /usr/include/thrust/tuple.h \
@@ -501,6 +469,21 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/thrust/system_error.h \
     /usr/include/thrust/system/error_code.h \
     /usr/include/thrust/system/detail/errno.h \
+    /usr/include/c++/12/iostream \
+    /usr/include/c++/12/ostream \
+    /usr/include/c++/12/ios \
+    /usr/include/c++/12/bits/basic_ios.h \
+    /usr/include/c++/12/bits/locale_facets.h \
+    /usr/include/c++/12/cwctype \
+    /usr/include/wctype.h \
+    /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/ctype_base.h \
+    /usr/include/x86_64-linux-gnu/c++/12/bits/ctype_inline.h \
+    /usr/include/c++/12/bits/locale_facets.tcc \
+    /usr/include/c++/12/bits/basic_ios.tcc \
+    /usr/include/c++/12/bits/ostream.tcc \
+    /usr/include/c++/12/istream \
+    /usr/include/c++/12/bits/istream.tcc \
     /usr/include/thrust/system/detail/error_category.inl \
     /usr/include/c++/12/cstring \
     /usr/include/thrust/system/detail/error_code.inl \
@@ -899,4 +882,21 @@ CMakeFiles/demcfd_core.dir/kernel/neighborSearch.cu.o : /teamspace/studios/this_
     /usr/include/cub/device/dispatch/dispatch_merge_sort.cuh \
     /usr/include/cub/agent/agent_merge_sort.cuh \
     /usr/include/cub/block/block_merge_sort.cuh \
-    /usr/include/cub/thread/thread_sort.cuh
+    /usr/include/cub/thread/thread_sort.cuh \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myParticle.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myHash.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myMat.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myQua.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h \
+    /usr/include/c++/12/algorithm \
+    /usr/include/c++/12/pstl/glue_algorithm_defs.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myInteraction.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/mySpatialGrid.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h \
+    /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h \
+    /usr/include/c++/12/map \
+    /usr/include/c++/12/bits/stl_tree.h \
+    /usr/include/c++/12/bits/stl_map.h \
+    /usr/include/c++/12/bits/stl_multimap.h

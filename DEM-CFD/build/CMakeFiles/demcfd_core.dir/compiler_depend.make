@@ -21,30 +21,20 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/assert.h \
   /usr/include/builtin_types.h \
   /usr/include/c++/12/algorithm \
-  /usr/include/c++/12/array \
-  /usr/include/c++/12/atomic \
-  /usr/include/c++/12/backward/auto_ptr.h \
   /usr/include/c++/12/backward/binders.h \
-  /usr/include/c++/12/bit \
   /usr/include/c++/12/bits/algorithmfwd.h \
-  /usr/include/c++/12/bits/align.h \
   /usr/include/c++/12/bits/alloc_traits.h \
-  /usr/include/c++/12/bits/allocated_ptr.h \
   /usr/include/c++/12/bits/allocator.h \
-  /usr/include/c++/12/bits/atomic_base.h \
-  /usr/include/c++/12/bits/atomic_lockfree_defines.h \
   /usr/include/c++/12/bits/basic_ios.h \
   /usr/include/c++/12/bits/basic_ios.tcc \
   /usr/include/c++/12/bits/basic_string.h \
   /usr/include/c++/12/bits/basic_string.tcc \
   /usr/include/c++/12/bits/char_traits.h \
   /usr/include/c++/12/bits/charconv.h \
-  /usr/include/c++/12/bits/chrono.h \
   /usr/include/c++/12/bits/concept_check.h \
   /usr/include/c++/12/bits/cpp_type_traits.h \
   /usr/include/c++/12/bits/cxxabi_forced.h \
   /usr/include/c++/12/bits/cxxabi_init_exception.h \
-  /usr/include/c++/12/bits/enable_special_members.h \
   /usr/include/c++/12/bits/erase_if.h \
   /usr/include/c++/12/bits/exception.h \
   /usr/include/c++/12/bits/exception_defines.h \
@@ -52,8 +42,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/c++/12/bits/functexcept.h \
   /usr/include/c++/12/bits/functional_hash.h \
   /usr/include/c++/12/bits/hash_bytes.h \
-  /usr/include/c++/12/bits/hashtable.h \
-  /usr/include/c++/12/bits/hashtable_policy.h \
   /usr/include/c++/12/bits/invoke.h \
   /usr/include/c++/12/bits/ios_base.h \
   /usr/include/c++/12/bits/istream.tcc \
@@ -69,19 +57,13 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/c++/12/bits/node_handle.h \
   /usr/include/c++/12/bits/ostream.tcc \
   /usr/include/c++/12/bits/ostream_insert.h \
-  /usr/include/c++/12/bits/parse_numbers.h \
   /usr/include/c++/12/bits/postypes.h \
   /usr/include/c++/12/bits/predefined_ops.h \
   /usr/include/c++/12/bits/ptr_traits.h \
   /usr/include/c++/12/bits/range_access.h \
   /usr/include/c++/12/bits/refwrap.h \
-  /usr/include/c++/12/bits/shared_ptr.h \
-  /usr/include/c++/12/bits/shared_ptr_atomic.h \
-  /usr/include/c++/12/bits/shared_ptr_base.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/std_abs.h \
-  /usr/include/c++/12/bits/std_function.h \
-  /usr/include/c++/12/bits/std_mutex.h \
   /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_bvector.h \
@@ -94,37 +76,27 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/c++/12/bits/stl_map.h \
   /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
-  /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
-  /usr/include/c++/12/bits/stream_iterator.h \
   /usr/include/c++/12/bits/streambuf.tcc \
   /usr/include/c++/12/bits/streambuf_iterator.h \
   /usr/include/c++/12/bits/string_view.tcc \
   /usr/include/c++/12/bits/stringfwd.h \
   /usr/include/c++/12/bits/uniform_int_dist.h \
-  /usr/include/c++/12/bits/unique_ptr.h \
-  /usr/include/c++/12/bits/unordered_map.h \
   /usr/include/c++/12/bits/uses_allocator.h \
-  /usr/include/c++/12/bits/uses_allocator_args.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/bits/vector.tcc \
-  /usr/include/c++/12/cassert \
   /usr/include/c++/12/cctype \
   /usr/include/c++/12/cerrno \
-  /usr/include/c++/12/cfloat \
   /usr/include/c++/12/clocale \
   /usr/include/c++/12/cmath \
-  /usr/include/c++/12/compare \
   /usr/include/c++/12/cstddef \
   /usr/include/c++/12/cstdint \
   /usr/include/c++/12/cstdio \
   /usr/include/c++/12/cstdlib \
-  /usr/include/c++/12/cstring \
-  /usr/include/c++/12/ctime \
   /usr/include/c++/12/cwchar \
   /usr/include/c++/12/cwctype \
   /usr/include/c++/12/debug/assertions.h \
@@ -133,30 +105,22 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/c++/12/ext/aligned_buffer.h \
   /usr/include/c++/12/ext/alloc_traits.h \
   /usr/include/c++/12/ext/atomicity.h \
-  /usr/include/c++/12/ext/concurrence.h \
   /usr/include/c++/12/ext/numeric_traits.h \
   /usr/include/c++/12/ext/string_conversions.h \
   /usr/include/c++/12/ext/type_traits.h \
-  /usr/include/c++/12/functional \
   /usr/include/c++/12/initializer_list \
   /usr/include/c++/12/ios \
   /usr/include/c++/12/iosfwd \
   /usr/include/c++/12/iostream \
   /usr/include/c++/12/istream \
-  /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/map \
   /usr/include/c++/12/math.h \
-  /usr/include/c++/12/memory \
-  /usr/include/c++/12/memory_resource \
   /usr/include/c++/12/new \
   /usr/include/c++/12/ostream \
   /usr/include/c++/12/pstl/execution_defs.h \
   /usr/include/c++/12/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/12/pstl/glue_memory_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
-  /usr/include/c++/12/ratio \
-  /usr/include/c++/12/shared_mutex \
   /usr/include/c++/12/stdexcept \
   /usr/include/c++/12/stdlib.h \
   /usr/include/c++/12/streambuf \
@@ -178,10 +142,8 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/c++/12/tuple \
   /usr/include/c++/12/type_traits \
   /usr/include/c++/12/typeinfo \
-  /usr/include/c++/12/unordered_map \
   /usr/include/c++/12/utility \
   /usr/include/c++/12/vector \
-  /usr/include/c++/12/version \
   /usr/include/channel_descriptor.h \
   /usr/include/crt/common_functions.h \
   /usr/include/crt/cudacc_ext.h \
@@ -200,106 +162,7 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/crt/sm_90_rt.h \
   /usr/include/crt/sm_90_rt.hpp \
   /usr/include/ctype.h \
-  /usr/include/cub/agent/agent_merge_sort.cuh \
-  /usr/include/cub/agent/agent_radix_sort_downsweep.cuh \
-  /usr/include/cub/agent/agent_radix_sort_histogram.cuh \
-  /usr/include/cub/agent/agent_radix_sort_onesweep.cuh \
-  /usr/include/cub/agent/agent_radix_sort_upsweep.cuh \
-  /usr/include/cub/agent/agent_reduce.cuh \
-  /usr/include/cub/agent/agent_reduce_by_key.cuh \
-  /usr/include/cub/agent/agent_scan.cuh \
-  /usr/include/cub/agent/agent_scan_by_key.cuh \
-  /usr/include/cub/agent/agent_select_if.cuh \
-  /usr/include/cub/agent/agent_unique_by_key.cuh \
-  /usr/include/cub/agent/single_pass_scan_operators.cuh \
-  /usr/include/cub/block/block_discontinuity.cuh \
-  /usr/include/cub/block/block_exchange.cuh \
-  /usr/include/cub/block/block_load.cuh \
-  /usr/include/cub/block/block_merge_sort.cuh \
-  /usr/include/cub/block/block_radix_rank.cuh \
-  /usr/include/cub/block/block_radix_sort.cuh \
-  /usr/include/cub/block/block_raking_layout.cuh \
-  /usr/include/cub/block/block_reduce.cuh \
-  /usr/include/cub/block/block_scan.cuh \
-  /usr/include/cub/block/block_store.cuh \
-  /usr/include/cub/block/radix_rank_sort_operations.cuh \
-  /usr/include/cub/block/specializations/block_reduce_raking.cuh \
-  /usr/include/cub/block/specializations/block_reduce_raking_commutative_only.cuh \
-  /usr/include/cub/block/specializations/block_reduce_warp_reductions.cuh \
-  /usr/include/cub/block/specializations/block_scan_raking.cuh \
-  /usr/include/cub/block/specializations/block_scan_warp_scans.cuh \
-  /usr/include/cub/config.cuh \
-  /usr/include/cub/detail/choose_offset.cuh \
-  /usr/include/cub/detail/detect_cuda_runtime.cuh \
-  /usr/include/cub/detail/device_synchronize.cuh \
-  /usr/include/cub/detail/exec_check_disable.cuh \
-  /usr/include/cub/detail/type_traits.cuh \
-  /usr/include/cub/detail/uninitialized_copy.cuh \
-  /usr/include/cub/device/device_merge_sort.cuh \
-  /usr/include/cub/device/device_radix_sort.cuh \
-  /usr/include/cub/device/device_reduce.cuh \
-  /usr/include/cub/device/device_scan.cuh \
-  /usr/include/cub/device/device_select.cuh \
-  /usr/include/cub/device/dispatch/dispatch_merge_sort.cuh \
-  /usr/include/cub/device/dispatch/dispatch_radix_sort.cuh \
-  /usr/include/cub/device/dispatch/dispatch_reduce.cuh \
-  /usr/include/cub/device/dispatch/dispatch_reduce_by_key.cuh \
-  /usr/include/cub/device/dispatch/dispatch_scan.cuh \
-  /usr/include/cub/device/dispatch/dispatch_scan_by_key.cuh \
-  /usr/include/cub/device/dispatch/dispatch_select_if.cuh \
-  /usr/include/cub/device/dispatch/dispatch_unique_by_key.cuh \
-  /usr/include/cub/grid/grid_even_share.cuh \
-  /usr/include/cub/grid/grid_mapping.cuh \
-  /usr/include/cub/grid/grid_queue.cuh \
-  /usr/include/cub/iterator/arg_index_input_iterator.cuh \
-  /usr/include/cub/iterator/cache_modified_input_iterator.cuh \
-  /usr/include/cub/iterator/constant_input_iterator.cuh \
-  /usr/include/cub/thread/thread_load.cuh \
-  /usr/include/cub/thread/thread_operators.cuh \
-  /usr/include/cub/thread/thread_reduce.cuh \
-  /usr/include/cub/thread/thread_scan.cuh \
-  /usr/include/cub/thread/thread_sort.cuh \
-  /usr/include/cub/thread/thread_store.cuh \
-  /usr/include/cub/util_arch.cuh \
-  /usr/include/cub/util_compiler.cuh \
-  /usr/include/cub/util_cpp_dialect.cuh \
-  /usr/include/cub/util_debug.cuh \
-  /usr/include/cub/util_deprecated.cuh \
-  /usr/include/cub/util_device.cuh \
-  /usr/include/cub/util_macro.cuh \
-  /usr/include/cub/util_math.cuh \
-  /usr/include/cub/util_namespace.cuh \
-  /usr/include/cub/util_ptx.cuh \
-  /usr/include/cub/util_type.cuh \
-  /usr/include/cub/version.cuh \
-  /usr/include/cub/warp/specializations/warp_reduce_shfl.cuh \
-  /usr/include/cub/warp/specializations/warp_reduce_smem.cuh \
-  /usr/include/cub/warp/specializations/warp_scan_shfl.cuh \
-  /usr/include/cub/warp/specializations/warp_scan_smem.cuh \
-  /usr/include/cub/warp/warp_exchange.cuh \
-  /usr/include/cub/warp/warp_reduce.cuh \
-  /usr/include/cub/warp/warp_scan.cuh \
-  /usr/include/cuda/std/cstddef \
-  /usr/include/cuda/std/detail/__config \
-  /usr/include/cuda/std/detail/__pragma_pop \
-  /usr/include/cuda/std/detail/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__config \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_pop \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__tuple \
-  /usr/include/cuda/std/detail/libcxx/include/__undef_macros \
-  /usr/include/cuda/std/detail/libcxx/include/cstddef \
-  /usr/include/cuda/std/detail/libcxx/include/type_traits \
-  /usr/include/cuda/std/detail/libcxx/include/utility \
-  /usr/include/cuda/std/detail/libcxx/include/version \
-  /usr/include/cuda/std/type_traits \
-  /usr/include/cuda/std/utility \
-  /usr/include/cuda/std/version \
-  /usr/include/cuda_bf16.h \
-  /usr/include/cuda_bf16.hpp \
   /usr/include/cuda_device_runtime_api.h \
-  /usr/include/cuda_fp16.h \
-  /usr/include/cuda_fp16.hpp \
   /usr/include/cuda_runtime.h \
   /usr/include/cuda_runtime_api.h \
   /usr/include/device_atomic_functions.h \
@@ -318,9 +181,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/linux/limits.h \
   /usr/include/locale.h \
   /usr/include/math.h \
-  /usr/include/nv/detail/__preprocessor \
-  /usr/include/nv/detail/__target_macros \
-  /usr/include/nv/target \
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/sm_20_atomic_functions.h \
@@ -349,446 +209,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/surface_types.h \
   /usr/include/texture_indirect_functions.h \
   /usr/include/texture_types.h \
-  /usr/include/thrust/advance.h \
-  /usr/include/thrust/copy.h \
-  /usr/include/thrust/detail/advance.inl \
-  /usr/include/thrust/detail/alignment.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.inl \
-  /usr/include/thrust/detail/allocator/copy_construct_range.h \
-  /usr/include/thrust/detail/allocator/copy_construct_range.inl \
-  /usr/include/thrust/detail/allocator/default_construct_range.h \
-  /usr/include/thrust/detail/allocator/default_construct_range.inl \
-  /usr/include/thrust/detail/allocator/destroy_range.h \
-  /usr/include/thrust/detail/allocator/destroy_range.inl \
-  /usr/include/thrust/detail/allocator/fill_construct_range.h \
-  /usr/include/thrust/detail/allocator/fill_construct_range.inl \
-  /usr/include/thrust/detail/allocator/no_throw_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.inl \
-  /usr/include/thrust/detail/allocator/temporary_allocator.h \
-  /usr/include/thrust/detail/allocator/temporary_allocator.inl \
-  /usr/include/thrust/detail/allocator_aware_execution_policy.h \
-  /usr/include/thrust/detail/config.h \
-  /usr/include/thrust/detail/config/compiler.h \
-  /usr/include/thrust/detail/config/config.h \
-  /usr/include/thrust/detail/config/cpp_compatibility.h \
-  /usr/include/thrust/detail/config/cpp_dialect.h \
-  /usr/include/thrust/detail/config/debug.h \
-  /usr/include/thrust/detail/config/deprecated.h \
-  /usr/include/thrust/detail/config/device_system.h \
-  /usr/include/thrust/detail/config/exec_check_disable.h \
-  /usr/include/thrust/detail/config/forceinline.h \
-  /usr/include/thrust/detail/config/global_workarounds.h \
-  /usr/include/thrust/detail/config/host_device.h \
-  /usr/include/thrust/detail/config/host_system.h \
-  /usr/include/thrust/detail/config/memory_resource.h \
-  /usr/include/thrust/detail/config/namespace.h \
-  /usr/include/thrust/detail/config/simple_defines.h \
-  /usr/include/thrust/detail/contiguous_storage.h \
-  /usr/include/thrust/detail/contiguous_storage.inl \
-  /usr/include/thrust/detail/copy.h \
-  /usr/include/thrust/detail/copy.inl \
-  /usr/include/thrust/detail/copy_if.h \
-  /usr/include/thrust/detail/copy_if.inl \
-  /usr/include/thrust/detail/cpp11_required.h \
-  /usr/include/thrust/detail/cstdint.h \
-  /usr/include/thrust/detail/dependencies_aware_execution_policy.h \
-  /usr/include/thrust/detail/device_ptr.inl \
-  /usr/include/thrust/detail/distance.inl \
-  /usr/include/thrust/detail/equal.inl \
-  /usr/include/thrust/detail/execute_with_allocator.h \
-  /usr/include/thrust/detail/execute_with_allocator_fwd.h \
-  /usr/include/thrust/detail/execute_with_dependencies.h \
-  /usr/include/thrust/detail/execution_policy.h \
-  /usr/include/thrust/detail/extrema.inl \
-  /usr/include/thrust/detail/fill.inl \
-  /usr/include/thrust/detail/find.inl \
-  /usr/include/thrust/detail/for_each.inl \
-  /usr/include/thrust/detail/function.h \
-  /usr/include/thrust/detail/functional.inl \
-  /usr/include/thrust/detail/functional/actor.h \
-  /usr/include/thrust/detail/functional/actor.inl \
-  /usr/include/thrust/detail/functional/argument.h \
-  /usr/include/thrust/detail/functional/composite.h \
-  /usr/include/thrust/detail/functional/operators.h \
-  /usr/include/thrust/detail/functional/operators/arithmetic_operators.h \
-  /usr/include/thrust/detail/functional/operators/assignment_operator.h \
-  /usr/include/thrust/detail/functional/operators/bitwise_operators.h \
-  /usr/include/thrust/detail/functional/operators/compound_assignment_operators.h \
-  /usr/include/thrust/detail/functional/operators/logical_operators.h \
-  /usr/include/thrust/detail/functional/operators/operator_adaptors.h \
-  /usr/include/thrust/detail/functional/operators/relational_operators.h \
-  /usr/include/thrust/detail/functional/placeholder.h \
-  /usr/include/thrust/detail/functional/value.h \
-  /usr/include/thrust/detail/generate.inl \
-  /usr/include/thrust/detail/get_iterator_value.h \
-  /usr/include/thrust/detail/integer_math.h \
-  /usr/include/thrust/detail/integer_traits.h \
-  /usr/include/thrust/detail/internal_functional.h \
-  /usr/include/thrust/detail/malloc_and_free.h \
-  /usr/include/thrust/detail/memory_wrapper.h \
-  /usr/include/thrust/detail/merge.inl \
-  /usr/include/thrust/detail/minmax.h \
-  /usr/include/thrust/detail/mismatch.inl \
-  /usr/include/thrust/detail/mpl/math.h \
-  /usr/include/thrust/detail/numeric_traits.h \
-  /usr/include/thrust/detail/overlapped_copy.h \
-  /usr/include/thrust/detail/pair.inl \
-  /usr/include/thrust/detail/pointer.h \
-  /usr/include/thrust/detail/pointer.inl \
-  /usr/include/thrust/detail/preprocessor.h \
-  /usr/include/thrust/detail/raw_pointer_cast.h \
-  /usr/include/thrust/detail/raw_reference_cast.h \
-  /usr/include/thrust/detail/reduce.inl \
-  /usr/include/thrust/detail/reference.h \
-  /usr/include/thrust/detail/reference_forward_declaration.h \
-  /usr/include/thrust/detail/replace.inl \
-  /usr/include/thrust/detail/reverse.inl \
-  /usr/include/thrust/detail/scan.inl \
-  /usr/include/thrust/detail/scatter.inl \
-  /usr/include/thrust/detail/seq.h \
-  /usr/include/thrust/detail/sequence.inl \
-  /usr/include/thrust/detail/sort.inl \
-  /usr/include/thrust/detail/static_assert.h \
-  /usr/include/thrust/detail/swap.h \
-  /usr/include/thrust/detail/swap.inl \
-  /usr/include/thrust/detail/swap_ranges.inl \
-  /usr/include/thrust/detail/tabulate.inl \
-  /usr/include/thrust/detail/temporary_array.h \
-  /usr/include/thrust/detail/temporary_array.inl \
-  /usr/include/thrust/detail/temporary_buffer.h \
-  /usr/include/thrust/detail/transform.inl \
-  /usr/include/thrust/detail/transform_reduce.inl \
-  /usr/include/thrust/detail/trivial_sequence.h \
-  /usr/include/thrust/detail/tuple.inl \
-  /usr/include/thrust/detail/tuple_meta_transform.h \
-  /usr/include/thrust/detail/tuple_transform.h \
-  /usr/include/thrust/detail/type_deduction.h \
-  /usr/include/thrust/detail/type_traits.h \
-  /usr/include/thrust/detail/type_traits/function_traits.h \
-  /usr/include/thrust/detail/type_traits/has_member_function.h \
-  /usr/include/thrust/detail/type_traits/has_nested_type.h \
-  /usr/include/thrust/detail/type_traits/has_trivial_assign.h \
-  /usr/include/thrust/detail/type_traits/is_call_possible.h \
-  /usr/include/thrust/detail/type_traits/is_metafunction_defined.h \
-  /usr/include/thrust/detail/type_traits/iterator/is_output_iterator.h \
-  /usr/include/thrust/detail/type_traits/minimum_type.h \
-  /usr/include/thrust/detail/type_traits/pointer_traits.h \
-  /usr/include/thrust/detail/type_traits/result_of_adaptable_function.h \
-  /usr/include/thrust/detail/uninitialized_fill.inl \
-  /usr/include/thrust/detail/use_default.h \
-  /usr/include/thrust/detail/vector_base.h \
-  /usr/include/thrust/detail/vector_base.inl \
-  /usr/include/thrust/device_allocator.h \
-  /usr/include/thrust/device_ptr.h \
-  /usr/include/thrust/device_reference.h \
-  /usr/include/thrust/device_vector.h \
-  /usr/include/thrust/distance.h \
-  /usr/include/thrust/equal.h \
-  /usr/include/thrust/execution_policy.h \
-  /usr/include/thrust/extrema.h \
-  /usr/include/thrust/fill.h \
-  /usr/include/thrust/find.h \
-  /usr/include/thrust/for_each.h \
-  /usr/include/thrust/functional.h \
-  /usr/include/thrust/generate.h \
-  /usr/include/thrust/iterator/counting_iterator.h \
-  /usr/include/thrust/iterator/detail/any_assign.h \
-  /usr/include/thrust/iterator/detail/any_system_tag.h \
-  /usr/include/thrust/iterator/detail/counting_iterator.inl \
-  /usr/include/thrust/iterator/detail/device_system_tag.h \
-  /usr/include/thrust/iterator/detail/distance_from_result.h \
-  /usr/include/thrust/iterator/detail/host_system_tag.h \
-  /usr/include/thrust/iterator/detail/is_iterator_category.h \
-  /usr/include/thrust/iterator/detail/iterator_adaptor_base.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_system.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_facade_category.h \
-  /usr/include/thrust/iterator/detail/iterator_traits.inl \
-  /usr/include/thrust/iterator/detail/iterator_traversal_tags.h \
-  /usr/include/thrust/iterator/detail/minimum_category.h \
-  /usr/include/thrust/iterator/detail/minimum_system.h \
-  /usr/include/thrust/iterator/detail/normal_iterator.h \
-  /usr/include/thrust/iterator/detail/permutation_iterator_base.h \
-  /usr/include/thrust/iterator/detail/reverse_iterator.inl \
-  /usr/include/thrust/iterator/detail/reverse_iterator_base.h \
-  /usr/include/thrust/iterator/detail/tagged_iterator.h \
-  /usr/include/thrust/iterator/detail/transform_iterator.inl \
-  /usr/include/thrust/iterator/detail/tuple_of_iterator_references.h \
-  /usr/include/thrust/iterator/detail/universal_categories.h \
-  /usr/include/thrust/iterator/detail/zip_iterator.inl \
-  /usr/include/thrust/iterator/detail/zip_iterator_base.h \
-  /usr/include/thrust/iterator/iterator_adaptor.h \
-  /usr/include/thrust/iterator/iterator_categories.h \
-  /usr/include/thrust/iterator/iterator_facade.h \
-  /usr/include/thrust/iterator/iterator_traits.h \
-  /usr/include/thrust/iterator/permutation_iterator.h \
-  /usr/include/thrust/iterator/reverse_iterator.h \
-  /usr/include/thrust/iterator/transform_iterator.h \
-  /usr/include/thrust/iterator/zip_iterator.h \
-  /usr/include/thrust/memory.h \
-  /usr/include/thrust/merge.h \
-  /usr/include/thrust/mismatch.h \
-  /usr/include/thrust/mr/allocator.h \
-  /usr/include/thrust/mr/device_memory_resource.h \
-  /usr/include/thrust/mr/fancy_pointer_resource.h \
-  /usr/include/thrust/mr/host_memory_resource.h \
-  /usr/include/thrust/mr/memory_resource.h \
-  /usr/include/thrust/mr/new.h \
-  /usr/include/thrust/mr/polymorphic_adaptor.h \
-  /usr/include/thrust/mr/validator.h \
-  /usr/include/thrust/pair.h \
-  /usr/include/thrust/reduce.h \
-  /usr/include/thrust/replace.h \
-  /usr/include/thrust/reverse.h \
-  /usr/include/thrust/scan.h \
-  /usr/include/thrust/scatter.h \
-  /usr/include/thrust/sequence.h \
-  /usr/include/thrust/sort.h \
-  /usr/include/thrust/swap.h \
-  /usr/include/thrust/system/cpp/detail/adjacent_difference.h \
-  /usr/include/thrust/system/cpp/detail/assign_value.h \
-  /usr/include/thrust/system/cpp/detail/binary_search.h \
-  /usr/include/thrust/system/cpp/detail/copy.h \
-  /usr/include/thrust/system/cpp/detail/copy_if.h \
-  /usr/include/thrust/system/cpp/detail/execution_policy.h \
-  /usr/include/thrust/system/cpp/detail/extrema.h \
-  /usr/include/thrust/system/cpp/detail/find.h \
-  /usr/include/thrust/system/cpp/detail/for_each.h \
-  /usr/include/thrust/system/cpp/detail/generate.h \
-  /usr/include/thrust/system/cpp/detail/get_value.h \
-  /usr/include/thrust/system/cpp/detail/iter_swap.h \
-  /usr/include/thrust/system/cpp/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cpp/detail/merge.h \
-  /usr/include/thrust/system/cpp/detail/par.h \
-  /usr/include/thrust/system/cpp/detail/partition.h \
-  /usr/include/thrust/system/cpp/detail/reduce.h \
-  /usr/include/thrust/system/cpp/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cpp/detail/remove.h \
-  /usr/include/thrust/system/cpp/detail/scan.h \
-  /usr/include/thrust/system/cpp/detail/scan_by_key.h \
-  /usr/include/thrust/system/cpp/detail/set_operations.h \
-  /usr/include/thrust/system/cpp/detail/sort.h \
-  /usr/include/thrust/system/cpp/detail/swap_ranges.h \
-  /usr/include/thrust/system/cpp/detail/transform.h \
-  /usr/include/thrust/system/cpp/detail/unique.h \
-  /usr/include/thrust/system/cpp/detail/unique_by_key.h \
-  /usr/include/thrust/system/cpp/execution_policy.h \
-  /usr/include/thrust/system/cpp/memory_resource.h \
-  /usr/include/thrust/system/cpp/pointer.h \
-  /usr/include/thrust/system/cuda/config.h \
-  /usr/include/thrust/system/cuda/detail/assign_value.h \
-  /usr/include/thrust/system/cuda/detail/cdp_dispatch.h \
-  /usr/include/thrust/system/cuda/detail/copy.h \
-  /usr/include/thrust/system/cuda/detail/copy_if.h \
-  /usr/include/thrust/system/cuda/detail/core/agent_launcher.h \
-  /usr/include/thrust/system/cuda/detail/core/alignment.h \
-  /usr/include/thrust/system/cuda/detail/core/triple_chevron_launch.h \
-  /usr/include/thrust/system/cuda/detail/core/util.h \
-  /usr/include/thrust/system/cuda/detail/cross_system.h \
-  /usr/include/thrust/system/cuda/detail/dispatch.h \
-  /usr/include/thrust/system/cuda/detail/equal.h \
-  /usr/include/thrust/system/cuda/detail/error.inl \
-  /usr/include/thrust/system/cuda/detail/execution_policy.h \
-  /usr/include/thrust/system/cuda/detail/extrema.h \
-  /usr/include/thrust/system/cuda/detail/fill.h \
-  /usr/include/thrust/system/cuda/detail/find.h \
-  /usr/include/thrust/system/cuda/detail/for_each.h \
-  /usr/include/thrust/system/cuda/detail/generate.h \
-  /usr/include/thrust/system/cuda/detail/get_value.h \
-  /usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h \
-  /usr/include/thrust/system/cuda/detail/guarded_driver_types.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_cross_system.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_device_to_device.h \
-  /usr/include/thrust/system/cuda/detail/iter_swap.h \
-  /usr/include/thrust/system/cuda/detail/make_unsigned_special.h \
-  /usr/include/thrust/system/cuda/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cuda/detail/merge.h \
-  /usr/include/thrust/system/cuda/detail/mismatch.h \
-  /usr/include/thrust/system/cuda/detail/par.h \
-  /usr/include/thrust/system/cuda/detail/par_to_seq.h \
-  /usr/include/thrust/system/cuda/detail/parallel_for.h \
-  /usr/include/thrust/system/cuda/detail/reduce.h \
-  /usr/include/thrust/system/cuda/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cuda/detail/replace.h \
-  /usr/include/thrust/system/cuda/detail/reverse.h \
-  /usr/include/thrust/system/cuda/detail/scan.h \
-  /usr/include/thrust/system/cuda/detail/scan_by_key.h \
-  /usr/include/thrust/system/cuda/detail/scatter.h \
-  /usr/include/thrust/system/cuda/detail/sort.h \
-  /usr/include/thrust/system/cuda/detail/swap_ranges.h \
-  /usr/include/thrust/system/cuda/detail/tabulate.h \
-  /usr/include/thrust/system/cuda/detail/temporary_buffer.h \
-  /usr/include/thrust/system/cuda/detail/terminate.h \
-  /usr/include/thrust/system/cuda/detail/transform.h \
-  /usr/include/thrust/system/cuda/detail/transform_reduce.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_copy.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_fill.h \
-  /usr/include/thrust/system/cuda/detail/util.h \
-  /usr/include/thrust/system/cuda/error.h \
-  /usr/include/thrust/system/cuda/execution_policy.h \
-  /usr/include/thrust/system/cuda/memory_resource.h \
-  /usr/include/thrust/system/cuda/pointer.h \
-  /usr/include/thrust/system/detail/adl/assign_value.h \
-  /usr/include/thrust/system/detail/adl/copy.h \
-  /usr/include/thrust/system/detail/adl/copy_if.h \
-  /usr/include/thrust/system/detail/adl/equal.h \
-  /usr/include/thrust/system/detail/adl/extrema.h \
-  /usr/include/thrust/system/detail/adl/fill.h \
-  /usr/include/thrust/system/detail/adl/find.h \
-  /usr/include/thrust/system/detail/adl/for_each.h \
-  /usr/include/thrust/system/detail/adl/generate.h \
-  /usr/include/thrust/system/detail/adl/get_value.h \
-  /usr/include/thrust/system/detail/adl/iter_swap.h \
-  /usr/include/thrust/system/detail/adl/malloc_and_free.h \
-  /usr/include/thrust/system/detail/adl/merge.h \
-  /usr/include/thrust/system/detail/adl/mismatch.h \
-  /usr/include/thrust/system/detail/adl/reduce.h \
-  /usr/include/thrust/system/detail/adl/reduce_by_key.h \
-  /usr/include/thrust/system/detail/adl/replace.h \
-  /usr/include/thrust/system/detail/adl/reverse.h \
-  /usr/include/thrust/system/detail/adl/scan.h \
-  /usr/include/thrust/system/detail/adl/scan_by_key.h \
-  /usr/include/thrust/system/detail/adl/scatter.h \
-  /usr/include/thrust/system/detail/adl/sequence.h \
-  /usr/include/thrust/system/detail/adl/sort.h \
-  /usr/include/thrust/system/detail/adl/swap_ranges.h \
-  /usr/include/thrust/system/detail/adl/tabulate.h \
-  /usr/include/thrust/system/detail/adl/temporary_buffer.h \
-  /usr/include/thrust/system/detail/adl/transform.h \
-  /usr/include/thrust/system/detail/adl/transform_reduce.h \
-  /usr/include/thrust/system/detail/adl/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/bad_alloc.h \
-  /usr/include/thrust/system/detail/errno.h \
-  /usr/include/thrust/system/detail/error_category.inl \
-  /usr/include/thrust/system/detail/error_code.inl \
-  /usr/include/thrust/system/detail/error_condition.inl \
-  /usr/include/thrust/system/detail/generic/advance.h \
-  /usr/include/thrust/system/detail/generic/advance.inl \
-  /usr/include/thrust/system/detail/generic/copy.h \
-  /usr/include/thrust/system/detail/generic/copy.inl \
-  /usr/include/thrust/system/detail/generic/copy_if.h \
-  /usr/include/thrust/system/detail/generic/copy_if.inl \
-  /usr/include/thrust/system/detail/generic/distance.h \
-  /usr/include/thrust/system/detail/generic/distance.inl \
-  /usr/include/thrust/system/detail/generic/equal.h \
-  /usr/include/thrust/system/detail/generic/equal.inl \
-  /usr/include/thrust/system/detail/generic/extrema.h \
-  /usr/include/thrust/system/detail/generic/extrema.inl \
-  /usr/include/thrust/system/detail/generic/fill.h \
-  /usr/include/thrust/system/detail/generic/find.h \
-  /usr/include/thrust/system/detail/generic/find.inl \
-  /usr/include/thrust/system/detail/generic/for_each.h \
-  /usr/include/thrust/system/detail/generic/generate.h \
-  /usr/include/thrust/system/detail/generic/generate.inl \
-  /usr/include/thrust/system/detail/generic/memory.h \
-  /usr/include/thrust/system/detail/generic/memory.inl \
-  /usr/include/thrust/system/detail/generic/merge.h \
-  /usr/include/thrust/system/detail/generic/merge.inl \
-  /usr/include/thrust/system/detail/generic/mismatch.h \
-  /usr/include/thrust/system/detail/generic/mismatch.inl \
-  /usr/include/thrust/system/detail/generic/reduce.h \
-  /usr/include/thrust/system/detail/generic/reduce.inl \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.h \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.inl \
-  /usr/include/thrust/system/detail/generic/replace.h \
-  /usr/include/thrust/system/detail/generic/replace.inl \
-  /usr/include/thrust/system/detail/generic/reverse.h \
-  /usr/include/thrust/system/detail/generic/reverse.inl \
-  /usr/include/thrust/system/detail/generic/scan.h \
-  /usr/include/thrust/system/detail/generic/scan.inl \
-  /usr/include/thrust/system/detail/generic/scan_by_key.h \
-  /usr/include/thrust/system/detail/generic/scan_by_key.inl \
-  /usr/include/thrust/system/detail/generic/scatter.h \
-  /usr/include/thrust/system/detail/generic/scatter.inl \
-  /usr/include/thrust/system/detail/generic/select_system.h \
-  /usr/include/thrust/system/detail/generic/select_system.inl \
-  /usr/include/thrust/system/detail/generic/select_system_exists.h \
-  /usr/include/thrust/system/detail/generic/sequence.h \
-  /usr/include/thrust/system/detail/generic/sequence.inl \
-  /usr/include/thrust/system/detail/generic/sort.h \
-  /usr/include/thrust/system/detail/generic/sort.inl \
-  /usr/include/thrust/system/detail/generic/swap_ranges.h \
-  /usr/include/thrust/system/detail/generic/swap_ranges.inl \
-  /usr/include/thrust/system/detail/generic/tabulate.h \
-  /usr/include/thrust/system/detail/generic/tabulate.inl \
-  /usr/include/thrust/system/detail/generic/tag.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.inl \
-  /usr/include/thrust/system/detail/generic/transform.h \
-  /usr/include/thrust/system/detail/generic/transform.inl \
-  /usr/include/thrust/system/detail/generic/transform_reduce.h \
-  /usr/include/thrust/system/detail/generic/transform_reduce.inl \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.inl \
-  /usr/include/thrust/system/detail/sequential/adjacent_difference.h \
-  /usr/include/thrust/system/detail/sequential/assign_value.h \
-  /usr/include/thrust/system/detail/sequential/binary_search.h \
-  /usr/include/thrust/system/detail/sequential/copy.h \
-  /usr/include/thrust/system/detail/sequential/copy.inl \
-  /usr/include/thrust/system/detail/sequential/copy_backward.h \
-  /usr/include/thrust/system/detail/sequential/copy_if.h \
-  /usr/include/thrust/system/detail/sequential/equal.h \
-  /usr/include/thrust/system/detail/sequential/execution_policy.h \
-  /usr/include/thrust/system/detail/sequential/extrema.h \
-  /usr/include/thrust/system/detail/sequential/fill.h \
-  /usr/include/thrust/system/detail/sequential/find.h \
-  /usr/include/thrust/system/detail/sequential/for_each.h \
-  /usr/include/thrust/system/detail/sequential/general_copy.h \
-  /usr/include/thrust/system/detail/sequential/generate.h \
-  /usr/include/thrust/system/detail/sequential/get_value.h \
-  /usr/include/thrust/system/detail/sequential/insertion_sort.h \
-  /usr/include/thrust/system/detail/sequential/iter_swap.h \
-  /usr/include/thrust/system/detail/sequential/malloc_and_free.h \
-  /usr/include/thrust/system/detail/sequential/merge.h \
-  /usr/include/thrust/system/detail/sequential/merge.inl \
-  /usr/include/thrust/system/detail/sequential/mismatch.h \
-  /usr/include/thrust/system/detail/sequential/partition.h \
-  /usr/include/thrust/system/detail/sequential/reduce.h \
-  /usr/include/thrust/system/detail/sequential/reduce_by_key.h \
-  /usr/include/thrust/system/detail/sequential/remove.h \
-  /usr/include/thrust/system/detail/sequential/replace.h \
-  /usr/include/thrust/system/detail/sequential/reverse.h \
-  /usr/include/thrust/system/detail/sequential/scan.h \
-  /usr/include/thrust/system/detail/sequential/scan_by_key.h \
-  /usr/include/thrust/system/detail/sequential/scatter.h \
-  /usr/include/thrust/system/detail/sequential/sequence.h \
-  /usr/include/thrust/system/detail/sequential/set_operations.h \
-  /usr/include/thrust/system/detail/sequential/sort.h \
-  /usr/include/thrust/system/detail/sequential/sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.inl \
-  /usr/include/thrust/system/detail/sequential/swap_ranges.h \
-  /usr/include/thrust/system/detail/sequential/tabulate.h \
-  /usr/include/thrust/system/detail/sequential/temporary_buffer.h \
-  /usr/include/thrust/system/detail/sequential/transform.h \
-  /usr/include/thrust/system/detail/sequential/transform_reduce.h \
-  /usr/include/thrust/system/detail/sequential/trivial_copy.h \
-  /usr/include/thrust/system/detail/sequential/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/sequential/unique.h \
-  /usr/include/thrust/system/detail/sequential/unique_by_key.h \
-  /usr/include/thrust/system/detail/system_error.inl \
-  /usr/include/thrust/system/error_code.h \
-  /usr/include/thrust/system/system_error.h \
-  /usr/include/thrust/system_error.h \
-  /usr/include/thrust/tabulate.h \
-  /usr/include/thrust/transform.h \
-  /usr/include/thrust/transform_reduce.h \
-  /usr/include/thrust/tuple.h \
-  /usr/include/thrust/type_traits/integer_sequence.h \
-  /usr/include/thrust/type_traits/is_contiguous_iterator.h \
-  /usr/include/thrust/type_traits/is_trivially_relocatable.h \
-  /usr/include/thrust/type_traits/logical_metafunctions.h \
-  /usr/include/thrust/type_traits/remove_cvref.h \
-  /usr/include/thrust/type_traits/void_t.h \
-  /usr/include/thrust/uninitialized_fill.h \
-  /usr/include/thrust/version.h \
   /usr/include/time.h \
   /usr/include/vector_functions.h \
   /usr/include/vector_functions.hpp \
@@ -899,7 +319,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMIntegration.cu.o: /teamspace/studios/this_s
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
-  /usr/lib/gcc/x86_64-linux-gnu/12/include/float.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
@@ -933,34 +352,23 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/asm-generic/int-ll64.h \
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
-  /usr/include/assert.h \
   /usr/include/builtin_types.h \
   /usr/include/c++/12/algorithm \
-  /usr/include/c++/12/array \
-  /usr/include/c++/12/atomic \
-  /usr/include/c++/12/backward/auto_ptr.h \
   /usr/include/c++/12/backward/binders.h \
-  /usr/include/c++/12/bit \
   /usr/include/c++/12/bits/algorithmfwd.h \
-  /usr/include/c++/12/bits/align.h \
   /usr/include/c++/12/bits/alloc_traits.h \
-  /usr/include/c++/12/bits/allocated_ptr.h \
   /usr/include/c++/12/bits/allocator.h \
-  /usr/include/c++/12/bits/atomic_base.h \
-  /usr/include/c++/12/bits/atomic_lockfree_defines.h \
   /usr/include/c++/12/bits/basic_ios.h \
   /usr/include/c++/12/bits/basic_ios.tcc \
   /usr/include/c++/12/bits/basic_string.h \
   /usr/include/c++/12/bits/basic_string.tcc \
   /usr/include/c++/12/bits/char_traits.h \
   /usr/include/c++/12/bits/charconv.h \
-  /usr/include/c++/12/bits/chrono.h \
   /usr/include/c++/12/bits/codecvt.h \
   /usr/include/c++/12/bits/concept_check.h \
   /usr/include/c++/12/bits/cpp_type_traits.h \
   /usr/include/c++/12/bits/cxxabi_forced.h \
   /usr/include/c++/12/bits/cxxabi_init_exception.h \
-  /usr/include/c++/12/bits/enable_special_members.h \
   /usr/include/c++/12/bits/erase_if.h \
   /usr/include/c++/12/bits/exception.h \
   /usr/include/c++/12/bits/exception_defines.h \
@@ -969,8 +377,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/c++/12/bits/functexcept.h \
   /usr/include/c++/12/bits/functional_hash.h \
   /usr/include/c++/12/bits/hash_bytes.h \
-  /usr/include/c++/12/bits/hashtable.h \
-  /usr/include/c++/12/bits/hashtable_policy.h \
   /usr/include/c++/12/bits/invoke.h \
   /usr/include/c++/12/bits/ios_base.h \
   /usr/include/c++/12/bits/istream.tcc \
@@ -989,21 +395,15 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/c++/12/bits/node_handle.h \
   /usr/include/c++/12/bits/ostream.tcc \
   /usr/include/c++/12/bits/ostream_insert.h \
-  /usr/include/c++/12/bits/parse_numbers.h \
   /usr/include/c++/12/bits/postypes.h \
   /usr/include/c++/12/bits/predefined_ops.h \
   /usr/include/c++/12/bits/ptr_traits.h \
   /usr/include/c++/12/bits/quoted_string.h \
   /usr/include/c++/12/bits/range_access.h \
   /usr/include/c++/12/bits/refwrap.h \
-  /usr/include/c++/12/bits/shared_ptr.h \
-  /usr/include/c++/12/bits/shared_ptr_atomic.h \
-  /usr/include/c++/12/bits/shared_ptr_base.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/sstream.tcc \
   /usr/include/c++/12/bits/std_abs.h \
-  /usr/include/c++/12/bits/std_function.h \
-  /usr/include/c++/12/bits/std_mutex.h \
   /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_bvector.h \
@@ -1016,32 +416,23 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/c++/12/bits/stl_map.h \
   /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
-  /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
-  /usr/include/c++/12/bits/stream_iterator.h \
   /usr/include/c++/12/bits/streambuf.tcc \
   /usr/include/c++/12/bits/streambuf_iterator.h \
   /usr/include/c++/12/bits/string_view.tcc \
   /usr/include/c++/12/bits/stringfwd.h \
   /usr/include/c++/12/bits/uniform_int_dist.h \
-  /usr/include/c++/12/bits/unique_ptr.h \
-  /usr/include/c++/12/bits/unordered_map.h \
   /usr/include/c++/12/bits/uses_allocator.h \
-  /usr/include/c++/12/bits/uses_allocator_args.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/bits/vector.tcc \
-  /usr/include/c++/12/cassert \
   /usr/include/c++/12/cctype \
   /usr/include/c++/12/cerrno \
-  /usr/include/c++/12/cfloat \
   /usr/include/c++/12/clocale \
   /usr/include/c++/12/cmath \
-  /usr/include/c++/12/compare \
-  /usr/include/c++/12/cstddef \
   /usr/include/c++/12/cstdint \
   /usr/include/c++/12/cstdio \
   /usr/include/c++/12/cstdlib \
@@ -1055,32 +446,24 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/c++/12/ext/aligned_buffer.h \
   /usr/include/c++/12/ext/alloc_traits.h \
   /usr/include/c++/12/ext/atomicity.h \
-  /usr/include/c++/12/ext/concurrence.h \
   /usr/include/c++/12/ext/numeric_traits.h \
   /usr/include/c++/12/ext/string_conversions.h \
   /usr/include/c++/12/ext/type_traits.h \
   /usr/include/c++/12/fstream \
-  /usr/include/c++/12/functional \
   /usr/include/c++/12/initializer_list \
   /usr/include/c++/12/iomanip \
   /usr/include/c++/12/ios \
   /usr/include/c++/12/iosfwd \
   /usr/include/c++/12/iostream \
   /usr/include/c++/12/istream \
-  /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/locale \
   /usr/include/c++/12/map \
-  /usr/include/c++/12/memory \
-  /usr/include/c++/12/memory_resource \
   /usr/include/c++/12/new \
   /usr/include/c++/12/ostream \
   /usr/include/c++/12/pstl/execution_defs.h \
   /usr/include/c++/12/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/12/pstl/glue_memory_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
-  /usr/include/c++/12/ratio \
-  /usr/include/c++/12/shared_mutex \
   /usr/include/c++/12/sstream \
   /usr/include/c++/12/stdexcept \
   /usr/include/c++/12/streambuf \
@@ -1102,43 +485,12 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/c++/12/tuple \
   /usr/include/c++/12/type_traits \
   /usr/include/c++/12/typeinfo \
-  /usr/include/c++/12/unordered_map \
   /usr/include/c++/12/utility \
   /usr/include/c++/12/vector \
-  /usr/include/c++/12/version \
   /usr/include/channel_descriptor.h \
   /usr/include/crt/host_config.h \
   /usr/include/crt/host_defines.h \
   /usr/include/ctype.h \
-  /usr/include/cub/config.cuh \
-  /usr/include/cub/detail/detect_cuda_runtime.cuh \
-  /usr/include/cub/detail/device_synchronize.cuh \
-  /usr/include/cub/detail/exec_check_disable.cuh \
-  /usr/include/cub/detail/type_traits.cuh \
-  /usr/include/cub/detail/uninitialized_copy.cuh \
-  /usr/include/cub/util_arch.cuh \
-  /usr/include/cub/util_compiler.cuh \
-  /usr/include/cub/util_cpp_dialect.cuh \
-  /usr/include/cub/util_debug.cuh \
-  /usr/include/cub/util_deprecated.cuh \
-  /usr/include/cub/util_device.cuh \
-  /usr/include/cub/util_macro.cuh \
-  /usr/include/cub/util_namespace.cuh \
-  /usr/include/cub/util_type.cuh \
-  /usr/include/cub/version.cuh \
-  /usr/include/cuda/std/cstddef \
-  /usr/include/cuda/std/detail/__config \
-  /usr/include/cuda/std/detail/__pragma_pop \
-  /usr/include/cuda/std/detail/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__config \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_pop \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__undef_macros \
-  /usr/include/cuda/std/detail/libcxx/include/cstddef \
-  /usr/include/cuda/std/detail/libcxx/include/type_traits \
-  /usr/include/cuda/std/detail/libcxx/include/version \
-  /usr/include/cuda/std/type_traits \
-  /usr/include/cuda/std/version \
   /usr/include/cuda_device_runtime_api.h \
   /usr/include/cuda_runtime.h \
   /usr/include/cuda_runtime_api.h \
@@ -1161,9 +513,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/linux/types.h \
   /usr/include/locale.h \
   /usr/include/math.h \
-  /usr/include/nv/detail/__preprocessor \
-  /usr/include/nv/detail/__target_macros \
-  /usr/include/nv/target \
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
@@ -1174,390 +523,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/strings.h \
   /usr/include/surface_types.h \
   /usr/include/texture_types.h \
-  /usr/include/thrust/advance.h \
-  /usr/include/thrust/copy.h \
-  /usr/include/thrust/detail/advance.inl \
-  /usr/include/thrust/detail/alignment.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.inl \
-  /usr/include/thrust/detail/allocator/copy_construct_range.h \
-  /usr/include/thrust/detail/allocator/copy_construct_range.inl \
-  /usr/include/thrust/detail/allocator/default_construct_range.h \
-  /usr/include/thrust/detail/allocator/default_construct_range.inl \
-  /usr/include/thrust/detail/allocator/destroy_range.h \
-  /usr/include/thrust/detail/allocator/destroy_range.inl \
-  /usr/include/thrust/detail/allocator/fill_construct_range.h \
-  /usr/include/thrust/detail/allocator/fill_construct_range.inl \
-  /usr/include/thrust/detail/allocator/no_throw_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.inl \
-  /usr/include/thrust/detail/allocator/temporary_allocator.h \
-  /usr/include/thrust/detail/allocator/temporary_allocator.inl \
-  /usr/include/thrust/detail/allocator_aware_execution_policy.h \
-  /usr/include/thrust/detail/config.h \
-  /usr/include/thrust/detail/config/compiler.h \
-  /usr/include/thrust/detail/config/config.h \
-  /usr/include/thrust/detail/config/cpp_compatibility.h \
-  /usr/include/thrust/detail/config/cpp_dialect.h \
-  /usr/include/thrust/detail/config/debug.h \
-  /usr/include/thrust/detail/config/deprecated.h \
-  /usr/include/thrust/detail/config/device_system.h \
-  /usr/include/thrust/detail/config/exec_check_disable.h \
-  /usr/include/thrust/detail/config/forceinline.h \
-  /usr/include/thrust/detail/config/global_workarounds.h \
-  /usr/include/thrust/detail/config/host_device.h \
-  /usr/include/thrust/detail/config/host_system.h \
-  /usr/include/thrust/detail/config/memory_resource.h \
-  /usr/include/thrust/detail/config/namespace.h \
-  /usr/include/thrust/detail/config/simple_defines.h \
-  /usr/include/thrust/detail/contiguous_storage.h \
-  /usr/include/thrust/detail/contiguous_storage.inl \
-  /usr/include/thrust/detail/copy.h \
-  /usr/include/thrust/detail/copy.inl \
-  /usr/include/thrust/detail/copy_if.h \
-  /usr/include/thrust/detail/copy_if.inl \
-  /usr/include/thrust/detail/cpp11_required.h \
-  /usr/include/thrust/detail/cstdint.h \
-  /usr/include/thrust/detail/dependencies_aware_execution_policy.h \
-  /usr/include/thrust/detail/device_ptr.inl \
-  /usr/include/thrust/detail/distance.inl \
-  /usr/include/thrust/detail/equal.inl \
-  /usr/include/thrust/detail/execute_with_allocator.h \
-  /usr/include/thrust/detail/execute_with_allocator_fwd.h \
-  /usr/include/thrust/detail/execute_with_dependencies.h \
-  /usr/include/thrust/detail/execution_policy.h \
-  /usr/include/thrust/detail/fill.inl \
-  /usr/include/thrust/detail/find.inl \
-  /usr/include/thrust/detail/for_each.inl \
-  /usr/include/thrust/detail/function.h \
-  /usr/include/thrust/detail/functional.inl \
-  /usr/include/thrust/detail/functional/actor.h \
-  /usr/include/thrust/detail/functional/actor.inl \
-  /usr/include/thrust/detail/functional/argument.h \
-  /usr/include/thrust/detail/functional/composite.h \
-  /usr/include/thrust/detail/functional/operators.h \
-  /usr/include/thrust/detail/functional/operators/arithmetic_operators.h \
-  /usr/include/thrust/detail/functional/operators/assignment_operator.h \
-  /usr/include/thrust/detail/functional/operators/bitwise_operators.h \
-  /usr/include/thrust/detail/functional/operators/compound_assignment_operators.h \
-  /usr/include/thrust/detail/functional/operators/logical_operators.h \
-  /usr/include/thrust/detail/functional/operators/operator_adaptors.h \
-  /usr/include/thrust/detail/functional/operators/relational_operators.h \
-  /usr/include/thrust/detail/functional/placeholder.h \
-  /usr/include/thrust/detail/functional/value.h \
-  /usr/include/thrust/detail/generate.inl \
-  /usr/include/thrust/detail/integer_math.h \
-  /usr/include/thrust/detail/integer_traits.h \
-  /usr/include/thrust/detail/internal_functional.h \
-  /usr/include/thrust/detail/malloc_and_free.h \
-  /usr/include/thrust/detail/memory_wrapper.h \
-  /usr/include/thrust/detail/merge.inl \
-  /usr/include/thrust/detail/minmax.h \
-  /usr/include/thrust/detail/mismatch.inl \
-  /usr/include/thrust/detail/numeric_traits.h \
-  /usr/include/thrust/detail/overlapped_copy.h \
-  /usr/include/thrust/detail/pair.inl \
-  /usr/include/thrust/detail/pointer.h \
-  /usr/include/thrust/detail/pointer.inl \
-  /usr/include/thrust/detail/preprocessor.h \
-  /usr/include/thrust/detail/raw_pointer_cast.h \
-  /usr/include/thrust/detail/raw_reference_cast.h \
-  /usr/include/thrust/detail/reduce.inl \
-  /usr/include/thrust/detail/reference.h \
-  /usr/include/thrust/detail/reference_forward_declaration.h \
-  /usr/include/thrust/detail/replace.inl \
-  /usr/include/thrust/detail/reverse.inl \
-  /usr/include/thrust/detail/scan.inl \
-  /usr/include/thrust/detail/scatter.inl \
-  /usr/include/thrust/detail/seq.h \
-  /usr/include/thrust/detail/sort.inl \
-  /usr/include/thrust/detail/static_assert.h \
-  /usr/include/thrust/detail/swap.h \
-  /usr/include/thrust/detail/swap.inl \
-  /usr/include/thrust/detail/swap_ranges.inl \
-  /usr/include/thrust/detail/temporary_array.h \
-  /usr/include/thrust/detail/temporary_array.inl \
-  /usr/include/thrust/detail/temporary_buffer.h \
-  /usr/include/thrust/detail/transform.inl \
-  /usr/include/thrust/detail/tuple.inl \
-  /usr/include/thrust/detail/tuple_meta_transform.h \
-  /usr/include/thrust/detail/tuple_transform.h \
-  /usr/include/thrust/detail/type_deduction.h \
-  /usr/include/thrust/detail/type_traits.h \
-  /usr/include/thrust/detail/type_traits/function_traits.h \
-  /usr/include/thrust/detail/type_traits/has_member_function.h \
-  /usr/include/thrust/detail/type_traits/has_nested_type.h \
-  /usr/include/thrust/detail/type_traits/has_trivial_assign.h \
-  /usr/include/thrust/detail/type_traits/is_call_possible.h \
-  /usr/include/thrust/detail/type_traits/is_metafunction_defined.h \
-  /usr/include/thrust/detail/type_traits/iterator/is_output_iterator.h \
-  /usr/include/thrust/detail/type_traits/minimum_type.h \
-  /usr/include/thrust/detail/type_traits/pointer_traits.h \
-  /usr/include/thrust/detail/type_traits/result_of_adaptable_function.h \
-  /usr/include/thrust/detail/uninitialized_fill.inl \
-  /usr/include/thrust/detail/use_default.h \
-  /usr/include/thrust/detail/vector_base.h \
-  /usr/include/thrust/detail/vector_base.inl \
-  /usr/include/thrust/device_allocator.h \
-  /usr/include/thrust/device_ptr.h \
-  /usr/include/thrust/device_reference.h \
-  /usr/include/thrust/device_vector.h \
-  /usr/include/thrust/distance.h \
-  /usr/include/thrust/equal.h \
-  /usr/include/thrust/fill.h \
-  /usr/include/thrust/find.h \
-  /usr/include/thrust/for_each.h \
-  /usr/include/thrust/functional.h \
-  /usr/include/thrust/generate.h \
-  /usr/include/thrust/iterator/counting_iterator.h \
-  /usr/include/thrust/iterator/detail/any_assign.h \
-  /usr/include/thrust/iterator/detail/any_system_tag.h \
-  /usr/include/thrust/iterator/detail/counting_iterator.inl \
-  /usr/include/thrust/iterator/detail/device_system_tag.h \
-  /usr/include/thrust/iterator/detail/distance_from_result.h \
-  /usr/include/thrust/iterator/detail/host_system_tag.h \
-  /usr/include/thrust/iterator/detail/is_iterator_category.h \
-  /usr/include/thrust/iterator/detail/iterator_adaptor_base.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_system.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_facade_category.h \
-  /usr/include/thrust/iterator/detail/iterator_traits.inl \
-  /usr/include/thrust/iterator/detail/iterator_traversal_tags.h \
-  /usr/include/thrust/iterator/detail/minimum_category.h \
-  /usr/include/thrust/iterator/detail/minimum_system.h \
-  /usr/include/thrust/iterator/detail/normal_iterator.h \
-  /usr/include/thrust/iterator/detail/permutation_iterator_base.h \
-  /usr/include/thrust/iterator/detail/reverse_iterator.inl \
-  /usr/include/thrust/iterator/detail/reverse_iterator_base.h \
-  /usr/include/thrust/iterator/detail/tagged_iterator.h \
-  /usr/include/thrust/iterator/detail/transform_iterator.inl \
-  /usr/include/thrust/iterator/detail/tuple_of_iterator_references.h \
-  /usr/include/thrust/iterator/detail/universal_categories.h \
-  /usr/include/thrust/iterator/detail/zip_iterator.inl \
-  /usr/include/thrust/iterator/detail/zip_iterator_base.h \
-  /usr/include/thrust/iterator/iterator_adaptor.h \
-  /usr/include/thrust/iterator/iterator_categories.h \
-  /usr/include/thrust/iterator/iterator_facade.h \
-  /usr/include/thrust/iterator/iterator_traits.h \
-  /usr/include/thrust/iterator/permutation_iterator.h \
-  /usr/include/thrust/iterator/reverse_iterator.h \
-  /usr/include/thrust/iterator/transform_iterator.h \
-  /usr/include/thrust/iterator/zip_iterator.h \
-  /usr/include/thrust/memory.h \
-  /usr/include/thrust/merge.h \
-  /usr/include/thrust/mismatch.h \
-  /usr/include/thrust/mr/allocator.h \
-  /usr/include/thrust/mr/device_memory_resource.h \
-  /usr/include/thrust/mr/fancy_pointer_resource.h \
-  /usr/include/thrust/mr/host_memory_resource.h \
-  /usr/include/thrust/mr/memory_resource.h \
-  /usr/include/thrust/mr/new.h \
-  /usr/include/thrust/mr/polymorphic_adaptor.h \
-  /usr/include/thrust/mr/validator.h \
-  /usr/include/thrust/pair.h \
-  /usr/include/thrust/reduce.h \
-  /usr/include/thrust/replace.h \
-  /usr/include/thrust/reverse.h \
-  /usr/include/thrust/scan.h \
-  /usr/include/thrust/scatter.h \
-  /usr/include/thrust/sort.h \
-  /usr/include/thrust/swap.h \
-  /usr/include/thrust/system/cpp/detail/assign_value.h \
-  /usr/include/thrust/system/cpp/detail/copy.h \
-  /usr/include/thrust/system/cpp/detail/copy_if.h \
-  /usr/include/thrust/system/cpp/detail/execution_policy.h \
-  /usr/include/thrust/system/cpp/detail/find.h \
-  /usr/include/thrust/system/cpp/detail/for_each.h \
-  /usr/include/thrust/system/cpp/detail/generate.h \
-  /usr/include/thrust/system/cpp/detail/get_value.h \
-  /usr/include/thrust/system/cpp/detail/iter_swap.h \
-  /usr/include/thrust/system/cpp/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cpp/detail/merge.h \
-  /usr/include/thrust/system/cpp/detail/reduce.h \
-  /usr/include/thrust/system/cpp/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cpp/detail/scan.h \
-  /usr/include/thrust/system/cpp/detail/scan_by_key.h \
-  /usr/include/thrust/system/cpp/detail/sort.h \
-  /usr/include/thrust/system/cpp/detail/swap_ranges.h \
-  /usr/include/thrust/system/cpp/detail/transform.h \
-  /usr/include/thrust/system/cpp/memory_resource.h \
-  /usr/include/thrust/system/cpp/pointer.h \
-  /usr/include/thrust/system/cuda/config.h \
-  /usr/include/thrust/system/cuda/detail/assign_value.h \
-  /usr/include/thrust/system/cuda/detail/cdp_dispatch.h \
-  /usr/include/thrust/system/cuda/detail/copy.h \
-  /usr/include/thrust/system/cuda/detail/copy_if.h \
-  /usr/include/thrust/system/cuda/detail/cross_system.h \
-  /usr/include/thrust/system/cuda/detail/equal.h \
-  /usr/include/thrust/system/cuda/detail/error.inl \
-  /usr/include/thrust/system/cuda/detail/execution_policy.h \
-  /usr/include/thrust/system/cuda/detail/fill.h \
-  /usr/include/thrust/system/cuda/detail/find.h \
-  /usr/include/thrust/system/cuda/detail/for_each.h \
-  /usr/include/thrust/system/cuda/detail/generate.h \
-  /usr/include/thrust/system/cuda/detail/get_value.h \
-  /usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h \
-  /usr/include/thrust/system/cuda/detail/guarded_driver_types.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_cross_system.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_device_to_device.h \
-  /usr/include/thrust/system/cuda/detail/iter_swap.h \
-  /usr/include/thrust/system/cuda/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cuda/detail/merge.h \
-  /usr/include/thrust/system/cuda/detail/mismatch.h \
-  /usr/include/thrust/system/cuda/detail/par.h \
-  /usr/include/thrust/system/cuda/detail/par_to_seq.h \
-  /usr/include/thrust/system/cuda/detail/reduce.h \
-  /usr/include/thrust/system/cuda/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cuda/detail/replace.h \
-  /usr/include/thrust/system/cuda/detail/reverse.h \
-  /usr/include/thrust/system/cuda/detail/scan.h \
-  /usr/include/thrust/system/cuda/detail/scan_by_key.h \
-  /usr/include/thrust/system/cuda/detail/scatter.h \
-  /usr/include/thrust/system/cuda/detail/sort.h \
-  /usr/include/thrust/system/cuda/detail/swap_ranges.h \
-  /usr/include/thrust/system/cuda/detail/temporary_buffer.h \
-  /usr/include/thrust/system/cuda/detail/transform.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_copy.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_fill.h \
-  /usr/include/thrust/system/cuda/detail/util.h \
-  /usr/include/thrust/system/cuda/error.h \
-  /usr/include/thrust/system/cuda/memory_resource.h \
-  /usr/include/thrust/system/cuda/pointer.h \
-  /usr/include/thrust/system/detail/adl/assign_value.h \
-  /usr/include/thrust/system/detail/adl/copy.h \
-  /usr/include/thrust/system/detail/adl/copy_if.h \
-  /usr/include/thrust/system/detail/adl/equal.h \
-  /usr/include/thrust/system/detail/adl/fill.h \
-  /usr/include/thrust/system/detail/adl/find.h \
-  /usr/include/thrust/system/detail/adl/for_each.h \
-  /usr/include/thrust/system/detail/adl/generate.h \
-  /usr/include/thrust/system/detail/adl/get_value.h \
-  /usr/include/thrust/system/detail/adl/iter_swap.h \
-  /usr/include/thrust/system/detail/adl/malloc_and_free.h \
-  /usr/include/thrust/system/detail/adl/merge.h \
-  /usr/include/thrust/system/detail/adl/mismatch.h \
-  /usr/include/thrust/system/detail/adl/reduce.h \
-  /usr/include/thrust/system/detail/adl/reduce_by_key.h \
-  /usr/include/thrust/system/detail/adl/replace.h \
-  /usr/include/thrust/system/detail/adl/reverse.h \
-  /usr/include/thrust/system/detail/adl/scan.h \
-  /usr/include/thrust/system/detail/adl/scan_by_key.h \
-  /usr/include/thrust/system/detail/adl/scatter.h \
-  /usr/include/thrust/system/detail/adl/sort.h \
-  /usr/include/thrust/system/detail/adl/swap_ranges.h \
-  /usr/include/thrust/system/detail/adl/temporary_buffer.h \
-  /usr/include/thrust/system/detail/adl/transform.h \
-  /usr/include/thrust/system/detail/adl/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/bad_alloc.h \
-  /usr/include/thrust/system/detail/errno.h \
-  /usr/include/thrust/system/detail/error_category.inl \
-  /usr/include/thrust/system/detail/error_code.inl \
-  /usr/include/thrust/system/detail/error_condition.inl \
-  /usr/include/thrust/system/detail/generic/advance.h \
-  /usr/include/thrust/system/detail/generic/advance.inl \
-  /usr/include/thrust/system/detail/generic/copy.h \
-  /usr/include/thrust/system/detail/generic/copy.inl \
-  /usr/include/thrust/system/detail/generic/copy_if.h \
-  /usr/include/thrust/system/detail/generic/copy_if.inl \
-  /usr/include/thrust/system/detail/generic/distance.h \
-  /usr/include/thrust/system/detail/generic/distance.inl \
-  /usr/include/thrust/system/detail/generic/equal.h \
-  /usr/include/thrust/system/detail/generic/equal.inl \
-  /usr/include/thrust/system/detail/generic/fill.h \
-  /usr/include/thrust/system/detail/generic/find.h \
-  /usr/include/thrust/system/detail/generic/find.inl \
-  /usr/include/thrust/system/detail/generic/for_each.h \
-  /usr/include/thrust/system/detail/generic/generate.h \
-  /usr/include/thrust/system/detail/generic/generate.inl \
-  /usr/include/thrust/system/detail/generic/memory.h \
-  /usr/include/thrust/system/detail/generic/memory.inl \
-  /usr/include/thrust/system/detail/generic/merge.h \
-  /usr/include/thrust/system/detail/generic/merge.inl \
-  /usr/include/thrust/system/detail/generic/mismatch.h \
-  /usr/include/thrust/system/detail/generic/mismatch.inl \
-  /usr/include/thrust/system/detail/generic/reduce.h \
-  /usr/include/thrust/system/detail/generic/reduce.inl \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.h \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.inl \
-  /usr/include/thrust/system/detail/generic/replace.h \
-  /usr/include/thrust/system/detail/generic/replace.inl \
-  /usr/include/thrust/system/detail/generic/reverse.h \
-  /usr/include/thrust/system/detail/generic/reverse.inl \
-  /usr/include/thrust/system/detail/generic/scan.h \
-  /usr/include/thrust/system/detail/generic/scan.inl \
-  /usr/include/thrust/system/detail/generic/scan_by_key.h \
-  /usr/include/thrust/system/detail/generic/scan_by_key.inl \
-  /usr/include/thrust/system/detail/generic/scatter.h \
-  /usr/include/thrust/system/detail/generic/scatter.inl \
-  /usr/include/thrust/system/detail/generic/select_system.h \
-  /usr/include/thrust/system/detail/generic/select_system.inl \
-  /usr/include/thrust/system/detail/generic/select_system_exists.h \
-  /usr/include/thrust/system/detail/generic/sort.h \
-  /usr/include/thrust/system/detail/generic/sort.inl \
-  /usr/include/thrust/system/detail/generic/swap_ranges.h \
-  /usr/include/thrust/system/detail/generic/swap_ranges.inl \
-  /usr/include/thrust/system/detail/generic/tag.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.inl \
-  /usr/include/thrust/system/detail/generic/transform.h \
-  /usr/include/thrust/system/detail/generic/transform.inl \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.inl \
-  /usr/include/thrust/system/detail/sequential/assign_value.h \
-  /usr/include/thrust/system/detail/sequential/copy.h \
-  /usr/include/thrust/system/detail/sequential/copy.inl \
-  /usr/include/thrust/system/detail/sequential/copy_backward.h \
-  /usr/include/thrust/system/detail/sequential/copy_if.h \
-  /usr/include/thrust/system/detail/sequential/equal.h \
-  /usr/include/thrust/system/detail/sequential/execution_policy.h \
-  /usr/include/thrust/system/detail/sequential/fill.h \
-  /usr/include/thrust/system/detail/sequential/find.h \
-  /usr/include/thrust/system/detail/sequential/for_each.h \
-  /usr/include/thrust/system/detail/sequential/general_copy.h \
-  /usr/include/thrust/system/detail/sequential/generate.h \
-  /usr/include/thrust/system/detail/sequential/get_value.h \
-  /usr/include/thrust/system/detail/sequential/insertion_sort.h \
-  /usr/include/thrust/system/detail/sequential/iter_swap.h \
-  /usr/include/thrust/system/detail/sequential/malloc_and_free.h \
-  /usr/include/thrust/system/detail/sequential/merge.h \
-  /usr/include/thrust/system/detail/sequential/merge.inl \
-  /usr/include/thrust/system/detail/sequential/mismatch.h \
-  /usr/include/thrust/system/detail/sequential/partition.h \
-  /usr/include/thrust/system/detail/sequential/reduce.h \
-  /usr/include/thrust/system/detail/sequential/reduce_by_key.h \
-  /usr/include/thrust/system/detail/sequential/replace.h \
-  /usr/include/thrust/system/detail/sequential/reverse.h \
-  /usr/include/thrust/system/detail/sequential/scan.h \
-  /usr/include/thrust/system/detail/sequential/scan_by_key.h \
-  /usr/include/thrust/system/detail/sequential/scatter.h \
-  /usr/include/thrust/system/detail/sequential/sort.h \
-  /usr/include/thrust/system/detail/sequential/sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.inl \
-  /usr/include/thrust/system/detail/sequential/swap_ranges.h \
-  /usr/include/thrust/system/detail/sequential/temporary_buffer.h \
-  /usr/include/thrust/system/detail/sequential/transform.h \
-  /usr/include/thrust/system/detail/sequential/trivial_copy.h \
-  /usr/include/thrust/system/detail/sequential/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/system_error.inl \
-  /usr/include/thrust/system/error_code.h \
-  /usr/include/thrust/system/system_error.h \
-  /usr/include/thrust/system_error.h \
-  /usr/include/thrust/transform.h \
-  /usr/include/thrust/tuple.h \
-  /usr/include/thrust/type_traits/integer_sequence.h \
-  /usr/include/thrust/type_traits/is_contiguous_iterator.h \
-  /usr/include/thrust/type_traits/is_trivially_relocatable.h \
-  /usr/include/thrust/type_traits/logical_metafunctions.h \
-  /usr/include/thrust/type_traits/remove_cvref.h \
-  /usr/include/thrust/type_traits/void_t.h \
-  /usr/include/thrust/uninitialized_fill.h \
-  /usr/include/thrust/version.h \
   /usr/include/time.h \
   /usr/include/vector_functions.h \
   /usr/include/vector_functions.hpp \
@@ -1685,7 +650,6 @@ CMakeFiles/demcfd_core.dir/kernel/DEMSolver.cpp.o: /teamspace/studios/this_studi
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
   /usr/include/x86_64-linux-gnu/sys/stat.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
-  /usr/lib/gcc/x86_64-linux-gnu/12/include/float.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
@@ -2913,34 +1877,23 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/asm-generic/int-ll64.h \
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
-  /usr/include/assert.h \
   /usr/include/builtin_types.h \
   /usr/include/c++/12/algorithm \
-  /usr/include/c++/12/array \
-  /usr/include/c++/12/atomic \
-  /usr/include/c++/12/backward/auto_ptr.h \
   /usr/include/c++/12/backward/binders.h \
-  /usr/include/c++/12/bit \
   /usr/include/c++/12/bits/algorithmfwd.h \
-  /usr/include/c++/12/bits/align.h \
   /usr/include/c++/12/bits/alloc_traits.h \
-  /usr/include/c++/12/bits/allocated_ptr.h \
   /usr/include/c++/12/bits/allocator.h \
-  /usr/include/c++/12/bits/atomic_base.h \
-  /usr/include/c++/12/bits/atomic_lockfree_defines.h \
   /usr/include/c++/12/bits/basic_ios.h \
   /usr/include/c++/12/bits/basic_ios.tcc \
   /usr/include/c++/12/bits/basic_string.h \
   /usr/include/c++/12/bits/basic_string.tcc \
   /usr/include/c++/12/bits/char_traits.h \
   /usr/include/c++/12/bits/charconv.h \
-  /usr/include/c++/12/bits/chrono.h \
   /usr/include/c++/12/bits/codecvt.h \
   /usr/include/c++/12/bits/concept_check.h \
   /usr/include/c++/12/bits/cpp_type_traits.h \
   /usr/include/c++/12/bits/cxxabi_forced.h \
   /usr/include/c++/12/bits/cxxabi_init_exception.h \
-  /usr/include/c++/12/bits/enable_special_members.h \
   /usr/include/c++/12/bits/erase_if.h \
   /usr/include/c++/12/bits/exception.h \
   /usr/include/c++/12/bits/exception_defines.h \
@@ -2949,8 +1902,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/c++/12/bits/functexcept.h \
   /usr/include/c++/12/bits/functional_hash.h \
   /usr/include/c++/12/bits/hash_bytes.h \
-  /usr/include/c++/12/bits/hashtable.h \
-  /usr/include/c++/12/bits/hashtable_policy.h \
   /usr/include/c++/12/bits/invoke.h \
   /usr/include/c++/12/bits/ios_base.h \
   /usr/include/c++/12/bits/istream.tcc \
@@ -2969,21 +1920,15 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/c++/12/bits/node_handle.h \
   /usr/include/c++/12/bits/ostream.tcc \
   /usr/include/c++/12/bits/ostream_insert.h \
-  /usr/include/c++/12/bits/parse_numbers.h \
   /usr/include/c++/12/bits/postypes.h \
   /usr/include/c++/12/bits/predefined_ops.h \
   /usr/include/c++/12/bits/ptr_traits.h \
   /usr/include/c++/12/bits/quoted_string.h \
   /usr/include/c++/12/bits/range_access.h \
   /usr/include/c++/12/bits/refwrap.h \
-  /usr/include/c++/12/bits/shared_ptr.h \
-  /usr/include/c++/12/bits/shared_ptr_atomic.h \
-  /usr/include/c++/12/bits/shared_ptr_base.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/sstream.tcc \
   /usr/include/c++/12/bits/std_abs.h \
-  /usr/include/c++/12/bits/std_function.h \
-  /usr/include/c++/12/bits/std_mutex.h \
   /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_bvector.h \
@@ -2996,32 +1941,23 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/c++/12/bits/stl_map.h \
   /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
-  /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
-  /usr/include/c++/12/bits/stream_iterator.h \
   /usr/include/c++/12/bits/streambuf.tcc \
   /usr/include/c++/12/bits/streambuf_iterator.h \
   /usr/include/c++/12/bits/string_view.tcc \
   /usr/include/c++/12/bits/stringfwd.h \
   /usr/include/c++/12/bits/uniform_int_dist.h \
-  /usr/include/c++/12/bits/unique_ptr.h \
-  /usr/include/c++/12/bits/unordered_map.h \
   /usr/include/c++/12/bits/uses_allocator.h \
-  /usr/include/c++/12/bits/uses_allocator_args.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/bits/vector.tcc \
-  /usr/include/c++/12/cassert \
   /usr/include/c++/12/cctype \
   /usr/include/c++/12/cerrno \
-  /usr/include/c++/12/cfloat \
   /usr/include/c++/12/clocale \
   /usr/include/c++/12/cmath \
-  /usr/include/c++/12/compare \
-  /usr/include/c++/12/cstddef \
   /usr/include/c++/12/cstdint \
   /usr/include/c++/12/cstdio \
   /usr/include/c++/12/cstdlib \
@@ -3035,32 +1971,24 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/c++/12/ext/aligned_buffer.h \
   /usr/include/c++/12/ext/alloc_traits.h \
   /usr/include/c++/12/ext/atomicity.h \
-  /usr/include/c++/12/ext/concurrence.h \
   /usr/include/c++/12/ext/numeric_traits.h \
   /usr/include/c++/12/ext/string_conversions.h \
   /usr/include/c++/12/ext/type_traits.h \
   /usr/include/c++/12/fstream \
-  /usr/include/c++/12/functional \
   /usr/include/c++/12/initializer_list \
   /usr/include/c++/12/iomanip \
   /usr/include/c++/12/ios \
   /usr/include/c++/12/iosfwd \
   /usr/include/c++/12/iostream \
   /usr/include/c++/12/istream \
-  /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/locale \
   /usr/include/c++/12/map \
-  /usr/include/c++/12/memory \
-  /usr/include/c++/12/memory_resource \
   /usr/include/c++/12/new \
   /usr/include/c++/12/ostream \
   /usr/include/c++/12/pstl/execution_defs.h \
   /usr/include/c++/12/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/12/pstl/glue_memory_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
-  /usr/include/c++/12/ratio \
-  /usr/include/c++/12/shared_mutex \
   /usr/include/c++/12/sstream \
   /usr/include/c++/12/stdexcept \
   /usr/include/c++/12/streambuf \
@@ -3082,43 +2010,12 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/c++/12/tuple \
   /usr/include/c++/12/type_traits \
   /usr/include/c++/12/typeinfo \
-  /usr/include/c++/12/unordered_map \
   /usr/include/c++/12/utility \
   /usr/include/c++/12/vector \
-  /usr/include/c++/12/version \
   /usr/include/channel_descriptor.h \
   /usr/include/crt/host_config.h \
   /usr/include/crt/host_defines.h \
   /usr/include/ctype.h \
-  /usr/include/cub/config.cuh \
-  /usr/include/cub/detail/detect_cuda_runtime.cuh \
-  /usr/include/cub/detail/device_synchronize.cuh \
-  /usr/include/cub/detail/exec_check_disable.cuh \
-  /usr/include/cub/detail/type_traits.cuh \
-  /usr/include/cub/detail/uninitialized_copy.cuh \
-  /usr/include/cub/util_arch.cuh \
-  /usr/include/cub/util_compiler.cuh \
-  /usr/include/cub/util_cpp_dialect.cuh \
-  /usr/include/cub/util_debug.cuh \
-  /usr/include/cub/util_deprecated.cuh \
-  /usr/include/cub/util_device.cuh \
-  /usr/include/cub/util_macro.cuh \
-  /usr/include/cub/util_namespace.cuh \
-  /usr/include/cub/util_type.cuh \
-  /usr/include/cub/version.cuh \
-  /usr/include/cuda/std/cstddef \
-  /usr/include/cuda/std/detail/__config \
-  /usr/include/cuda/std/detail/__pragma_pop \
-  /usr/include/cuda/std/detail/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__config \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_pop \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__undef_macros \
-  /usr/include/cuda/std/detail/libcxx/include/cstddef \
-  /usr/include/cuda/std/detail/libcxx/include/type_traits \
-  /usr/include/cuda/std/detail/libcxx/include/version \
-  /usr/include/cuda/std/type_traits \
-  /usr/include/cuda/std/version \
   /usr/include/cuda_device_runtime_api.h \
   /usr/include/cuda_runtime.h \
   /usr/include/cuda_runtime_api.h \
@@ -3141,9 +2038,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/linux/types.h \
   /usr/include/locale.h \
   /usr/include/math.h \
-  /usr/include/nv/detail/__preprocessor \
-  /usr/include/nv/detail/__target_macros \
-  /usr/include/nv/target \
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
@@ -3154,390 +2048,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/strings.h \
   /usr/include/surface_types.h \
   /usr/include/texture_types.h \
-  /usr/include/thrust/advance.h \
-  /usr/include/thrust/copy.h \
-  /usr/include/thrust/detail/advance.inl \
-  /usr/include/thrust/detail/alignment.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.inl \
-  /usr/include/thrust/detail/allocator/copy_construct_range.h \
-  /usr/include/thrust/detail/allocator/copy_construct_range.inl \
-  /usr/include/thrust/detail/allocator/default_construct_range.h \
-  /usr/include/thrust/detail/allocator/default_construct_range.inl \
-  /usr/include/thrust/detail/allocator/destroy_range.h \
-  /usr/include/thrust/detail/allocator/destroy_range.inl \
-  /usr/include/thrust/detail/allocator/fill_construct_range.h \
-  /usr/include/thrust/detail/allocator/fill_construct_range.inl \
-  /usr/include/thrust/detail/allocator/no_throw_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.inl \
-  /usr/include/thrust/detail/allocator/temporary_allocator.h \
-  /usr/include/thrust/detail/allocator/temporary_allocator.inl \
-  /usr/include/thrust/detail/allocator_aware_execution_policy.h \
-  /usr/include/thrust/detail/config.h \
-  /usr/include/thrust/detail/config/compiler.h \
-  /usr/include/thrust/detail/config/config.h \
-  /usr/include/thrust/detail/config/cpp_compatibility.h \
-  /usr/include/thrust/detail/config/cpp_dialect.h \
-  /usr/include/thrust/detail/config/debug.h \
-  /usr/include/thrust/detail/config/deprecated.h \
-  /usr/include/thrust/detail/config/device_system.h \
-  /usr/include/thrust/detail/config/exec_check_disable.h \
-  /usr/include/thrust/detail/config/forceinline.h \
-  /usr/include/thrust/detail/config/global_workarounds.h \
-  /usr/include/thrust/detail/config/host_device.h \
-  /usr/include/thrust/detail/config/host_system.h \
-  /usr/include/thrust/detail/config/memory_resource.h \
-  /usr/include/thrust/detail/config/namespace.h \
-  /usr/include/thrust/detail/config/simple_defines.h \
-  /usr/include/thrust/detail/contiguous_storage.h \
-  /usr/include/thrust/detail/contiguous_storage.inl \
-  /usr/include/thrust/detail/copy.h \
-  /usr/include/thrust/detail/copy.inl \
-  /usr/include/thrust/detail/copy_if.h \
-  /usr/include/thrust/detail/copy_if.inl \
-  /usr/include/thrust/detail/cpp11_required.h \
-  /usr/include/thrust/detail/cstdint.h \
-  /usr/include/thrust/detail/dependencies_aware_execution_policy.h \
-  /usr/include/thrust/detail/device_ptr.inl \
-  /usr/include/thrust/detail/distance.inl \
-  /usr/include/thrust/detail/equal.inl \
-  /usr/include/thrust/detail/execute_with_allocator.h \
-  /usr/include/thrust/detail/execute_with_allocator_fwd.h \
-  /usr/include/thrust/detail/execute_with_dependencies.h \
-  /usr/include/thrust/detail/execution_policy.h \
-  /usr/include/thrust/detail/fill.inl \
-  /usr/include/thrust/detail/find.inl \
-  /usr/include/thrust/detail/for_each.inl \
-  /usr/include/thrust/detail/function.h \
-  /usr/include/thrust/detail/functional.inl \
-  /usr/include/thrust/detail/functional/actor.h \
-  /usr/include/thrust/detail/functional/actor.inl \
-  /usr/include/thrust/detail/functional/argument.h \
-  /usr/include/thrust/detail/functional/composite.h \
-  /usr/include/thrust/detail/functional/operators.h \
-  /usr/include/thrust/detail/functional/operators/arithmetic_operators.h \
-  /usr/include/thrust/detail/functional/operators/assignment_operator.h \
-  /usr/include/thrust/detail/functional/operators/bitwise_operators.h \
-  /usr/include/thrust/detail/functional/operators/compound_assignment_operators.h \
-  /usr/include/thrust/detail/functional/operators/logical_operators.h \
-  /usr/include/thrust/detail/functional/operators/operator_adaptors.h \
-  /usr/include/thrust/detail/functional/operators/relational_operators.h \
-  /usr/include/thrust/detail/functional/placeholder.h \
-  /usr/include/thrust/detail/functional/value.h \
-  /usr/include/thrust/detail/generate.inl \
-  /usr/include/thrust/detail/integer_math.h \
-  /usr/include/thrust/detail/integer_traits.h \
-  /usr/include/thrust/detail/internal_functional.h \
-  /usr/include/thrust/detail/malloc_and_free.h \
-  /usr/include/thrust/detail/memory_wrapper.h \
-  /usr/include/thrust/detail/merge.inl \
-  /usr/include/thrust/detail/minmax.h \
-  /usr/include/thrust/detail/mismatch.inl \
-  /usr/include/thrust/detail/numeric_traits.h \
-  /usr/include/thrust/detail/overlapped_copy.h \
-  /usr/include/thrust/detail/pair.inl \
-  /usr/include/thrust/detail/pointer.h \
-  /usr/include/thrust/detail/pointer.inl \
-  /usr/include/thrust/detail/preprocessor.h \
-  /usr/include/thrust/detail/raw_pointer_cast.h \
-  /usr/include/thrust/detail/raw_reference_cast.h \
-  /usr/include/thrust/detail/reduce.inl \
-  /usr/include/thrust/detail/reference.h \
-  /usr/include/thrust/detail/reference_forward_declaration.h \
-  /usr/include/thrust/detail/replace.inl \
-  /usr/include/thrust/detail/reverse.inl \
-  /usr/include/thrust/detail/scan.inl \
-  /usr/include/thrust/detail/scatter.inl \
-  /usr/include/thrust/detail/seq.h \
-  /usr/include/thrust/detail/sort.inl \
-  /usr/include/thrust/detail/static_assert.h \
-  /usr/include/thrust/detail/swap.h \
-  /usr/include/thrust/detail/swap.inl \
-  /usr/include/thrust/detail/swap_ranges.inl \
-  /usr/include/thrust/detail/temporary_array.h \
-  /usr/include/thrust/detail/temporary_array.inl \
-  /usr/include/thrust/detail/temporary_buffer.h \
-  /usr/include/thrust/detail/transform.inl \
-  /usr/include/thrust/detail/tuple.inl \
-  /usr/include/thrust/detail/tuple_meta_transform.h \
-  /usr/include/thrust/detail/tuple_transform.h \
-  /usr/include/thrust/detail/type_deduction.h \
-  /usr/include/thrust/detail/type_traits.h \
-  /usr/include/thrust/detail/type_traits/function_traits.h \
-  /usr/include/thrust/detail/type_traits/has_member_function.h \
-  /usr/include/thrust/detail/type_traits/has_nested_type.h \
-  /usr/include/thrust/detail/type_traits/has_trivial_assign.h \
-  /usr/include/thrust/detail/type_traits/is_call_possible.h \
-  /usr/include/thrust/detail/type_traits/is_metafunction_defined.h \
-  /usr/include/thrust/detail/type_traits/iterator/is_output_iterator.h \
-  /usr/include/thrust/detail/type_traits/minimum_type.h \
-  /usr/include/thrust/detail/type_traits/pointer_traits.h \
-  /usr/include/thrust/detail/type_traits/result_of_adaptable_function.h \
-  /usr/include/thrust/detail/uninitialized_fill.inl \
-  /usr/include/thrust/detail/use_default.h \
-  /usr/include/thrust/detail/vector_base.h \
-  /usr/include/thrust/detail/vector_base.inl \
-  /usr/include/thrust/device_allocator.h \
-  /usr/include/thrust/device_ptr.h \
-  /usr/include/thrust/device_reference.h \
-  /usr/include/thrust/device_vector.h \
-  /usr/include/thrust/distance.h \
-  /usr/include/thrust/equal.h \
-  /usr/include/thrust/fill.h \
-  /usr/include/thrust/find.h \
-  /usr/include/thrust/for_each.h \
-  /usr/include/thrust/functional.h \
-  /usr/include/thrust/generate.h \
-  /usr/include/thrust/iterator/counting_iterator.h \
-  /usr/include/thrust/iterator/detail/any_assign.h \
-  /usr/include/thrust/iterator/detail/any_system_tag.h \
-  /usr/include/thrust/iterator/detail/counting_iterator.inl \
-  /usr/include/thrust/iterator/detail/device_system_tag.h \
-  /usr/include/thrust/iterator/detail/distance_from_result.h \
-  /usr/include/thrust/iterator/detail/host_system_tag.h \
-  /usr/include/thrust/iterator/detail/is_iterator_category.h \
-  /usr/include/thrust/iterator/detail/iterator_adaptor_base.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_system.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_facade_category.h \
-  /usr/include/thrust/iterator/detail/iterator_traits.inl \
-  /usr/include/thrust/iterator/detail/iterator_traversal_tags.h \
-  /usr/include/thrust/iterator/detail/minimum_category.h \
-  /usr/include/thrust/iterator/detail/minimum_system.h \
-  /usr/include/thrust/iterator/detail/normal_iterator.h \
-  /usr/include/thrust/iterator/detail/permutation_iterator_base.h \
-  /usr/include/thrust/iterator/detail/reverse_iterator.inl \
-  /usr/include/thrust/iterator/detail/reverse_iterator_base.h \
-  /usr/include/thrust/iterator/detail/tagged_iterator.h \
-  /usr/include/thrust/iterator/detail/transform_iterator.inl \
-  /usr/include/thrust/iterator/detail/tuple_of_iterator_references.h \
-  /usr/include/thrust/iterator/detail/universal_categories.h \
-  /usr/include/thrust/iterator/detail/zip_iterator.inl \
-  /usr/include/thrust/iterator/detail/zip_iterator_base.h \
-  /usr/include/thrust/iterator/iterator_adaptor.h \
-  /usr/include/thrust/iterator/iterator_categories.h \
-  /usr/include/thrust/iterator/iterator_facade.h \
-  /usr/include/thrust/iterator/iterator_traits.h \
-  /usr/include/thrust/iterator/permutation_iterator.h \
-  /usr/include/thrust/iterator/reverse_iterator.h \
-  /usr/include/thrust/iterator/transform_iterator.h \
-  /usr/include/thrust/iterator/zip_iterator.h \
-  /usr/include/thrust/memory.h \
-  /usr/include/thrust/merge.h \
-  /usr/include/thrust/mismatch.h \
-  /usr/include/thrust/mr/allocator.h \
-  /usr/include/thrust/mr/device_memory_resource.h \
-  /usr/include/thrust/mr/fancy_pointer_resource.h \
-  /usr/include/thrust/mr/host_memory_resource.h \
-  /usr/include/thrust/mr/memory_resource.h \
-  /usr/include/thrust/mr/new.h \
-  /usr/include/thrust/mr/polymorphic_adaptor.h \
-  /usr/include/thrust/mr/validator.h \
-  /usr/include/thrust/pair.h \
-  /usr/include/thrust/reduce.h \
-  /usr/include/thrust/replace.h \
-  /usr/include/thrust/reverse.h \
-  /usr/include/thrust/scan.h \
-  /usr/include/thrust/scatter.h \
-  /usr/include/thrust/sort.h \
-  /usr/include/thrust/swap.h \
-  /usr/include/thrust/system/cpp/detail/assign_value.h \
-  /usr/include/thrust/system/cpp/detail/copy.h \
-  /usr/include/thrust/system/cpp/detail/copy_if.h \
-  /usr/include/thrust/system/cpp/detail/execution_policy.h \
-  /usr/include/thrust/system/cpp/detail/find.h \
-  /usr/include/thrust/system/cpp/detail/for_each.h \
-  /usr/include/thrust/system/cpp/detail/generate.h \
-  /usr/include/thrust/system/cpp/detail/get_value.h \
-  /usr/include/thrust/system/cpp/detail/iter_swap.h \
-  /usr/include/thrust/system/cpp/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cpp/detail/merge.h \
-  /usr/include/thrust/system/cpp/detail/reduce.h \
-  /usr/include/thrust/system/cpp/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cpp/detail/scan.h \
-  /usr/include/thrust/system/cpp/detail/scan_by_key.h \
-  /usr/include/thrust/system/cpp/detail/sort.h \
-  /usr/include/thrust/system/cpp/detail/swap_ranges.h \
-  /usr/include/thrust/system/cpp/detail/transform.h \
-  /usr/include/thrust/system/cpp/memory_resource.h \
-  /usr/include/thrust/system/cpp/pointer.h \
-  /usr/include/thrust/system/cuda/config.h \
-  /usr/include/thrust/system/cuda/detail/assign_value.h \
-  /usr/include/thrust/system/cuda/detail/cdp_dispatch.h \
-  /usr/include/thrust/system/cuda/detail/copy.h \
-  /usr/include/thrust/system/cuda/detail/copy_if.h \
-  /usr/include/thrust/system/cuda/detail/cross_system.h \
-  /usr/include/thrust/system/cuda/detail/equal.h \
-  /usr/include/thrust/system/cuda/detail/error.inl \
-  /usr/include/thrust/system/cuda/detail/execution_policy.h \
-  /usr/include/thrust/system/cuda/detail/fill.h \
-  /usr/include/thrust/system/cuda/detail/find.h \
-  /usr/include/thrust/system/cuda/detail/for_each.h \
-  /usr/include/thrust/system/cuda/detail/generate.h \
-  /usr/include/thrust/system/cuda/detail/get_value.h \
-  /usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h \
-  /usr/include/thrust/system/cuda/detail/guarded_driver_types.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_cross_system.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_device_to_device.h \
-  /usr/include/thrust/system/cuda/detail/iter_swap.h \
-  /usr/include/thrust/system/cuda/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cuda/detail/merge.h \
-  /usr/include/thrust/system/cuda/detail/mismatch.h \
-  /usr/include/thrust/system/cuda/detail/par.h \
-  /usr/include/thrust/system/cuda/detail/par_to_seq.h \
-  /usr/include/thrust/system/cuda/detail/reduce.h \
-  /usr/include/thrust/system/cuda/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cuda/detail/replace.h \
-  /usr/include/thrust/system/cuda/detail/reverse.h \
-  /usr/include/thrust/system/cuda/detail/scan.h \
-  /usr/include/thrust/system/cuda/detail/scan_by_key.h \
-  /usr/include/thrust/system/cuda/detail/scatter.h \
-  /usr/include/thrust/system/cuda/detail/sort.h \
-  /usr/include/thrust/system/cuda/detail/swap_ranges.h \
-  /usr/include/thrust/system/cuda/detail/temporary_buffer.h \
-  /usr/include/thrust/system/cuda/detail/transform.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_copy.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_fill.h \
-  /usr/include/thrust/system/cuda/detail/util.h \
-  /usr/include/thrust/system/cuda/error.h \
-  /usr/include/thrust/system/cuda/memory_resource.h \
-  /usr/include/thrust/system/cuda/pointer.h \
-  /usr/include/thrust/system/detail/adl/assign_value.h \
-  /usr/include/thrust/system/detail/adl/copy.h \
-  /usr/include/thrust/system/detail/adl/copy_if.h \
-  /usr/include/thrust/system/detail/adl/equal.h \
-  /usr/include/thrust/system/detail/adl/fill.h \
-  /usr/include/thrust/system/detail/adl/find.h \
-  /usr/include/thrust/system/detail/adl/for_each.h \
-  /usr/include/thrust/system/detail/adl/generate.h \
-  /usr/include/thrust/system/detail/adl/get_value.h \
-  /usr/include/thrust/system/detail/adl/iter_swap.h \
-  /usr/include/thrust/system/detail/adl/malloc_and_free.h \
-  /usr/include/thrust/system/detail/adl/merge.h \
-  /usr/include/thrust/system/detail/adl/mismatch.h \
-  /usr/include/thrust/system/detail/adl/reduce.h \
-  /usr/include/thrust/system/detail/adl/reduce_by_key.h \
-  /usr/include/thrust/system/detail/adl/replace.h \
-  /usr/include/thrust/system/detail/adl/reverse.h \
-  /usr/include/thrust/system/detail/adl/scan.h \
-  /usr/include/thrust/system/detail/adl/scan_by_key.h \
-  /usr/include/thrust/system/detail/adl/scatter.h \
-  /usr/include/thrust/system/detail/adl/sort.h \
-  /usr/include/thrust/system/detail/adl/swap_ranges.h \
-  /usr/include/thrust/system/detail/adl/temporary_buffer.h \
-  /usr/include/thrust/system/detail/adl/transform.h \
-  /usr/include/thrust/system/detail/adl/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/bad_alloc.h \
-  /usr/include/thrust/system/detail/errno.h \
-  /usr/include/thrust/system/detail/error_category.inl \
-  /usr/include/thrust/system/detail/error_code.inl \
-  /usr/include/thrust/system/detail/error_condition.inl \
-  /usr/include/thrust/system/detail/generic/advance.h \
-  /usr/include/thrust/system/detail/generic/advance.inl \
-  /usr/include/thrust/system/detail/generic/copy.h \
-  /usr/include/thrust/system/detail/generic/copy.inl \
-  /usr/include/thrust/system/detail/generic/copy_if.h \
-  /usr/include/thrust/system/detail/generic/copy_if.inl \
-  /usr/include/thrust/system/detail/generic/distance.h \
-  /usr/include/thrust/system/detail/generic/distance.inl \
-  /usr/include/thrust/system/detail/generic/equal.h \
-  /usr/include/thrust/system/detail/generic/equal.inl \
-  /usr/include/thrust/system/detail/generic/fill.h \
-  /usr/include/thrust/system/detail/generic/find.h \
-  /usr/include/thrust/system/detail/generic/find.inl \
-  /usr/include/thrust/system/detail/generic/for_each.h \
-  /usr/include/thrust/system/detail/generic/generate.h \
-  /usr/include/thrust/system/detail/generic/generate.inl \
-  /usr/include/thrust/system/detail/generic/memory.h \
-  /usr/include/thrust/system/detail/generic/memory.inl \
-  /usr/include/thrust/system/detail/generic/merge.h \
-  /usr/include/thrust/system/detail/generic/merge.inl \
-  /usr/include/thrust/system/detail/generic/mismatch.h \
-  /usr/include/thrust/system/detail/generic/mismatch.inl \
-  /usr/include/thrust/system/detail/generic/reduce.h \
-  /usr/include/thrust/system/detail/generic/reduce.inl \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.h \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.inl \
-  /usr/include/thrust/system/detail/generic/replace.h \
-  /usr/include/thrust/system/detail/generic/replace.inl \
-  /usr/include/thrust/system/detail/generic/reverse.h \
-  /usr/include/thrust/system/detail/generic/reverse.inl \
-  /usr/include/thrust/system/detail/generic/scan.h \
-  /usr/include/thrust/system/detail/generic/scan.inl \
-  /usr/include/thrust/system/detail/generic/scan_by_key.h \
-  /usr/include/thrust/system/detail/generic/scan_by_key.inl \
-  /usr/include/thrust/system/detail/generic/scatter.h \
-  /usr/include/thrust/system/detail/generic/scatter.inl \
-  /usr/include/thrust/system/detail/generic/select_system.h \
-  /usr/include/thrust/system/detail/generic/select_system.inl \
-  /usr/include/thrust/system/detail/generic/select_system_exists.h \
-  /usr/include/thrust/system/detail/generic/sort.h \
-  /usr/include/thrust/system/detail/generic/sort.inl \
-  /usr/include/thrust/system/detail/generic/swap_ranges.h \
-  /usr/include/thrust/system/detail/generic/swap_ranges.inl \
-  /usr/include/thrust/system/detail/generic/tag.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.inl \
-  /usr/include/thrust/system/detail/generic/transform.h \
-  /usr/include/thrust/system/detail/generic/transform.inl \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.inl \
-  /usr/include/thrust/system/detail/sequential/assign_value.h \
-  /usr/include/thrust/system/detail/sequential/copy.h \
-  /usr/include/thrust/system/detail/sequential/copy.inl \
-  /usr/include/thrust/system/detail/sequential/copy_backward.h \
-  /usr/include/thrust/system/detail/sequential/copy_if.h \
-  /usr/include/thrust/system/detail/sequential/equal.h \
-  /usr/include/thrust/system/detail/sequential/execution_policy.h \
-  /usr/include/thrust/system/detail/sequential/fill.h \
-  /usr/include/thrust/system/detail/sequential/find.h \
-  /usr/include/thrust/system/detail/sequential/for_each.h \
-  /usr/include/thrust/system/detail/sequential/general_copy.h \
-  /usr/include/thrust/system/detail/sequential/generate.h \
-  /usr/include/thrust/system/detail/sequential/get_value.h \
-  /usr/include/thrust/system/detail/sequential/insertion_sort.h \
-  /usr/include/thrust/system/detail/sequential/iter_swap.h \
-  /usr/include/thrust/system/detail/sequential/malloc_and_free.h \
-  /usr/include/thrust/system/detail/sequential/merge.h \
-  /usr/include/thrust/system/detail/sequential/merge.inl \
-  /usr/include/thrust/system/detail/sequential/mismatch.h \
-  /usr/include/thrust/system/detail/sequential/partition.h \
-  /usr/include/thrust/system/detail/sequential/reduce.h \
-  /usr/include/thrust/system/detail/sequential/reduce_by_key.h \
-  /usr/include/thrust/system/detail/sequential/replace.h \
-  /usr/include/thrust/system/detail/sequential/reverse.h \
-  /usr/include/thrust/system/detail/sequential/scan.h \
-  /usr/include/thrust/system/detail/sequential/scan_by_key.h \
-  /usr/include/thrust/system/detail/sequential/scatter.h \
-  /usr/include/thrust/system/detail/sequential/sort.h \
-  /usr/include/thrust/system/detail/sequential/sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.inl \
-  /usr/include/thrust/system/detail/sequential/swap_ranges.h \
-  /usr/include/thrust/system/detail/sequential/temporary_buffer.h \
-  /usr/include/thrust/system/detail/sequential/transform.h \
-  /usr/include/thrust/system/detail/sequential/trivial_copy.h \
-  /usr/include/thrust/system/detail/sequential/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/system_error.inl \
-  /usr/include/thrust/system/error_code.h \
-  /usr/include/thrust/system/system_error.h \
-  /usr/include/thrust/system_error.h \
-  /usr/include/thrust/transform.h \
-  /usr/include/thrust/tuple.h \
-  /usr/include/thrust/type_traits/integer_sequence.h \
-  /usr/include/thrust/type_traits/is_contiguous_iterator.h \
-  /usr/include/thrust/type_traits/is_trivially_relocatable.h \
-  /usr/include/thrust/type_traits/logical_metafunctions.h \
-  /usr/include/thrust/type_traits/remove_cvref.h \
-  /usr/include/thrust/type_traits/void_t.h \
-  /usr/include/thrust/uninitialized_fill.h \
-  /usr/include/thrust/version.h \
   /usr/include/time.h \
   /usr/include/vector_functions.h \
   /usr/include/vector_functions.hpp \
@@ -3665,7 +2175,6 @@ CMakeFiles/demcfd_core.dir/kernel/solidParticleHandler.cpp.o: /teamspace/studios
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
   /usr/include/x86_64-linux-gnu/sys/stat.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
-  /usr/lib/gcc/x86_64-linux-gnu/12/include/float.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
@@ -3695,34 +2204,23 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/asm-generic/int-ll64.h \
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
-  /usr/include/assert.h \
   /usr/include/builtin_types.h \
   /usr/include/c++/12/algorithm \
-  /usr/include/c++/12/array \
-  /usr/include/c++/12/atomic \
-  /usr/include/c++/12/backward/auto_ptr.h \
   /usr/include/c++/12/backward/binders.h \
-  /usr/include/c++/12/bit \
   /usr/include/c++/12/bits/algorithmfwd.h \
-  /usr/include/c++/12/bits/align.h \
   /usr/include/c++/12/bits/alloc_traits.h \
-  /usr/include/c++/12/bits/allocated_ptr.h \
   /usr/include/c++/12/bits/allocator.h \
-  /usr/include/c++/12/bits/atomic_base.h \
-  /usr/include/c++/12/bits/atomic_lockfree_defines.h \
   /usr/include/c++/12/bits/basic_ios.h \
   /usr/include/c++/12/bits/basic_ios.tcc \
   /usr/include/c++/12/bits/basic_string.h \
   /usr/include/c++/12/bits/basic_string.tcc \
   /usr/include/c++/12/bits/char_traits.h \
   /usr/include/c++/12/bits/charconv.h \
-  /usr/include/c++/12/bits/chrono.h \
   /usr/include/c++/12/bits/codecvt.h \
   /usr/include/c++/12/bits/concept_check.h \
   /usr/include/c++/12/bits/cpp_type_traits.h \
   /usr/include/c++/12/bits/cxxabi_forced.h \
   /usr/include/c++/12/bits/cxxabi_init_exception.h \
-  /usr/include/c++/12/bits/enable_special_members.h \
   /usr/include/c++/12/bits/erase_if.h \
   /usr/include/c++/12/bits/exception.h \
   /usr/include/c++/12/bits/exception_defines.h \
@@ -3731,8 +2229,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/c++/12/bits/functexcept.h \
   /usr/include/c++/12/bits/functional_hash.h \
   /usr/include/c++/12/bits/hash_bytes.h \
-  /usr/include/c++/12/bits/hashtable.h \
-  /usr/include/c++/12/bits/hashtable_policy.h \
   /usr/include/c++/12/bits/invoke.h \
   /usr/include/c++/12/bits/ios_base.h \
   /usr/include/c++/12/bits/istream.tcc \
@@ -3751,21 +2247,15 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/c++/12/bits/node_handle.h \
   /usr/include/c++/12/bits/ostream.tcc \
   /usr/include/c++/12/bits/ostream_insert.h \
-  /usr/include/c++/12/bits/parse_numbers.h \
   /usr/include/c++/12/bits/postypes.h \
   /usr/include/c++/12/bits/predefined_ops.h \
   /usr/include/c++/12/bits/ptr_traits.h \
   /usr/include/c++/12/bits/quoted_string.h \
   /usr/include/c++/12/bits/range_access.h \
   /usr/include/c++/12/bits/refwrap.h \
-  /usr/include/c++/12/bits/shared_ptr.h \
-  /usr/include/c++/12/bits/shared_ptr_atomic.h \
-  /usr/include/c++/12/bits/shared_ptr_base.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/sstream.tcc \
   /usr/include/c++/12/bits/std_abs.h \
-  /usr/include/c++/12/bits/std_function.h \
-  /usr/include/c++/12/bits/std_mutex.h \
   /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_bvector.h \
@@ -3778,32 +2268,23 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/c++/12/bits/stl_map.h \
   /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/bits/stl_pair.h \
-  /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
-  /usr/include/c++/12/bits/stream_iterator.h \
   /usr/include/c++/12/bits/streambuf.tcc \
   /usr/include/c++/12/bits/streambuf_iterator.h \
   /usr/include/c++/12/bits/string_view.tcc \
   /usr/include/c++/12/bits/stringfwd.h \
   /usr/include/c++/12/bits/uniform_int_dist.h \
-  /usr/include/c++/12/bits/unique_ptr.h \
-  /usr/include/c++/12/bits/unordered_map.h \
   /usr/include/c++/12/bits/uses_allocator.h \
-  /usr/include/c++/12/bits/uses_allocator_args.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/bits/vector.tcc \
-  /usr/include/c++/12/cassert \
   /usr/include/c++/12/cctype \
   /usr/include/c++/12/cerrno \
-  /usr/include/c++/12/cfloat \
   /usr/include/c++/12/clocale \
   /usr/include/c++/12/cmath \
-  /usr/include/c++/12/compare \
-  /usr/include/c++/12/cstddef \
   /usr/include/c++/12/cstdint \
   /usr/include/c++/12/cstdio \
   /usr/include/c++/12/cstdlib \
@@ -3817,32 +2298,24 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/c++/12/ext/aligned_buffer.h \
   /usr/include/c++/12/ext/alloc_traits.h \
   /usr/include/c++/12/ext/atomicity.h \
-  /usr/include/c++/12/ext/concurrence.h \
   /usr/include/c++/12/ext/numeric_traits.h \
   /usr/include/c++/12/ext/string_conversions.h \
   /usr/include/c++/12/ext/type_traits.h \
   /usr/include/c++/12/fstream \
-  /usr/include/c++/12/functional \
   /usr/include/c++/12/initializer_list \
   /usr/include/c++/12/iomanip \
   /usr/include/c++/12/ios \
   /usr/include/c++/12/iosfwd \
   /usr/include/c++/12/iostream \
   /usr/include/c++/12/istream \
-  /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/locale \
   /usr/include/c++/12/map \
-  /usr/include/c++/12/memory \
-  /usr/include/c++/12/memory_resource \
   /usr/include/c++/12/new \
   /usr/include/c++/12/ostream \
   /usr/include/c++/12/pstl/execution_defs.h \
   /usr/include/c++/12/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/12/pstl/glue_memory_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
-  /usr/include/c++/12/ratio \
-  /usr/include/c++/12/shared_mutex \
   /usr/include/c++/12/sstream \
   /usr/include/c++/12/stdexcept \
   /usr/include/c++/12/streambuf \
@@ -3864,43 +2337,12 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/c++/12/tuple \
   /usr/include/c++/12/type_traits \
   /usr/include/c++/12/typeinfo \
-  /usr/include/c++/12/unordered_map \
   /usr/include/c++/12/utility \
   /usr/include/c++/12/vector \
-  /usr/include/c++/12/version \
   /usr/include/channel_descriptor.h \
   /usr/include/crt/host_config.h \
   /usr/include/crt/host_defines.h \
   /usr/include/ctype.h \
-  /usr/include/cub/config.cuh \
-  /usr/include/cub/detail/detect_cuda_runtime.cuh \
-  /usr/include/cub/detail/device_synchronize.cuh \
-  /usr/include/cub/detail/exec_check_disable.cuh \
-  /usr/include/cub/detail/type_traits.cuh \
-  /usr/include/cub/detail/uninitialized_copy.cuh \
-  /usr/include/cub/util_arch.cuh \
-  /usr/include/cub/util_compiler.cuh \
-  /usr/include/cub/util_cpp_dialect.cuh \
-  /usr/include/cub/util_debug.cuh \
-  /usr/include/cub/util_deprecated.cuh \
-  /usr/include/cub/util_device.cuh \
-  /usr/include/cub/util_macro.cuh \
-  /usr/include/cub/util_namespace.cuh \
-  /usr/include/cub/util_type.cuh \
-  /usr/include/cub/version.cuh \
-  /usr/include/cuda/std/cstddef \
-  /usr/include/cuda/std/detail/__config \
-  /usr/include/cuda/std/detail/__pragma_pop \
-  /usr/include/cuda/std/detail/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__config \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_pop \
-  /usr/include/cuda/std/detail/libcxx/include/__pragma_push \
-  /usr/include/cuda/std/detail/libcxx/include/__undef_macros \
-  /usr/include/cuda/std/detail/libcxx/include/cstddef \
-  /usr/include/cuda/std/detail/libcxx/include/type_traits \
-  /usr/include/cuda/std/detail/libcxx/include/version \
-  /usr/include/cuda/std/type_traits \
-  /usr/include/cuda/std/version \
   /usr/include/cuda_device_runtime_api.h \
   /usr/include/cuda_runtime.h \
   /usr/include/cuda_runtime_api.h \
@@ -3923,9 +2365,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/linux/types.h \
   /usr/include/locale.h \
   /usr/include/math.h \
-  /usr/include/nv/detail/__preprocessor \
-  /usr/include/nv/detail/__target_macros \
-  /usr/include/nv/target \
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
@@ -3936,390 +2375,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/strings.h \
   /usr/include/surface_types.h \
   /usr/include/texture_types.h \
-  /usr/include/thrust/advance.h \
-  /usr/include/thrust/copy.h \
-  /usr/include/thrust/detail/advance.inl \
-  /usr/include/thrust/detail/alignment.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.h \
-  /usr/include/thrust/detail/allocator/allocator_traits.inl \
-  /usr/include/thrust/detail/allocator/copy_construct_range.h \
-  /usr/include/thrust/detail/allocator/copy_construct_range.inl \
-  /usr/include/thrust/detail/allocator/default_construct_range.h \
-  /usr/include/thrust/detail/allocator/default_construct_range.inl \
-  /usr/include/thrust/detail/allocator/destroy_range.h \
-  /usr/include/thrust/detail/allocator/destroy_range.inl \
-  /usr/include/thrust/detail/allocator/fill_construct_range.h \
-  /usr/include/thrust/detail/allocator/fill_construct_range.inl \
-  /usr/include/thrust/detail/allocator/no_throw_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.h \
-  /usr/include/thrust/detail/allocator/tagged_allocator.inl \
-  /usr/include/thrust/detail/allocator/temporary_allocator.h \
-  /usr/include/thrust/detail/allocator/temporary_allocator.inl \
-  /usr/include/thrust/detail/allocator_aware_execution_policy.h \
-  /usr/include/thrust/detail/config.h \
-  /usr/include/thrust/detail/config/compiler.h \
-  /usr/include/thrust/detail/config/config.h \
-  /usr/include/thrust/detail/config/cpp_compatibility.h \
-  /usr/include/thrust/detail/config/cpp_dialect.h \
-  /usr/include/thrust/detail/config/debug.h \
-  /usr/include/thrust/detail/config/deprecated.h \
-  /usr/include/thrust/detail/config/device_system.h \
-  /usr/include/thrust/detail/config/exec_check_disable.h \
-  /usr/include/thrust/detail/config/forceinline.h \
-  /usr/include/thrust/detail/config/global_workarounds.h \
-  /usr/include/thrust/detail/config/host_device.h \
-  /usr/include/thrust/detail/config/host_system.h \
-  /usr/include/thrust/detail/config/memory_resource.h \
-  /usr/include/thrust/detail/config/namespace.h \
-  /usr/include/thrust/detail/config/simple_defines.h \
-  /usr/include/thrust/detail/contiguous_storage.h \
-  /usr/include/thrust/detail/contiguous_storage.inl \
-  /usr/include/thrust/detail/copy.h \
-  /usr/include/thrust/detail/copy.inl \
-  /usr/include/thrust/detail/copy_if.h \
-  /usr/include/thrust/detail/copy_if.inl \
-  /usr/include/thrust/detail/cpp11_required.h \
-  /usr/include/thrust/detail/cstdint.h \
-  /usr/include/thrust/detail/dependencies_aware_execution_policy.h \
-  /usr/include/thrust/detail/device_ptr.inl \
-  /usr/include/thrust/detail/distance.inl \
-  /usr/include/thrust/detail/equal.inl \
-  /usr/include/thrust/detail/execute_with_allocator.h \
-  /usr/include/thrust/detail/execute_with_allocator_fwd.h \
-  /usr/include/thrust/detail/execute_with_dependencies.h \
-  /usr/include/thrust/detail/execution_policy.h \
-  /usr/include/thrust/detail/fill.inl \
-  /usr/include/thrust/detail/find.inl \
-  /usr/include/thrust/detail/for_each.inl \
-  /usr/include/thrust/detail/function.h \
-  /usr/include/thrust/detail/functional.inl \
-  /usr/include/thrust/detail/functional/actor.h \
-  /usr/include/thrust/detail/functional/actor.inl \
-  /usr/include/thrust/detail/functional/argument.h \
-  /usr/include/thrust/detail/functional/composite.h \
-  /usr/include/thrust/detail/functional/operators.h \
-  /usr/include/thrust/detail/functional/operators/arithmetic_operators.h \
-  /usr/include/thrust/detail/functional/operators/assignment_operator.h \
-  /usr/include/thrust/detail/functional/operators/bitwise_operators.h \
-  /usr/include/thrust/detail/functional/operators/compound_assignment_operators.h \
-  /usr/include/thrust/detail/functional/operators/logical_operators.h \
-  /usr/include/thrust/detail/functional/operators/operator_adaptors.h \
-  /usr/include/thrust/detail/functional/operators/relational_operators.h \
-  /usr/include/thrust/detail/functional/placeholder.h \
-  /usr/include/thrust/detail/functional/value.h \
-  /usr/include/thrust/detail/generate.inl \
-  /usr/include/thrust/detail/integer_math.h \
-  /usr/include/thrust/detail/integer_traits.h \
-  /usr/include/thrust/detail/internal_functional.h \
-  /usr/include/thrust/detail/malloc_and_free.h \
-  /usr/include/thrust/detail/memory_wrapper.h \
-  /usr/include/thrust/detail/merge.inl \
-  /usr/include/thrust/detail/minmax.h \
-  /usr/include/thrust/detail/mismatch.inl \
-  /usr/include/thrust/detail/numeric_traits.h \
-  /usr/include/thrust/detail/overlapped_copy.h \
-  /usr/include/thrust/detail/pair.inl \
-  /usr/include/thrust/detail/pointer.h \
-  /usr/include/thrust/detail/pointer.inl \
-  /usr/include/thrust/detail/preprocessor.h \
-  /usr/include/thrust/detail/raw_pointer_cast.h \
-  /usr/include/thrust/detail/raw_reference_cast.h \
-  /usr/include/thrust/detail/reduce.inl \
-  /usr/include/thrust/detail/reference.h \
-  /usr/include/thrust/detail/reference_forward_declaration.h \
-  /usr/include/thrust/detail/replace.inl \
-  /usr/include/thrust/detail/reverse.inl \
-  /usr/include/thrust/detail/scan.inl \
-  /usr/include/thrust/detail/scatter.inl \
-  /usr/include/thrust/detail/seq.h \
-  /usr/include/thrust/detail/sort.inl \
-  /usr/include/thrust/detail/static_assert.h \
-  /usr/include/thrust/detail/swap.h \
-  /usr/include/thrust/detail/swap.inl \
-  /usr/include/thrust/detail/swap_ranges.inl \
-  /usr/include/thrust/detail/temporary_array.h \
-  /usr/include/thrust/detail/temporary_array.inl \
-  /usr/include/thrust/detail/temporary_buffer.h \
-  /usr/include/thrust/detail/transform.inl \
-  /usr/include/thrust/detail/tuple.inl \
-  /usr/include/thrust/detail/tuple_meta_transform.h \
-  /usr/include/thrust/detail/tuple_transform.h \
-  /usr/include/thrust/detail/type_deduction.h \
-  /usr/include/thrust/detail/type_traits.h \
-  /usr/include/thrust/detail/type_traits/function_traits.h \
-  /usr/include/thrust/detail/type_traits/has_member_function.h \
-  /usr/include/thrust/detail/type_traits/has_nested_type.h \
-  /usr/include/thrust/detail/type_traits/has_trivial_assign.h \
-  /usr/include/thrust/detail/type_traits/is_call_possible.h \
-  /usr/include/thrust/detail/type_traits/is_metafunction_defined.h \
-  /usr/include/thrust/detail/type_traits/iterator/is_output_iterator.h \
-  /usr/include/thrust/detail/type_traits/minimum_type.h \
-  /usr/include/thrust/detail/type_traits/pointer_traits.h \
-  /usr/include/thrust/detail/type_traits/result_of_adaptable_function.h \
-  /usr/include/thrust/detail/uninitialized_fill.inl \
-  /usr/include/thrust/detail/use_default.h \
-  /usr/include/thrust/detail/vector_base.h \
-  /usr/include/thrust/detail/vector_base.inl \
-  /usr/include/thrust/device_allocator.h \
-  /usr/include/thrust/device_ptr.h \
-  /usr/include/thrust/device_reference.h \
-  /usr/include/thrust/device_vector.h \
-  /usr/include/thrust/distance.h \
-  /usr/include/thrust/equal.h \
-  /usr/include/thrust/fill.h \
-  /usr/include/thrust/find.h \
-  /usr/include/thrust/for_each.h \
-  /usr/include/thrust/functional.h \
-  /usr/include/thrust/generate.h \
-  /usr/include/thrust/iterator/counting_iterator.h \
-  /usr/include/thrust/iterator/detail/any_assign.h \
-  /usr/include/thrust/iterator/detail/any_system_tag.h \
-  /usr/include/thrust/iterator/detail/counting_iterator.inl \
-  /usr/include/thrust/iterator/detail/device_system_tag.h \
-  /usr/include/thrust/iterator/detail/distance_from_result.h \
-  /usr/include/thrust/iterator/detail/host_system_tag.h \
-  /usr/include/thrust/iterator/detail/is_iterator_category.h \
-  /usr/include/thrust/iterator/detail/iterator_adaptor_base.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_system.h \
-  /usr/include/thrust/iterator/detail/iterator_category_to_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h \
-  /usr/include/thrust/iterator/detail/iterator_facade_category.h \
-  /usr/include/thrust/iterator/detail/iterator_traits.inl \
-  /usr/include/thrust/iterator/detail/iterator_traversal_tags.h \
-  /usr/include/thrust/iterator/detail/minimum_category.h \
-  /usr/include/thrust/iterator/detail/minimum_system.h \
-  /usr/include/thrust/iterator/detail/normal_iterator.h \
-  /usr/include/thrust/iterator/detail/permutation_iterator_base.h \
-  /usr/include/thrust/iterator/detail/reverse_iterator.inl \
-  /usr/include/thrust/iterator/detail/reverse_iterator_base.h \
-  /usr/include/thrust/iterator/detail/tagged_iterator.h \
-  /usr/include/thrust/iterator/detail/transform_iterator.inl \
-  /usr/include/thrust/iterator/detail/tuple_of_iterator_references.h \
-  /usr/include/thrust/iterator/detail/universal_categories.h \
-  /usr/include/thrust/iterator/detail/zip_iterator.inl \
-  /usr/include/thrust/iterator/detail/zip_iterator_base.h \
-  /usr/include/thrust/iterator/iterator_adaptor.h \
-  /usr/include/thrust/iterator/iterator_categories.h \
-  /usr/include/thrust/iterator/iterator_facade.h \
-  /usr/include/thrust/iterator/iterator_traits.h \
-  /usr/include/thrust/iterator/permutation_iterator.h \
-  /usr/include/thrust/iterator/reverse_iterator.h \
-  /usr/include/thrust/iterator/transform_iterator.h \
-  /usr/include/thrust/iterator/zip_iterator.h \
-  /usr/include/thrust/memory.h \
-  /usr/include/thrust/merge.h \
-  /usr/include/thrust/mismatch.h \
-  /usr/include/thrust/mr/allocator.h \
-  /usr/include/thrust/mr/device_memory_resource.h \
-  /usr/include/thrust/mr/fancy_pointer_resource.h \
-  /usr/include/thrust/mr/host_memory_resource.h \
-  /usr/include/thrust/mr/memory_resource.h \
-  /usr/include/thrust/mr/new.h \
-  /usr/include/thrust/mr/polymorphic_adaptor.h \
-  /usr/include/thrust/mr/validator.h \
-  /usr/include/thrust/pair.h \
-  /usr/include/thrust/reduce.h \
-  /usr/include/thrust/replace.h \
-  /usr/include/thrust/reverse.h \
-  /usr/include/thrust/scan.h \
-  /usr/include/thrust/scatter.h \
-  /usr/include/thrust/sort.h \
-  /usr/include/thrust/swap.h \
-  /usr/include/thrust/system/cpp/detail/assign_value.h \
-  /usr/include/thrust/system/cpp/detail/copy.h \
-  /usr/include/thrust/system/cpp/detail/copy_if.h \
-  /usr/include/thrust/system/cpp/detail/execution_policy.h \
-  /usr/include/thrust/system/cpp/detail/find.h \
-  /usr/include/thrust/system/cpp/detail/for_each.h \
-  /usr/include/thrust/system/cpp/detail/generate.h \
-  /usr/include/thrust/system/cpp/detail/get_value.h \
-  /usr/include/thrust/system/cpp/detail/iter_swap.h \
-  /usr/include/thrust/system/cpp/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cpp/detail/merge.h \
-  /usr/include/thrust/system/cpp/detail/reduce.h \
-  /usr/include/thrust/system/cpp/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cpp/detail/scan.h \
-  /usr/include/thrust/system/cpp/detail/scan_by_key.h \
-  /usr/include/thrust/system/cpp/detail/sort.h \
-  /usr/include/thrust/system/cpp/detail/swap_ranges.h \
-  /usr/include/thrust/system/cpp/detail/transform.h \
-  /usr/include/thrust/system/cpp/memory_resource.h \
-  /usr/include/thrust/system/cpp/pointer.h \
-  /usr/include/thrust/system/cuda/config.h \
-  /usr/include/thrust/system/cuda/detail/assign_value.h \
-  /usr/include/thrust/system/cuda/detail/cdp_dispatch.h \
-  /usr/include/thrust/system/cuda/detail/copy.h \
-  /usr/include/thrust/system/cuda/detail/copy_if.h \
-  /usr/include/thrust/system/cuda/detail/cross_system.h \
-  /usr/include/thrust/system/cuda/detail/equal.h \
-  /usr/include/thrust/system/cuda/detail/error.inl \
-  /usr/include/thrust/system/cuda/detail/execution_policy.h \
-  /usr/include/thrust/system/cuda/detail/fill.h \
-  /usr/include/thrust/system/cuda/detail/find.h \
-  /usr/include/thrust/system/cuda/detail/for_each.h \
-  /usr/include/thrust/system/cuda/detail/generate.h \
-  /usr/include/thrust/system/cuda/detail/get_value.h \
-  /usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h \
-  /usr/include/thrust/system/cuda/detail/guarded_driver_types.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_cross_system.h \
-  /usr/include/thrust/system/cuda/detail/internal/copy_device_to_device.h \
-  /usr/include/thrust/system/cuda/detail/iter_swap.h \
-  /usr/include/thrust/system/cuda/detail/malloc_and_free.h \
-  /usr/include/thrust/system/cuda/detail/merge.h \
-  /usr/include/thrust/system/cuda/detail/mismatch.h \
-  /usr/include/thrust/system/cuda/detail/par.h \
-  /usr/include/thrust/system/cuda/detail/par_to_seq.h \
-  /usr/include/thrust/system/cuda/detail/reduce.h \
-  /usr/include/thrust/system/cuda/detail/reduce_by_key.h \
-  /usr/include/thrust/system/cuda/detail/replace.h \
-  /usr/include/thrust/system/cuda/detail/reverse.h \
-  /usr/include/thrust/system/cuda/detail/scan.h \
-  /usr/include/thrust/system/cuda/detail/scan_by_key.h \
-  /usr/include/thrust/system/cuda/detail/scatter.h \
-  /usr/include/thrust/system/cuda/detail/sort.h \
-  /usr/include/thrust/system/cuda/detail/swap_ranges.h \
-  /usr/include/thrust/system/cuda/detail/temporary_buffer.h \
-  /usr/include/thrust/system/cuda/detail/transform.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_copy.h \
-  /usr/include/thrust/system/cuda/detail/uninitialized_fill.h \
-  /usr/include/thrust/system/cuda/detail/util.h \
-  /usr/include/thrust/system/cuda/error.h \
-  /usr/include/thrust/system/cuda/memory_resource.h \
-  /usr/include/thrust/system/cuda/pointer.h \
-  /usr/include/thrust/system/detail/adl/assign_value.h \
-  /usr/include/thrust/system/detail/adl/copy.h \
-  /usr/include/thrust/system/detail/adl/copy_if.h \
-  /usr/include/thrust/system/detail/adl/equal.h \
-  /usr/include/thrust/system/detail/adl/fill.h \
-  /usr/include/thrust/system/detail/adl/find.h \
-  /usr/include/thrust/system/detail/adl/for_each.h \
-  /usr/include/thrust/system/detail/adl/generate.h \
-  /usr/include/thrust/system/detail/adl/get_value.h \
-  /usr/include/thrust/system/detail/adl/iter_swap.h \
-  /usr/include/thrust/system/detail/adl/malloc_and_free.h \
-  /usr/include/thrust/system/detail/adl/merge.h \
-  /usr/include/thrust/system/detail/adl/mismatch.h \
-  /usr/include/thrust/system/detail/adl/reduce.h \
-  /usr/include/thrust/system/detail/adl/reduce_by_key.h \
-  /usr/include/thrust/system/detail/adl/replace.h \
-  /usr/include/thrust/system/detail/adl/reverse.h \
-  /usr/include/thrust/system/detail/adl/scan.h \
-  /usr/include/thrust/system/detail/adl/scan_by_key.h \
-  /usr/include/thrust/system/detail/adl/scatter.h \
-  /usr/include/thrust/system/detail/adl/sort.h \
-  /usr/include/thrust/system/detail/adl/swap_ranges.h \
-  /usr/include/thrust/system/detail/adl/temporary_buffer.h \
-  /usr/include/thrust/system/detail/adl/transform.h \
-  /usr/include/thrust/system/detail/adl/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/bad_alloc.h \
-  /usr/include/thrust/system/detail/errno.h \
-  /usr/include/thrust/system/detail/error_category.inl \
-  /usr/include/thrust/system/detail/error_code.inl \
-  /usr/include/thrust/system/detail/error_condition.inl \
-  /usr/include/thrust/system/detail/generic/advance.h \
-  /usr/include/thrust/system/detail/generic/advance.inl \
-  /usr/include/thrust/system/detail/generic/copy.h \
-  /usr/include/thrust/system/detail/generic/copy.inl \
-  /usr/include/thrust/system/detail/generic/copy_if.h \
-  /usr/include/thrust/system/detail/generic/copy_if.inl \
-  /usr/include/thrust/system/detail/generic/distance.h \
-  /usr/include/thrust/system/detail/generic/distance.inl \
-  /usr/include/thrust/system/detail/generic/equal.h \
-  /usr/include/thrust/system/detail/generic/equal.inl \
-  /usr/include/thrust/system/detail/generic/fill.h \
-  /usr/include/thrust/system/detail/generic/find.h \
-  /usr/include/thrust/system/detail/generic/find.inl \
-  /usr/include/thrust/system/detail/generic/for_each.h \
-  /usr/include/thrust/system/detail/generic/generate.h \
-  /usr/include/thrust/system/detail/generic/generate.inl \
-  /usr/include/thrust/system/detail/generic/memory.h \
-  /usr/include/thrust/system/detail/generic/memory.inl \
-  /usr/include/thrust/system/detail/generic/merge.h \
-  /usr/include/thrust/system/detail/generic/merge.inl \
-  /usr/include/thrust/system/detail/generic/mismatch.h \
-  /usr/include/thrust/system/detail/generic/mismatch.inl \
-  /usr/include/thrust/system/detail/generic/reduce.h \
-  /usr/include/thrust/system/detail/generic/reduce.inl \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.h \
-  /usr/include/thrust/system/detail/generic/reduce_by_key.inl \
-  /usr/include/thrust/system/detail/generic/replace.h \
-  /usr/include/thrust/system/detail/generic/replace.inl \
-  /usr/include/thrust/system/detail/generic/reverse.h \
-  /usr/include/thrust/system/detail/generic/reverse.inl \
-  /usr/include/thrust/system/detail/generic/scan.h \
-  /usr/include/thrust/system/detail/generic/scan.inl \
-  /usr/include/thrust/system/detail/generic/scan_by_key.h \
-  /usr/include/thrust/system/detail/generic/scan_by_key.inl \
-  /usr/include/thrust/system/detail/generic/scatter.h \
-  /usr/include/thrust/system/detail/generic/scatter.inl \
-  /usr/include/thrust/system/detail/generic/select_system.h \
-  /usr/include/thrust/system/detail/generic/select_system.inl \
-  /usr/include/thrust/system/detail/generic/select_system_exists.h \
-  /usr/include/thrust/system/detail/generic/sort.h \
-  /usr/include/thrust/system/detail/generic/sort.inl \
-  /usr/include/thrust/system/detail/generic/swap_ranges.h \
-  /usr/include/thrust/system/detail/generic/swap_ranges.inl \
-  /usr/include/thrust/system/detail/generic/tag.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.h \
-  /usr/include/thrust/system/detail/generic/temporary_buffer.inl \
-  /usr/include/thrust/system/detail/generic/transform.h \
-  /usr/include/thrust/system/detail/generic/transform.inl \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/generic/uninitialized_fill.inl \
-  /usr/include/thrust/system/detail/sequential/assign_value.h \
-  /usr/include/thrust/system/detail/sequential/copy.h \
-  /usr/include/thrust/system/detail/sequential/copy.inl \
-  /usr/include/thrust/system/detail/sequential/copy_backward.h \
-  /usr/include/thrust/system/detail/sequential/copy_if.h \
-  /usr/include/thrust/system/detail/sequential/equal.h \
-  /usr/include/thrust/system/detail/sequential/execution_policy.h \
-  /usr/include/thrust/system/detail/sequential/fill.h \
-  /usr/include/thrust/system/detail/sequential/find.h \
-  /usr/include/thrust/system/detail/sequential/for_each.h \
-  /usr/include/thrust/system/detail/sequential/general_copy.h \
-  /usr/include/thrust/system/detail/sequential/generate.h \
-  /usr/include/thrust/system/detail/sequential/get_value.h \
-  /usr/include/thrust/system/detail/sequential/insertion_sort.h \
-  /usr/include/thrust/system/detail/sequential/iter_swap.h \
-  /usr/include/thrust/system/detail/sequential/malloc_and_free.h \
-  /usr/include/thrust/system/detail/sequential/merge.h \
-  /usr/include/thrust/system/detail/sequential/merge.inl \
-  /usr/include/thrust/system/detail/sequential/mismatch.h \
-  /usr/include/thrust/system/detail/sequential/partition.h \
-  /usr/include/thrust/system/detail/sequential/reduce.h \
-  /usr/include/thrust/system/detail/sequential/reduce_by_key.h \
-  /usr/include/thrust/system/detail/sequential/replace.h \
-  /usr/include/thrust/system/detail/sequential/reverse.h \
-  /usr/include/thrust/system/detail/sequential/scan.h \
-  /usr/include/thrust/system/detail/sequential/scan_by_key.h \
-  /usr/include/thrust/system/detail/sequential/scatter.h \
-  /usr/include/thrust/system/detail/sequential/sort.h \
-  /usr/include/thrust/system/detail/sequential/sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_merge_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_primitive_sort.inl \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.h \
-  /usr/include/thrust/system/detail/sequential/stable_radix_sort.inl \
-  /usr/include/thrust/system/detail/sequential/swap_ranges.h \
-  /usr/include/thrust/system/detail/sequential/temporary_buffer.h \
-  /usr/include/thrust/system/detail/sequential/transform.h \
-  /usr/include/thrust/system/detail/sequential/trivial_copy.h \
-  /usr/include/thrust/system/detail/sequential/uninitialized_fill.h \
-  /usr/include/thrust/system/detail/system_error.inl \
-  /usr/include/thrust/system/error_code.h \
-  /usr/include/thrust/system/system_error.h \
-  /usr/include/thrust/system_error.h \
-  /usr/include/thrust/transform.h \
-  /usr/include/thrust/tuple.h \
-  /usr/include/thrust/type_traits/integer_sequence.h \
-  /usr/include/thrust/type_traits/is_contiguous_iterator.h \
-  /usr/include/thrust/type_traits/is_trivially_relocatable.h \
-  /usr/include/thrust/type_traits/logical_metafunctions.h \
-  /usr/include/thrust/type_traits/remove_cvref.h \
-  /usr/include/thrust/type_traits/void_t.h \
-  /usr/include/thrust/uninitialized_fill.h \
-  /usr/include/thrust/version.h \
   /usr/include/time.h \
   /usr/include/vector_functions.h \
   /usr/include/vector_functions.hpp \
@@ -4447,7 +2502,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
   /usr/include/x86_64-linux-gnu/sys/stat.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
-  /usr/lib/gcc/x86_64-linux-gnu/12/include/float.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
@@ -4456,156 +2510,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.cpp:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/basic_file.h:
-
-/usr/include/x86_64-linux-gnu/bits/statx.h:
-
-/usr/include/x86_64-linux-gnu/bits/dirent.h:
-
-/usr/include/x86_64-linux-gnu/asm/types.h:
-
-/usr/include/x86_64-linux-gnu/asm/posix_types.h:
-
-/usr/include/x86_64-linux-gnu/asm/bitsperlong.h:
-
-/usr/include/linux/types.h:
-
-/usr/include/linux/stddef.h:
-
-/usr/include/linux/posix_types.h:
-
-/usr/include/c++/12/sstream:
-
-/usr/include/c++/12/fstream:
-
-/usr/include/c++/12/bits/sstream.tcc:
-
-/usr/include/c++/12/bits/locale_facets_nonio.tcc:
-
-/usr/include/c++/12/bits/locale_facets_nonio.h:
-
-/usr/include/c++/12/bits/fstream.tcc:
-
-/usr/include/asm-generic/types.h:
-
-/usr/include/asm-generic/posix_types.h:
-
-/usr/include/asm-generic/int-ll64.h:
-
-/usr/include/asm-generic/bitsperlong.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h:
-
-/usr/include/x86_64-linux-gnu/sys/types.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/gthr.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/gthr-default.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/cpu_defines.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h:
-
-/usr/include/x86_64-linux-gnu/bits/wordsize.h:
-
-/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
-
-/usr/include/x86_64-linux-gnu/bits/wchar2.h:
-
-/usr/include/x86_64-linux-gnu/bits/wchar.h:
-
-/usr/include/x86_64-linux-gnu/bits/stat.h:
-
-/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
-
-/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
-
-/usr/include/x86_64-linux-gnu/bits/typesizes.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/error_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types.h:
-
-/usr/include/x86_64-linux-gnu/bits/timesize.h:
-
-/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
-
-/usr/include/x86_64-linux-gnu/bits/string_fortified.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
-
-/usr/include/x86_64-linux-gnu/bits/select.h:
-
-/usr/include/x86_64-linux-gnu/bits/select-decl.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
-
-/usr/include/x86_64-linux-gnu/bits/setjmp.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
-
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
-
-/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
-
-/usr/include/c++/12/bits/locale_conv.h:
-
-/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
-
-/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
-
-/usr/include/x86_64-linux-gnu/bits/endian.h:
-
-/usr/include/x86_64-linux-gnu/bits/byteswap.h:
-
-/usr/include/x86_64-linux-gnu/asm/errno.h:
-
-/usr/include/x86_64-linux-gnu/bits/statx-generic.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
-
-/usr/include/wchar.h:
-
-/usr/include/vector_types.h:
-
-/usr/include/vector_functions.hpp:
 
 /usr/include/thrust/uninitialized_fill.h:
 
@@ -4617,19 +2521,11 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/type_traits/is_trivially_relocatable.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
-
-/usr/include/thrust/type_traits/is_contiguous_iterator.h:
-
 /usr/include/thrust/tuple.h:
 
 /usr/include/thrust/transform_reduce.h:
 
 /usr/include/thrust/system/detail/sequential/trivial_copy.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
-
-/usr/include/thrust/system/detail/sequential/transform.h:
 
 /usr/include/thrust/system/detail/sequential/tabulate.h:
 
@@ -4659,25 +2555,11 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/system/detail/sequential/fill.h:
 
-/usr/include/x86_64-linux-gnu/bits/timex.h:
-
-/usr/include/thrust/system/detail/sequential/extrema.h:
-
 /usr/include/thrust/system/detail/sequential/copy_if.h:
 
 /usr/include/thrust/system/detail/sequential/copy_backward.h:
 
-/usr/include/c++/12/locale:
-
-/usr/include/thrust/system/detail/sequential/copy.inl:
-
 /usr/include/thrust/system/detail/generic/transform_reduce.inl:
-
-/usr/include/libintl.h:
-
-/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
-
-/usr/include/thrust/system/detail/generic/transform_reduce.h:
 
 /usr/include/thrust/system/detail/generic/transform.h:
 
@@ -4710,12 +2592,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 /usr/include/thrust/system/detail/generic/replace.inl:
 
 /usr/include/thrust/system/detail/generic/reduce_by_key.h:
-
-/usr/include/x86_64-linux-gnu/sys/select.h:
-
-/usr/include/thrust/type_traits/integer_sequence.h:
-
-/usr/include/thrust/system/detail/generic/reduce.inl:
 
 /usr/include/thrust/system/detail/generic/reduce.h:
 
@@ -4771,10 +2647,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/system/detail/adl/transform_reduce.h:
 
-/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
-
-/usr/include/thrust/system/detail/adl/transform.h:
-
 /usr/include/thrust/system/detail/generic/equal.h:
 
 /usr/include/thrust/system/detail/adl/temporary_buffer.h:
@@ -4805,10 +2677,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/system/cuda/pointer.h:
 
-/usr/include/x86_64-linux-gnu/sys/stat.h:
-
-/usr/include/thrust/system/cuda/execution_policy.h:
-
 /usr/include/thrust/system/cuda/error.h:
 
 /usr/include/thrust/system/detail/generic/temporary_buffer.inl:
@@ -4829,19 +2697,9 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/system/cuda/detail/tabulate.h:
 
-/usr/include/x86_64-linux-gnu/gnu/stubs.h:
-
-/usr/include/thrust/system/cuda/detail/swap_ranges.h:
-
 /usr/include/thrust/system/cuda/detail/scatter.h:
 
 /usr/include/thrust/system/cuda/detail/scan_by_key.h:
-
-/usr/include/x86_64-linux-gnu/bits/sched.h:
-
-/usr/include/thrust/system/system_error.h:
-
-/usr/include/thrust/system/cuda/detail/reverse.h:
 
 /usr/include/thrust/system/cuda/detail/reduce_by_key.h:
 
@@ -4854,16 +2712,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 /usr/include/thrust/system/cuda/detail/iter_swap.h:
 
 /usr/include/thrust/system/cuda/detail/internal/copy_device_to_device.h:
-
-/usr/include/c++/12/iomanip:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/syslimits.h:
-
-/usr/include/thrust/system/cuda/detail/guarded_driver_types.h:
-
-/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
-
-/usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h:
 
 /usr/include/thrust/system/cuda/detail/get_value.h:
 
@@ -4889,10 +2737,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/system/cuda/detail/cdp_dispatch.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
-
-/usr/include/thrust/system/cuda/config.h:
-
 /usr/include/thrust/system/cpp/pointer.h:
 
 /usr/include/thrust/system/cpp/memory_resource.h:
@@ -4900,10 +2744,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 /usr/include/thrust/system/cpp/detail/unique_by_key.h:
 
 /usr/include/thrust/system/cpp/detail/unique.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h:
-
-/usr/include/thrust/system/cpp/detail/sort.h:
 
 /usr/include/thrust/system/cpp/detail/set_operations.h:
 
@@ -4925,10 +2765,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/system/cpp/detail/get_value.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
-/usr/include/thrust/system/cpp/detail/find.h:
-
 /usr/include/thrust/system/cuda/detail/transform_reduce.h:
 
 /usr/include/thrust/system/cpp/detail/execution_policy.h:
@@ -4941,101 +2777,395 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/system/cpp/detail/assign_value.h:
 
-/usr/include/x86_64-linux-gnu/c++/12/bits/c++io.h:
-
-/usr/include/thrust/system/detail/adl/find.h:
-
-/usr/include/thrust/system/cpp/detail/adjacent_difference.h:
-
 /usr/include/thrust/swap.h:
 
-/usr/include/x86_64-linux-gnu/c++/12/bits/c++allocator.h:
+/usr/include/thrust/reduce.h:
 
-/usr/include/x86_64-linux-gnu/bits/math-vector.h:
+/usr/include/thrust/pair.h:
 
-/usr/include/thrust/system/detail/generic/scan_by_key.h:
+/usr/include/thrust/mr/validator.h:
 
-/usr/include/thrust/system/cuda/detail/generate.h:
+/usr/include/thrust/mr/memory_resource.h:
 
-/usr/include/thrust/sort.h:
+/usr/include/thrust/mr/host_memory_resource.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
+/usr/include/thrust/mr/fancy_pointer_resource.h:
 
-/usr/include/thrust/sequence.h:
+/usr/include/thrust/mr/device_memory_resource.h:
 
-/usr/include/cub/thread/thread_scan.cuh:
+/usr/include/thrust/mismatch.h:
 
-/usr/include/sm_20_atomic_functions.hpp:
+/usr/include/thrust/system/detail/generic/fill.h:
 
-/usr/include/x86_64-linux-gnu/bits/time.h:
+/usr/include/thrust/system/cpp/detail/reduce.h:
 
-/usr/include/cub/iterator/constant_input_iterator.cuh:
+/usr/include/thrust/merge.h:
 
-/usr/include/crt/cudacc_ext.h:
+/usr/include/thrust/memory.h:
 
-/usr/include/cub/iterator/arg_index_input_iterator.cuh:
+/usr/include/thrust/system/detail/adl/reduce.h:
 
-/usr/include/cub/grid/grid_mapping.cuh:
+/usr/include/thrust/iterator/transform_iterator.h:
 
-/usr/include/thrust/system/detail/generic/uninitialized_fill.h:
+/usr/include/thrust/iterator/permutation_iterator.h:
 
-/usr/include/cub/agent/agent_unique_by_key.cuh:
+/usr/include/thrust/iterator/iterator_traits.h:
+
+/usr/include/thrust/iterator/iterator_facade.h:
+
+/usr/include/thrust/mr/polymorphic_adaptor.h:
+
+/usr/include/thrust/iterator/detail/zip_iterator_base.h:
+
+/usr/include/thrust/iterator/detail/zip_iterator.inl:
+
+/usr/include/thrust/iterator/detail/tuple_of_iterator_references.h:
+
+/usr/include/thrust/iterator/detail/reverse_iterator_base.h:
+
+/usr/include/thrust/iterator/detail/reverse_iterator.inl:
+
+/usr/include/thrust/iterator/detail/permutation_iterator_base.h:
+
+/usr/include/thrust/system/detail/sequential/scan_by_key.h:
+
+/usr/include/thrust/iterator/detail/minimum_system.h:
+
+/usr/include/thrust/iterator/detail/iterator_traversal_tags.h:
+
+/usr/include/thrust/iterator/detail/iterator_traits.inl:
+
+/usr/include/thrust/iterator/detail/iterator_facade_category.h:
+
+/usr/include/thrust/system/detail/generic/memory.h:
+
+/usr/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h:
+
+/usr/include/thrust/iterator/detail/is_iterator_category.h:
+
+/usr/include/thrust/iterator/detail/device_system_tag.h:
+
+/usr/include/thrust/iterator/detail/counting_iterator.inl:
+
+/usr/include/thrust/system/cuda/detail/core/alignment.h:
+
+/usr/include/thrust/iterator/detail/any_assign.h:
+
+/usr/include/thrust/find.h:
+
+/usr/include/thrust/execution_policy.h:
+
+/usr/include/thrust/equal.h:
+
+/usr/include/thrust/device_vector.h:
+
+/usr/include/thrust/iterator/detail/tagged_iterator.h:
+
+/usr/include/thrust/device_reference.h:
+
+/usr/include/thrust/device_ptr.h:
+
+/usr/include/thrust/detail/use_default.h:
+
+/usr/include/thrust/fill.h:
+
+/usr/include/thrust/detail/uninitialized_fill.inl:
+
+/usr/include/thrust/detail/type_traits/pointer_traits.h:
+
+/usr/include/thrust/detail/type_traits/minimum_type.h:
+
+/usr/include/thrust/detail/type_traits/iterator/is_output_iterator.h:
+
+/usr/include/thrust/detail/type_traits/is_metafunction_defined.h:
+
+/usr/include/thrust/detail/type_traits/is_call_possible.h:
+
+/usr/include/thrust/detail/type_traits/function_traits.h:
+
+/usr/include/thrust/detail/type_traits.h:
+
+/usr/include/thrust/detail/tuple_transform.h:
+
+/usr/include/thrust/system/detail/sequential/assign_value.h:
+
+/usr/include/thrust/detail/transform_reduce.inl:
+
+/usr/include/thrust/system/cpp/detail/remove.h:
+
+/usr/include/thrust/detail/temporary_array.inl:
+
+/usr/include/thrust/detail/tabulate.inl:
+
+/usr/include/thrust/iterator/zip_iterator.h:
+
+/usr/include/thrust/detail/swap_ranges.inl:
+
+/usr/include/thrust/detail/static_assert.h:
+
+/usr/include/thrust/detail/sort.inl:
+
+/usr/include/thrust/detail/sequence.inl:
+
+/usr/include/thrust/detail/scatter.inl:
+
+/usr/include/thrust/detail/scan.inl:
+
+/usr/include/thrust/detail/reverse.inl:
+
+/usr/include/thrust/system/cpp/detail/for_each.h:
+
+/usr/include/thrust/detail/replace.inl:
+
+/usr/include/thrust/system/cuda/detail/internal/copy_cross_system.h:
+
+/usr/include/thrust/detail/reference_forward_declaration.h:
+
+/usr/include/thrust/detail/preprocessor.h:
+
+/usr/include/thrust/detail/type_traits/has_member_function.h:
+
+/usr/include/thrust/detail/pair.inl:
+
+/usr/include/thrust/detail/numeric_traits.h:
 
 /usr/include/thrust/detail/mismatch.inl:
 
-/usr/include/c++/12/bits/exception_ptr.h:
+/usr/include/thrust/detail/minmax.h:
 
-/usr/include/cub/device/dispatch/dispatch_scan.cuh:
+/usr/include/thrust/detail/memory_wrapper.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdlib.h:
+/usr/include/thrust/detail/type_traits/result_of_adaptable_function.h:
+
+/usr/include/thrust/detail/malloc_and_free.h:
+
+/usr/include/thrust/detail/internal_functional.h:
+
+/usr/include/thrust/detail/integer_traits.h:
+
+/usr/include/thrust/system/detail/generic/equal.inl:
+
+/usr/include/thrust/detail/integer_math.h:
+
+/usr/include/thrust/detail/functional/value.h:
+
+/usr/include/thrust/detail/functional/placeholder.h:
+
+/usr/include/thrust/detail/functional/operators/operator_adaptors.h:
+
+/usr/include/thrust/detail/functional/operators/bitwise_operators.h:
+
+/usr/include/thrust/detail/functional/operators.h:
+
+/usr/include/thrust/detail/functional/composite.h:
+
+/usr/include/thrust/detail/functional/actor.h:
+
+/usr/include/thrust/detail/functional.inl:
+
+/usr/include/thrust/detail/function.h:
+
+/usr/include/thrust/detail/find.inl:
+
+/usr/include/thrust/detail/fill.inl:
+
+/usr/include/thrust/detail/generate.inl:
+
+/usr/include/thrust/detail/extrema.inl:
+
+/usr/include/thrust/detail/execution_policy.h:
+
+/usr/include/thrust/detail/execute_with_dependencies.h:
+
+/usr/include/thrust/detail/reference.h:
+
+/usr/include/thrust/detail/execute_with_allocator_fwd.h:
+
+/usr/include/thrust/detail/equal.inl:
+
+/usr/include/thrust/system/detail/adl/sort.h:
+
+/usr/include/thrust/for_each.h:
+
+/usr/include/thrust/detail/device_ptr.inl:
+
+/usr/include/thrust/detail/dependencies_aware_execution_policy.h:
+
+/usr/include/thrust/system/detail/sequential/execution_policy.h:
+
+/usr/include/thrust/detail/cpp11_required.h:
+
+/usr/include/thrust/detail/copy_if.inl:
+
+/usr/include/thrust/system/detail/sequential/reverse.h:
+
+/usr/include/thrust/detail/copy_if.h:
+
+/usr/include/thrust/detail/contiguous_storage.inl:
+
+/usr/include/thrust/detail/contiguous_storage.h:
+
+/usr/include/thrust/detail/swap.h:
+
+/usr/include/thrust/detail/config/namespace.h:
+
+/usr/include/thrust/detail/config/host_system.h:
+
+/usr/include/thrust/detail/config/host_device.h:
+
+/usr/include/thrust/detail/config/global_workarounds.h:
+
+/usr/include/cub/device/dispatch/dispatch_select_if.cuh:
+
+/usr/include/thrust/system/detail/system_error.inl:
+
+/usr/include/thrust/iterator/detail/normal_iterator.h:
+
+/usr/include/cuda/std/version:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
+
+/usr/include/thrust/detail/config/simple_defines.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
+
+/usr/include/c++/12/bits/hashtable.h:
+
+/usr/include/x86_64-linux-gnu/bits/select-decl.h:
+
+/usr/include/c++/12/fstream:
+
+/usr/include/cub/block/specializations/block_scan_warp_scans.cuh:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
+
+/usr/include/cub/thread/thread_store.cuh:
+
+/usr/include/cub/device/device_merge_sort.cuh:
+
+/usr/include/crt/sm_90_rt.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+
+/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
+
+/usr/include/c++/12/bits/algorithmfwd.h:
+
+/usr/include/thrust/detail/allocator/tagged_allocator.inl:
 
 /usr/include/thrust/tabulate.h:
 
 /usr/include/thrust/detail/type_traits/has_trivial_assign.h:
 
-/usr/include/cub/device/device_reduce.cuh:
+/usr/include/x86_64-linux-gnu/bits/stdlib.h:
+
+/usr/include/x86_64-linux-gnu/asm/errno.h:
+
+/usr/include/thrust/detail/merge.inl:
+
+/usr/include/wctype.h:
+
+/usr/include/device_types.h:
+
+/usr/include/vector_types.h:
+
+/usr/include/thrust/system/detail/sequential/adjacent_difference.h:
+
+/usr/include/c++/12/tr1/poly_hermite.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/surface_types.h:
+
+/usr/include/thrust/system/detail/generic/scatter.h:
+
+/usr/include/sm_61_intrinsics.h:
+
+/usr/include/thrust/reverse.h:
+
+/usr/include/sm_60_atomic_functions.h:
+
+/usr/include/cub/thread/thread_sort.cuh:
+
+/usr/include/sm_35_atomic_functions.h:
+
+/usr/include/thrust/system/cpp/detail/partition.h:
+
+/usr/include/sm_32_atomic_functions.hpp:
+
+/usr/include/sm_20_atomic_functions.h:
+
+/usr/include/sm_32_atomic_functions.h:
+
+/usr/include/sm_30_intrinsics.h:
+
+/usr/include/sm_20_atomic_functions.hpp:
+
+/usr/include/thrust/system/detail/adl/copy.h:
+
+/usr/include/c++/12/bits/stl_iterator_base_funcs.h:
+
+/usr/include/locale.h:
+
+/usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
+
+/usr/include/errno.h:
+
+/usr/include/endian.h:
+
+/usr/include/stdint.h:
+
+/usr/include/c++/12/bits/string_view.tcc:
+
+/usr/include/thrust/system/detail/sequential/scatter.h:
+
+/usr/include/thrust/system/cpp/detail/generate.h:
+
+/usr/include/c++/12/bits/predefined_ops.h:
+
+/usr/include/cub/version.cuh:
+
+/usr/include/library_types.h:
+
+/usr/include/device_atomic_functions.hpp:
+
+/usr/include/device_atomic_functions.h:
+
+/usr/include/c++/12/bits/locale_classes.tcc:
+
+/usr/include/thrust/generate.h:
+
+/usr/include/x86_64-linux-gnu/bits/dirent_ext.h:
+
+/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
+
+/usr/include/cuda_runtime_api.h:
+
+/usr/include/thrust/scatter.h:
+
+/usr/include/thrust/detail/type_traits/has_nested_type.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.h:
+
+/usr/include/thrust/system/cpp/detail/find.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
 /usr/include/thrust/system/detail/sequential/remove.h:
 
 /usr/include/c++/12/iostream:
 
-/usr/include/thrust/detail/allocator/fill_construct_range.inl:
+/usr/include/thrust/system/detail/sequential/extrema.h:
 
-/usr/include/thrust/iterator/detail/distance_from_result.h:
+/usr/include/x86_64-linux-gnu/bits/timex.h:
 
-/usr/include/linux/stat.h:
-
-/usr/include/cub/detail/uninitialized_copy.cuh:
-
-/usr/include/cub/block/specializations/block_scan_warp_scans.cuh:
-
-/usr/include/dirent.h:
-
-/usr/include/cub/block/block_store.cuh:
-
-/usr/include/cub/block/block_scan.cuh:
-
-/usr/include/c++/12/algorithm:
-
-/usr/include/cub/block/block_radix_rank.cuh:
-
-/usr/include/cub/iterator/cache_modified_input_iterator.cuh:
-
-/usr/include/thrust/system/detail/sequential/stable_radix_sort.inl:
-
-/usr/include/cub/block/block_discontinuity.cuh:
-
-/usr/include/thrust/detail/allocator/copy_construct_range.h:
-
-/usr/include/cub/agent/agent_scan.cuh:
-
-/usr/include/c++/12/bits/stl_iterator_base_types.h:
-
-/usr/include/x86_64-linux-gnu/bits/cpu-set.h:
-
-/usr/include/thrust/detail/raw_pointer_cast.h:
-
-/usr/include/cub/agent/agent_radix_sort_onesweep.cuh:
+/usr/include/cuda_device_runtime_api.h:
 
 /usr/include/ctype.h:
 
@@ -5043,41 +3173,21 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/thrust/detail/config/cpp_compatibility.h:
 
-/usr/include/crt/sm_90_rt.hpp:
-
-/usr/include/thrust/system/detail/generic/equal.inl:
-
-/usr/include/thrust/detail/integer_math.h:
-
-/usr/include/thrust/system/detail/generic/reverse.inl:
-
-/usr/include/thrust/system/cuda/detail/execution_policy.h:
-
-/usr/include/cub/agent/agent_merge_sort.cuh:
-
-/usr/include/thrust/detail/dependencies_aware_execution_policy.h:
+/usr/include/sm_20_intrinsics.hpp:
 
 /usr/include/c++/12/bits/stl_tree.h:
 
+/usr/include/sm_60_atomic_functions.hpp:
+
+/usr/include/vector_functions.hpp:
+
 /usr/include/crt/sm_80_rt.hpp:
 
-/usr/include/c++/12/bits/codecvt.h:
-
-/usr/include/crt/sm_80_rt.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
-
-/usr/include/thrust/system/detail/sequential/binary_search.h:
-
-/usr/include/sm_32_intrinsics.h:
-
-/usr/include/thrust/system/cuda/detail/core/alignment.h:
-
-/usr/include/thrust/iterator/detail/any_assign.h:
+/usr/include/device_launch_parameters.h:
 
 /usr/include/crt/sm_70_rt.hpp:
 
-/usr/include/thrust/detail/use_default.h:
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
 
 /usr/include/thrust/system/detail/sequential/transform_reduce.h:
 
@@ -5093,9 +3203,19 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/crt/device_double_functions.hpp:
 
+/usr/include/sm_61_intrinsics.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
+
 /usr/include/c++/12/bits/align.h:
 
-/usr/include/sm_61_intrinsics.hpp:
+/usr/include/thrust/iterator/iterator_categories.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/usr/include/cub/block/block_radix_rank.cuh:
+
+/usr/include/linux/limits.h:
 
 /usr/include/c++/12/backward/auto_ptr.h:
 
@@ -5105,17 +3225,21 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/crt/common_functions.h:
 
-/usr/include/c++/12/ext/atomicity.h:
-
 /usr/include/thrust/system/detail/sequential/equal.h:
 
 /usr/include/c++/12/bits/node_handle.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdio.h:
+/usr/include/c++/12/ext/atomicity.h:
 
-/usr/include/thrust/detail/vector_base.inl:
+/usr/include/channel_descriptor.h:
 
-/usr/include/asm-generic/errno-base.h:
+/usr/include/c++/12/tr1/legendre_function.tcc:
+
+/usr/include/thrust/system/detail/generic/select_system.h:
+
+/usr/include/thrust/detail/overlapped_copy.h:
+
+/usr/include/cub/block/radix_rank_sort_operations.cuh:
 
 /usr/include/c++/12/tr1/riemann_zeta.tcc:
 
@@ -5123,413 +3247,11 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/c++/12/tr1/poly_laguerre.tcc:
 
-/usr/include/thrust/system/detail/sequential/adjacent_difference.h:
-
-/usr/include/c++/12/tr1/poly_hermite.tcc:
-
-/usr/include/c++/12/tr1/legendre_function.tcc:
-
-/usr/include/channel_descriptor.h:
-
-/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
-
-/usr/include/c++/12/cwctype:
-
-/usr/include/c++/12/tr1/beta_function.tcc:
-
-/usr/include/thrust/detail/type_traits/iterator/is_output_iterator.h:
-
-/usr/include/thrust/system/detail/generic/distance.h:
-
-/usr/include/cub/block/block_exchange.cuh:
-
-/usr/include/cub/detail/exec_check_disable.cuh:
-
-/usr/include/thrust/detail/type_traits.h:
-
-/usr/include/c++/12/cwchar:
-
-/usr/include/thrust/system/detail/generic/fill.h:
-
-/usr/include/thrust/system/cpp/detail/reduce.h:
-
-/usr/include/thrust/merge.h:
-
-/usr/include/c++/12/system_error:
-
-/usr/include/thrust/detail/contiguous_storage.inl:
-
-/usr/include/thrust/system/cuda/detail/sort.h:
-
-/usr/include/c++/12/shared_mutex:
-
-/usr/include/thrust/system/detail/sequential/copy.h:
-
-/usr/include/c++/12/ratio:
-
-/usr/include/c++/12/pstl/glue_algorithm_defs.h:
-
-/usr/include/thrust/system/detail/generic/extrema.inl:
-
-/usr/include/c++/12/bits/localefwd.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/ctype_inline.h:
-
-/usr/include/cub/block/block_merge_sort.cuh:
-
-/usr/include/cub/device/dispatch/dispatch_reduce_by_key.cuh:
-
-/usr/include/features.h:
-
-/usr/include/c++/12/typeinfo:
-
-/usr/include/thrust/advance.h:
-
-/usr/include/cub/agent/agent_radix_sort_histogram.cuh:
-
-/usr/include/thrust/detail/config/debug.h:
-
-/usr/include/c++/12/map:
-
-/usr/include/c++/12/cstring:
-
-/usr/include/c++/12/bits/charconv.h:
-
-/usr/include/thrust/device_ptr.h:
-
-/usr/include/thrust/system/detail/sequential/get_value.h:
-
-/usr/include/c++/12/limits:
-
-/usr/include/cub/util_deprecated.cuh:
-
-/usr/include/cub/detail/device_synchronize.cuh:
-
-/usr/include/thrust/detail/sort.inl:
-
-/usr/include/c++/12/iterator:
-
-/usr/include/c++/12/bits/unique_ptr.h:
-
-/usr/include/c++/12/iosfwd:
-
-/usr/include/thrust/system/detail/sequential/stable_radix_sort.h:
-
-/usr/include/c++/12/functional:
-
-/usr/include/cub/agent/single_pass_scan_operators.cuh:
-
-/usr/include/thrust/system/detail/generic/uninitialized_fill.inl:
-
-/usr/include/c++/12/ext/string_conversions.h:
-
-/usr/include/thrust/detail/type_deduction.h:
-
-/usr/include/c++/12/tr1/hypergeometric.tcc:
-
-/usr/include/c++/12/bits/vector.tcc:
-
-/usr/include/cub/agent/agent_radix_sort_downsweep.cuh:
-
-/usr/include/c++/12/ext/numeric_traits.h:
-
-/usr/include/thrust/detail/sequence.inl:
-
-/usr/include/thrust/system_error.h:
-
-/usr/include/c++/12/tr1/special_function_util.h:
-
-/usr/include/c++/12/ext/alloc_traits.h:
-
-/usr/include/thrust/detail/type_traits/function_traits.h:
-
-/usr/include/thrust/mr/validator.h:
-
-/usr/include/c++/12/debug/debug.h:
-
-/usr/include/thrust/detail/config/forceinline.h:
-
-/usr/include/thrust/detail/preprocessor.h:
-
-/usr/include/c++/12/bits/locale_classes.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
-
-/usr/include/crt/device_double_functions.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myInteraction.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h:
-
-/usr/include/thrust/system/detail/adl/replace.h:
-
-/usr/include/cub/device/dispatch/dispatch_merge_sort.cuh:
-
-/usr/include/thrust/detail/allocator/fill_construct_range.h:
-
-/usr/include/thrust/detail/functional/placeholder.h:
-
-/usr/include/c++/12/bits/hashtable_policy.h:
-
-/usr/include/x86_64-linux-gnu/bits/select2.h:
-
-/usr/include/thrust/system/cuda/detail/assign_value.h:
-
-/usr/include/c++/12/bits/stl_multimap.h:
-
-/usr/include/c++/12/bits/locale_classes.tcc:
-
-/usr/include/device_atomic_functions.h:
-
-/usr/include/c++/12/bits/exception.h:
-
-/usr/include/thrust/system/cuda/detail/par_to_seq.h:
-
-/usr/include/cub/grid/grid_even_share.cuh:
-
-/usr/include/c++/12/bits/enable_special_members.h:
-
-/usr/include/thrust/detail/distance.inl:
-
-/usr/include/c++/12/bits/stl_heap.h:
-
-/usr/include/x86_64-linux-gnu/bits/fp-logb.h:
-
-/usr/include/cub/detail/detect_cuda_runtime.cuh:
-
-/usr/include/cub/util_ptx.cuh:
-
-/usr/include/cub/agent/agent_reduce_by_key.cuh:
-
-/usr/include/thrust/system/detail/generic/for_each.h:
-
-/usr/include/crt/host_config.h:
-
-/usr/include/thrust/detail/functional/operators/arithmetic_operators.h:
-
-/usr/include/cuda/std/detail/__pragma_push:
-
-/usr/include/c++/12/backward/binders.h:
-
-/usr/include/c++/12/tr1/exp_integral.tcc:
-
-/usr/include/c++/12/bits/chrono.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
-
-/usr/include/cub/thread/thread_store.cuh:
-
-/usr/include/c++/12/cfloat:
-
-/usr/include/c++/12/bits/basic_string.tcc:
-
-/usr/include/thrust/detail/config/global_workarounds.h:
-
-/usr/include/c++/12/bits/stl_map.h:
-
-/usr/include/thrust/detail/functional/operators.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.cpp:
-
-/usr/include/c++/12/ext/type_traits.h:
-
-/usr/include/c++/12/bits/stl_vector.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/solverParams.h:
-
-/usr/include/cub/block/specializations/block_scan_raking.cuh:
-
-/usr/include/thrust/system/detail/sequential/unique.h:
-
-/usr/include/c++/12/bits/concept_check.h:
-
-/usr/include/c++/12/bits/stl_raw_storage_iter.h:
-
-/usr/include/c++/12/bits/uses_allocator_args.h:
-
-/usr/include/c++/12/exception:
-
-/usr/include/thrust/iterator/detail/iterator_facade_category.h:
-
-/usr/include/c++/12/bits/cxxabi_forced.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myMat.h:
-
-/usr/include/thrust/system/detail/adl/assign_value.h:
-
-/usr/include/cuda/std/detail/libcxx/include/type_traits:
-
-/usr/include/c++/12/pstl/pstl_config.h:
-
-/usr/include/c++/12/bits/allocated_ptr.h:
-
-/usr/include/x86_64-linux-gnu/sys/single_threaded.h:
-
-/usr/include/thrust/detail/alignment.h:
-
-/usr/include/thrust/system/detail/sequential/execution_policy.h:
-
-/usr/include/thrust/detail/cpp11_required.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
-
-/usr/include/thrust/system/cuda/detail/temporary_buffer.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h:
-
-/usr/include/cub/device/device_merge_sort.cuh:
-
-/usr/include/c++/12/bits/atomic_lockfree_defines.h:
-
-/usr/include/nv/detail/__preprocessor:
-
-/usr/include/crt/sm_90_rt.h:
-
-/usr/include/c++/12/pstl/execution_defs.h:
-
-/usr/include/cub/block/specializations/block_reduce_raking.cuh:
-
-/usr/include/x86_64-linux-gnu/bits/waitflags.h:
-
-/usr/include/c++/12/bits/basic_ios.h:
-
-/usr/include/cub/device/dispatch/dispatch_reduce.cuh:
-
-/usr/include/c++/12/bits/cpp_type_traits.h:
-
-/usr/include/thrust/version.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.cu:
-
-/usr/include/thrust/iterator/detail/iterator_adaptor_base.h:
-
-/usr/include/thrust/system/cuda/detail/replace.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myParticle.h:
-
-/usr/include/thrust/detail/config/host_device.h:
-
-/usr/include/thrust/detail/fill.inl:
-
-/usr/include/thrust/detail/for_each.inl:
-
-/usr/include/c++/12/bit:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myQua.h:
-
-/usr/include/thrust/detail/config/host_system.h:
-
-/usr/include/c++/12/bits/alloc_traits.h:
-
-/usr/include/c++/12/new:
-
-/usr/include/limits.h:
+/usr/include/crt/host_defines.h:
 
 /usr/include/thrust/scan.h:
 
 /usr/include/c++/12/bits/ios_base.h:
-
-/usr/include/crt/host_defines.h:
-
-/usr/include/x86_64-linux-gnu/bits/endianness.h:
-
-/usr/include/thrust/system/error_code.h:
-
-/usr/include/cub/block/block_load.cuh:
-
-/usr/include/thrust/detail/advance.inl:
-
-/usr/include/thrust/scatter.h:
-
-/usr/include/thrust/detail/type_traits/has_nested_type.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.h:
-
-/usr/include/cuda_runtime_api.h:
-
-/usr/include/thrust/system/cpp/detail/for_each.h:
-
-/usr/include/thrust/detail/replace.inl:
-
-/usr/include/c++/12/bits/unordered_map.h:
-
-/usr/include/assert.h:
-
-/usr/include/c++/12/ext/concurrence.h:
-
-/usr/include/c++/12/bits/hashtable.h:
-
-/usr/include/thrust/detail/reverse.inl:
-
-/usr/include/c++/12/bits/functional_hash.h:
-
-/usr/include/thrust/type_traits/remove_cvref.h:
-
-/usr/include/thrust/system/detail/sequential/unique_by_key.h:
-
-/usr/include/c++/12/unordered_map:
-
-/usr/include/c++/12/tuple:
-
-/usr/include/c++/12/streambuf:
-
-/usr/include/thrust/detail/raw_reference_cast.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h:
-
-/usr/include/c++/12/bits/istream.tcc:
-
-/usr/include/c++/12/bits/shared_ptr_base.h:
-
-/usr/include/c++/12/bits/stringfwd.h:
-
-/usr/include/c++/12/bits/hash_bytes.h:
-
-/usr/include/thrust/detail/functional/operators/operator_adaptors.h:
-
-/usr/include/cub/device/dispatch/dispatch_radix_sort.cuh:
-
-/usr/include/thrust/system/cuda/detail/error.inl:
-
-/usr/include/cub/util_arch.cuh:
-
-/usr/include/c++/12/array:
-
-/usr/include/thrust/system/cuda/detail/mismatch.h:
-
-/usr/include/cuda/std/detail/libcxx/include/__pragma_push:
-
-/usr/include/cub/device/dispatch/dispatch_scan_by_key.cuh:
-
-/usr/include/thrust/detail/copy.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
-
-/usr/include/thrust/iterator/iterator_adaptor.h:
-
-/usr/include/c++/12/bits/algorithmfwd.h:
-
-/usr/include/c++/12/bits/erase_if.h:
-
-/usr/include/crt/sm_70_rt.h:
-
-/usr/include/c++/12/string:
-
-/usr/include/thrust/detail/transform.inl:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myHash.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h:
-
-/usr/include/c++/12/bits/postypes.h:
-
-/usr/include/c++/12/bits/stl_tempbuf.h:
-
-/usr/include/c++/12/version:
-
-/usr/include/thrust/iterator/reverse_iterator.h:
 
 /usr/include/c++/12/tr1/modified_bessel_func.tcc:
 
@@ -5539,81 +3261,19 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cuda_bf16.h:
 
-/usr/include/c++/12/ext/aligned_buffer.h:
+/usr/include/thrust/detail/vector_base.h:
 
-/usr/include/stdlib.h:
+/usr/include/c++/12/tr1/gamma.tcc:
 
-/usr/include/c++/12/bits/stream_iterator.h:
+/usr/include/c++/12/tr1/beta_function.tcc:
 
-/usr/include/texture_indirect_functions.h:
+/usr/include/cub/agent/agent_reduce.cuh:
 
-/usr/include/c++/12/ios:
+/usr/include/x86_64-linux-gnu/bits/stdio2-decl.h:
 
-/usr/include/c++/12/bits/locale_facets.tcc:
+/usr/include/linux/posix_types.h:
 
-/usr/include/thrust/system/detail/sequential/insertion_sort.h:
-
-/usr/include/thrust/system/detail/adl/generate.h:
-
-/usr/include/cub/device/device_select.cuh:
-
-/usr/include/thrust/system/detail/sequential/merge.inl:
-
-/usr/include/cub/block/specializations/block_reduce_warp_reductions.cuh:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h:
-
-/usr/include/c++/12/tr1/ell_integral.tcc:
-
-/usr/include/thrust/mr/allocator.h:
-
-/usr/include/c++/12/bits/cxxabi_init_exception.h:
-
-/usr/include/c++/12/bits/memoryfwd.h:
-
-/usr/include/thrust/detail/mpl/math.h:
-
-/usr/include/c++/12/bits/stl_pair.h:
-
-/usr/include/thrust/detail/find.inl:
-
-/usr/include/thrust/system/detail/generic/select_system_exists.h:
-
-/usr/include/cub/block/block_radix_sort.cuh:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h:
-
-/usr/include/c++/12/utility:
-
-/usr/include/c++/12/bits/move.h:
-
-/usr/include/thrust/system/detail/sequential/merge.h:
-
-/usr/include/c++/12/bits/basic_string.h:
-
-/usr/include/stdc-predef.h:
-
-/usr/include/c++/12/bits/locale_facets.h:
-
-/usr/include/thrust/system/cuda/detail/internal/copy_cross_system.h:
-
-/usr/include/thrust/detail/reference_forward_declaration.h:
-
-/usr/include/c++/12/cassert:
-
-/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
-
-/usr/include/thrust/system/detail/sequential/generate.h:
-
-/usr/include/thrust/system/cuda/detail/fill.h:
-
-/usr/include/c++/12/bits/ostream.tcc:
-
-/usr/include/thrust/detail/allocator/destroy_range.inl:
-
-/usr/include/c++/12/bits/ostream_insert.h:
-
-/usr/include/cub/detail/choose_offset.cuh:
+/usr/include/thrust/detail/allocator/default_construct_range.inl:
 
 /usr/include/c++/12/bits/ptr_traits.h:
 
@@ -5625,83 +3285,305 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cub/util_macro.cuh:
 
-/usr/include/cub/agent/agent_radix_sort_upsweep.cuh:
+/usr/include/sm_32_intrinsics.hpp:
 
-/usr/include/c++/12/type_traits:
+/usr/include/c++/12/bits/ostream_insert.h:
 
-/usr/include/c++/12/memory:
+/usr/include/thrust/system/system_error.h:
 
-/usr/include/thrust/detail/config/memory_resource.h:
+/usr/include/thrust/system/cuda/detail/reverse.h:
 
-/usr/include/thrust/system/detail/adl/sequence.h:
+/usr/include/x86_64-linux-gnu/bits/sched.h:
 
-/usr/include/cub/agent/agent_select_if.cuh:
+/usr/include/c++/12/bits/locale_facets.tcc:
 
-/usr/include/thrust/detail/allocator/allocator_traits.h:
+/usr/include/c++/12/pstl/glue_algorithm_defs.h:
 
-/usr/include/c++/12/bits/range_access.h:
+/usr/include/thrust/system/detail/generic/extrema.inl:
 
-/usr/include/thrust/system/detail/sequential/set_operations.h:
+/usr/include/c++/12/bits/localefwd.h:
 
-/usr/include/c++/12/pstl/glue_memory_defs.h:
+/usr/include/x86_64-linux-gnu/c++/12/bits/ctype_inline.h:
 
-/usr/include/c++/12/bits/stl_construct.h:
+/usr/include/cub/block/block_merge_sort.cuh:
 
-/usr/include/c++/12/initializer_list:
+/usr/include/asm-generic/errno-base.h:
 
-/usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
+/usr/include/thrust/iterator/detail/iterator_category_to_system.h:
 
-/usr/include/c++/12/tr1/bessel_function.tcc:
+/usr/include/cub/thread/thread_operators.cuh:
 
-/usr/include/c++/12/bits/shared_ptr.h:
+/usr/include/c++/12/bits/move.h:
 
-/usr/include/c++/12/bits/shared_ptr_atomic.h:
+/usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h:
 
-/usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
+/usr/include/c++/12/utility:
 
-/usr/include/thrust/detail/functional/operators/logical_operators.h:
+/usr/include/thrust/system/detail/sequential/get_value.h:
+
+/usr/include/c++/12/limits:
+
+/usr/include/cub/util_deprecated.cuh:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/usr/include/thrust/detail/cstdint.h:
+
+/usr/include/c++/12/bits/stl_algobase.h:
+
+/usr/include/c++/12/bits/locale_classes.h:
+
+/usr/include/linux/stat.h:
+
+/usr/include/cub/detail/uninitialized_copy.cuh:
+
+/usr/include/thrust/system/cuda/detail/assign_value.h:
+
+/usr/include/x86_64-linux-gnu/bits/select2.h:
+
+/usr/include/c++/12/bits/stl_multimap.h:
+
+/usr/include/c++/12/bits/exception_ptr.h:
+
+/usr/include/thrust/detail/copy.h:
+
+/usr/include/cub/device/dispatch/dispatch_scan_by_key.cuh:
+
+/usr/include/thrust/iterator/detail/distance_from_result.h:
+
+/usr/include/thrust/detail/allocator/fill_construct_range.inl:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h:
+
+/usr/include/thrust/mr/new.h:
+
+/usr/include/crt/math_functions.h:
+
+/usr/include/c++/12/bits/exception.h:
+
+/usr/include/c++/12/bits/locale_facets_nonio.h:
 
 /usr/include/c++/12/bits/specfun.h:
 
-/usr/include/cub/thread/thread_load.cuh:
+/usr/include/thrust/system/detail/generic/for_each.h:
 
-/usr/include/c++/12/atomic:
+/usr/include/crt/host_config.h:
 
-/usr/include/thrust/detail/copy_if.inl:
+/usr/include/linux/stddef.h:
+
+/usr/include/thrust/detail/functional/operators/arithmetic_operators.h:
+
+/usr/include/cuda/std/detail/__pragma_push:
+
+/usr/include/c++/12/backward/binders.h:
+
+/usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h:
+
+/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+
+/usr/include/c++/12/tr1/exp_integral.tcc:
+
+/usr/include/c++/12/bits/chrono.h:
+
+/usr/include/c++/12/cstring:
+
+/usr/include/c++/12/bits/charconv.h:
+
+/usr/include/c++/12/map:
+
+/usr/include/c++/12/bits/cxxabi_init_exception.h:
+
+/usr/include/c++/12/bits/memoryfwd.h:
+
+/usr/include/thrust/detail/mpl/math.h:
+
+/usr/include/c++/12/bits/stl_pair.h:
+
+/usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/thrust/system/detail/sequential/unique.h:
+
+/usr/include/c++/12/bits/concept_check.h:
+
+/usr/include/c++/12/debug/debug.h:
+
+/usr/include/thrust/detail/config/forceinline.h:
+
+/usr/include/thrust/iterator/detail/host_system_tag.h:
+
+/usr/include/c++/12/clocale:
+
+/usr/include/vector_functions.h:
+
+/usr/include/cuda_bf16.hpp:
+
+/usr/include/c++/12/bits/functional_hash.h:
+
+/usr/include/thrust/system/detail/sequential/generate.h:
+
+/usr/include/thrust/system/cuda/detail/fill.h:
+
+/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
+
+/usr/include/c++/12/bits/ostream.tcc:
+
+/usr/include/thrust/detail/allocator/destroy_range.inl:
+
+/usr/include/c++/12/bits/locale_facets.h:
+
+/usr/include/c++/12/cassert:
+
+/usr/include/c++/12/bits/cxxabi_forced.h:
+
+/usr/include/c++/12/bits/stl_iterator_base_types.h:
+
+/usr/include/cub/agent/agent_scan.cuh:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myMat.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/error_t.h:
+
+/usr/include/thrust/system/detail/adl/assign_value.h:
+
+/usr/include/cuda/std/detail/libcxx/include/type_traits:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/solidParticleHandler.h:
+
+/usr/include/thrust/system/detail/sequential/for_each.h:
+
+/usr/include/thrust/detail/reduce.inl:
+
+/usr/include/c++/12/bits/exception_defines.h:
+
+/usr/include/alloca.h:
+
+/usr/include/c++/12/bits/basic_string.tcc:
+
+/usr/include/c++/12/bits/stl_map.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myQua.h:
+
+/usr/include/thrust/type_traits/integer_sequence.h:
+
+/usr/include/thrust/system/detail/generic/reduce.inl:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
+
+/usr/include/c++/12/bits/cpp_type_traits.h:
+
+/usr/include/crt/sm_80_rt.h:
+
+/usr/include/c++/12/bits/codecvt.h:
+
+/usr/include/thrust/system/cuda/detail/replace.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myParticle.h:
+
+/usr/include/crt/sm_90_rt.h:
+
+/usr/include/c++/12/pstl/execution_defs.h:
+
+/usr/include/cub/block/specializations/block_reduce_raking.cuh:
+
+/usr/include/c++/12/sstream:
+
+/usr/include/thrust/detail/get_iterator_value.h:
+
+/usr/include/c++/12/string_view:
+
+/usr/include/thrust/detail/allocator/destroy_range.h:
+
+/usr/include/stdio.h:
+
+/usr/include/c++/12/bits/stringfwd.h:
+
+/usr/include/thrust/system/cuda/detail/temporary_buffer.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myWall.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
+
+/usr/include/thrust/system/cuda/detail/reduce.h:
+
+/usr/include/sched.h:
+
+/usr/include/cuda_runtime.h:
+
+/usr/include/c++/12/bits/alloc_traits.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
+
+/usr/include/thrust/detail/raw_pointer_cast.h:
+
+/usr/include/x86_64-linux-gnu/bits/cpu-set.h:
+
+/usr/include/thrust/system/cuda/detail/scan.h:
+
+/usr/include/thrust/detail/functional/operators/relational_operators.h:
+
+/usr/include/cub/agent/agent_scan_by_key.cuh:
+
+/usr/include/stdlib.h:
+
+/usr/include/c++/12/ext/aligned_buffer.h:
+
+/usr/include/thrust/system/error_code.h:
+
+/usr/include/cub/block/block_load.cuh:
+
+/usr/include/x86_64-linux-gnu/bits/endianness.h:
+
+/usr/include/thrust/detail/advance.inl:
+
+/usr/include/thrust/detail/tuple_meta_transform.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
+
+/usr/include/surface_indirect_functions.h:
+
+/usr/include/assert.h:
+
+/usr/include/c++/12/bits/hash_bytes.h:
+
+/usr/include/c++/12/algorithm:
+
+/usr/include/cub/block/block_scan.cuh:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
+
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+/usr/include/c++/12/bits/range_access.h:
+
+/usr/include/c++/12/system_error:
+
+/usr/include/driver_types.h:
+
+/usr/include/c++/12/bits/stl_construct.h:
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myHostDeviceArray1D.h:
 
 /usr/include/c++/12/bits/stl_algo.h:
 
-/teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.h:
-
-/usr/include/c++/12/compare:
-
-/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
-
-/usr/include/thrust/extrema.h:
-
-/usr/include/thrust/iterator/iterator_traits.h:
-
-/usr/include/cub/grid/grid_queue.cuh:
-
-/usr/include/builtin_types.h:
-
-/usr/include/c++/12/bits/std_function.h:
-
 /usr/include/c++/12/bits/stl_function.h:
 
-/usr/include/thrust/system/detail/sequential/iter_swap.h:
+/usr/include/thrust/detail/distance.inl:
 
-/usr/include/thrust/detail/execute_with_allocator.h:
+/usr/include/c++/12/bits/stl_heap.h:
 
-/usr/include/c++/12/bits/std_mutex.h:
+/usr/include/asm-generic/posix_types.h:
 
-/usr/include/thrust/detail/allocator/temporary_allocator.inl:
-
-/usr/include/thrust/system/detail/generic/memory.h:
-
-/usr/include/thrust/iterator/detail/iterator_category_with_system_and_traversal.h:
+/usr/include/cub/util_ptx.cuh:
 
 /usr/include/c++/12/bits/stl_iterator.h:
 
@@ -5711,15 +3593,29 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/c++/12/bits/uses_allocator.h:
 
-/usr/include/thrust/system/detail/adl/copy.h:
+/usr/include/thrust/detail/vector_base.inl:
 
-/usr/include/c++/12/bits/stl_iterator_base_funcs.h:
+/usr/include/x86_64-linux-gnu/bits/stdio.h:
+
+/usr/include/cub/detail/device_synchronize.cuh:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
+
+/usr/include/string.h:
 
 /usr/include/c++/12/bits/stl_uninitialized.h:
 
-/usr/include/cub/block/specializations/block_reduce_raking_commutative_only.cuh:
+/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
+
+/usr/include/c++/12/bits/locale_conv.h:
+
+/usr/include/x86_64-linux-gnu/bits/select.h:
+
+/usr/include/cub/device/dispatch/dispatch_scan.cuh:
 
 /usr/include/thrust/detail/temporary_buffer.h:
+
+/usr/include/cub/block/specializations/block_reduce_raking_commutative_only.cuh:
 
 /usr/include/c++/12/stdlib.h:
 
@@ -5727,23 +3623,23 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/c++/12/cstddef:
 
-/usr/include/c++/12/bits/parse_numbers.h:
+/usr/include/c++/12/bits/stl_vector.h:
 
-/usr/include/cuda/std/detail/libcxx/include/__undef_macros:
+/usr/include/crt/cudacc_ext.h:
 
-/usr/include/thrust/detail/config/compiler.h:
+/usr/include/thrust/extrema.h:
 
-/usr/include/cub/device/dispatch/dispatch_select_if.cuh:
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
 
-/usr/include/thrust/system/detail/system_error.inl:
+/usr/include/x86_64-linux-gnu/bits/time.h:
 
-/usr/include/thrust/iterator/detail/normal_iterator.h:
-
-/usr/include/cuda/std/version:
+/usr/include/cub/iterator/constant_input_iterator.cuh:
 
 /usr/include/c++/12/vector:
 
-/usr/include/thrust/equal.h:
+/usr/include/thrust/system/cuda/detail/swap_ranges.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs.h:
 
 /usr/include/c++/12/bits/streambuf_iterator.h:
 
@@ -5751,55 +3647,37 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cub/warp/specializations/warp_reduce_smem.cuh:
 
-/usr/include/c++/12/bits/string_view.tcc:
-
-/usr/include/thrust/system/detail/sequential/scatter.h:
-
-/usr/include/thrust/system/cpp/detail/generate.h:
-
-/usr/include/c++/12/bits/predefined_ops.h:
-
-/usr/include/cub/version.cuh:
-
-/usr/include/endian.h:
-
-/usr/include/stdint.h:
-
-/usr/include/thrust/detail/scan.inl:
-
 /usr/include/c++/12/bits/functexcept.h:
 
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myContactModelParams.h:
+/usr/include/thrust/detail/type_deduction.h:
 
-/usr/include/c++/12/stdexcept:
+/usr/include/c++/12/tr1/hypergeometric.tcc:
 
-/usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
+/usr/include/c++/12/bits/vector.tcc:
 
-/usr/include/features-time64.h:
+/usr/include/thrust/system/detail/generic/uninitialized_fill.inl:
 
-/usr/include/thrust/iterator/detail/transform_iterator.inl:
+/usr/include/c++/12/ext/string_conversions.h:
 
-/usr/include/c++/12/istream:
+/usr/include/thrust/detail/raw_reference_cast.h:
 
-/usr/include/thrust/detail/tuple_transform.h:
+/usr/include/c++/12/streambuf:
 
-/usr/include/c++/12/cctype:
+/usr/include/features.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
+/usr/include/limits.h:
 
-/usr/include/math.h:
+/usr/include/c++/12/new:
 
-/usr/include/thrust/detail/functional/argument.h:
+/usr/include/c++/12/typeinfo:
 
-/usr/include/x86_64-linux-gnu/bits/stdio2-decl.h:
-
-/usr/include/cub/agent/agent_reduce.cuh:
+/usr/include/thrust/advance.h:
 
 /usr/include/c++/12/cmath:
 
-/usr/include/x86_64-linux-gnu/c++/12/bits/ctype_base.h:
+/usr/include/x86_64-linux-gnu/bits/endian.h:
 
-/usr/include/crt/device_functions.hpp:
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
 
 /usr/include/x86_64-linux-gnu/bits/errno.h:
 
@@ -5815,31 +3693,29 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/c++/12/cstdint:
 
-/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
-
-/usr/include/c++/12/bits/nested_exception.h:
-
-/usr/include/thrust/detail/copy.inl:
-
 /usr/include/c++/12/cstdio:
 
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myFileEdit.h:
+/usr/include/x86_64-linux-gnu/c++/12/bits/cpu_defines.h:
 
-/usr/include/thrust/iterator/detail/minimum_category.h:
+/usr/include/x86_64-linux-gnu/c++/12/bits/gthr-default.h:
+
+/usr/include/linux/types.h:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
 
 /usr/include/thrust/system/detail/generic/sequence.h:
 
 /usr/include/c++/12/cstdlib:
 
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.h:
-
-/usr/include/c++/12/bits/quoted_string.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h:
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
 
 /usr/include/thrust/iterator/detail/any_system_tag.h:
 
 /usr/include/cub/warp/specializations/warp_scan_smem.cuh:
+
+/usr/include/c++/12/cwchar:
+
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:
 
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
 
@@ -5847,23 +3723,585 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/c++/12/bits/std_abs.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
+/usr/include/c++/12/debug/assertions.h:
 
-/usr/include/cub/device/dispatch/dispatch_unique_by_key.cuh:
+/usr/include/cub/detail/detect_cuda_runtime.cuh:
+
+/usr/include/x86_64-linux-gnu/bits/fp-logb.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar2.h:
+
+/usr/include/sm_35_intrinsics.h:
+
+/usr/include/thrust/version.h:
+
+/usr/include/thrust/iterator/detail/iterator_adaptor_base.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/DEMIntegration.cu:
+
+/usr/include/c++/12/exception:
+
+/usr/include/thrust/detail/functional/actor.inl:
+
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:
+
+/usr/include/sm_30_intrinsics.hpp:
+
+/usr/include/thrust/system/detail/sequential/merge.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/include/c++/12/bits/basic_string.h:
+
+/usr/include/thrust/system/detail/sequential/binary_search.h:
+
+/usr/include/sm_32_intrinsics.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
+
+/usr/include/asm-generic/bitsperlong.h:
+
+/usr/include/asm-generic/types.h:
+
+/usr/include/thrust/detail/swap.inl:
+
+/usr/include/sm_20_intrinsics.h:
+
+/usr/include/thrust/detail/allocator/temporary_allocator.h:
+
+/usr/include/thrust/detail/copy.inl:
+
+/usr/include/c++/12/bits/nested_exception.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/float.h:
+
+/usr/include/thrust/detail/trivial_sequence.h:
+
+/usr/include/cub/block/block_raking_layout.cuh:
+
+/usr/include/c++/12/bits/allocated_ptr.h:
+
+/usr/include/c++/12/pstl/pstl_config.h:
+
+/usr/include/cub/agent/agent_radix_sort_downsweep.cuh:
+
+/usr/include/c++/12/ext/numeric_traits.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:
+
+/usr/include/c++/12/initializer_list:
+
+/usr/include/texture_indirect_functions.h:
+
+/usr/include/c++/12/ios:
+
+/usr/include/c++/12/bits/stream_iterator.h:
+
+/usr/include/c++/12/iosfwd:
+
+/usr/include/thrust/system/cuda/config.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
+
+/usr/include/strings.h:
+
+/usr/include/c++/12/bits/erase_if.h:
+
+/usr/include/crt/sm_70_rt.h:
+
+/usr/include/thrust/detail/transform.inl:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myHash.h:
+
+/usr/include/c++/12/string:
+
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
+
+/usr/include/driver_functions.h:
+
+/usr/include/x86_64-linux-gnu/asm/posix_types.h:
+
+/usr/include/thrust/system_error.h:
+
+/usr/include/c++/12/ext/alloc_traits.h:
+
+/usr/include/c++/12/tr1/special_function_util.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myContactModelParams.h:
+
+/usr/include/c++/12/stdexcept:
+
+/usr/include/c++/12/cctype:
+
+/usr/include/c++/12/istream:
+
+/usr/include/cub/device/dispatch/dispatch_reduce_by_key.cuh:
+
+/usr/include/thrust/detail/functional/operators/logical_operators.h:
+
+/usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
+
+/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
+
+/usr/include/thrust/detail/for_each.inl:
+
+/usr/include/c++/12/bit:
+
+/usr/include/thrust/system/detail/sequential/stable_radix_sort.h:
+
+/usr/include/c++/12/functional:
+
+/usr/include/cub/agent/single_pass_scan_operators.cuh:
+
+/usr/include/thrust/detail/allocator_aware_execution_policy.h:
+
+/usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/x86_64-linux-gnu/bits/timesize.h:
+
+/usr/include/x86_64-linux-gnu/bits/types.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
+
+/usr/include/thrust/detail/functional/argument.h:
+
+/usr/include/math.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+
+/usr/include/thrust/sequence.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/basic_file.h:
+
+/usr/include/thrust/iterator/detail/transform_iterator.inl:
+
+/usr/include/features-time64.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
+
+/usr/include/crt/device_double_functions.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myInteraction.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
+
+/usr/include/thrust/type_traits/is_contiguous_iterator.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+/usr/include/thrust/system/detail/sequential/transform.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
+
+/usr/include/thrust/iterator/iterator_adaptor.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
+
+/usr/include/thrust/detail/functional/operators/assignment_operator.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
+
+/usr/include/thrust/system/detail/adl/transform.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+
+/usr/include/c++/12/bits/basic_ios.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitflags.h:
+
+/usr/include/cub/warp/warp_reduce.cuh:
+
+/usr/include/thrust/device_allocator.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar2-decl.h:
+
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/thrust/detail/pointer.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h:
+
+/usr/include/c++/12/cwctype:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/thrust/system/detail/generic/scan_by_key.h:
+
+/usr/include/thrust/system/cuda/detail/generate.h:
+
+/usr/include/thrust/sort.h:
+
+/usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/c++allocator.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h:
+
+/usr/include/thrust/iterator/counting_iterator.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/c++locale.h:
+
+/usr/include/crt/device_functions.hpp:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/ctype_base.h:
+
+/usr/include/thrust/functional.h:
+
+/usr/include/c++/12/bits/atomic_base.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/gthr.h:
+
+/usr/include/thrust/system/cpp/detail/sort.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h:
+
+/usr/include/thrust/detail/alignment.h:
+
+/usr/include/x86_64-linux-gnu/sys/single_threaded.h:
+
+/usr/include/x86_64-linux-gnu/sys/types.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h:
+
+/usr/include/c++/12/bits/postypes.h:
+
+/usr/include/c++/12/bits/stl_tempbuf.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h:
+
+/usr/include/thrust/system/detail/sequential/copy.h:
+
+/usr/include/c++/12/ratio:
+
+/usr/include/thrust/system/cuda/detail/guarded_driver_types.h:
+
+/usr/include/c++/12/iomanip:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/syslimits.h:
+
+/usr/include/c++/12/ext/type_traits.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.cpp:
+
+/usr/include/thrust/type_traits/remove_cvref.h:
+
+/usr/include/thrust/system/detail/sequential/unique_by_key.h:
+
+/usr/include/c++/12/tuple:
+
+/usr/include/c++/12/unordered_map:
+
+/usr/include/thrust/iterator/detail/minimum_category.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myFileEdit.h:
+
+/usr/include/thrust/system/detail/generic/temporary_buffer.h:
+
+/usr/include/cub/warp/specializations/warp_scan_shfl.cuh:
+
+/usr/include/thrust/system/cuda/detail/sort.h:
+
+/usr/include/c++/12/shared_mutex:
+
+/usr/include/asm-generic/int-ll64.h:
+
+/usr/include/c++/12/bits/fstream.tcc:
+
+/usr/include/c++/12/bits/locale_facets_nonio.tcc:
+
+/usr/include/x86_64-linux-gnu/asm/types.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDA.h:
+
+/usr/include/c++/12/bits/quoted_string.h:
+
+/usr/include/c++/12/bits/sstream.tcc:
+
+/usr/include/thrust/system/detail/generic/transform_reduce.h:
+
+/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
+
+/usr/include/libintl.h:
+
+/usr/include/thrust/detail/allocator/default_construct_range.h:
+
+/usr/include/thrust/system/detail/sequential/copy.inl:
+
+/usr/include/c++/12/locale:
+
+/usr/include/thrust/system/detail/sequential/set_operations.h:
+
+/usr/include/c++/12/pstl/glue_memory_defs.h:
+
+/usr/include/x86_64-linux-gnu/asm/bitsperlong.h:
+
+/usr/include/thrust/system/detail/sequential/merge.inl:
+
+/usr/include/cub/block/specializations/block_reduce_warp_reductions.cuh:
+
+/usr/include/x86_64-linux-gnu/bits/dirent.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
+
+/usr/include/x86_64-linux-gnu/bits/stat.h:
+
+/usr/include/thrust/detail/allocator/copy_construct_range.inl:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/wchar.h:
+
+/usr/include/x86_64-linux-gnu/bits/statx-generic.h:
+
+/usr/include/x86_64-linux-gnu/bits/statx.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
+
+/usr/include/thrust/detail/allocator/allocator_traits.inl:
+
+/usr/include/x86_64-linux-gnu/bits/struct_stat.h:
+
+/usr/include/thrust/mr/allocator.h:
+
+/usr/include/c++/12/tr1/ell_integral.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h:
+
+/usr/include/thrust/system/detail/sequential/insertion_sort.h:
+
+/usr/include/thrust/system/detail/adl/generate.h:
+
+/usr/include/cub/device/device_select.cuh:
+
+/usr/include/thrust/system/detail/adl/find.h:
+
+/usr/include/thrust/system/cpp/detail/adjacent_difference.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/c++io.h:
+
+/usr/include/thrust/system/cuda/execution_policy.h:
+
+/usr/include/x86_64-linux-gnu/sys/stat.h:
+
+/usr/include/thrust/distance.h:
+
+/usr/include/thrust/detail/tuple.inl:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.cu:
+
+/usr/include/c++/12/bits/hashtable_policy.h:
+
+/usr/include/thrust/system/cpp/detail/extrema.h:
+
+/usr/include/thrust/replace.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.cu:
+
+/usr/include/thrust/system/cuda/detail/error.inl:
+
+/usr/include/cub/util_arch.cuh:
+
+/usr/include/c++/12/array:
+
+/usr/include/thrust/system/cuda/detail/mismatch.h:
+
+/usr/include/cuda/std/detail/libcxx/include/__pragma_push:
+
+/usr/include/c++/12/bits/atomic_lockfree_defines.h:
+
+/usr/include/nv/detail/__preprocessor:
+
+/usr/include/c++/12/bits/enable_special_members.h:
+
+/usr/include/c++/12/bits/parse_numbers.h:
+
+/usr/include/cuda/std/detail/libcxx/include/__undef_macros:
+
+/usr/include/thrust/detail/config/compiler.h:
+
+/usr/include/c++/12/tr1/bessel_function.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
+
+/usr/include/c++/12/bits/shared_ptr.h:
+
+/usr/include/c++/12/bits/shared_ptr_atomic.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.h:
+
+/usr/include/c++/12/bits/istream.tcc:
+
+/usr/include/c++/12/bits/shared_ptr_base.h:
+
+/usr/include/c++/12/bits/std_function.h:
+
+/usr/include/thrust/system/detail/sequential/iter_swap.h:
+
+/usr/include/thrust/detail/execute_with_allocator.h:
+
+/usr/include/thrust/detail/allocator/temporary_allocator.inl:
+
+/usr/include/c++/12/bits/std_mutex.h:
+
+/usr/include/c++/12/bits/stl_raw_storage_iter.h:
+
+/usr/include/c++/12/bits/unique_ptr.h:
+
+/usr/include/c++/12/iterator:
+
+/usr/include/c++/12/bits/unordered_map.h:
+
+/usr/include/c++/12/bits/uses_allocator_args.h:
+
+/usr/include/c++/12/cfloat:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/DEMHandler.h:
+
+/usr/include/c++/12/compare:
+
+/usr/include/c++/12/ext/concurrence.h:
+
+/usr/include/thrust/iterator/reverse_iterator.h:
+
+/usr/include/c++/12/version:
+
+/usr/include/c++/12/atomic:
+
+/usr/include/cub/thread/thread_load.cuh:
+
+/usr/include/thrust/system/detail/generic/reverse.inl:
+
+/usr/include/thrust/system/cuda/detail/execution_policy.h:
+
+/usr/include/cub/agent/agent_merge_sort.cuh:
+
+/usr/include/thrust/detail/config/debug.h:
+
+/usr/include/cub/agent/agent_radix_sort_histogram.cuh:
+
+/usr/include/cub/agent/agent_radix_sort_onesweep.cuh:
+
+/usr/include/thrust/detail/config/memory_resource.h:
+
+/usr/include/c++/12/type_traits:
+
+/usr/include/c++/12/memory:
+
+/usr/include/cub/agent/agent_radix_sort_upsweep.cuh:
+
+/usr/include/cub/agent/agent_reduce_by_key.cuh:
+
+/usr/include/thrust/system/detail/adl/sequence.h:
+
+/usr/include/cub/agent/agent_select_if.cuh:
+
+/usr/include/thrust/detail/allocator/allocator_traits.h:
+
+/usr/include/thrust/system/detail/generic/uninitialized_fill.h:
+
+/usr/include/cub/agent/agent_unique_by_key.cuh:
+
+/usr/include/cub/grid/grid_mapping.cuh:
+
+/usr/include/thrust/system/detail/sequential/stable_radix_sort.inl:
+
+/usr/include/cub/block/block_discontinuity.cuh:
+
+/usr/include/thrust/detail/allocator/copy_construct_range.h:
+
+/usr/include/thrust/system/detail/generic/distance.h:
+
+/usr/include/cub/block/block_exchange.cuh:
+
+/usr/include/cub/detail/exec_check_disable.cuh:
+
+/usr/include/thrust/system/detail/generic/select_system_exists.h:
+
+/usr/include/cub/block/block_radix_sort.cuh:
+
+/usr/include/thrust/system/cuda/memory_resource.h:
+
+/usr/include/thrust/iterator/detail/iterator_category_to_traversal.h:
+
+/usr/include/x86_64-linux-gnu/asm/posix_types_64.h:
+
+/usr/include/cub/block/block_reduce.cuh:
+
+/usr/include/dirent.h:
+
+/usr/include/cub/block/block_store.cuh:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/solverParams.h:
+
+/usr/include/cub/block/specializations/block_scan_raking.cuh:
+
+/usr/include/cub/detail/choose_offset.cuh:
+
+/usr/include/thrust/detail/temporary_array.h:
+
+/usr/include/cub/detail/type_traits.cuh:
+
+/usr/include/cub/device/device_reduce.cuh:
+
+/usr/include/texture_types.h:
+
+/usr/include/cub/device/device_scan.cuh:
+
+/usr/include/thrust/system/detail/adl/replace.h:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h:
+
+/usr/include/cub/device/dispatch/dispatch_merge_sort.cuh:
+
+/usr/include/thrust/detail/allocator/fill_construct_range.h:
+
+/usr/include/cub/device/dispatch/dispatch_radix_sort.cuh:
+
+/usr/include/cub/device/dispatch/dispatch_reduce.cuh:
+
+/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
 
 /usr/include/cub/util_namespace.cuh:
 
-/usr/include/c++/12/debug/assertions.h:
+/usr/include/cub/device/dispatch/dispatch_unique_by_key.cuh:
 
-/usr/include/cub/thread/thread_sort.cuh:
+/usr/include/thrust/system/cuda/detail/par_to_seq.h:
 
-/usr/include/thrust/reverse.h:
+/usr/include/cub/grid/grid_even_share.cuh:
 
-/usr/include/sm_60_atomic_functions.h:
+/usr/include/builtin_types.h:
 
-/usr/include/thrust/detail/execute_with_allocator_fwd.h:
+/usr/include/cub/grid/grid_queue.cuh:
 
-/usr/include/thrust/detail/reference.h:
+/usr/include/cub/iterator/arg_index_input_iterator.cuh:
+
+/usr/include/thrust/system/detail/generic/transform.inl:
+
+/usr/include/thrust/detail/seq.h:
+
+/usr/include/cuda/std/detail/__pragma_pop:
+
+/usr/include/thrust/detail/allocator/no_throw_allocator.h:
+
+/usr/include/cub/iterator/cache_modified_input_iterator.cuh:
+
+/usr/include/cub/thread/thread_scan.cuh:
 
 /usr/include/thrust/system/detail/generic/memory.inl:
 
@@ -5871,9 +4309,9 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cub/util_compiler.cuh:
 
-/teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.h:
-
 /teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myVec.h:
+
+/teamspace/studios/this_studio/DEM-CFD/kernel/wallHandler.h:
 
 /usr/include/cub/util_cpp_dialect.cuh:
 
@@ -5887,8 +4325,6 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cub/util_device.cuh:
 
-/usr/include/thrust/iterator/detail/iterator_traversal_tags.h:
-
 /usr/include/cub/util_math.cuh:
 
 /teamspace/studios/this_studio/DEM-CFD/kernel/DEMSolver.h:
@@ -5899,9 +4335,9 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cuda/std/detail/libcxx/include/version:
 
-/usr/include/x86_64-linux-gnu/sys/cdefs.h:
-
 /usr/include/thrust/system/cuda/detail/merge.h:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
 /usr/include/nv/target:
 
@@ -5909,17 +4345,11 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cub/warp/specializations/warp_reduce_shfl.cuh:
 
-/usr/include/thrust/system/detail/generic/temporary_buffer.h:
-
-/usr/include/cub/warp/specializations/warp_scan_shfl.cuh:
-
 /usr/include/x86_64-linux-gnu/c++/12/bits/error_constants.h:
 
 /usr/include/cub/warp/warp_exchange.cuh:
 
 /usr/include/cub/warp/warp_scan.cuh:
-
-/usr/include/cub/warp/warp_reduce.cuh:
 
 /usr/include/thrust/system/cuda/detail/equal.h:
 
@@ -5929,17 +4359,15 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cuda/std/detail/__config:
 
-/usr/include/thrust/detail/type_traits/is_metafunction_defined.h:
+/usr/include/thrust/iterator/detail/universal_categories.h:
 
-/usr/include/x86_64-linux-gnu/bits/dirent_ext.h:
-
-/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
-
-/usr/include/thrust/generate.h:
-
-/usr/include/thrust/mr/fancy_pointer_resource.h:
+/usr/include/cuda/std/detail/libcxx/include/__config:
 
 /usr/include/cuda/std/detail/libcxx/include/__pragma_pop:
+
+/usr/include/thrust/detail/functional/operators/compound_assignment_operators.h:
+
+/usr/include/cuda/std/detail/libcxx/include/__tuple:
 
 /usr/include/cuda/std/detail/libcxx/include/cstddef:
 
@@ -5961,167 +4389,13 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 
 /usr/include/cuda/std/utility:
 
-/usr/include/cub/detail/type_traits.cuh:
-
-/usr/include/thrust/detail/temporary_array.h:
-
-/usr/include/cuda_bf16.hpp:
-
-/usr/include/cuda_device_runtime_api.h:
-
 /usr/include/cuda_fp16.h:
 
 /usr/include/cuda_fp16.hpp:
 
-/usr/include/thrust/system/detail/sequential/assign_value.h:
-
-/usr/include/thrust/detail/transform_reduce.inl:
-
-/usr/include/thrust/iterator/detail/tuple_of_iterator_references.h:
-
-/usr/include/device_atomic_functions.hpp:
-
-/usr/include/thrust/memory.h:
-
-/usr/include/device_launch_parameters.h:
-
-/usr/include/device_types.h:
-
-/usr/include/thrust/system/cuda/detail/reduce.h:
-
-/usr/include/cuda_runtime.h:
-
-/usr/include/sched.h:
-
-/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
-
-/usr/include/driver_functions.h:
-
-/usr/include/driver_types.h:
-
-/usr/include/thrust/detail/execution_policy.h:
-
-/usr/include/errno.h:
-
-/usr/include/library_types.h:
-
-/usr/include/x86_64-linux-gnu/bits/wchar2-decl.h:
-
-/usr/include/thrust/device_allocator.h:
-
-/usr/include/linux/errno.h:
-
-/usr/include/linux/limits.h:
-
-/usr/include/locale.h:
-
-/usr/include/sm_20_atomic_functions.h:
-
-/usr/include/thrust/system/cpp/detail/partition.h:
-
-/usr/include/sm_32_atomic_functions.hpp:
-
-/usr/include/thrust/iterator/detail/permutation_iterator_base.h:
-
-/usr/include/thrust/detail/allocator/temporary_allocator.h:
-
-/usr/include/thrust/detail/swap.inl:
-
-/usr/include/sm_20_intrinsics.h:
-
-/usr/include/thrust/system/detail/sequential/scan_by_key.h:
-
-/usr/include/thrust/iterator/detail/minimum_system.h:
-
-/usr/include/sm_20_intrinsics.hpp:
-
-/usr/include/sm_30_intrinsics.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdio2.h:
-
-/usr/include/thrust/detail/functional/actor.inl:
-
-/usr/include/sm_30_intrinsics.hpp:
-
-/usr/include/sm_32_atomic_functions.h:
-
-/usr/include/sm_32_intrinsics.hpp:
-
-/usr/include/sm_35_atomic_functions.h:
-
-/usr/include/thrust/device_vector.h:
-
-/usr/include/sm_35_intrinsics.h:
-
-/usr/include/sm_60_atomic_functions.hpp:
-
-/usr/include/thrust/pair.h:
-
-/usr/include/thrust/system/detail/generic/scatter.h:
-
-/usr/include/sm_61_intrinsics.h:
-
-/usr/include/stdio.h:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/neighborSearch.cu:
-
-/usr/include/thrust/system/cpp/detail/extrema.h:
-
-/usr/include/thrust/replace.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
-
-/usr/include/string.h:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
-
-/usr/include/thrust/detail/allocator_aware_execution_policy.h:
-
-/usr/include/strings.h:
-
-/usr/include/surface_indirect_functions.h:
-
-/usr/include/surface_types.h:
-
-/usr/include/thrust/system/detail/adl/sort.h:
-
-/usr/include/thrust/for_each.h:
-
-/usr/include/thrust/detail/device_ptr.inl:
-
-/usr/include/c++/12/tr1/gamma.tcc:
-
-/usr/include/thrust/detail/vector_base.h:
-
-/usr/include/cub/device/device_scan.cuh:
-
-/usr/include/texture_types.h:
-
 /usr/include/thrust/copy.h:
 
-/usr/include/x86_64-linux-gnu/bits/struct_stat.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
-
-/usr/include/thrust/detail/allocator/allocator_traits.inl:
-
-/usr/include/thrust/detail/allocator/copy_construct_range.inl:
-
-/usr/include/thrust/detail/allocator/default_construct_range.h:
-
-/usr/include/thrust/detail/allocator/default_construct_range.inl:
-
 /usr/include/thrust/detail/allocator/tagged_allocator.h:
-
-/usr/include/thrust/detail/allocator/tagged_allocator.inl:
-
-/teamspace/studios/this_studio/DEM-CFD/kernel/myContainer/myUtility/myCUDAOperation.cu:
-
-/usr/include/thrust/detail/tuple.inl:
-
-/usr/include/thrust/distance.h:
-
-/usr/include/thrust/mismatch.h:
 
 /usr/include/thrust/system/cpp/detail/scan.h:
 
@@ -6142,223 +4416,3 @@ CMakeFiles/demcfd_core.dir/kernel/wallHandler.cpp.o: /teamspace/studios/this_stu
 /usr/include/c++/12/bits/streambuf.tcc:
 
 /usr/include/thrust/detail/config/exec_check_disable.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
-
-/usr/include/thrust/detail/config/simple_defines.h:
-
-/usr/include/thrust/detail/contiguous_storage.h:
-
-/usr/include/thrust/iterator/detail/is_iterator_category.h:
-
-/usr/include/thrust/system/detail/sequential/reverse.h:
-
-/usr/include/thrust/detail/copy_if.h:
-
-/usr/include/thrust/mr/host_memory_resource.h:
-
-/usr/include/c++/12/bits/stl_algobase.h:
-
-/usr/include/thrust/detail/cstdint.h:
-
-/usr/include/thrust/detail/equal.inl:
-
-/usr/include/thrust/detail/execute_with_dependencies.h:
-
-/usr/include/thrust/iterator/detail/counting_iterator.inl:
-
-/usr/include/thrust/detail/function.h:
-
-/usr/include/thrust/detail/functional.inl:
-
-/usr/include/thrust/detail/functional/composite.h:
-
-/usr/include/thrust/detail/functional/actor.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
-
-/usr/include/thrust/detail/functional/operators/assignment_operator.h:
-
-/usr/include/thrust/detail/functional/operators/bitwise_operators.h:
-
-/usr/include/cuda/std/detail/libcxx/include/__config:
-
-/usr/include/thrust/iterator/detail/universal_categories.h:
-
-/usr/include/cuda/std/detail/libcxx/include/__tuple:
-
-/usr/include/thrust/detail/functional/operators/compound_assignment_operators.h:
-
-/usr/include/thrust/system/detail/adl/reduce.h:
-
-/usr/include/thrust/iterator/transform_iterator.h:
-
-/usr/include/thrust/system/cuda/detail/scan.h:
-
-/usr/include/cub/agent/agent_scan_by_key.cuh:
-
-/usr/include/thrust/detail/functional/operators/relational_operators.h:
-
-/usr/include/thrust/iterator/permutation_iterator.h:
-
-/usr/include/thrust/detail/functional/value.h:
-
-/usr/include/thrust/detail/extrema.inl:
-
-/usr/include/thrust/detail/generate.inl:
-
-/usr/include/thrust/detail/allocator/destroy_range.h:
-
-/usr/include/c++/12/string_view:
-
-/usr/include/thrust/detail/get_iterator_value.h:
-
-/usr/include/thrust/detail/integer_traits.h:
-
-/usr/include/thrust/detail/internal_functional.h:
-
-/usr/include/thrust/detail/memory_wrapper.h:
-
-/usr/include/wctype.h:
-
-/usr/include/thrust/detail/merge.inl:
-
-/usr/include/thrust/detail/minmax.h:
-
-/usr/include/thrust/detail/numeric_traits.h:
-
-/usr/include/thrust/iterator/detail/tagged_iterator.h:
-
-/usr/include/thrust/device_reference.h:
-
-/usr/include/thrust/system/detail/generic/select_system.h:
-
-/usr/include/cub/block/radix_rank_sort_operations.cuh:
-
-/usr/include/thrust/detail/overlapped_copy.h:
-
-/usr/include/thrust/detail/type_traits/has_member_function.h:
-
-/usr/include/thrust/detail/pair.inl:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h:
-
-/usr/include/thrust/detail/pointer.h:
-
-/usr/include/thrust/system/detail/sequential/for_each.h:
-
-/usr/include/c++/12/bits/exception_defines.h:
-
-/usr/include/alloca.h:
-
-/usr/include/thrust/detail/reduce.inl:
-
-/usr/include/thrust/iterator/iterator_facade.h:
-
-/usr/include/thrust/detail/scatter.inl:
-
-/usr/include/thrust/system/detail/generic/transform.inl:
-
-/usr/include/thrust/detail/allocator/no_throw_allocator.h:
-
-/usr/include/cuda/std/detail/__pragma_pop:
-
-/usr/include/thrust/detail/seq.h:
-
-/usr/include/thrust/detail/static_assert.h:
-
-/usr/include/thrust/detail/config/namespace.h:
-
-/usr/include/thrust/detail/swap.h:
-
-/usr/include/thrust/iterator/zip_iterator.h:
-
-/usr/include/thrust/detail/swap_ranges.inl:
-
-/usr/include/thrust/detail/tabulate.inl:
-
-/usr/include/thrust/system/cpp/detail/remove.h:
-
-/usr/include/thrust/detail/temporary_array.inl:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/float.h:
-
-/usr/include/cub/block/block_raking_layout.cuh:
-
-/usr/include/thrust/detail/trivial_sequence.h:
-
-/usr/include/asm-generic/errno.h:
-
-/usr/include/thrust/detail/tuple_meta_transform.h:
-
-/usr/include/thrust/detail/type_traits/is_call_possible.h:
-
-/usr/include/thrust/detail/type_traits/minimum_type.h:
-
-/usr/include/thrust/detail/type_traits/pointer_traits.h:
-
-/usr/include/thrust/detail/malloc_and_free.h:
-
-/usr/include/thrust/detail/type_traits/result_of_adaptable_function.h:
-
-/usr/include/thrust/execution_policy.h:
-
-/usr/include/thrust/detail/uninitialized_fill.inl:
-
-/usr/include/thrust/fill.h:
-
-/usr/include/thrust/find.h:
-
-/usr/include/c++/12/bits/atomic_base.h:
-
-/usr/include/thrust/functional.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/c++locale.h:
-
-/usr/include/thrust/iterator/counting_iterator.h:
-
-/usr/include/thrust/iterator/detail/device_system_tag.h:
-
-/usr/include/vector_functions.h:
-
-/usr/include/c++/12/clocale:
-
-/usr/include/thrust/iterator/detail/host_system_tag.h:
-
-/usr/include/cub/thread/thread_operators.cuh:
-
-/usr/include/thrust/iterator/detail/iterator_category_to_system.h:
-
-/usr/include/x86_64-linux-gnu/asm/posix_types_64.h:
-
-/usr/include/thrust/system/cuda/memory_resource.h:
-
-/usr/include/cub/block/block_reduce.cuh:
-
-/usr/include/thrust/iterator/detail/iterator_category_to_traversal.h:
-
-/usr/include/thrust/iterator/detail/iterator_traits.inl:
-
-/usr/include/thrust/iterator/detail/reverse_iterator.inl:
-
-/usr/include/thrust/iterator/detail/reverse_iterator_base.h:
-
-/usr/include/thrust/iterator/detail/zip_iterator.inl:
-
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
-/usr/include/thrust/iterator/iterator_categories.h:
-
-/usr/include/thrust/mr/device_memory_resource.h:
-
-/usr/include/thrust/mr/memory_resource.h:
-
-/usr/include/crt/math_functions.h:
-
-/usr/include/thrust/mr/new.h:
-
-/usr/include/thrust/iterator/detail/zip_iterator_base.h:
-
-/usr/include/thrust/mr/polymorphic_adaptor.h:
-
-/usr/include/thrust/reduce.h:

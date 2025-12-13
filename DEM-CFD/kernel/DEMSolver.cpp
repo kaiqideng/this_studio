@@ -29,7 +29,7 @@ void DEMSolver::solve() {
 
   if (initialize()) {
     DEMNeighborSearch(getGPUThreadsPerBlock());
-    handleDEMHostArray();
+    if(handleDEMHostArray()) updateBondedInteractions();
     outputSolidParticleVTU(dir, iFrame, iStep, timeStep);
     if(triangleWalls().hostSize() > 0) outputTriangleWallVTU(dir, iFrame, iStep, timeStep);
     numSteps = size_t((getMaximumTime()) / timeStep) + 1;

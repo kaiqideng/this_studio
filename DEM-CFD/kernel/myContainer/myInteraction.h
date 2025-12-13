@@ -115,7 +115,7 @@ public:
     if (d_activeNumber != h_objectPointed.size())
       h_objectPointed.resize(d_activeNumber, -1);
     if (d_activeNumber > 0)
-      cuda_copy_sync(h_objectPointed.data(), objectPointed, d_capacity,
+      cuda_copy_sync(h_objectPointed.data(), objectPointed, d_activeNumber,
                      CopyDir::D2H);
     return h_objectPointed;
   }
@@ -124,7 +124,7 @@ public:
     if (d_activeNumber != h_objectPointing.size())
       h_objectPointing.resize(d_activeNumber, -1);
     if (d_activeNumber > 0)
-      cuda_copy_sync(h_objectPointing.data(), objectPointing, d_capacity,
+      cuda_copy_sync(h_objectPointing.data(), objectPointing, d_activeNumber,
                      CopyDir::D2H);
     return h_objectPointing;
   }

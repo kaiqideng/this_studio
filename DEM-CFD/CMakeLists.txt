@@ -44,13 +44,8 @@ set_target_properties(demcfd_core PROPERTIES
 # Set CUDA architectures if not provided from the command line
 if (NOT CMAKE_CUDA_ARCHITECTURES)
     # Adjust to your GPU: e.g. 75 (Turing), 86 (RTX30), 89 (RTX40), etc.
-    set_property(TARGET demcfd_core PROPERTY CUDA_ARCHITECTURES 86)
+    set_property(TARGET demcfd_core PROPERTY CUDA_ARCHITECTURES 70)
 endif()
-
-# Enable -G for CUDA in Debug builds (better debugging, slower kernels)
-target_compile_options(demcfd_core PRIVATE
-    $<$<AND:$<COMPILE_LANGUAGE:CUDA>,$<CONFIG:Debug>>:-G>
-)
 
 # Output directory for the static library
 set_target_properties(demcfd_core PROPERTIES

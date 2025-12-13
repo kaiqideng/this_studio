@@ -1,14 +1,17 @@
-#include "myContainer/myHash.h"
-#include "myContainer/myWall.h"
+#define THRUST_DEVICE_SYSTEM THRUST_DEVICE_SYSTEM_CUDA
+#include <thrust/device_vector.h>
+#include <thrust/sort.h>
+#include <thrust/scan.h>
 #include "neighborSearch.h"
+
 
 void sortKeyValuePairs(int* d_keys, int* d_values,
                        std::size_t numObjects,
-                       cudaStream_t stream)
+                          cudaStream_t stream)
 {
     auto exec = thrust::cuda::par.on(stream);
-    thrust::sort_by_key(exec,
-                        d_keys, d_keys + numObjects,
+
+    thrust::sort_by_key(exec,d_keys, d_keys + numObjects,
                         d_values);
 }
 
@@ -74,14 +77,20 @@ cudaStream_t stream)
 
     size_t grid = 1, block = 1;
     computeGPUGridSizeBlockSize(grid, block, numObjects, maxThreadsPerBlock);
-
+    
     setInitialIndices <<<grid, block, 0, stream>>> (sortedIndices, numObjects);
+    CUDA_CHECK(cudaGetLastError());
 
+    //debug_dump_device_array(hash, numObjects, "solidParticles.hash.value");
+    //debug_dump_device_array(sortedIndices, numObjects, "solidParticles.hash.index");
     sortKeyValuePairs(hash, sortedIndices, numObjects, stream);
+    CUDA_CHECK(cudaGetLastError());
 
     setHashAux <<<grid, block, 0, stream>>> (hashAux, hash, numObjects);
+    CUDA_CHECK(cudaGetLastError());
 
     findStartAndEnd <<<grid, block, 0, stream>>> (start, end, hash, hashAux, numObjects);
+    CUDA_CHECK(cudaGetLastError());
 }
 
 __global__ void calculateParticleHash(int* hashValue, 
@@ -157,6 +166,7 @@ cudaStream_t stream)
     sptialGrids.getGridSize(), 
     sptialGrids.size(), 
     particleHash.size());
+    CUDA_CHECK(cudaGetLastError());
 
     buildHashSpans(sptialGrids.cellHashValue.start, 
     sptialGrids.cellHashValue.end, 
@@ -502,78 +512,76 @@ spatialGrid& spatialGrids,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    if (solidParticles.deviceSize() > 0)
+    updateGridCellStartEnd(spatialGrids, 
+    solidParticles.hash, 
+    solidParticles.position(), 
+    maxThreadsPerBlock, stream);
+
+    //debug_dump_device_array(solidParticles.hash.value, solidParticles.deviceSize(), "solidParticles.hash.value");
+    //debug_dump_device_array(solidParticles.hash.index, solidParticles.deviceSize(), "solidParticles.hash.index");
+    //debug_dump_device_array(spatialGrids.cellHashValue.start, spatialGrids.size(), "spatialGrids.cellHashValue.start");
+    //debug_dump_device_array(spatialGrids.cellHashValue.end, spatialGrids.size(), "spatialGrids.cellHashValue.end");
+
+    size_t grid = 1, block = 1;
+    computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
+
+    solidParticleInteractions.recordCurrentInteractionSpring(stream);
+
+    for (size_t flag = 0; flag < 2; flag++)
     {
-        updateGridCellStartEnd(spatialGrids, 
-        solidParticles.hash, 
-        solidParticles.position(), 
-        maxThreadsPerBlock, stream);
+        //debug_dump_device_array(solidParticles.neighbor.count, solidParticles.deviceSize(), "solidParticles.neighbor.count");
+        //debug_dump_device_array(solidParticles.neighbor.prefixSum, solidParticles.deviceSize(), "solidParticles.neighbor.prefixSum");
 
-        //debug_dump_device_array(solidParticles.hash.value, solidParticles.deviceSize(), "solidParticles.hash.value");
-        //debug_dump_device_array(solidParticles.hash.index, solidParticles.deviceSize(), "solidParticles.hash.index");
-        //debug_dump_device_array(spatialGrids.cellHashValue.start, spatialGrids.size(), "spatialGrids.cellHashValue.start");
-        //debug_dump_device_array(spatialGrids.cellHashValue.end, spatialGrids.size(), "spatialGrids.cellHashValue.end");
+        setSolidParticleInteractionsKernel <<<grid, block, 0, stream>>> (
+            solidParticleInteractions.current.objectPointed(),
+            solidParticleInteractions.current.objectPointing(),
+            solidParticleInteractions.current.force(),
+            solidParticleInteractions.current.torque,
+            solidParticleInteractions.current.slidingSpring,
+            solidParticleInteractions.current.rollingSpring,
+            solidParticleInteractions.current.torsionSpring,
+            solidParticleInteractions.current.hash().index,
+            solidParticleInteractions.history.objectPointed(),
+            solidParticleInteractions.history.slidingSpring,
+            solidParticleInteractions.history.rollingSpring,
+            solidParticleInteractions.history.torsionSpring,
+            solidParticles.position(),
+            solidParticles.effectiveRadii(),
+            solidParticles.inverseMass,
+            solidParticles.clumpID,
+            solidParticles.hash.index,
+            solidParticles.neighbor.count,
+            solidParticles.neighbor.prefixSum,
+            solidParticles.interactionIndexRange.start,
+            solidParticles.interactionIndexRange.end,
+            spatialGrids.cellHashValue.start,
+            spatialGrids.cellHashValue.end,
+            spatialGrids.getMinBond(),
+            spatialGrids.getCellSize(),
+            spatialGrids.getGridSize(),
+            spatialGrids.size(),
+            flag,
+            solidParticles.deviceSize());
 
-        size_t grid = 1, block = 1;
-        computeGPUGridSizeBlockSize(grid, block, solidParticles.deviceSize(), maxThreadsPerBlock);
-
-        solidParticleInteractions.recordCurrentInteractionSpring(stream);
-
-        for (size_t flag = 0; flag < 2; flag++)
+        if (flag == 0)
         {
-            //debug_dump_device_array(solidParticles.neighbor.count, solidParticles.deviceSize(), "solidParticles.neighbor.count");
-            //debug_dump_device_array(solidParticles.neighbor.prefixSum, solidParticles.deviceSize(), "solidParticles.neighbor.prefixSum");
-
-            setSolidParticleInteractionsKernel <<<grid, block, 0, stream>>> (
-                solidParticleInteractions.current.objectPointed(),
-                solidParticleInteractions.current.objectPointing(),
-                solidParticleInteractions.current.force(),
-                solidParticleInteractions.current.torque,
-                solidParticleInteractions.current.slidingSpring,
-                solidParticleInteractions.current.rollingSpring,
-                solidParticleInteractions.current.torsionSpring,
-                solidParticleInteractions.current.hash().index,
-                solidParticleInteractions.history.objectPointed(),
-                solidParticleInteractions.history.slidingSpring,
-                solidParticleInteractions.history.rollingSpring,
-                solidParticleInteractions.history.torsionSpring,
-                solidParticles.position(),
-                solidParticles.effectiveRadii(),
-                solidParticles.inverseMass,
-                solidParticles.clumpID,
-                solidParticles.hash.index,
-                solidParticles.neighbor.count,
-                solidParticles.neighbor.prefixSum,
-                solidParticles.interactionIndexRange.start,
-                solidParticles.interactionIndexRange.end,
-                spatialGrids.cellHashValue.start,
-                spatialGrids.cellHashValue.end,
-                spatialGrids.getMinBond(),
-                spatialGrids.getCellSize(),
-                spatialGrids.getGridSize(),
-                spatialGrids.size(),
-                flag,
-                solidParticles.deviceSize());
-
-
-            if (flag == 0)
-            {
-                int activeNumber = 0;
-                inclusiveScan(solidParticles.neighbor.prefixSum, solidParticles.neighbor.count, solidParticles.neighbor.size(), stream);
-                cuda_copy_sync(&activeNumber, solidParticles.neighbor.prefixSum + solidParticles.neighbor.size() - 1, 1, CopyDir::D2H);
-                solidParticleInteractions.setCurrentActiveNumber(static_cast<size_t>(activeNumber), stream);
-            }
+            int activeNumber = 0;
+            inclusiveScan(solidParticles.neighbor.prefixSum, solidParticles.neighbor.count, solidParticles.neighbor.size(), stream);
+            cuda_copy_sync(&activeNumber, solidParticles.neighbor.prefixSum + solidParticles.neighbor.size() - 1, 1, CopyDir::D2H);
+            solidParticleInteractions.setCurrentActiveNumber(static_cast<size_t>(activeNumber), stream);
         }
-
-        solidParticles.interactionIndexRange.reset(stream);
-        solidParticleInteractions.setHashValue(stream);
-        buildHashSpans(solidParticles.interactionIndexRange.start, 
-        solidParticles.interactionIndexRange.end, 
-        solidParticleInteractions.current.hash().index, 
-        solidParticleInteractions.current.hash().value, 
-        solidParticleInteractions.current.hash().aux, 
-        solidParticleInteractions.getActiveNumber(), maxThreadsPerBlock, stream);
     }
+
+    solidParticles.interactionIndexRange.reset(stream);
+    solidParticleInteractions.setHashValue(stream);
+    buildHashSpans(solidParticles.interactionIndexRange.start, 
+    solidParticles.interactionIndexRange.end, 
+    solidParticleInteractions.current.hash().index, 
+    solidParticleInteractions.current.hash().value, 
+    solidParticleInteractions.current.hash().aux, 
+    solidParticleInteractions.getActiveNumber(), 
+    maxThreadsPerBlock, 
+    stream);
 }
 
 extern "C" void launchSolidParticleInfiniteWallNeighborSearch(interactionSpringSystem& solidParticleInfiniteWallInteractions, 

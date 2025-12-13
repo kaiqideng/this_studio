@@ -127,7 +127,7 @@ protected:
 
         solidParticleInitialize(domainOrigin, domainSize);
 
-        wallInitialize(domainOrigin, domainSize);
+        //wallInitialize(domainOrigin, domainSize);
 
         if(infiniteWalls().deviceSize() > 0) 
         {
@@ -188,6 +188,7 @@ protected:
         if(handleDEMHostArray())
         {
             DEMInitialize_device(domainOrigin, domainSize, maxThreadsPerBlock);
+            updateBondedInteractions();
         }
 
         DEM2ndHalfIntegration(gravity, timeStep, maxThreadsPerBlock);

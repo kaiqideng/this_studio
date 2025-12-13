@@ -13,7 +13,7 @@ public:
         simParams.numFrames = 1;
 
         GPUParams.deviceIndex = 0;
-        GPUParams.maxThreadsPerBlock = 512;
+        GPUParams.maxThreadsPerBlock = 256;
 
         domainOrigin = make_double3(0.0, 0.0, 0.0);
         domainSize = make_double3(1.0, 1.0, 1.0);

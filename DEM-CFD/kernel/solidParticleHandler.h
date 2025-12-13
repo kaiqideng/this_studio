@@ -183,9 +183,21 @@ protected:
 
     const std::vector<int> getSolidParticleInteractionObjectPointing() {return solidParticleInteractions_.getObjectPointingVectors();}
 
+    void updateBondedInteractions()
+    {
+        if(bondedSolidParticleInteractionsHostArrayChangedFlag_)
+        {
+            if(solidParticles_.hostSize() == 0) return;
+            bondedSolidParticleInteractions_.add(bondedObjects0_, bondedObjects1_, getSolidParticlePosition(), solidParticleStream_);
+            bondedObjects0_.clear();
+            bondedObjects1_.clear();
+            bondedSolidParticleInteractionsHostArrayChangedFlag_ = false;
+        }
+    }
+
     void solidParticleInitialize(const double3 domainOrigin, const double3 domainSize)
     {
-        downLoadSolidParticlesAndInteractions();
+        downLoadSolidParticles();
         downloadSolidParticleSpatialGrids(domainOrigin, domainSize);
     }
 
@@ -197,7 +209,7 @@ protected:
     void solidParticleIntegrateBeforeContact(const double3 gravity, const double timeStep, const size_t maxThreadsPerBlock)
     {
         launchSolidParticleIntegrateBeforeContact(solidParticles_, clumps_, gravity, timeStep, maxThreadsPerBlock, solidParticleStream_);
-        cudaDeviceSynchronize();
+        cudaStreamSynchronize(solidParticleStream_);
         solidParticles_.clearForceTorque(solidParticleStream_);
         clumps_.clearForceTorque(solidParticleStream_);
     }
@@ -216,12 +228,12 @@ protected:
     void outputSolidParticleVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double timeStep);
 
 private:
-    void downLoadSolidParticlesAndInteractions()
+    void downLoadSolidParticles()
     {
         if(solidParticlesHostArrayChangedFlag_)
         {
             solidParticles_.download(solidParticleStream_);
-            solidParticleInteractions_.current.allocDeviceArray(6 * solidParticles_.hostSize(), solidParticleStream_);
+            //solidParticleInteractions_.current.allocDeviceArray(6 * solidParticles_.deviceSize(), solidParticleStream_);
             solidParticlesHostArrayChangedFlag_ = false;
         }
         if(clumpsHostArrayChangedFlag_)
@@ -229,20 +241,12 @@ private:
             clumps_.download(solidParticleStream_);
             clumpsHostArrayChangedFlag_ = false;
         }
-        if(bondedSolidParticleInteractionsHostArrayChangedFlag_)
-        {
-            if(solidParticles_.hostSize() == 0) return;
-            bondedSolidParticleInteractions_.add(bondedObjects0_, bondedObjects1_, getSolidParticlePosition(), solidParticleStream_);
-            bondedObjects0_.clear();
-            bondedObjects1_.clear();
-            bondedSolidParticleInteractionsHostArrayChangedFlag_ = false;
-        }
     }
 
     void downloadSolidParticleSpatialGrids(double3 domainOrigin, double3 domainSize)
     {
         double cellSizeOneDim = 0.0;
-        const std::vector<double> radii = solidParticles_.getEffectiveRadii();
+        std::vector<double> radii = solidParticles_.getEffectiveRadii();
         if(radii.size() > 0) cellSizeOneDim = *std::max_element(radii.begin(), radii.end()) * 2.0;
         double3 cellSize = solidParticleSpatialGrids_.getCellSize();
         if(cellSizeOneDim > cellSize.x || cellSizeOneDim > cellSize.y || cellSizeOneDim > cellSize.z)

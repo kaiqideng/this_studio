@@ -14,7 +14,7 @@ public:
 		iStep = 0;
 		iFrame = 0;
 		frameInterval = 1;
-		time = 0;
+		time = 0.0;
 	}
 
 	~DEMSolver() = default;

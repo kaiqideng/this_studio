@@ -1,4 +1,5 @@
 #include "kernel/DEMSolver.h"
+#include <vector>
 
 class problem:
     public DEMSolver
@@ -6,12 +7,20 @@ class problem:
 public:
     double3 F_c = make_double3(0, 0, 100.e3);
     double r = 0.2;
-    double c_d = 0.001;
+    double c_d = 0.1;
 
     problem(): DEMSolver(0) {}
     bool handleDEMHostArray() override
     {
-        if(getStep() ==0 ) return false;
+        if(getStep() ==0 )
+        {
+            const std::vector<int> ob0 = getSolidParticleInteractionObjectPointed();
+            const std::vector<int> ob1 = getSolidParticleInteractionObjectPointing();
+            for(size_t i = 0; i < ob0.size(); i++)
+            {
+                addBondedSolidParticleInteractions(ob0[i], ob1[i]);
+            }
+        }
 
         std::vector<double3> v = getSolidParticleVelocity();
         std::vector<double3> w = getSolidParticleAngularVelocity();
@@ -61,11 +70,6 @@ int main()
 
     test.setMaximumTime(5.0);
     test.setNumFrames(10);
-
-    for(size_t i = 0; i < 10; i++)
-    {
-        test.addBondedSolidParticleInteractions(i, i+1);
-    }
 
     test.solve();
 }
