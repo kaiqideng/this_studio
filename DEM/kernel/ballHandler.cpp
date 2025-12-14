@@ -1,36 +1,43 @@
 #include "ballHandler.h"
-#include "ballIntegration.h"
-#include "myStruct/myUtility/myFileEdit.h"
 
 void ballHandler::ballNeighborSearch(const size_t maxThreadsPerBlock)
 {
-    launchBallNeighborSearch(ballInteractions_, ballInteractionMap_, 
+    launchBallNeighborSearch(ballInteractions_, 
+    ballInteractionMap_, 
     balls_,
     spatialGrids_,
     maxThreadsPerBlock,
     stream_);
 }
 
-void ballHandler::ball1stHalfIntegration(const double3 g, const double t, const size_t maxThreadsPerBlock)
+void ballHandler::ball1stHalfIntegration(const double3 g, const double dt, const size_t maxThreadsPerBlock)
 {
-    launchBall1stHalfIntegration(balls_, g, t, maxThreadsPerBlock, stream_);
+    launchBall1stHalfIntegration(balls_, 
+    g, 
+    dt, 
+    maxThreadsPerBlock, 
+    stream_);
 }
 
-void ballHandler::ballContactCalculation(contactModelParameters &contactModelParams, const double t, const size_t maxThreadsPerBlock)
+void ballHandler::ballContactCalculation(contactModelParameters &contactModelParams, const double dt, const size_t maxThreadsPerBlock)
 {
     launchBallContactCalculation(ballInteractions_, 
     bondedBallInteractions_, 
     balls_, 
     contactModelParams, 
     ballInteractionMap_,
-    t, 
+    dt, 
     maxThreadsPerBlock, 
     stream_);
 }
 
-void ballHandler::ball2ndHalfIntegration(const double3 g, const double t, const size_t maxThreadsPerBlock)
+void ballHandler::ball2ndHalfIntegration(const double3 g, const double dt, const size_t maxThreadsPerBlock)
 {
-    launchBall2ndHalfIntegration(balls_, g, t, maxThreadsPerBlock, stream_);
+    launchBall2ndHalfIntegration(balls_, 
+    g, 
+    dt, 
+    maxThreadsPerBlock, 
+    stream_);
 }
 
 void ballHandler::outputBallVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double time)

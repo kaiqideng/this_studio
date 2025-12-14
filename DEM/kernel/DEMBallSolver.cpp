@@ -1,5 +1,4 @@
 #include "DEMBallSolver.h"
-#include "myStruct/myUtility/myFileEdit.h"
 
 bool DEMBallSolver::initialize() {
   std::cout << "DEM solver: initializing..." << std::endl;
@@ -17,9 +16,8 @@ bool DEMBallSolver::initialize() {
             << std::endl;
   ballInitialize(getDomainOrigin(), getDomainSize());
   ballNeighborSearch(getGPUThreadsPerBlock());
-  handelBallHostArray();
+  handleHostArray();
   downloadContactModelParameters();
-  downLoadNewBondedballInteractions();
   outputBallVTU(dir_, iFrame_, iStep_, time_);
   std::cout << "DEM solver: initialization completed." << std::endl;
   return true;
@@ -33,23 +31,22 @@ void DEMBallSolver::solve() {
 
   if (initialize()) 
   {
-    numSteps_ = size_t((getMaximumTime()) / timeStep) + 1;
-    frameInterval_ = numSteps_ / getNumFrames();
-    if (frameInterval_ < 1)
-      frameInterval_ = 1;
+    size_t numSteps = size_t((getMaximumTime()) / timeStep) + 1;
+    size_t frameInterval = numSteps / getNumFrames();
+    if (frameInterval < 1)
+      frameInterval = 1;
 
-    while (iStep_ <= numSteps_) {
+    while (iStep_ <= numSteps) {
       iStep_++;
       time_ += timeStep;
       ballNeighborSearch(getGPUThreadsPerBlock());
       ball1stHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
-      ballContactCalculation(contactModelParams_, timeStep,getGPUThreadsPerBlock());
-      if(handelBallHostArray()){
+      ballContactCalculation(contactModelParams(), timeStep,getGPUThreadsPerBlock());
+      if(handleHostArray()){
         ballInitialize(getDomainOrigin(), getDomainSize());
-        downloadContactModelParameters();
-        downLoadNewBondedballInteractions();}
+        downloadContactModelParameters();}
       ball2ndHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
-      if (iStep_ % frameInterval_ == 0) {
+      if (iStep_ % frameInterval == 0) {
         iFrame_++;
         std::cout << "DEM solver: frame " << iFrame_ << " at time " << time_
                   << std::endl;

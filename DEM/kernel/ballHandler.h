@@ -1,8 +1,10 @@
 #pragma once
+#include "myStruct/myUtility/myFileEdit.h"
 #include "myStruct/interaction.h"
 #include "myStruct/particle.h"
 #include "myStruct/spatialGrid.h"
 #include "ballNeighborSearch.h"
+#include "ballIntegration.h"
 
 class ballHandler
 {
@@ -11,7 +13,6 @@ public:
     {
         stream_ = s;
         downLoadFlag_ = false;
-        addBondedInteractionsFlag_ = false;
     }
 
     ~ballHandler() = default;
@@ -68,11 +69,12 @@ public:
         }
     }
 
-    void addBondedballInteraction(int object0, int object1)
+    void addBondedObjects(const std::vector<int> &object0, const std::vector<int> &object1)
     {
-        bondedBallIndices0_.push_back(object0);
-        bondedBallIndices1_.push_back(object1);
-        addBondedInteractionsFlag_ = true;
+        bondedBallInteractions_.add(object0,
+        object1,
+        balls_.positionVector(),
+        stream_);
     }
 
 protected:
@@ -110,28 +112,12 @@ protected:
         balls_.setTorqueVector(totalT, stream_);
     }
 
-    void downLoadNewBondedballInteractions()
-    {
-        if(addBondedInteractionsFlag_)
-        {
-            bondedBallInteractions_.add(bondedBallIndices0_,
-            bondedBallIndices1_,
-            balls_.positionVector(),
-            stream_);
-            bondedBallIndices0_.clear();
-            bondedBallIndices1_.clear();
-            addBondedInteractionsFlag_ = true;
-        }
-    }
-
     void ballInitialize(const double3 domainOrigin, const double3 domainSize)
     {
-        downLoadNewBalls();
-        double factor = 1.0;
-        if(bondedBallInteractions_.deviceSize() > 0) factor = 1.1;
+        downLoadBalls();
         double cellSizeOneDim = 0.0;
         std::vector<double> rad = balls_.radiusVector();
-        if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * factor;
+        if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * 1.1;
         if(cellSizeOneDim > spatialGrids_.cellSize.x 
         || cellSizeOneDim > spatialGrids_.cellSize.y 
         || cellSizeOneDim > spatialGrids_.cellSize.z)
@@ -142,18 +128,16 @@ protected:
 
     void ballNeighborSearch(const size_t maxThreadsPerBlock);
 
-    void ball1stHalfIntegration(const double3 g, const double t, const size_t maxThreadsPerBlock);
+    void ball1stHalfIntegration(const double3 g, const double dt, const size_t maxThreadsPerBlock);
 
-    void ballContactCalculation(contactModelParameters &contactModelParams, const double t, const size_t maxThreadsPerBlock);
+    void ballContactCalculation(contactModelParameters &contactModelParams, const double dt, const size_t maxThreadsPerBlock);
 
-    void ball2ndHalfIntegration(const double3 g, const double t, const size_t maxThreadsPerBlock);
+    void ball2ndHalfIntegration(const double3 g, const double dt, const size_t maxThreadsPerBlock);
 
     void outputBallVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double time);
 
-    virtual bool handelBallHostArray(){return false;}
-
 private:
-    void downLoadNewBalls()
+    void downLoadBalls()
     {
         if(downLoadFlag_)
         {
@@ -166,9 +150,6 @@ private:
 
     cudaStream_t stream_;
     bool downLoadFlag_;
-    bool addBondedInteractionsFlag_;
-    std::vector<int> bondedBallIndices0_;
-    std::vector<int> bondedBallIndices1_;
 
     ball balls_;
     solidInteraction ballInteractions_;

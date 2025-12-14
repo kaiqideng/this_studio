@@ -7,10 +7,10 @@ const double3 maxBound,
 const double3 cellSize, 
 const int3 gridSize, 
 const size_t numGrids,
-const size_t numHashValues)
+const size_t numObjects)
 {
     size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx >= numHashValues) return;
+    if (idx >= numObjects) return;
     double3 p = position[idx];
     if (minBound.x <= p.x && p.x < maxBound.x &&
         minBound.y <= p.y && p.y < maxBound.y &&
@@ -41,13 +41,14 @@ cudaStream_t stream)
 
     calculateHash <<< grid, block, 0, stream >>> (hashValue, 
     position, 
-    sptialGrids.maxBound, 
+    sptialGrids.minBound, 
     sptialGrids.maxBound, 
     sptialGrids.cellSize, 
     sptialGrids.gridSize, 
     sptialGrids.deviceSize(), 
     numObjects);
     CUDA_CHECK(cudaGetLastError());
+    //debug_dump_device_array(hashValue, numObjects, "hashValue");
 
     buildHashStartEnd(sptialGrids.cellHashStart(), 
     sptialGrids.cellHashEnd(), 
@@ -91,6 +92,9 @@ const size_t numBalls)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
     if (idxA >= numBalls) return;
+
+    neighborCountA[idxA] = 0;
+    if(flag == 0) neighborPrefixSumA[idxA] = 0;
 
     int count = 0;
     int base_w = 0;
@@ -167,6 +171,7 @@ spatialGrid& spatialGrids,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
+    if(spatialGrids.deviceSize() == 0) return;
     updateGridCellStartEnd(spatialGrids,
     balls.hashIndex(),
     balls.hashValue(),
@@ -175,6 +180,9 @@ cudaStream_t stream)
     balls.deviceSize(),
     maxThreadsPerBlock,
     stream);
+
+    //debug_dump_device_array(spatialGrids.cellHashStart(), spatialGrids.deviceSize(), "spatialGrids.cellHashStart");
+    //debug_dump_device_array(spatialGrids.cellHashEnd(), spatialGrids.deviceSize(), "spatialGrids.cellHashEnd");
 
     size_t grid = 1, block = 1;
     computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
@@ -213,6 +221,7 @@ cudaStream_t stream)
 
         if (flag == 0)
         {
+            //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "countA");
             int activeNumber = 0;
             inclusiveScan(ballInteractionMap.prefixSumA(), ballInteractionMap.countA(), ballInteractionMap.ASize(), stream);
             cuda_copy_sync(&activeNumber, ballInteractionMap.prefixSumA() + ballInteractionMap.ASize() - 1, 1, CopyDir::D2H);

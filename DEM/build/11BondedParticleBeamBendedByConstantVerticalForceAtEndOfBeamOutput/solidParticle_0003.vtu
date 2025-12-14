@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
+  <UnstructuredGrid>
+    <FieldData>
+      <DataArray type="Float32" Name="TIME"  NumberOfTuples="1" format="ascii"> 1.5000000000 </DataArray>
+      <DataArray type="Int32"   Name="STEP"  NumberOfTuples="1" format="ascii"> 150000 </DataArray>
+    </FieldData>
+    <Piece NumberOfPoints="11" NumberOfCells="11">
+      <Points>
+        <DataArray type="Float32" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 0.3999999810 0.0000000000 0.0001248107 0.7999998263 0.0000000000 0.0004782990 1.1999994410 0.0000000000 0.0010350776 1.5999987692 0.0000000000 0.0017697583 1.9999977888 0.0000000000 0.0026569501 2.3999965069 0.0000000000 0.0036712575 2.7999949544 0.0000000000 0.0047872780 3.1999931821 0.0000000000 0.0059796005 3.5999912551 0.0000000000 0.0072228037 3.9999892483 0.0000000000 0.0084914534
+        </DataArray>
+      </Points>
+      <Cells>
+        <DataArray type="Int32" Name="connectivity" format="ascii">
+ 0 1 2 3 4 5 6 7 8 9 10
+        </DataArray>
+        <DataArray type="Int32" Name="offsets" format="ascii">
+ 1 2 3 4 5 6 7 8 9 10 11
+        </DataArray>
+        <DataArray type="UInt8" Name="types" format="ascii">
+ 1 1 1 1 1 1 1 1 1 1 1
+        </DataArray>
+      </Cells>
+      <PointData Scalars="radius">
+        <DataArray type="Float32" Name="radius" format="ascii">
+ 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000
+        </DataArray>
+        <DataArray type="Int32" Name="clumpID" format="ascii">
+ 0 0 0 0 0 0 0 0 0 0 0
+        </DataArray>
+        <DataArray type="Int32" Name="clumpID" format="ascii">
+ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+        </DataArray>
+        <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 -0.0000000105 0.0000000000 0.0000154292 -0.0000000373 0.0000000000 0.0000557782 -0.0000001422 0.0000000000 0.0001175868 -0.0000002750 0.0000000000 0.0001965441 -0.0000004798 0.0000000000 0.0002882550 -0.0000007271 0.0000000000 0.0003870678 -0.0000010416 0.0000000000 0.0004935931 -0.0000013603 0.0000000000 0.0006041385 -0.0000017087 0.0000000000 0.0007163225 -0.0000020571 0.0000000000 0.0008282772
+        </DataArray>
+        <DataArray type="Float32" Name="angularVelocity" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 0.0000000000 -0.0000758254 0.0000000000 0.0000000000 -0.0001309262 0.0000000000 0.0000000000 -0.0001778295 0.0000000000 0.0000000000 -0.0002214556 0.0000000000 0.0000000000 -0.0002363110 0.0000000000 0.0000000000 -0.0002544684 0.0000000000 0.0000000000 -0.0002791238 0.0000000000 0.0000000000 -0.0002835649 0.0000000000 0.0000000000 -0.0002817414 0.0000000000 0.0000000000 -0.0002784955 0.0000000000
+        </DataArray>
+      </PointData>
+    </Piece>
+  </UnstructuredGrid>
+</VTKFile>

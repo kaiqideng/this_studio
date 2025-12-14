@@ -1,9 +1,8 @@
 #include"ballIntegration.h"
-#include "myStruct/interaction.h"
-#include "myStruct/particle.h"
 
 __global__ void calBallContactForceTorqueKernel(double3* contactForce, 
 double3* contactTorque,
+double3* contactPoint,
 double3* slidingSpring, 
 double3* rollingSpring, 
 double3* torsionSpring, 
@@ -120,6 +119,7 @@ const size_t numInteractions)
 
 	contactForce[idx] = F_c;
 	contactTorque[idx] = T_c;
+	contactPoint[idx] = r_c;
 	slidingSpring[idx] = epsilon_s;
 	rollingSpring[idx] = epsilon_r;
 	torsionSpring[idx] = epsilon_t;
@@ -133,7 +133,7 @@ double3* force, double3* torque, double3* position, double3* velocity, double3* 
 const double* radius, 
 const double* inverseMass, 
 const int* materialID, 
-int* solidParticleNeighborPrefixSum,
+int* interactionMaPrefixSumA,
 double* bondedGamma, 
 double* bondedE, 
 double* bondedK_n_k_s, 
@@ -205,20 +205,20 @@ const size_t numBondedInteractions)
 	bendingTorque[idx] = T_b;
 	contactNormal[idx] = n_ij;
 
-	bool foundInteractions = false;
+	bool flag = false;
 	int idx_c = 0;
-	const int neighborStart_i = idx_i > 0 ? solidParticleNeighborPrefixSum[idx_i - 1] : 0;
-	const int neighborEnd_i = solidParticleNeighborPrefixSum[idx_i];
+	const int neighborStart_i = idx_i > 0 ? interactionMaPrefixSumA[idx_i - 1] : 0;
+	const int neighborEnd_i = interactionMaPrefixSumA[idx_i];
 	for (int k = neighborStart_i; k < neighborEnd_i; k++)
 	{
 		if (objectPointing[k] == idx_j)
 		{
-			foundInteractions = true;
+			flag = true;
 			idx_c = k;
 			break;
 		}
 	}
-	if (!foundInteractions)
+	if (!flag)
 	{
 		atomicAddDouble3(force, idx_i, F_n * n_ij + F_s);
 		atomicAddDouble3(torque, idx_i, T_t * n_ij + T_b + cross(r_c - r_i, F_s));
@@ -231,16 +231,16 @@ const size_t numBondedInteractions)
 	contactTorque[idx_c] += T_t * n_ij + T_b;
 }
 
-__global__ void sumForceTorqueFrombBallInteractionKernel(double3* contactForce, 
+__global__ void sumForceTorqueFrombInteractionKernel(double3* contactForce, 
 double3* contactTorque, 
+double3* contactPoint,
 int* objectPointed, 
 int* objectPointing, 
 double3* force, 
 double3* torque, 
 double3* position, 
-const double* radius, 
 int* interactionMapHashIndex,
-int* prefixSumA, 
+int* interactionMaPrefixSumA, 
 int* interactionMapStartB, 
 int* interactionMapEndB,
 const size_t numBalls)
@@ -248,18 +248,12 @@ const size_t numBalls)
 	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
 	if (idx_i >= numBalls) return;
 
-	double rad_i = radius[idx_i];
 	double3 r_i = position[idx_i];
 	double3 F_i = make_double3(0, 0, 0);
 	double3 T_i = make_double3(0, 0, 0);
-	for (int k = idx_i > 0 ? prefixSumA[idx_i - 1] : 0; k < prefixSumA[idx_i]; k++)
+	for (int k = idx_i > 0 ? interactionMaPrefixSumA[idx_i - 1] : 0; k < interactionMaPrefixSumA[idx_i]; k++)
 	{
-		int idx_j = objectPointing[k];
-		double rad_j = radius[idx_j];
-		double3 r_j = position[idx_j];
-		double3 n_ij = normalize(r_i - r_j);
-		double delta = rad_i + rad_j - length(r_i - r_j);
-		double3 r_c = r_j + (rad_j - 0.5 * delta) * n_ij;
+		double3 r_c = contactPoint[k];
 		F_i += contactForce[k];
 		T_i += contactTorque[k] + cross(r_c - r_i, contactForce[k]);
 	}
@@ -269,12 +263,7 @@ const size_t numBalls)
 		for (int k = interactionMapStartB[idx_i]; k < interactionMapEndB[idx_i]; k++)
 		{
 			int k1 = interactionMapHashIndex[k];
-			int idx_j = objectPointed[k1];
-			double rad_j = radius[idx_j];
-			double3 r_j = position[idx_j];
-			double3 n_ij = normalize(r_i - r_j);
-			double delta = rad_i + rad_j - length(r_i - r_j);
-			double3 r_c = r_j + (rad_j - 0.5 * delta) * n_ij;
+			double3 r_c = contactPoint[k1];
 			F_i -= contactForce[k1];
 			T_i -= contactTorque[k1];
 			T_i -= cross(r_c - r_i, contactForce[k1]);
@@ -283,6 +272,33 @@ const size_t numBalls)
 
 	force[idx_i] += F_i;
 	torque[idx_i] += T_i;
+}
+
+__global__ void sumClumpForceTorqueKernel(double3* force_c, 
+double3* torque_c, 
+double3* position_c, 
+const int* pebbleStartIndex, 
+const int* pebbleEndIndex,
+double3* force_p, 
+double3* torque_p, 
+double3* position_p,
+const size_t numClumps)
+{
+	size_t idx_c = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_c >= numClumps) return;
+	double3 F_c = make_double3(0, 0, 0);
+	double3 T_c = make_double3(0, 0, 0);
+	for (int i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
+	{
+		double3 r_i = position_p[i];
+		double3 F_i = force_c[i];
+		double3 r_c = position_c[idx_c];
+		F_c += F_i;
+		T_c += torque_p[i] + cross(r_i - r_c, F_i);
+	}
+
+	force_c[idx_c] += F_c;
+	torque_c[idx_c] += T_c;
 }
 
 __global__ void ballVelocityAngularVelocityIntegrationKernel(double3* velocity, 
@@ -307,6 +323,81 @@ const size_t numBalls)
 	if (invM_i < 1.e-20 || rad_i < 1.e-20) return;
 	double I_i = 0.4 * rad_i * rad_i / invM_i;
 	angularVelocity[idx_i] += torque[idx_i] / I_i * dt;
+}
+
+__global__ void clumpVelocityAngularVelocityIntegrate1stHalfKernel(double3* velocity_c, 
+double3* angularVelocity_c, 
+double3* position_c, 
+double3* force_c, 
+double3* torque_c, 
+const double* invMass_c, 
+quaternion* orientation, 
+const symMatrix* inverseInertiaTensor, 
+const int* pebbleStartIndex, 
+const int* pebbleEndIndex,
+double3* velocity_p, 
+double3* angularVelocity_p, 
+double3* position_p, 
+const double3 g,
+const double dt, 
+const size_t numClumps)
+{
+	size_t idx_c = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_c >= numClumps) return;
+
+    double invM_c = invMass_c[idx_c];
+	double3 w_c = make_double3(0.0, 0.0, 0.0);
+	if (invM_c > 0.) 
+	{
+		velocity_c[idx_c] += (force_c[idx_c] * invM_c + g) * dt;
+		angularVelocity_c[idx_c] += (rotateInverseInertiaTensor(orientation[idx_c], inverseInertiaTensor[idx_c]) * torque_c[idx_c]) * dt;
+		w_c = angularVelocity_c[idx_c];
+		orientation[idx_c] = quaternionRotate(orientation[idx_c],w_c,  dt);
+	}
+	for (int i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
+	{
+		double3 r_pc = position_p[i] - position_c[idx_c];
+		velocity_p[i] = velocity_c[idx_c] + cross(w_c, r_pc);
+		angularVelocity_p[i] = w_c;
+	}
+}
+
+__global__ void clumpVelocityAngularVelocityIntegrate2ndHalfKernel(double3* velocity_c, 
+double3* angularVelocity_c, 
+double3* position_c, 
+double3* force_c, 
+double3* torque_c, 
+const double* invMass_c, 
+quaternion* orientation, 
+const symMatrix* inverseInertiaTensor, 
+const int* pebbleStartIndex, 
+const int* pebbleEndIndex,
+double3* velocity_p, 
+double3* angularVelocity_p, 
+double3* position_p, 
+const double3 g,
+const double dt, 
+const size_t numClumps)
+{
+	size_t idx_c = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_c >= numClumps) return;
+
+    double invM_c = invMass_c[idx_c];
+	double3 w_c = make_double3(0.0, 0.0, 0.0);
+	if (invM_c > 0.) 
+	{
+		w_c = angularVelocity_c[idx_c];
+		orientation[idx_c] = quaternionRotate(orientation[idx_c], w_c, dt);
+		angularVelocity_c[idx_c] += (rotateInverseInertiaTensor(orientation[idx_c], inverseInertiaTensor[idx_c]) * torque_c[idx_c]) * dt;
+		velocity_c[idx_c] += (force_c[idx_c] * invM_c + g) * dt;
+		w_c = angularVelocity_c[idx_c];
+	}
+	for (int i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
+	{
+		double3 r_pc = position_p[i] - position_c[idx_c];
+		velocity_p[i] = velocity_c[idx_c] + cross(w_c, r_pc);
+		angularVelocity_p[i] = w_c;
+	}
 }
 
 __global__ void positionIntegrationKernel(double3* position, double3* velocity, 
@@ -344,8 +435,8 @@ cudaStream_t stream)
     0.5 * timeStep,
     balls.deviceSize());
 
-    CUDA_CHECK(cudaMemsetAsync(balls.force(), 0xFF, balls.deviceSize() * sizeof(double3), stream));
-    CUDA_CHECK(cudaMemsetAsync(balls.torque(), 0xFF, balls.deviceSize() * sizeof(double3), stream));
+    CUDA_CHECK(cudaMemsetAsync(balls.force(), 0, balls.deviceSize() * sizeof(double3), stream));
+    CUDA_CHECK(cudaMemsetAsync(balls.torque(), 0, balls.deviceSize() * sizeof(double3), stream));
 }
 
 extern "C" void launchBall2ndHalfIntegration(ball& balls, 
@@ -374,6 +465,86 @@ cudaStream_t stream)
     balls.deviceSize());
 }
 
+extern "C" void launchClump1stHalfIntegration(clump& clumps, 
+ball& balls, 
+const double3 gravity, 
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+	size_t grid = 1, block = 1;
+
+	computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
+	clumpVelocityAngularVelocityIntegrate1stHalfKernel <<<grid, block, 0, stream>>> (clumps.velocity(),
+	clumps.angularVelocity(),
+	clumps.position(),
+	clumps.force(),
+	clumps.torque(),
+	clumps.inverseMass(),
+	clumps.orientation(),
+	clumps.inverseInertiaTensor(),
+	clumps.pebbleStart(),
+	clumps.pebbleEnd(),
+	balls.velocity(),
+	balls.angularVelocity(),
+	balls.position(),
+	gravity,
+	0.5 * timeStep,
+	clumps.deviceSize());
+
+	positionIntegrationKernel <<<grid, block, 0, stream>>> (clumps.position(), 
+    clumps.velocity(), 
+    0.5 * timeStep,
+    clumps.deviceSize());
+
+	CUDA_CHECK(cudaMemsetAsync(clumps.force(), 0, balls.deviceSize() * sizeof(double3), stream));
+    CUDA_CHECK(cudaMemsetAsync(clumps.torque(), 0, balls.deviceSize() * sizeof(double3), stream));
+}
+
+extern "C" void launchClump2ndHalfIntegration(clump& clumps, 
+ball& balls, 
+const double3 gravity, 
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+	size_t grid = 1, block = 1;
+
+    computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
+	sumClumpForceTorqueKernel <<<grid, block, 0, stream>>> (clumps.force(), 
+	clumps.torque(), 
+	clumps.position(), 
+	clumps.pebbleStart(), 
+	clumps.pebbleEnd(), 
+	balls.force(), 
+	balls.torque(), 
+	balls.position(), 
+	clumps.deviceSize());
+
+	positionIntegrationKernel <<<grid, block, 0, stream>>> (clumps.position(), 
+    clumps.velocity(), 
+    0.5 * timeStep,
+    clumps.deviceSize());
+
+	computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
+	clumpVelocityAngularVelocityIntegrate2ndHalfKernel <<<grid, block, 0, stream>>> (clumps.velocity(),
+	clumps.angularVelocity(),
+	clumps.position(),
+	clumps.force(),
+	clumps.torque(),
+	clumps.inverseMass(),
+	clumps.orientation(),
+	clumps.inverseInertiaTensor(),
+	clumps.pebbleStart(),
+	clumps.pebbleEnd(),
+	balls.velocity(),
+	balls.angularVelocity(),
+	balls.position(),
+	gravity,
+	0.5 * timeStep,
+	clumps.deviceSize());
+}
+
 extern "C" void launchBallContactCalculation(solidInteraction &ballInteractions, 
 bondedInteraction &bondedBallInteractions, 
 ball &balls, 
@@ -388,6 +559,7 @@ cudaStream_t stream)
 	computeGPUGridSizeBlockSize(grid, block, ballInteractions.activeSize(), maxThreadsPerBlock);
     calBallContactForceTorqueKernel <<<grid, block, 0, stream>>> (ballInteractions.force(),
 	ballInteractions.torque(),
+	ballInteractions.contactPoint(),
 	ballInteractions.slidingSpring(),
 	ballInteractions.rollingSpring(),
 	ballInteractions.torsionSpring(),
@@ -458,14 +630,14 @@ cudaStream_t stream)
 	bondedBallInteractions.deviceSize());
 
     computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
-    sumForceTorqueFrombBallInteractionKernel<<<grid, block, 0, stream>>> (ballInteractions.force(),
+    sumForceTorqueFrombInteractionKernel <<<grid, block, 0, stream>>> (ballInteractions.force(),
 	ballInteractions.torque(),
+	ballInteractions.contactPoint(),
 	ballInteractions.objectPointed(),
 	ballInteractions.objectPointing(),
 	balls.force(),
 	balls.torque(),
 	balls.position(),
-	balls.radius(),
     ballInteractionMap.hashIndex(),
 	ballInteractionMap.prefixSumA(),
 	ballInteractionMap.startB(),

@@ -1,0 +1,178 @@
+#pragma once
+#include "myStruct/myUtility/myFileEdit.h"
+#include "myStruct/wall.h"
+#include "myStruct/spatialGrid.h"
+
+class wallHandler
+{
+public:
+    wallHandler(cudaStream_t s)
+    {
+        stream_ = s;
+        downLoadFlag_ = false;
+    }
+
+    ~wallHandler() = default;
+
+    void addTriangleMeshWall(const std::vector<double3> &vertex, 
+    const std::vector<int3> &triIndices, 
+    const double3 &posistion, 
+    const double3 &velocity, 
+    const double3 &angularVelocity, 
+    int matirialID)
+    {
+        if(!downLoadFlag_)
+        {
+            meshWalls_.upload(stream_);
+            downLoadFlag_ = true;
+        }
+        meshWalls_.addWallFromMesh(vertex, 
+        triIndices, 
+        posistion, 
+        velocity, 
+        angularVelocity, 
+        make_quaternion(1, 0, 0, 0), 
+        matirialID);
+    }
+
+protected:
+    meshWall &meshWalls() {return meshWalls_;}
+
+    spatialGrid &meshWallSpatialGrids() {return spatialGrids_;}
+
+    void wallInitialize(const double3 domainOrigin, const double3 domainSize)
+    {
+        downLoadWalls();
+        double cellSizeOneDim = meshWalls_.getMaxEdgeLength() * 1.2;
+        if(cellSizeOneDim > spatialGrids_.cellSize.x 
+        || cellSizeOneDim > spatialGrids_.cellSize.y 
+        || cellSizeOneDim > spatialGrids_.cellSize.z)
+        {
+            spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream_);
+        }
+    }
+
+    void outputMeshWallVTU(const std::string& dir,
+                           const size_t       iFrame,
+                           const size_t       iStep,
+                           double             time)
+    {
+        MKDIR(dir.c_str());
+
+        std::ostringstream fname;
+        fname << dir << "/triangleWall_" << std::setw(4) << std::setfill('0') << iFrame << ".vtu";
+
+        std::ofstream out(fname.str().c_str());
+        if (!out) {
+            throw std::runtime_error("Cannot open " + fname.str());
+        }
+
+        out << std::fixed << std::setprecision(10);
+
+        const std::vector<double3> verts = meshWalls_.globalVerticesVector();
+        const size_t numPoints = verts.size();
+
+        const std::vector<int> tri_i0 = meshWalls_.triangles().index0Vector();
+        const std::vector<int> tri_i1 = meshWalls_.triangles().index1Vector();
+        const std::vector<int> tri_i2 = meshWalls_.triangles().index2Vector();
+        const size_t numTris = tri_i0.size();
+
+        const std::vector<int> triWallId = meshWalls_.triangles().wallIndexVector();
+
+        std::vector<int> triMaterialId(numTris, 0);
+        const std::vector<int> wallMaterial = meshWalls_.materialIDVector();
+        if (!wallMaterial.empty() && !triWallId.empty()) {
+            for (size_t t = 0; t < numTris; ++t) {
+                const int w = triWallId[t];
+                if (w >= 0 && static_cast<size_t>(w) < wallMaterial.size()) {
+                    triMaterialId[t] = wallMaterial[w];
+                }
+            }
+        }
+
+        out << "<?xml version=\"1.0\"?>\n"
+            << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+            << "  <UnstructuredGrid>\n";
+
+        out << "    <FieldData>\n"
+            << "      <DataArray type=\"Float32\" Name=\"TIME\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << time << " </DataArray>\n"
+            << "      <DataArray type=\"Int32\"   Name=\"STEP\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << iStep << " </DataArray>\n"
+            << "    </FieldData>\n";
+
+        out << "    <Piece NumberOfPoints=\"" << numPoints
+            << "\" NumberOfCells=\"" << numTris << "\">\n";
+
+        out << "      <Points>\n"
+            << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+        for (size_t i = 0; i < numPoints; ++i) {
+            out << ' ' << verts[i].x
+                << ' ' << verts[i].y
+                << ' ' << verts[i].z;
+        }
+        out << "\n        </DataArray>\n"
+            << "      </Points>\n";
+
+        out << "      <Cells>\n";
+
+        out << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n";
+        for (size_t t = 0; t < numTris; ++t) {
+            out << ' ' << tri_i0[t]
+                << ' ' << tri_i1[t]
+                << ' ' << tri_i2[t];
+        }
+        out << "\n        </DataArray>\n";
+
+        out << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">\n";
+        for (size_t t = 1; t <= numTris; ++t) {
+            out << ' ' << (3 * t);
+        }
+        out << "\n        </DataArray>\n";
+
+        out << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">\n";
+        for (size_t t = 0; t < numTris; ++t) {
+            out << " 5";
+        }
+        out << "\n        </DataArray>\n"
+            << "      </Cells>\n";
+
+        out << "      <CellData Scalars=\"materialID\">\n";
+
+        if (!triWallId.empty()) {
+            out << "        <DataArray type=\"Int32\" Name=\"wallID\" format=\"ascii\">\n";
+            for (size_t t = 0; t < numTris; ++t) {
+                out << ' ' << triWallId[t];
+            }
+            out << "\n        </DataArray>\n";
+        }
+
+        out << "        <DataArray type=\"Int32\" Name=\"materialID\" format=\"ascii\">\n";
+        for (size_t t = 0; t < numTris; ++t) {
+            out << ' ' << triMaterialId[t];
+        }
+        out << "\n        </DataArray>\n";
+
+        out << "      </CellData>\n";
+
+        out << "    </Piece>\n"
+            << "  </UnstructuredGrid>\n"
+            << "</VTKFile>\n";
+    }
+
+private:
+    void downLoadWalls()
+    {
+        if(downLoadFlag_)
+        {
+            meshWalls_.download(stream_);
+            downLoadFlag_ = false;
+        }
+    }
+
+    cudaStream_t stream_;
+    bool downLoadFlag_ ;
+
+    meshWall meshWalls_;
+    spatialGrid spatialGrids_;
+};

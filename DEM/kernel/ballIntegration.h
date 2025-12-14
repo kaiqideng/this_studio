@@ -164,7 +164,7 @@ __device__ __forceinline__ void LinearContact(double3& contactForce, double3& co
 {
 	if (normalOverlap > 0)
 	{
-		const double normalDampingCoefficient = 2. * normalDissipation * sqrt(effectiveMass * normalStiffness);
+		double normalDampingCoefficient = 2. * normalDissipation * sqrt(effectiveMass * normalStiffness);
 		double slidingDampingCoefficient = 2. * slidingDissipation * sqrt(effectiveMass * slidingStiffness);
 		double rollingDampingCoefficient = 2. * rollingDissipation * sqrt(effectiveMass * rollingStiffness);
 		double torsionDampingCoefficient = 2. * torsionDissipation * sqrt(effectiveMass * torsionStiffness);
@@ -182,7 +182,7 @@ __device__ __forceinline__ void LinearContact(double3& contactForce, double3& co
 		const double3 rollingTorque = effectiveRadius * cross(contactNormal, rollingForce);
 
 		const double effectiveDiameter = 2 * effectiveRadius;
-		double3 torsionRelativeVelocity = effectiveDiameter * dot(relativeAngularVelocityAtContact, contactNormal) * contactNormal;
+		const double3 torsionRelativeVelocity = effectiveDiameter * dot(relativeAngularVelocityAtContact, contactNormal) * contactNormal;
 		torsionSpring = integrateTorsionSpring(torsionSpring, torsionRelativeVelocity, contactNormal, normalContactForce, torsionFrictionCoefficient, torsionStiffness, torsionDampingCoefficient, timeStep);
 		const double3 torsionForce = -torsionStiffness * torsionSpring - torsionDampingCoefficient * torsionRelativeVelocity;
 		const double3 torsionTorque = effectiveDiameter * torsionForce;
@@ -273,6 +273,20 @@ bondedInteraction &bondedBallInteractions,
 ball &balls, 
 contactModelParameters &contactModelParams,
 interactionMap &ballInteractionMap,
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
+extern "C" void launchClump1stHalfIntegration(clump& clumps, 
+ball& balls, 
+const double3 gravity, 
+const double timeStep, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
+extern "C" void launchClump2ndHalfIntegration(clump& clumps, 
+ball& balls, 
+const double3 gravity, 
 const double timeStep, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);

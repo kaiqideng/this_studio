@@ -10,6 +10,7 @@ __device__ __forceinline__ int3 calculateGridPosition(double3 position, const do
 
 __device__ __forceinline__ int calculateHash(int3 gridPosition, const int3 gridSize)
 {
+    if(gridPosition.x < 0 || gridPosition.y < 0 || gridPosition.z < 0 ) return -1;
     return gridPosition.z * gridSize.y * gridSize.x + gridPosition.y * gridSize.x + gridPosition.x;
 }
 

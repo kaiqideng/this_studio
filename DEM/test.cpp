@@ -1,5 +1,4 @@
 #include "kernel/DEMBallSolver.h"
-#include "myStruct/interaction.h"
 #include <vector>
 
 class problem:
@@ -11,16 +10,12 @@ public:
     double c_d = 0.1;
 
     problem(): DEMBallSolver(0) {}
-    bool handelBallHostArray() override
+    bool handleHostArray() override
     {
         if(getStep() ==0 )
         {
-            const std::vector<int> ob0 = bondedBallInteractions().objectPointedVector();
-            const std::vector<int> ob1 = bondedBallInteractions().objectPointingVector();
-            for(size_t i = 0; i < ob0.size(); i++)
-            {
-                addBondedballInteraction(ob0[i], ob1[i]);
-            }
+            addBondedObjects(ballInteractions().objectPointedVector(), 
+            ballInteractions().objectPointingVector());
         }
 
         std::vector<double3> v = balls().velocityVector();
