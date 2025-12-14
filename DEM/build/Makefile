@@ -215,6 +215,54 @@ kernel/ballIntegration.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.s
 .PHONY : kernel/ballIntegration.cu.s
 
+kernel/ballMeshWallIntegration.o: kernel/ballMeshWallIntegration.cu.o
+.PHONY : kernel/ballMeshWallIntegration.o
+
+# target to build an object file
+kernel/ballMeshWallIntegration.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o
+.PHONY : kernel/ballMeshWallIntegration.cu.o
+
+kernel/ballMeshWallIntegration.i: kernel/ballMeshWallIntegration.cu.i
+.PHONY : kernel/ballMeshWallIntegration.i
+
+# target to preprocess a source file
+kernel/ballMeshWallIntegration.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.i
+.PHONY : kernel/ballMeshWallIntegration.cu.i
+
+kernel/ballMeshWallIntegration.s: kernel/ballMeshWallIntegration.cu.s
+.PHONY : kernel/ballMeshWallIntegration.s
+
+# target to generate assembly for a file
+kernel/ballMeshWallIntegration.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.s
+.PHONY : kernel/ballMeshWallIntegration.cu.s
+
+kernel/ballMeshWallNeighbor.o: kernel/ballMeshWallNeighbor.cu.o
+.PHONY : kernel/ballMeshWallNeighbor.o
+
+# target to build an object file
+kernel/ballMeshWallNeighbor.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o
+.PHONY : kernel/ballMeshWallNeighbor.cu.o
+
+kernel/ballMeshWallNeighbor.i: kernel/ballMeshWallNeighbor.cu.i
+.PHONY : kernel/ballMeshWallNeighbor.i
+
+# target to preprocess a source file
+kernel/ballMeshWallNeighbor.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.i
+.PHONY : kernel/ballMeshWallNeighbor.cu.i
+
+kernel/ballMeshWallNeighbor.s: kernel/ballMeshWallNeighbor.cu.s
+.PHONY : kernel/ballMeshWallNeighbor.s
+
+# target to generate assembly for a file
+kernel/ballMeshWallNeighbor.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.s
+.PHONY : kernel/ballMeshWallNeighbor.cu.s
+
 kernel/ballNeighborSearch.o: kernel/ballNeighborSearch.cu.o
 .PHONY : kernel/ballNeighborSearch.o
 
@@ -330,6 +378,12 @@ help:
 	@echo "... kernel/ballIntegration.o"
 	@echo "... kernel/ballIntegration.i"
 	@echo "... kernel/ballIntegration.s"
+	@echo "... kernel/ballMeshWallIntegration.o"
+	@echo "... kernel/ballMeshWallIntegration.i"
+	@echo "... kernel/ballMeshWallIntegration.s"
+	@echo "... kernel/ballMeshWallNeighbor.o"
+	@echo "... kernel/ballMeshWallNeighbor.i"
+	@echo "... kernel/ballMeshWallNeighbor.s"
 	@echo "... kernel/ballNeighborSearch.o"
 	@echo "... kernel/ballNeighborSearch.i"
 	@echo "... kernel/ballNeighborSearch.s"

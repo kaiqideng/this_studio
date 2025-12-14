@@ -231,7 +231,7 @@ const size_t numBondedInteractions)
 	contactTorque[idx_c] += T_t * n_ij + T_b;
 }
 
-__global__ void sumForceTorqueFrombInteractionKernel(double3* contactForce, 
+__global__ void sumForceTorqueFromInteractionKernel(double3* contactForce, 
 double3* contactTorque, 
 double3* contactPoint,
 int* objectPointed, 
@@ -472,6 +472,7 @@ const double timeStep,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
+	if(clumps.deviceSize() == 0) return;
 	size_t grid = 1, block = 1;
 
 	computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
@@ -508,6 +509,7 @@ const double timeStep,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
+	if(clumps.deviceSize() == 0) return;
 	size_t grid = 1, block = 1;
 
     computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
@@ -630,7 +632,7 @@ cudaStream_t stream)
 	bondedBallInteractions.deviceSize());
 
     computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
-    sumForceTorqueFrombInteractionKernel <<<grid, block, 0, stream>>> (ballInteractions.force(),
+    sumForceTorqueFromInteractionKernel <<<grid, block, 0, stream>>> (ballInteractions.force(),
 	ballInteractions.torque(),
 	ballInteractions.contactPoint(),
 	ballInteractions.objectPointed(),

@@ -15,9 +15,15 @@ bool DEMBallSolver::initialize() {
   std::cout << "DEM solver: downloading array from host to device..."
             << std::endl;
   ballInitialize(getDomainOrigin(), getDomainSize());
+   downloadContactModelParameters();
   ballNeighborSearch(getGPUThreadsPerBlock());
-  handleHostArray();
-  downloadContactModelParameters();
+  if(handleHostArray()){
+    ballInitialize(getDomainOrigin(), getDomainSize());
+    downloadContactModelParameters();}
+  if(balls().deviceSize() == 0){
+    std::cout << "DEM solver: initialization failed" << std::endl;
+    return false;
+  } 
   outputBallVTU(dir_, iFrame_, iStep_, time_);
   std::cout << "DEM solver: initialization completed." << std::endl;
   return true;

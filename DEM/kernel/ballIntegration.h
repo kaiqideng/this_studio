@@ -256,6 +256,10 @@ __device__ __forceinline__ void HertzianMindlinContact(double3& contactForce, do
 	}
 }
 
+__global__ void positionIntegrationKernel(double3* position, double3* velocity, 
+	const double dt,
+	const size_t num);
+
 extern "C" void launchBall1stHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 

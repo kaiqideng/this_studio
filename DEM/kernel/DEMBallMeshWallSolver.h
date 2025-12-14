@@ -1,6 +1,9 @@
 #pragma once
 #include "DEMBallSolver.h"
+#include "myStruct/interaction.h"
 #include "wallHandler.h"
+#include "ballMeshWallNeighbor.h"
+#include "ballMeshWallIntegration.h"
 
 class DEMBallMeshWallSolver:
     public DEMBallSolver, public wallHandler
@@ -8,6 +11,7 @@ class DEMBallMeshWallSolver:
 public:
     DEMBallMeshWallSolver(cudaStream_t s) : DEMBallSolver(s), wallHandler(s)
 	{
+        stream_ = s;
         iStep_ = 0;
 		iFrame_ = 0;
 		time_ = 0.0;
@@ -38,7 +42,10 @@ public:
                 iStep_++;
                 time_+= timeStep;
                 ballNeighborSearch(getGPUThreadsPerBlock());
+                ballMeshWallNeighborSearch(getGPUThreadsPerBlock());
+                meshWall1stHalfIntegration(getGravity(), timeStep, getGPUThreadsPerBlock());
                 ball1stHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
+                ballMeshWallContactCalculation(timeStep, getGPUThreadsPerBlock());
                 ballContactCalculation(contactModelParams(), timeStep,getGPUThreadsPerBlock());
                 if(handleHostArray())
                 {
@@ -47,18 +54,57 @@ public:
                     downloadContactModelParameters();
                 }
                 ball2ndHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
+                meshWall2ndHalfIntegration(getGravity(), timeStep, getGPUThreadsPerBlock());
                 if (iStep_ % frameInterval == 0) 
                 {
                     iFrame_++;
                     std::cout << "DEM solver: frame " << iFrame_ << " at time " << time_ << std::endl;
                     outputBallVTU(getDir(), iFrame_, iStep_, time_);
-                    outputBallVTU(getDir(), iFrame_, iStep_, time_);
+                    outputMeshWallVTU(getDir(), iFrame_, iStep_, time_);
                 }
             }
         }
     }
 
 protected:
+    void ballMeshWallNeighborSearch(const size_t maxThreadsPerBlock)
+    {
+        launchBallTriangleNeighborSearch(ballMeshWallInteractions_, 
+        ballMeshWallInteractionMap_, 
+        balls(), 
+        meshWalls(), 
+        meshWallSpatialGrids(), 
+        maxThreadsPerBlock, 
+        stream_);
+    }
+
+    void meshWall1stHalfIntegration(const double3 g, const double dt, const size_t maxThreadsPerBlock)
+    {
+        launchMeshWall1stHalfIntegration(meshWalls(), 
+        dt, 
+        maxThreadsPerBlock, 
+        stream_);
+    }
+
+    void ballMeshWallContactCalculation(const double dt, const size_t maxThreadsPerBlock)
+    {
+        launchBallMeshWallInteractionCalculation(ballMeshWallInteractions_, 
+        balls(), 
+        meshWalls(), 
+        contactModelParams(), 
+        ballMeshWallInteractionMap_, 
+        dt, 
+        maxThreadsPerBlock, 
+        stream_);
+    }
+
+    void meshWall2ndHalfIntegration(const double3 g, const double dt, const size_t maxThreadsPerBlock)
+    {
+        launchMeshWall2ndHalfIntegration(meshWalls(), 
+        dt, 
+        maxThreadsPerBlock, 
+        stream_);
+    }
     
 private:
     bool initialize() override
@@ -79,16 +125,31 @@ private:
                     << std::endl;
         ballInitialize(getDomainOrigin(), getDomainSize());
         wallInitialize(getDomainOrigin(), getDomainSize());
-        ballNeighborSearch(getGPUThreadsPerBlock());
-        handleHostArray();
         downloadContactModelParameters();
+        ballNeighborSearch(getGPUThreadsPerBlock());
+        ballMeshWallNeighborSearch(getGPUThreadsPerBlock());
+        if(handleHostArray())
+        {
+            ballInitialize(getDomainOrigin(), getDomainSize());
+            wallInitialize(getDomainOrigin(), getDomainSize());
+            downloadContactModelParameters();
+        }
+        if(balls().deviceSize() == 0)
+        {
+            std::cout << "DEM solver: initialization failed" << std::endl;
+            return false;
+        } 
         outputBallVTU(getDir(), 0, 0, 0.0);
         outputMeshWallVTU(getDir(), 0, 0, 0.0);
         std::cout << "DEM solver: initialization completed." << std::endl;
         return true;
     }
 
+    cudaStream_t stream_;
     size_t iStep_;
     size_t iFrame_;;
 	double time_;
+
+    solidInteraction ballMeshWallInteractions_;
+    interactionMap ballMeshWallInteractionMap_;
 };

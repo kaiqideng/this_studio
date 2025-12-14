@@ -27,6 +27,8 @@ endif()
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/teamspace/studios/this_studio/DEM/kernel/*.cu")
 set(OLD_GLOB
   "/teamspace/studios/this_studio/DEM/kernel/ballIntegration.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/ballMeshWallIntegration.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/ballMeshWallNeighbor.cu"
   "/teamspace/studios/this_studio/DEM/kernel/ballNeighborSearch.cu"
   "/teamspace/studios/this_studio/DEM/kernel/biuldHashStartEnd.cu"
   "/teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility/myCUDAOperation.cu"

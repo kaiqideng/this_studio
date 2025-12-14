@@ -10,6 +10,10 @@ private:
     constantHostDeviceArray1D<int> index2_;
     constantHostDeviceArray1D<int> wallIndex_;
 
+    DeviceArray1D<int> hashIndex_;
+    DeviceArray1D<int> hashValue_;
+    DeviceArray1D<int> hashAux_;
+
 public:
     triangle() = default;
     ~triangle() = default;
@@ -43,12 +47,24 @@ public:
         index1_.download(stream);
         index2_.download(stream);
         wallIndex_.download(stream);
+
+        const size_t n = deviceSize();
+        hashIndex_.allocDeviceArray(n, stream);
+        hashValue_.allocDeviceArray(n, stream);
+        hashAux_.allocDeviceArray(n, stream);
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashAux_.d_ptr,   0xFF, hashAux_.deviceSize() * sizeof(int), stream));
     }
 
     const int* index0() { return index0_.d_ptr; }
     const int* index1() { return index1_.d_ptr; }
     const int* index2() { return index2_.d_ptr; }
     const int* wallIndex() { return wallIndex_.d_ptr; }
+
+    int* hashIndex() { return hashIndex_.d_ptr; }
+    int* hashValue() { return hashValue_.d_ptr; }
+    int* hashAux()   { return hashAux_.d_ptr; }
 
     const std::vector<int> index0Vector() { return index0_.getHostData(); }
     const std::vector<int> index1Vector() { return index1_.getHostData(); }
@@ -106,7 +122,7 @@ public:
 
     int* index0() { return index0_.d_ptr; }
     int* index1() { return index1_.d_ptr; }
-    int* numTrianglesPrefixSum() { return trianglePrefixSum_.d_ptr; }
+    int* trianglesPrefixSum() { return trianglePrefixSum_.d_ptr; }
     int* triangleIndex() { return triangleIndex_.d_ptr; }
 };
 
@@ -173,8 +189,8 @@ public:
     }
 
     double3* localPosition() { return localPosition_.d_ptr; }
-    int* numTrianglesPrefixSum() { return trianglePrefixSum_.d_ptr; }
-    int* numEdgesPrefixSum() { return edgePrefixSum_.d_ptr; }
+    int* trianglesPrefixSum() { return trianglePrefixSum_.d_ptr; }
+    int* edgesPrefixSum() { return edgePrefixSum_.d_ptr; }
     int* triangleIndex() { return triangleIndex_.d_ptr; }
     int* edgeIndex() { return edgeIndex_.d_ptr; }
 
@@ -424,8 +440,8 @@ public:
     int* materialID()          { return materialID_.d_ptr; }
 
     triangle& triangles() { return triangles_; }
-    edge&     edgesRef()  { return edges_; }
-    vertex& verticesRef()  { return vertices_; }
+    edge&     edges()  { return edges_; }
+    vertex& vertices()  { return vertices_; }
 
     double3* globalVertices() { return globalVertices_.d_ptr; }
 
