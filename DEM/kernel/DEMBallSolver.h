@@ -11,8 +11,8 @@ public:
     DEMBallSolver(cudaStream_t s) : solverParams(), ballHandler(s), contactModelHandler(s)
 	{
 		stream_ = s;
-		setNameFlag_ = false;
 
+		setNameFlag_ = false;
 		dir_ = "DEMBallSolverOutput";
 		
 		iStep_ = 0;
@@ -36,16 +36,22 @@ public:
 
 	virtual const double &getTime() const {return time_;} 
 
-    virtual bool handleHostArray(){return false;}
+    virtual bool handleHostArrayInLoop(){return false;}
 
     virtual void solve();
 
 private:
+    virtual void initializeDeviceSide()
+    {
+        ballInitialize(getDomainOrigin(), getDomainSize());
+        downloadContactModelParameters();
+    }
+
     virtual bool initialize();
 
 	cudaStream_t stream_;
+
     bool setNameFlag_;
-	
     std::string dir_;
 
     size_t iStep_;

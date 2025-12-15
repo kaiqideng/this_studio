@@ -10,7 +10,7 @@ public:
     double c_d = 0.1;
 
     problem(): DEMBallSolver(0) {}
-    bool handleHostArray() override
+    bool handleHostArrayInLoop() override
     {
         if(getStep() ==0 )
         {

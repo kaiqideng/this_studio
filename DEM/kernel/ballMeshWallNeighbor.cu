@@ -240,7 +240,6 @@ cudaStream_t stream)
 
         if (flag == 0)
         {
-            //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "countA");
             int activeNumber = 0;
             inclusiveScan(ballTriangleInteractionMap.prefixSumA(), ballTriangleInteractionMap.countA(), ballTriangleInteractionMap.ASize(), stream);
             cuda_copy_sync(&activeNumber, ballTriangleInteractionMap.prefixSumA() + ballTriangleInteractionMap.ASize() - 1, 1, CopyDir::D2H);
@@ -248,6 +247,7 @@ cudaStream_t stream)
         }
     }
 
+    /*
     ballTriangleInteractionMap.hashInit(ballTriangleInteractions.objectPointing(), ballTriangleInteractions.activeSize(), stream);
     buildHashStartEnd(ballTriangleInteractionMap.startB(), 
     ballTriangleInteractionMap.endB(), 
@@ -257,4 +257,5 @@ cudaStream_t stream)
     ballTriangleInteractionMap.hashSize(), 
     maxThreadsPerBlock, 
     stream);
+    */
 }

@@ -322,12 +322,12 @@ struct HertzianContactParameterTable
 struct LinearContactParameterTable
 {
     double* normalStiffness{nullptr};        // k_n
-    double* shearStiffness{nullptr};         // k_s
+    double* slidingStiffness{nullptr};         // k_s
     double* rollingStiffness{nullptr};       // k_r
     double* torsionStiffness{nullptr};       // k_t
 
     double* normalDampingCoefficient{nullptr};   // d_n
-    double* shearDampingCoefficient{nullptr};    // d_s
+    double* slidingDampingCoefficient{nullptr};    // d_s
     double* rollingDampingCoefficient{nullptr};  // d_r
     double* torsionDampingCoefficient{nullptr};  // d_t
 
@@ -367,12 +367,12 @@ struct LinearRow
     int materialIndexB;
 
     double normalStiffness;            // k_n
-    double shearStiffness;             // k_s
+    double slidingStiffness;             // k_s
     double rollingStiffness;           // k_r
     double torsionStiffness;           // k_t
 
     double normalDampingCoefficient;   // d_n
-    double shearDampingCoefficient;    // d_s
+    double slidingDampingCoefficient;    // d_s
     double rollingDampingCoefficient;  // d_r
     double torsionDampingCoefficient;  // d_t
 
@@ -412,11 +412,11 @@ private:
 
     // Linear
     DeviceArray1D<double> linearNormalStiffness_;
-    DeviceArray1D<double> linearShearStiffness_;
+    DeviceArray1D<double> linearSlidingStiffness_;
     DeviceArray1D<double> linearRollingStiffness_;
     DeviceArray1D<double> linearTorsionStiffness_;
     DeviceArray1D<double> linearNormalDampingCoefficient_;
-    DeviceArray1D<double> linearShearDampingCoefficient_;
+    DeviceArray1D<double> linearSlidingDampingCoefficient_;
     DeviceArray1D<double> linearRollingDampingCoefficient_;
     DeviceArray1D<double> linearTorsionDampingCoefficient_;
     DeviceArray1D<double> linearSlidingFrictionCoefficient_;
@@ -455,11 +455,11 @@ public:
         hertzianTorsionFrictionCoefficient_.releaseDeviceArray();
 
         linearNormalStiffness_.releaseDeviceArray();
-        linearShearStiffness_.releaseDeviceArray();
+        linearSlidingStiffness_.releaseDeviceArray();
         linearRollingStiffness_.releaseDeviceArray();
         linearTorsionStiffness_.releaseDeviceArray();
         linearNormalDampingCoefficient_.releaseDeviceArray();
-        linearShearDampingCoefficient_.releaseDeviceArray();
+        linearSlidingDampingCoefficient_.releaseDeviceArray();
         linearRollingDampingCoefficient_.releaseDeviceArray();
         linearTorsionDampingCoefficient_.releaseDeviceArray();
         linearSlidingFrictionCoefficient_.releaseDeviceArray();
@@ -541,11 +541,11 @@ public:
         hertzianTorsionFrictionCoefficient_.allocDeviceArray(pairTableSize, stream);
 
         linearNormalStiffness_.allocDeviceArray(pairTableSize, stream);
-        linearShearStiffness_.allocDeviceArray(pairTableSize, stream);
+        linearSlidingStiffness_.allocDeviceArray(pairTableSize, stream);
         linearRollingStiffness_.allocDeviceArray(pairTableSize, stream);
         linearTorsionStiffness_.allocDeviceArray(pairTableSize, stream);
         linearNormalDampingCoefficient_.allocDeviceArray(pairTableSize, stream);
-        linearShearDampingCoefficient_.allocDeviceArray(pairTableSize, stream);
+        linearSlidingDampingCoefficient_.allocDeviceArray(pairTableSize, stream);
         linearRollingDampingCoefficient_.allocDeviceArray(pairTableSize, stream);
         linearTorsionDampingCoefficient_.allocDeviceArray(pairTableSize, stream);
         linearSlidingFrictionCoefficient_.allocDeviceArray(pairTableSize, stream);
@@ -610,11 +610,11 @@ public:
                 numberOfMaterials, pairTableSize);
 
             h_kn[idx]      = row.normalStiffness;
-            h_ks[idx]      = row.shearStiffness;
+            h_ks[idx]      = row.slidingStiffness;
             h_kr[idx]      = row.rollingStiffness;
             h_kt[idx]      = row.torsionStiffness;
             h_dn[idx]      = row.normalDampingCoefficient;
-            h_ds[idx]      = row.shearDampingCoefficient;
+            h_ds[idx]      = row.slidingDampingCoefficient;
             h_dr[idx]      = row.rollingDampingCoefficient;
             h_dt[idx]      = row.torsionDampingCoefficient;
             h_mu_s_l[idx]  = row.slidingFrictionCoefficient;
@@ -655,7 +655,7 @@ public:
 
         cuda_copy(linearNormalStiffness_.d_ptr,
                   h_kn.data(), pairTableSize, CopyDir::H2D, stream);
-        cuda_copy(linearShearStiffness_.d_ptr,
+        cuda_copy(linearSlidingStiffness_.d_ptr,
                   h_ks.data(), pairTableSize, CopyDir::H2D, stream);
         cuda_copy(linearRollingStiffness_.d_ptr,
                   h_kr.data(), pairTableSize, CopyDir::H2D, stream);
@@ -663,7 +663,7 @@ public:
                   h_kt.data(), pairTableSize, CopyDir::H2D, stream);
         cuda_copy(linearNormalDampingCoefficient_.d_ptr,
                   h_dn.data(), pairTableSize, CopyDir::H2D, stream);
-        cuda_copy(linearShearDampingCoefficient_.d_ptr,
+        cuda_copy(linearSlidingDampingCoefficient_.d_ptr,
                   h_ds.data(), pairTableSize, CopyDir::H2D, stream);
         cuda_copy(linearRollingDampingCoefficient_.d_ptr,
                   h_dr.data(), pairTableSize, CopyDir::H2D, stream);
@@ -699,11 +699,11 @@ public:
         hertzian.torsionFrictionCoefficient             = hertzianTorsionFrictionCoefficient_.d_ptr;
 
         linear.normalStiffness          = linearNormalStiffness_.d_ptr;
-        linear.shearStiffness           = linearShearStiffness_.d_ptr;
+        linear.slidingStiffness           = linearSlidingStiffness_.d_ptr;
         linear.rollingStiffness         = linearRollingStiffness_.d_ptr;
         linear.torsionStiffness         = linearTorsionStiffness_.d_ptr;
         linear.normalDampingCoefficient = linearNormalDampingCoefficient_.d_ptr;
-        linear.shearDampingCoefficient  = linearShearDampingCoefficient_.d_ptr;
+        linear.slidingDampingCoefficient  = linearSlidingDampingCoefficient_.d_ptr;
         linear.rollingDampingCoefficient= linearRollingDampingCoefficient_.d_ptr;
         linear.torsionDampingCoefficient= linearTorsionDampingCoefficient_.d_ptr;
         linear.slidingFrictionCoefficient = linearSlidingFrictionCoefficient_.d_ptr;
@@ -730,8 +730,6 @@ private:
     DeviceArray1D<int> startB_;
     DeviceArray1D<int> endB_;
 
-    size_t ASize_;
-    size_t BSize_;
     size_t hashSize_;
 public:
     interactionMap()  = default;
@@ -745,13 +743,10 @@ public:
 
     void alloc(size_t objectASize, size_t objectBSize, cudaStream_t stream)
     {
-        if(objectASize <= 0 || objectBSize <= 0) return;
-        ASize_ = objectASize;
-        BSize_ = objectBSize;
-        countA_.allocDeviceArray(ASize_, stream);
-        prefixSumA_.allocDeviceArray(ASize_, stream);
-        startB_.allocDeviceArray(BSize_, stream);
-        endB_.allocDeviceArray(BSize_, stream);
+        countA_.allocDeviceArray(objectASize, stream);
+        prefixSumA_.allocDeviceArray(objectASize, stream);
+        startB_.allocDeviceArray(objectBSize, stream);
+        endB_.allocDeviceArray(objectBSize, stream);
     }
 
     void hashInit(int* objectPointing, size_t hashSize, cudaStream_t stream)
@@ -772,8 +767,8 @@ public:
         CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr,   0xFF, endB_.deviceSize() * sizeof(int), stream));
     }
 
-    size_t ASize() const      { return ASize_; }
-    size_t BSize() const      { return BSize_; }
+    size_t ASize() const      { return countA_.deviceSize(); }
+    size_t BSize() const      { return startB_.deviceSize(); }
     size_t hashSize() const   { return hashSize_; }
     int* hashIndex()          { return hashIndex_.d_ptr; }
     int* hashValue()          { return hashValue_.d_ptr; }

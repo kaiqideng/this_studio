@@ -47,11 +47,11 @@ public:
 		int    materialIdA,
 		int    materialIdB,
 		double normalStiffness_k_n,
-		double shearStiffness_k_s,
+		double slidingStiffness_k_s,
 		double rollingStiffness_k_r,
 		double torsionStiffness_k_t,
 		double normalDamping_d_n,
-		double shearDamping_d_s,
+		double slidingDamping_d_s,
 		double rollingDamping_d_r,
 		double torsionDamping_d_t,
 		double slidingFrictionCoeff_mu_s,
@@ -65,11 +65,11 @@ public:
 			materialIdA,
 			materialIdB,
 			normalStiffness_k_n,              // -> k_n
-			shearStiffness_k_s,               // -> k_s
+			slidingStiffness_k_s,               // -> k_s
 			rollingStiffness_k_r,             // -> k_r
 			torsionStiffness_k_t,             // -> k_t
 			normalDamping_d_n,                // -> d_n
-			shearDamping_d_s,                 // -> d_s
+			slidingDamping_d_s,                 // -> d_s
 			rollingDamping_d_r,               // -> d_r
 			torsionDamping_d_t,               // -> d_t
 			slidingFrictionCoeff_mu_s,        // -> mu_s

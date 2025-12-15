@@ -14,16 +14,12 @@ bool DEMBallSolver::initialize() {
   }
   std::cout << "DEM solver: downloading array from host to device..."
             << std::endl;
-  ballInitialize(getDomainOrigin(), getDomainSize());
-   downloadContactModelParameters();
-  ballNeighborSearch(getGPUThreadsPerBlock());
-  if(handleHostArray()){
-    ballInitialize(getDomainOrigin(), getDomainSize());
-    downloadContactModelParameters();}
+  initializeDeviceSide();
   if(balls().deviceSize() == 0){
     std::cout << "DEM solver: initialization failed" << std::endl;
     return false;
   } 
+  ballNeighborSearch(getGPUThreadsPerBlock());
   outputBallVTU(dir_, iFrame_, iStep_, time_);
   std::cout << "DEM solver: initialization completed." << std::endl;
   return true;
@@ -37,6 +33,7 @@ void DEMBallSolver::solve() {
 
   if (initialize()) 
   {
+    if(handleHostArrayInLoop()) {initializeDeviceSide();}
     size_t numSteps = size_t((getMaximumTime()) / timeStep) + 1;
     size_t frameInterval = numSteps / getNumFrames();
     if (frameInterval < 1)
@@ -48,9 +45,7 @@ void DEMBallSolver::solve() {
       ballNeighborSearch(getGPUThreadsPerBlock());
       ball1stHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
       ballContactCalculation(contactModelParams(), timeStep,getGPUThreadsPerBlock());
-      if(handleHostArray()){
-        ballInitialize(getDomainOrigin(), getDomainSize());
-        downloadContactModelParameters();}
+      if(handleHostArrayInLoop()) {initializeDeviceSide();}
       ball2ndHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
       if (iStep_ % frameInterval == 0) {
         iFrame_++;

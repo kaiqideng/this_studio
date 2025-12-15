@@ -33,6 +33,10 @@ public:
 
         if (initialize()) 
         {
+            if(handleHostArrayInLoop())
+            {
+                initializeDeviceSide();
+            }
             size_t numSteps = size_t((getMaximumTime()) / timeStep) + 1;
             size_t frameInterval = numSteps / getNumFrames();
             if (frameInterval < 1) frameInterval = 1;
@@ -47,11 +51,9 @@ public:
                 ball1stHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
                 ballMeshWallContactCalculation(timeStep, getGPUThreadsPerBlock());
                 ballContactCalculation(contactModelParams(), timeStep,getGPUThreadsPerBlock());
-                if(handleHostArray())
+                if(handleHostArrayInLoop())
                 {
-                    ballInitialize(getDomainOrigin(), getDomainSize());
-                    wallInitialize(getDomainOrigin(), getDomainSize());
-                    downloadContactModelParameters();
+                    initializeDeviceSide();
                 }
                 ball2ndHalfIntegration(getGravity(),timeStep,getGPUThreadsPerBlock());
                 meshWall2ndHalfIntegration(getGravity(), timeStep, getGPUThreadsPerBlock());
@@ -69,8 +71,8 @@ public:
 protected:
     void ballMeshWallNeighborSearch(const size_t maxThreadsPerBlock)
     {
-        launchBallTriangleNeighborSearch(ballMeshWallInteractions_, 
-        ballMeshWallInteractionMap_, 
+        launchBallTriangleNeighborSearch(ballTriangleInteractions_, 
+        ballTriangleInteractionMap_, 
         balls(), 
         meshWalls(), 
         meshWallSpatialGrids(), 
@@ -88,11 +90,11 @@ protected:
 
     void ballMeshWallContactCalculation(const double dt, const size_t maxThreadsPerBlock)
     {
-        launchBallMeshWallInteractionCalculation(ballMeshWallInteractions_, 
+        launchBallMeshWallInteractionCalculation(ballTriangleInteractions_, 
         balls(), 
         meshWalls(), 
         contactModelParams(), 
-        ballMeshWallInteractionMap_, 
+        ballTriangleInteractionMap_, 
         dt, 
         maxThreadsPerBlock, 
         stream_);
@@ -107,6 +109,15 @@ protected:
     }
     
 private:
+    void initializeDeviceSide() override
+    {
+        ballInitialize(getDomainOrigin(), getDomainSize());
+        wallInitialize(getDomainOrigin(), getDomainSize());
+        ballTriangleInteractions_.alloc(balls().deviceSize(), stream_);
+        ballTriangleInteractionMap_.alloc(balls().deviceSize(), meshWalls().triangles().deviceSize(), stream_);
+        downloadContactModelParameters();
+    }
+
     bool initialize() override
     {
         std::cout << "DEM solver: initializing..." << std::endl;
@@ -123,22 +134,14 @@ private:
         }
         std::cout << "DEM solver: downloading array from host to device..."
                     << std::endl;
-        ballInitialize(getDomainOrigin(), getDomainSize());
-        wallInitialize(getDomainOrigin(), getDomainSize());
-        downloadContactModelParameters();
-        ballNeighborSearch(getGPUThreadsPerBlock());
-        ballMeshWallNeighborSearch(getGPUThreadsPerBlock());
-        if(handleHostArray())
-        {
-            ballInitialize(getDomainOrigin(), getDomainSize());
-            wallInitialize(getDomainOrigin(), getDomainSize());
-            downloadContactModelParameters();
-        }
+        initializeDeviceSide();
         if(balls().deviceSize() == 0)
         {
             std::cout << "DEM solver: initialization failed" << std::endl;
             return false;
         } 
+        ballNeighborSearch(getGPUThreadsPerBlock());
+        ballMeshWallNeighborSearch(getGPUThreadsPerBlock());
         outputBallVTU(getDir(), 0, 0, 0.0);
         outputMeshWallVTU(getDir(), 0, 0, 0.0);
         std::cout << "DEM solver: initialization completed." << std::endl;
@@ -150,6 +153,6 @@ private:
     size_t iFrame_;;
 	double time_;
 
-    solidInteraction ballMeshWallInteractions_;
-    interactionMap ballMeshWallInteractionMap_;
+    solidInteraction ballTriangleInteractions_;
+    interactionMap ballTriangleInteractionMap_;
 };

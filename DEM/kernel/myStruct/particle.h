@@ -318,3 +318,151 @@ public:
         return pebbleEnd_.getHostData();
     }
 };
+
+struct SPH
+{
+private:
+    // non-constant per-particle data (host <-> device)
+    HostDeviceArray1D<double3> position_;
+    HostDeviceArray1D<double3> velocity_;
+    HostDeviceArray1D<double3> acceleration_;
+    HostDeviceArray1D<double>  density_;
+    HostDeviceArray1D<double>  pressure_;
+
+    // constant per-particle data (host -> device only)
+    constantHostDeviceArray1D<double> mass_;
+    constantHostDeviceArray1D<double> initialDensity_;
+    constantHostDeviceArray1D<double> smoothLength_;
+    constantHostDeviceArray1D<double> soundSpeed_;
+    constantHostDeviceArray1D<double> kinematicViscosity_;
+
+public:
+    SPH() = default;
+    ~SPH() = default;
+    SPH(const SPH&) = delete;
+    SPH& operator=(const SPH&) = delete;
+    SPH(SPH&&) noexcept = default;
+    SPH& operator=(SPH&&) noexcept = default;
+
+    size_t hostSize() const  { return position_.hostSize(); }
+    size_t deviceSize() const{ return position_.deviceSize(); }
+
+    void addHost(const double3 pos,
+                 const double3 vel,
+                 const double3 acc,
+                 const double   rho,
+                 const double   p,
+                 const double   m,
+                 const double   rho0,
+                 const double   h,
+                 const double   cs,
+                 const double   nu)
+    {
+        position_.addHostData(pos);
+        velocity_.addHostData(vel);
+        acceleration_.addHostData(acc);
+        density_.addHostData(rho);
+        pressure_.addHostData(p);
+
+        mass_.addHostData(m);
+        initialDensity_.addHostData(rho0);
+        smoothLength_.addHostData(h);
+        soundSpeed_.addHostData(cs);
+        kinematicViscosity_.addHostData(nu);
+    }
+
+    void removeHost(size_t index)
+    {
+        position_.removeHostData(index);
+        velocity_.removeHostData(index);
+        acceleration_.removeHostData(index);
+        density_.removeHostData(index);
+        pressure_.removeHostData(index);
+
+        mass_.removeHostData(index);
+        initialDensity_.removeHostData(index);
+        smoothLength_.removeHostData(index);
+        soundSpeed_.removeHostData(index);
+        kinematicViscosity_.removeHostData(index);
+    }
+
+    void clearHost()
+    {
+        position_.clearHostData();
+        velocity_.clearHostData();
+        acceleration_.clearHostData();
+        density_.clearHostData();
+        pressure_.clearHostData();
+
+        mass_.clearHostData();
+        initialDensity_.clearHostData();
+        smoothLength_.clearHostData();
+        soundSpeed_.clearHostData();
+        kinematicViscosity_.clearHostData();
+    }
+
+    void download(cudaStream_t stream)
+    {
+        position_.download(stream);
+        velocity_.download(stream);
+        acceleration_.download(stream);
+        density_.download(stream);
+        pressure_.download(stream);
+
+        mass_.download(stream);
+        initialDensity_.download(stream);
+        smoothLength_.download(stream);
+        soundSpeed_.download(stream);
+        kinematicViscosity_.download(stream);
+    }
+
+    void upload(cudaStream_t stream)
+    {
+        position_.upload(stream);
+        velocity_.upload(stream);
+        acceleration_.upload(stream);
+        density_.upload(stream);
+        pressure_.upload(stream);
+    }
+
+    // device pointers
+    double3* position()       { return position_.d_ptr; }
+    double3* velocity()       { return velocity_.d_ptr; }
+    double3* acceleration()   { return acceleration_.d_ptr; }
+
+    double*  density()        { return density_.d_ptr; }
+    double*  pressure()       { return pressure_.d_ptr; }
+
+    const double* mass()              { return mass_.d_ptr; }
+    const double* initialDensity()    { return initialDensity_.d_ptr; }
+    const double* smoothLength()      { return smoothLength_.d_ptr; }
+    const double* soundSpeed()        { return soundSpeed_.d_ptr; }
+    const double* kinematicViscosity(){ return kinematicViscosity_.d_ptr; }
+
+    std::vector<double3> positionVector()     { return position_.getHostData(); }
+    std::vector<double3> velocityVector()     { return velocity_.getHostData(); }
+    std::vector<double3> accelerationVector() { return acceleration_.getHostData(); }
+    std::vector<double>  densityVector()      { return density_.getHostData(); }
+    std::vector<double>  pressureVector()     { return pressure_.getHostData(); }
+
+    const std::vector<double>& massVector() const
+    {
+        return mass_.getHostData();
+    }
+    const std::vector<double>& initialDensityVector() const
+    {
+        return initialDensity_.getHostData();
+    }
+    const std::vector<double>& smoothLengthVector() const
+    {
+        return smoothLength_.getHostData();
+    }
+    const std::vector<double>& soundSpeedVector() const
+    {
+        return soundSpeed_.getHostData();
+    }
+    const std::vector<double>& kinematicViscosityVector() const
+    {
+        return kinematicViscosity_.getHostData();
+    }
+};
