@@ -131,6 +131,19 @@ DEM_core/fast:
 .PHONY : DEM_core/fast
 
 #=============================================================================
+# Target rules for targets named ballFalling
+
+# Build rule for target.
+ballFalling: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ballFalling
+.PHONY : ballFalling
+
+# fast build rule for target.
+ballFalling/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/build
+.PHONY : ballFalling/fast
+
+#=============================================================================
 # Target rules for targets named test
 
 # Build rule for target.
@@ -142,6 +155,30 @@ test: cmake_check_build_system
 test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
 .PHONY : test/fast
+
+ballFalling.o: ballFalling.cpp.o
+.PHONY : ballFalling.o
+
+# target to build an object file
+ballFalling.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/ballFalling.cpp.o
+.PHONY : ballFalling.cpp.o
+
+ballFalling.i: ballFalling.cpp.i
+.PHONY : ballFalling.i
+
+# target to preprocess a source file
+ballFalling.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/ballFalling.cpp.i
+.PHONY : ballFalling.cpp.i
+
+ballFalling.s: ballFalling.cpp.s
+.PHONY : ballFalling.s
+
+# target to generate assembly for a file
+ballFalling.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/ballFalling.cpp.s
+.PHONY : ballFalling.cpp.s
 
 kernel/DEMBallSolver.o: kernel/DEMBallSolver.cpp.o
 .PHONY : kernel/DEMBallSolver.o
@@ -368,7 +405,11 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... DEM_core"
+	@echo "... ballFalling"
 	@echo "... test"
+	@echo "... ballFalling.o"
+	@echo "... ballFalling.i"
+	@echo "... ballFalling.s"
 	@echo "... kernel/DEMBallSolver.o"
 	@echo "... kernel/DEMBallSolver.i"
 	@echo "... kernel/DEMBallSolver.s"

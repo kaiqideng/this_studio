@@ -14,7 +14,7 @@ public:
 
     ~wallHandler() = default;
 
-    void addTriangleMeshWall(const std::vector<double3> &vertex, 
+    void addTriangleMeshWall(const std::vector<double3> &vertices, 
     const std::vector<int3> &triIndices, 
     const double3 &posistion, 
     const double3 &velocity, 
@@ -26,7 +26,7 @@ public:
             meshWalls_.upload(stream_);
             downLoadFlag_ = true;
         }
-        meshWalls_.addWallFromMesh(vertex, 
+        meshWalls_.addWallFromMesh(vertices, 
         triIndices, 
         posistion, 
         velocity, 

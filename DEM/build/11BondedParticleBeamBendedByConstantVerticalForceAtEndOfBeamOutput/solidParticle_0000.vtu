@@ -26,7 +26,7 @@
         <DataArray type="Float32" Name="radius" format="ascii">
  0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000 0.2000000000
         </DataArray>
-        <DataArray type="Int32" Name="clumpID" format="ascii">
+        <DataArray type="Int32" Name="materialID" format="ascii">
  0 0 0 0 0 0 0 0 0 0 0
         </DataArray>
         <DataArray type="Int32" Name="clumpID" format="ascii">

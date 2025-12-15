@@ -97,7 +97,7 @@ void ballHandler::outputBallVTU(const std::string &dir, const size_t iFrame, con
     for (int i = 0; i < N; ++i) out << ' ' << r[i];
     out << "\n        </DataArray>\n";
 
-    out << "        <DataArray type=\"Int32\" Name=\"clumpID\" format=\"ascii\">\n";
+    out << "        <DataArray type=\"Int32\" Name=\"materialID\" format=\"ascii\">\n";
 	for (int i = 0; i < N; ++i) out << ' ' << materialID[i];
 	out << "\n        </DataArray>\n";
 

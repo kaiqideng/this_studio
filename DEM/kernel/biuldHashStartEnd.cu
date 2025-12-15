@@ -1,62 +1,86 @@
 #include "buildHashStartEnd.h"
 
 __global__ void setInitialIndices(int* initialIndices, 
-const size_t numObjects)
+const size_t activeHashSize)
 {
     size_t index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= numObjects) return;
+    if (index >= activeHashSize) return;
     initialIndices[index] = static_cast<int>(index);
-}
-
-__global__ void setHashAux(int* aux, 
-int* hash, 
-const size_t numObjects)
-{
-    size_t index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= numObjects) return;
-    if (index == 0) aux[0] = hash[numObjects - 1];
-    if (index > 0)  aux[index] = hash[index - 1];
 }
 
 __global__ void findStartAndEnd(int* start, 
 int* end, 
 int* hash, 
-int* aux, 
-const size_t numObjects)
+const int maxHashValue,
+const size_t activeHashSize)
 {
     size_t index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= numObjects) return;
-    if (index == 0 || hash[index] != aux[index])
+    if (index >= activeHashSize) return;
+    int h = hash[index];
+    if (h < 0 || h >= maxHashValue) return;
+    if (index == 0)
     {
-        start[hash[index]] = static_cast<int>(index);
-        end[aux[index]] = static_cast<int>(index);
+        start[h] = 0;
     }
-    if (index == numObjects - 1) end[hash[index]] = static_cast<int>(numObjects);
+    else
+    {
+        int a = hash[index - 1];
+        if(a >= 0 && a < maxHashValue && a != h)
+        {
+            start[h] = static_cast<int>(index);
+            end[a] = static_cast<int>(index);
+        }
+    }
+    if (index == activeHashSize - 1) end[h] = static_cast<int>(activeHashSize);
 }
 
 extern "C" void buildHashStartEnd(int* start, 
 int* end, 
 int* index, 
 int* hash, 
-int* aux, 
-const size_t numObjects, 
+const int maxHashValue,
+const size_t activeHashSize, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    if (numObjects < 1) return;
+    if (activeHashSize < 1) return;
+    //debug_dump_device_array(hash, activeHashSize, "hash");
+    CUDA_CHECK(cudaMemsetAsync(start, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream));
+    CUDA_CHECK(cudaMemsetAsync(end, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream));
 
     size_t grid = 1, block = 1;
-    computeGPUGridSizeBlockSize(grid, block, numObjects, maxThreadsPerBlock);
-    
-    setInitialIndices <<<grid, block, 0, stream>>> (index, numObjects);
+    computeGPUGridSizeBlockSize(grid, block, activeHashSize, maxThreadsPerBlock);
+    setInitialIndices <<<grid, block, 0, stream>>> (index, activeHashSize);
     CUDA_CHECK(cudaGetLastError());
 
-    sortKeyValuePairs(hash, index, numObjects, stream);
-    CUDA_CHECK(cudaGetLastError());
+    auto exec = thrust::cuda::par.on(stream);
+    try
+    {
+        cudaError_t err0 = cudaGetLastError();
+        if (err0 != cudaSuccess)
+        {
+            std::cerr << "[buildHashStartEnd] before sort, cudaGetLastError = "
+                      << cudaGetErrorString(err0) << "\n";
+        }
 
-    setHashAux <<<grid, block, 0, stream>>> (aux, hash, numObjects);
-    CUDA_CHECK(cudaGetLastError());
+        thrust::sort_by_key(exec,
+                            hash,
+                            hash + static_cast<long>(activeHashSize),
+                            index);
 
-    findStartAndEnd <<<grid, block, 0, stream>>> (start, end, hash, aux, numObjects);
+        cudaError_t err1 = cudaGetLastError();
+        if (err1 != cudaSuccess)
+        {
+            std::cerr << "[buildHashStartEnd] after sort, cudaGetLastError = "
+                      << cudaGetErrorString(err1) << "\n";
+        }
+    }
+    catch (thrust::system_error& e)
+    {
+        std::cerr << "thrust::sort_by_key threw: " << e.what() << "\n";
+        throw;
+    }
+
+    findStartAndEnd <<<grid, block, 0, stream>>> (start, end, hash, maxHashValue, activeHashSize);
     CUDA_CHECK(cudaGetLastError());
 }

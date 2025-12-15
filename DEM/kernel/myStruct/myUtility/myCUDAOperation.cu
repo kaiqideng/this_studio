@@ -19,31 +19,6 @@ inline void device_fill(T* d_ptr, size_t n, T value, cudaStream_t stream)
     CUDA_CHECK(cudaGetLastError());
 }
 
-void sortKeyValuePairs(int* d_keys, int* d_values,
-                       std::size_t numObjects,
-                          cudaStream_t stream)
-{
-    auto exec = thrust::cuda::par.on(stream);
-
-    thrust::sort_by_key(exec,d_keys, d_keys + numObjects,
-                        d_values);
-}
-
-void inclusiveScan(int* prefixSum,
-                          int* count,
-                          std::size_t num,
-                          cudaStream_t stream)
-{
-    if (num < 1) return;
-
-    auto exec = thrust::cuda::par.on(stream);
-
-    thrust::inclusive_scan(exec,
-        thrust::device_pointer_cast(count),
-        thrust::device_pointer_cast(count + num),
-        thrust::device_pointer_cast(prefixSum));
-}
-
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ >= 600)       // sm 6.0+
 __device__ __forceinline__ double atomicAddDouble(double* addr, double val)
 {

@@ -1,5 +1,4 @@
 #include "ballMeshWallNeighbor.h"
-#include "myStruct/wall.h"
 
 __global__ void calculateTriangleHash(int* hashValue, 
 const int* index0, 
@@ -29,10 +28,9 @@ const size_t numTri)
     }
 }
 
-void updateTriGridCellStartEnd(spatialGrid& sptialGrids, 
+extern "C" void updateTriGridCellStartEnd(spatialGrid& sptialGrids, 
 int* hashIndex, 
 int* hashValue, 
-int* hashAux, 
 const int* index0, 
 const int* index1, 
 const int* index2, 
@@ -61,9 +59,9 @@ cudaStream_t stream)
 
     buildHashStartEnd(sptialGrids.cellHashStart(), 
     sptialGrids.cellHashEnd(), 
-    hashIndex, 
-    hashValue, 
-    hashAux, 
+    hashIndex,
+    hashValue,
+    static_cast<int>(sptialGrids.deviceSize()),
     numTri,
     maxThreadsPerBlock, 
     stream);
@@ -123,8 +121,9 @@ const size_t numBalls)
             for (int xx = -1; xx <= 1; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
+                if(gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
+                if(gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
-                if (hashB < 0 || hashB >= numGrids) continue;
                 int startIndex = cellStart[hashB];
                 int endIndex = cellEnd[hashB];
                 if (startIndex == 0xFF) continue;
@@ -191,7 +190,6 @@ cudaStream_t stream)
     updateTriGridCellStartEnd(triangleSpatialGrids,
     meshWalls.triangles().hashIndex(),
     meshWalls.triangles().hashValue(),
-    meshWalls.triangles().hashAux(),
     meshWalls.triangles().index0(),
     meshWalls.triangles().index1(),
     meshWalls.triangles().index2(),
@@ -241,21 +239,23 @@ cudaStream_t stream)
         if (flag == 0)
         {
             int activeNumber = 0;
-            inclusiveScan(ballTriangleInteractionMap.prefixSumA(), ballTriangleInteractionMap.countA(), ballTriangleInteractionMap.ASize(), stream);
+            auto exec = thrust::cuda::par.on(stream);
+            thrust::inclusive_scan(exec,
+            thrust::device_pointer_cast(ballTriangleInteractionMap.countA()),
+            thrust::device_pointer_cast(ballTriangleInteractionMap.countA() + ballTriangleInteractionMap.ASize()),
+            thrust::device_pointer_cast(ballTriangleInteractionMap.prefixSumA()));
             cuda_copy_sync(&activeNumber, ballTriangleInteractionMap.prefixSumA() + ballTriangleInteractionMap.ASize() - 1, 1, CopyDir::D2H);
             ballTriangleInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
         }
     }
 
-    /*
     ballTriangleInteractionMap.hashInit(ballTriangleInteractions.objectPointing(), ballTriangleInteractions.activeSize(), stream);
     buildHashStartEnd(ballTriangleInteractionMap.startB(), 
     ballTriangleInteractionMap.endB(), 
     ballTriangleInteractionMap.hashIndex(), 
     ballTriangleInteractionMap.hashValue(),
-    ballTriangleInteractionMap.hashAux(),
-    ballTriangleInteractionMap.hashSize(), 
+    static_cast<int>(ballTriangleInteractionMap.BSize()),
+    ballTriangleInteractionMap.activeHashSize(), 
     maxThreadsPerBlock, 
     stream);
-    */
 }

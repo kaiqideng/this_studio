@@ -5,6 +5,7 @@ cmake_policy(SET CMP0009 NEW)
 # ROOT_MAINS at CMakeLists.txt:56 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/teamspace/studios/this_studio/DEM/*.cpp")
 set(OLD_GLOB
+  "/teamspace/studios/this_studio/DEM/ballFalling.cpp"
   "/teamspace/studios/this_studio/DEM/test.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")

@@ -20,7 +20,6 @@ private:
     // device-only
     DeviceArray1D<int> hashIndex_;
     DeviceArray1D<int> hashValue_;
-    DeviceArray1D<int> hashAux_;
 
 public:
     ball() = default;
@@ -103,10 +102,8 @@ public:
         const size_t n = deviceSize();
         hashIndex_.allocDeviceArray(n, stream);
         hashValue_.allocDeviceArray(n, stream);
-        hashAux_.allocDeviceArray(n, stream);
         CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashAux_.d_ptr,   0xFF, hashAux_.deviceSize() * sizeof(int), stream));
     }
 
     // D2H: only for non-constant fields
@@ -133,7 +130,6 @@ public:
 
     int*           hashIndex()        { return hashIndex_.d_ptr; }
     int*           hashValue()        { return hashValue_.d_ptr; }
-    int*           hashAux()          { return hashAux_.d_ptr; }
 
     // host vectors accessors
     std::vector<double3> positionVector()        { return position_.getHostData(); }

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_C_COMPILER /usr/bin/gcc-12)
 set(CMAKE_CXX_COMPILER /usr/bin/g++-12)
 set(CMAKE_CUDA_HOST_COMPILER /usr/bin/g++-12)
-set(CMAKE_CUDA_FLAGS_DEBUG "${CMAKE_CUDA_FLAGS_DEBUG} -G -O0")
+set(CMAKE_CUDA_FLAGS_DEBUG "${CMAKE_CUDA_FLAGS_DEBUG} -O0 -lineinfo")
 
 project(DEM LANGUAGES CXX CUDA)
 

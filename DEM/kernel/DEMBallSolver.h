@@ -28,6 +28,9 @@ public:
 		setNameFlag_ = true;
 	}
 
+    virtual void solve();
+	
+protected:
 	const std::string &getDir() const {return dir_;}
 
 	virtual const size_t &getStep() const {return iStep_;}
@@ -37,8 +40,6 @@ public:
 	virtual const double &getTime() const {return time_;} 
 
     virtual bool handleHostArrayInLoop(){return false;}
-
-    virtual void solve();
 
 private:
     virtual void initializeDeviceSide()

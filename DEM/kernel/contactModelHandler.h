@@ -119,6 +119,9 @@ protected:
 			bondedRows_, 
 			stream_);
 			downloadFlag_ = false;
+			hertzianRows_.clear();
+			linearRows_.clear();
+			bondedRows_.clear();
 		}
 	}
     

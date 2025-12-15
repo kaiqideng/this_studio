@@ -61,13 +61,9 @@ const size_t numBalls)
 	    contactTorque[idx_c] = make_double3(0, 0, 0);
 
 		const int idx_j = objectPointing[idx_c];
-		const double rad_i = radius[idx_i];
-		const size_t idx_w = wallIndex_t[idx_j];
-		const double3 r_i = position[idx_i];
-		const double3 r_w = position_w[idx_w];
 
-		const double m_ij = 1. / inverseMass[idx_i];
-		const double rad_ij = rad_i;
+		const double rad_i = radius[idx_i];
+		const double3 r_i = position[idx_i];
 
 		const double3 p0 = globalVertices[vertIndex0_t[idx_j]];
 		const double3 p1 = globalVertices[vertIndex1_t[idx_j]];
@@ -77,10 +73,11 @@ const size_t numBalls)
 		SphereTriangleContactType type = classifySphereTriangleContact(r_i, rad_i,
 									p0, p1, p2,
 									r_c);
-		if(type == SphereTriangleContactType::None) return;
 
 		double3 n_ij = normalize(r_i - r_c);
 		double delta = rad_i - length(r_i - r_c);
+
+        if(type == SphereTriangleContactType::None) continue;
 
 		if(type != SphereTriangleContactType::Face)
 		{
@@ -104,7 +101,8 @@ const size_t numBalls)
 						slidingSpring[idx_c] = slidingSpring[idx_c1];
 						rollingSpring[idx_c] = rollingSpring[idx_c1];
 						torsionSpring[idx_c] = torsionSpring[idx_c1];
-						return;
+						delta = 0.0;
+						break;
 					}
 				}
 				else if(type == SphereTriangleContactType::Edge)
@@ -116,7 +114,8 @@ const size_t numBalls)
 							slidingSpring[idx_c] = slidingSpring[idx_c1];
 							rollingSpring[idx_c] = rollingSpring[idx_c1];
 							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							return;
+							delta = 0.0;
+							break;
 						}
 					}
 					else if(type1 == SphereTriangleContactType::Face) // share face
@@ -126,26 +125,35 @@ const size_t numBalls)
 							slidingSpring[idx_c] = slidingSpring[idx_c1];
 							rollingSpring[idx_c] = rollingSpring[idx_c1];
 							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							return;
+							delta = 0.0;
+							break;
 						}
 						if(length(cross(r_c - p11, p21 - p11)) < 1.e-20)
 						{
 							slidingSpring[idx_c] = slidingSpring[idx_c1];
 							rollingSpring[idx_c] = rollingSpring[idx_c1];
 							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							return;
+							delta = 0.0;
+							break;
 						}
 						if(length(cross(r_c - p01, p21 - p01)) < 1.e-20) 
 						{
 							slidingSpring[idx_c] = slidingSpring[idx_c1];
 							rollingSpring[idx_c] = rollingSpring[idx_c1];
 							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							return;
+							delta = 0.0;
+							break;
 						}
 					}
 				}
 			}
 		}
+
+		const double m_ij = 1. / inverseMass[idx_i];
+		const double rad_ij = rad_i;
+
+        const size_t idx_w = wallIndex_t[idx_j];
+		const double3 r_w = position_w[idx_w];
 
 		const double3 v_i = velocity[idx_i];
 		const double3 v_j = velocity_w[idx_w];
@@ -310,6 +318,9 @@ cudaStream_t stream)
 	contactModelParams.pairTableSize,
 	timeStep,
 	balls.deviceSize());
+
+	//debug_dump_device_array(balls.force(), balls.deviceSize(), "balls.force");
+	//debug_dump_device_array(balls.torque(), balls.deviceSize(), "balls.torque");
 }
 
 extern "C" void launchMeshWall1stHalfIntegration(meshWall &meshWalls, 
@@ -320,13 +331,13 @@ cudaStream_t stream)
 	size_t grid = 1, block = 1;
 
 	computeGPUGridSizeBlockSize(grid, block, meshWalls.deviceSize(), maxThreadsPerBlock);
-    positionIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.position(), 
-    meshWalls.velocity(), 
+    orientationIntegrateKernel <<<grid, block, 0, stream>>> (meshWalls.orientation(), 
+    meshWalls.angularVelocity(), 
     0.5 * timeStep, 
     meshWalls.deviceSize());
 
-    orientationIntegrateKernel <<<grid, block, 0, stream>>> (meshWalls.orientation(), 
-    meshWalls.angularVelocity(), 
+	positionIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.position(), 
+    meshWalls.velocity(), 
     0.5 * timeStep, 
     meshWalls.deviceSize());
 
@@ -349,6 +360,12 @@ cudaStream_t stream)
 {
 	size_t grid = 1, block = 1;
 
+	computeGPUGridSizeBlockSize(grid, block, meshWalls.deviceSize(), maxThreadsPerBlock);
+    positionIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.position(), 
+    meshWalls.velocity(), 
+    0.5 * timeStep, 
+    meshWalls.deviceSize());
+
     computeGPUGridSizeBlockSize(grid, block, meshWalls.vertices().deviceSize(), maxThreadsPerBlock);
     triangleGlobalVerticesIntegrateKernel <<<grid, block, 0, stream>>> (meshWalls.globalVertices(),
     meshWalls.vertices().localPosition(),
@@ -360,14 +377,9 @@ cudaStream_t stream)
     0.5 * timeStep,
     meshWalls.vertices().deviceSize());
 
+    computeGPUGridSizeBlockSize(grid, block, meshWalls.deviceSize(), maxThreadsPerBlock);
     orientationIntegrateKernel <<<grid, block, 0, stream>>> (meshWalls.orientation(), 
     meshWalls.angularVelocity(), 
-    0.5 * timeStep, 
-    meshWalls.deviceSize());
-
-	computeGPUGridSizeBlockSize(grid, block, meshWalls.deviceSize(), maxThreadsPerBlock);
-    positionIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.position(), 
-    meshWalls.velocity(), 
     0.5 * timeStep, 
     meshWalls.deviceSize());
 }

@@ -25,10 +25,9 @@ const size_t numObjects)
     }
 }
 
-void updateGridCellStartEnd(spatialGrid& sptialGrids, 
+extern "C" void updateGridCellStartEnd(spatialGrid& sptialGrids, 
 int* hashIndex, 
 int* hashValue, 
-int* hashAux, 
 double3* position, 
 const size_t numObjects,
 const size_t maxThreadsPerBlock, 
@@ -48,13 +47,12 @@ cudaStream_t stream)
     sptialGrids.deviceSize(), 
     numObjects);
     CUDA_CHECK(cudaGetLastError());
-    //debug_dump_device_array(hashValue, numObjects, "hashValue");
 
-    buildHashStartEnd(sptialGrids.cellHashStart(), 
-    sptialGrids.cellHashEnd(), 
+    buildHashStartEnd(sptialGrids.cellHashStart(),
+    sptialGrids.cellHashEnd(),
     hashIndex, 
     hashValue, 
-    hashAux, 
+    static_cast<int>(sptialGrids.deviceSize()),
     numObjects,
     maxThreadsPerBlock, 
     stream);
@@ -109,8 +107,9 @@ const size_t numBalls)
             for (int xx = -1; xx <= 1; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
+                if(gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
+                if(gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
-                if (hashB < 0 || hashB >= numGrids) continue;
                 int startIndex = cellStart[hashB];
                 int endIndex = cellEnd[hashB];
                 if (startIndex == 0xFF) continue;
@@ -175,7 +174,6 @@ cudaStream_t stream)
     updateGridCellStartEnd(spatialGrids,
     balls.hashIndex(),
     balls.hashValue(),
-    balls.hashAux(),
     balls.position(),
     balls.deviceSize(),
     maxThreadsPerBlock,
@@ -221,9 +219,13 @@ cudaStream_t stream)
 
         if (flag == 0)
         {
-            //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "countA");
+            //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "ballInteractionMap.countA");
             int activeNumber = 0;
-            inclusiveScan(ballInteractionMap.prefixSumA(), ballInteractionMap.countA(), ballInteractionMap.ASize(), stream);
+            auto exec = thrust::cuda::par.on(stream);
+            thrust::inclusive_scan(exec,
+            thrust::device_pointer_cast(ballInteractionMap.countA()),
+            thrust::device_pointer_cast(ballInteractionMap.countA() + ballInteractionMap.ASize()),
+            thrust::device_pointer_cast(ballInteractionMap.prefixSumA()));
             cuda_copy_sync(&activeNumber, ballInteractionMap.prefixSumA() + ballInteractionMap.ASize() - 1, 1, CopyDir::D2H);
             ballInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
         }
@@ -234,8 +236,8 @@ cudaStream_t stream)
     ballInteractionMap.endB(), 
     ballInteractionMap.hashIndex(), 
     ballInteractionMap.hashValue(),
-    ballInteractionMap.hashAux(),
-    ballInteractionMap.hashSize(), 
+    static_cast<int>(ballInteractionMap.BSize()),
+    ballInteractionMap.activeHashSize(),
     maxThreadsPerBlock, 
     stream);
 }

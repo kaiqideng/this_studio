@@ -1,5 +1,8 @@
 #pragma once
 #include "myStruct/myUtility/myCUDAOperation.h"
+#include <thrust/device_vector.h>
+#include <thrust/sort.h>
+#include <thrust/scan.h>
 
 __device__ __forceinline__ int3 calculateGridPosition(double3 position, const double3 minBoundary, const double3 cellSize)
 {
@@ -10,7 +13,6 @@ __device__ __forceinline__ int3 calculateGridPosition(double3 position, const do
 
 __device__ __forceinline__ int calculateHash(int3 gridPosition, const int3 gridSize)
 {
-    if(gridPosition.x < 0 || gridPosition.y < 0 || gridPosition.z < 0 ) return -1;
     return gridPosition.z * gridSize.y * gridSize.x + gridPosition.y * gridSize.x + gridPosition.x;
 }
 
@@ -18,7 +20,7 @@ extern "C" void buildHashStartEnd(int* start,
 int* end, 
 int* index, 
 int* hash, 
-int* aux, 
-const size_t numObjects, 
+const int maxHashValue,
+const size_t activeHashSize, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);

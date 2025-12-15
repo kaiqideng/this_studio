@@ -318,10 +318,14 @@ const size_t numBalls)
 	if (clumpID[idx_i] >= 0) return;
 
 	double invM_i = invMass[idx_i];
-	velocity[idx_i] += (force[idx_i] * invM_i + g * (invM_i > 0.0)) * dt;
+	if (invM_i < 1.e-20) return;
+
+	velocity[idx_i] += (force[idx_i] * invM_i + g) * dt;
+
 	double rad_i = radius[idx_i];
-	if (invM_i < 1.e-20 || rad_i < 1.e-20) return;
+	if (rad_i < 1.e-20) return;
 	double I_i = 0.4 * rad_i * rad_i / invM_i;
+
 	angularVelocity[idx_i] += torque[idx_i] / I_i * dt;
 }
 
@@ -354,7 +358,7 @@ const size_t numClumps)
 		w_c = angularVelocity_c[idx_c];
 		orientation[idx_c] = quaternionRotate(orientation[idx_c],w_c,  dt);
 	}
-	for (int i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
+	for (size_t i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
 	{
 		double3 r_pc = position_p[i] - position_c[idx_c];
 		velocity_p[i] = velocity_c[idx_c] + cross(w_c, r_pc);
@@ -392,7 +396,7 @@ const size_t numClumps)
 		velocity_c[idx_c] += (force_c[idx_c] * invM_c + g) * dt;
 		w_c = angularVelocity_c[idx_c];
 	}
-	for (int i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
+	for (size_t i = pebbleStartIndex[idx_c]; i < pebbleEndIndex[idx_c]; i++)
 	{
 		double3 r_pc = position_p[i] - position_c[idx_c];
 		velocity_p[i] = velocity_c[idx_c] + cross(w_c, r_pc);
@@ -498,8 +502,8 @@ cudaStream_t stream)
     0.5 * timeStep,
     clumps.deviceSize());
 
-	CUDA_CHECK(cudaMemsetAsync(clumps.force(), 0, balls.deviceSize() * sizeof(double3), stream));
-    CUDA_CHECK(cudaMemsetAsync(clumps.torque(), 0, balls.deviceSize() * sizeof(double3), stream));
+	CUDA_CHECK(cudaMemsetAsync(clumps.force(), 0, clumps.deviceSize() * sizeof(double3), stream));
+    CUDA_CHECK(cudaMemsetAsync(clumps.torque(), 0, clumps.deviceSize() * sizeof(double3), stream));
 }
 
 extern "C" void launchClump2ndHalfIntegration(clump& clumps, 

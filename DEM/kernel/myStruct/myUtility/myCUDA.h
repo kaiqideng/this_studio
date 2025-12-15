@@ -1,5 +1,6 @@
 #pragma once
 #include <cuda_runtime.h>
+#include <iomanip>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -156,6 +157,35 @@ void debug_dump_device_array(const T* d_ptr,
     for (std::size_t i = 0; i < n; ++i) {
         std::cout << "  [" << i << "] = " << h_buf[i] << "\n";
     }
+}
+
+template <>
+inline void debug_dump_device_array<double3>(const double3* d_ptr, std::size_t n,
+                                             const char* name,
+                                             cudaStream_t stream)
+{
+    std::vector<double3> h(n);
+    cudaMemcpyAsync(h.data(), d_ptr, n * sizeof(double3), cudaMemcpyDeviceToHost, stream);
+    cudaStreamSynchronize(stream);
+
+    std::cout << name << ":\n";
+
+    std::ios old_state(nullptr);
+    old_state.copyfmt(std::cout);
+
+    // 科学计数法 + 指定有效数字位数
+    std::cout << std::scientific << std::setprecision(3);  // 比如 1.000e-10
+
+    for (std::size_t i = 0; i < n; ++i)
+    {
+        const auto& v = h[i];
+        std::cout << "  [" << i << "] = ("
+                  << v.x << ", "
+                  << v.y << ", "
+                  << v.z << ")\n";
+    }
+
+    std::cout.copyfmt(old_state);
 }
 
 template<typename T>

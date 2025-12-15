@@ -98,14 +98,14 @@ public:
         activeSize_ = n;
         if(n > deviceSize())
         {
-            objectPointed_.download(stream);
-            objectPointing_.download(stream);
-            force_.download(stream);
-            torque_.download(stream);
-            contactPoint_.download(stream);
-            slidingSpring_.download(stream);
-            rollingSpring_.download(stream);
-            torsionSpring_.download(stream);
+            objectPointed_.allocDeviceArray(n, stream);
+            objectPointing_.allocDeviceArray(n, stream);
+            force_.allocDeviceArray(n, stream);
+            torque_.allocDeviceArray(n, stream);
+            contactPoint_.allocDeviceArray(n, stream);
+            slidingSpring_.allocDeviceArray(n, stream);
+            rollingSpring_.allocDeviceArray(n, stream);
+            torsionSpring_.allocDeviceArray(n, stream);
         }
     }
 
@@ -724,13 +724,12 @@ struct interactionMap
 private:
     DeviceArray1D<int> hashIndex_;
     DeviceArray1D<int> hashValue_;
-    DeviceArray1D<int> hashAux_;
     DeviceArray1D<int> countA_;
     DeviceArray1D<int> prefixSumA_;
     DeviceArray1D<int> startB_;
     DeviceArray1D<int> endB_;
 
-    size_t hashSize_;
+    size_t activeHashSize_;
 public:
     interactionMap()  = default;
     ~interactionMap() = default;
@@ -749,19 +748,17 @@ public:
         endB_.allocDeviceArray(objectBSize, stream);
     }
 
-    void hashInit(int* objectPointing, size_t hashSize, cudaStream_t stream)
+    void hashInit(int* hashValue, size_t activeSize, cudaStream_t stream)
     {
-        hashSize_ = hashSize;
-        if(hashSize > hashValue_.deviceSize()) 
+        activeHashSize_ = activeSize;
+        if(activeSize > hashValue_.deviceSize()) 
         {
-            hashIndex_.allocDeviceArray(hashSize, stream);
-            hashValue_.allocDeviceArray(hashSize, stream);
-            hashAux_.allocDeviceArray(hashSize, stream);
+            hashIndex_.allocDeviceArray(activeSize, stream);
+            hashValue_.allocDeviceArray(activeSize, stream);
         }
         CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashAux_.d_ptr,   0xFF, hashAux_.deviceSize() * sizeof(int), stream));
-        cuda_copy(hashValue_.d_ptr, objectPointing, hashSize,CopyDir::D2D, stream);
+        cuda_copy(hashValue_.d_ptr, hashValue, activeSize,CopyDir::D2D, stream);
 
         CUDA_CHECK(cudaMemsetAsync(startB_.d_ptr,   0xFF, startB_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr,   0xFF, endB_.deviceSize() * sizeof(int), stream));
@@ -769,10 +766,9 @@ public:
 
     size_t ASize() const      { return countA_.deviceSize(); }
     size_t BSize() const      { return startB_.deviceSize(); }
-    size_t hashSize() const   { return hashSize_; }
+    size_t activeHashSize() const   { return activeHashSize_; }
     int* hashIndex()          { return hashIndex_.d_ptr; }
     int* hashValue()          { return hashValue_.d_ptr; }
-    int* hashAux()            { return hashAux_.d_ptr; }
     int* countA()             { return countA_.d_ptr; }
     int* prefixSumA()         { return prefixSumA_.d_ptr; }
     int* startB()  { return startB_.d_ptr; }

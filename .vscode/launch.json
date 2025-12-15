@@ -5,7 +5,7 @@
       "name": "CUDA Debug (cuda-gdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/DEM/build/bin/test",
+      "program": "${workspaceFolder}/DEM/build/bin/ballFalling",
       "cwd": "${workspaceFolder}",
       "args": [],
       "externalConsole": false,
