@@ -69,149 +69,133 @@ include CMakeFiles/DEM_core.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/DEM_core.dir/flags.make
 
-CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o: /teamspace/studios/this_studio/DEM/kernel/DEMBallSolver.cpp
-CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o -MF CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o.d -o CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o -c /teamspace/studios/this_studio/DEM/kernel/DEMBallSolver.cpp
+CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o: CMakeFiles/DEM_core.dir/flags.make
+CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o: /teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp
+CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o -MF CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o.d -o CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o -c /teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp
 
-CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.i"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /teamspace/studios/this_studio/DEM/kernel/DEMBallSolver.cpp > CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.i
+CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.i"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp > CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.i
 
-CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.s"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM/kernel/DEMBallSolver.cpp -o CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.s
+CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.s"
+	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp -o CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.s
 
-CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o: /teamspace/studios/this_studio/DEM/kernel/ballHandler.cpp
-CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o -MF CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o.d -o CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o -c /teamspace/studios/this_studio/DEM/kernel/ballHandler.cpp
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o: CMakeFiles/DEM_core.dir/flags.make
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o: /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o"
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o -MF CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu -o CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o
 
-CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.i"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /teamspace/studios/this_studio/DEM/kernel/ballHandler.cpp > CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.i
-
-CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.s"
-	/usr/bin/g++-12 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /teamspace/studios/this_studio/DEM/kernel/ballHandler.cpp -o CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.s
-
-CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
-CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o: /teamspace/studios/this_studio/DEM/kernel/ballIntegration.cu
-CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o -MF CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/ballIntegration.cu -o CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o
-
-CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.i"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.i"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.s"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o: /teamspace/studios/this_studio/DEM/kernel/ballMeshWallIntegration.cu
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o -MF CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/ballMeshWallIntegration.cu -o CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o: CMakeFiles/DEM_core.dir/flags.make
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o: /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o"
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o -MF CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu -o CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o
 
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.i"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.i"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.s"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o: /teamspace/studios/this_studio/DEM/kernel/ballMeshWallNeighbor.cu
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o -MF CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/ballMeshWallNeighbor.cu -o CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o: CMakeFiles/DEM_core.dir/flags.make
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o: /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o"
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o -MF CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu -o CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o
 
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.i"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.i"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.s"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
-CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o: /teamspace/studios/this_studio/DEM/kernel/ballNeighborSearch.cu
-CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o -MF CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/ballNeighborSearch.cu -o CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o: CMakeFiles/DEM_core.dir/flags.make
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o: /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o"
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o -MF CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu -o CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o
 
-CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.i"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.i"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.s"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
-CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o: /teamspace/studios/this_studio/DEM/kernel/biuldHashStartEnd.cu
-CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o -MF CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/biuldHashStartEnd.cu -o CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o: CMakeFiles/DEM_core.dir/flags.make
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o: /teamspace/studios/this_studio/DEM/kernel/cudaKernel/biuldHashStartEnd.cu
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o"
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o -MF CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/biuldHashStartEnd.cu -o CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o
 
-CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.i"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.i"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.s"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o: CMakeFiles/DEM_core.dir/flags.make
-CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
-CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o: /teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility/myCUDAOperation.cu
-CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o -MF CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility/myCUDAOperation.cu -o CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o: CMakeFiles/DEM_core.dir/flags.make
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o: CMakeFiles/DEM_core.dir/includes_CUDA.rsp
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o: /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o: CMakeFiles/DEM_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CUDA object CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o"
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o -MF CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu -o CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
 
-CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.i"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
 
-CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.s"
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CUDA source to assembly CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
 # Object files for target DEM_core
 DEM_core_OBJECTS = \
-"CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o" \
-"CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o" \
-"CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o" \
-"CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o" \
-"CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o" \
-"CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o" \
-"CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o" \
-"CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o"
+"CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o" \
+"CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o" \
+"CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o" \
+"CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o" \
+"CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o" \
+"CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o" \
+"CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o"
 
 # External object files for target DEM_core
 DEM_core_EXTERNAL_OBJECTS =
 
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o
-lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o
+lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o
+lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o
+lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o
+lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o
+lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o
+lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o
+lib/libDEM_core.a: CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
 lib/libDEM_core.a: CMakeFiles/DEM_core.dir/build.make
 lib/libDEM_core.a: CMakeFiles/DEM_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library lib/libDEM_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library lib/libDEM_core.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/DEM_core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/DEM_core.dir/link.txt --verbose=$(VERBOSE)
 

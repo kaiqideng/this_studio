@@ -1,27 +1,27 @@
-#include "kernel/DEMBallSolver.h"
-#include <vector>
+#include "kernel/DEMBaseSolver.h"
 
 class problem:
-    public DEMBallSolver
+    public DEMBaseSolver
 {
 public:
     double3 F_c = make_double3(0, 0, 100.e3);
     double r = 0.2;
     double c_d = 0.1;
 
-    problem(): DEMBallSolver(0) {}
+    problem(): DEMBaseSolver(0) {}
+    
     bool handleHostArrayInLoop() override
     {
         if(getStep() ==0 )
         {
-            addBondedObjects(ballInteractions().objectPointedVector(), 
-            ballInteractions().objectPointingVector());
+            addBondedObjects(getBallInteractions().objectPointedVector(), 
+            getBallInteractions().objectPointingVector());
         }
 
-        std::vector<double3> v = balls().velocityVector();
-        std::vector<double3> w = balls().angularVelocityVector();
-        std::vector<double3> f = balls().forceVector();
-        std::vector<double3> t = balls().torqueVector();
+        std::vector<double3> v = getBallHandler().balls().velocityVector();
+        std::vector<double3> w = getBallHandler().balls().angularVelocityVector();
+        std::vector<double3> f = getBallHandler().balls().forceVector();
+        std::vector<double3> t = getBallHandler().balls().torqueVector();
         std::vector<double3> F_e(v.size(),make_double3(0, 0, 0));
         std::vector<double3> T_e(v.size(),make_double3(0, 0, 0));
         double time = getTime();

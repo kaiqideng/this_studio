@@ -8,14 +8,13 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/teamspace/studios/this_studio/DEM/kernel/ballIntegration.cu" "CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o.d"
-  "/teamspace/studios/this_studio/DEM/kernel/ballMeshWallIntegration.cu" "CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o.d"
-  "/teamspace/studios/this_studio/DEM/kernel/ballMeshWallNeighbor.cu" "CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o.d"
-  "/teamspace/studios/this_studio/DEM/kernel/ballNeighborSearch.cu" "CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o.d"
-  "/teamspace/studios/this_studio/DEM/kernel/biuldHashStartEnd.cu" "CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o.d"
-  "/teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility/myCUDAOperation.cu" "CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o.d"
-  "/teamspace/studios/this_studio/DEM/kernel/DEMBallSolver.cpp" "CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o.d"
-  "/teamspace/studios/this_studio/DEM/kernel/ballHandler.cpp" "CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o.d"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o.d"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o.d"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o.d"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o.d"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/biuldHashStartEnd.cu" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o.d"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o.d"
+  "/teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp" "CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o" "gcc" "CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

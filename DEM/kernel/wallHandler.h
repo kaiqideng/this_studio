@@ -1,14 +1,13 @@
 #pragma once
-#include "myStruct/myUtility/myFileEdit.h"
-#include "myStruct/wall.h"
-#include "myStruct/spatialGrid.h"
+#include "cudaKernel/myStruct/wall.h"
+#include "cudaKernel/myStruct/spatialGrid.h"
+#include "cudaKernel/myStruct/myUtility/myFileEdit.h"
 
 class wallHandler
 {
 public:
-    wallHandler(cudaStream_t s)
+    wallHandler()
     {
-        stream_ = s;
         downLoadFlag_ = false;
     }
 
@@ -19,11 +18,12 @@ public:
     const double3 &posistion, 
     const double3 &velocity, 
     const double3 &angularVelocity, 
-    int matirialID)
+    int matirialID,
+    cudaStream_t stream)
     {
         if(!downLoadFlag_)
         {
-            meshWalls_.upload(stream_);
+            meshWalls_.upload(stream);
             downLoadFlag_ = true;
         }
         meshWalls_.addWallFromMesh(vertices, 
@@ -35,20 +35,24 @@ public:
         matirialID);
     }
 
-protected:
-    meshWall &meshWalls() {return meshWalls_;}
+    meshWall& meshWalls() {return meshWalls_;}
 
-    spatialGrid &meshWallSpatialGrids() {return spatialGrids_;}
+    spatialGrid& spatialGrids() {return spatialGrids_;}
 
-    void wallInitialize(const double3 domainOrigin, const double3 domainSize)
+    void download(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
     {
-        downLoadWalls();
-        double cellSizeOneDim = meshWalls_.getMaxEdgeLength() * 1.2;
-        if(cellSizeOneDim > spatialGrids_.cellSize.x 
-        || cellSizeOneDim > spatialGrids_.cellSize.y 
-        || cellSizeOneDim > spatialGrids_.cellSize.z)
+        if(downLoadFlag_)
         {
-            spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream_);
+            meshWalls_.download(stream);
+            downLoadFlag_ = false;
+
+            double cellSizeOneDim = meshWalls_.getMaxEdgeLength() * 1.2;
+            if(cellSizeOneDim > spatialGrids_.cellSize.x 
+            || cellSizeOneDim > spatialGrids_.cellSize.y 
+            || cellSizeOneDim > spatialGrids_.cellSize.z)
+            {
+                spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
+            }
         }
     }
 
@@ -161,16 +165,6 @@ protected:
     }
 
 private:
-    void downLoadWalls()
-    {
-        if(downLoadFlag_)
-        {
-            meshWalls_.download(stream_);
-            downLoadFlag_ = false;
-        }
-    }
-
-    cudaStream_t stream_;
     bool downLoadFlag_ ;
 
     meshWall meshWalls_;

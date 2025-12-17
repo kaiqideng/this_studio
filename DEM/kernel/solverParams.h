@@ -24,7 +24,7 @@ public:
 
     void setGPUDeviceIndex(size_t index) { GPUParams.deviceIndex = index; }
 
-    void setGPUThreadsPerBlock(size_t threads_max) { GPUParams.maxThreadsPerBlock = threads_max; }
+    void setGPUMaxThreadsPerBlock(size_t threads_max) { GPUParams.maxThreadsPerBlock = threads_max; }
 
     void setMaximumTime(double t)
     {
@@ -81,7 +81,7 @@ protected:
 
     const size_t &getGPUDeviceIndex() const {return GPUParams.deviceIndex;}
 
-    const size_t &getGPUThreadsPerBlock() const {return GPUParams.maxThreadsPerBlock;}
+    const size_t &getGPUMaxThreadsPerBlock() const {return GPUParams.maxThreadsPerBlock;}
 
     const double3 &getDomainOrigin() const {return domainOrigin;}
 

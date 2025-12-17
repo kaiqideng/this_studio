@@ -18,7 +18,7 @@ int main()
     problem test;
     test.setProblemName("ballFalling");
 
-    std::vector<double3> positions(1,make_double3(0.1, 0.1, 0.0));
+    std::vector<double3> positions(1,make_double3(0.0, 0.0, 0.0));
     std::vector<double> radius(1,0.01);
     std::vector<double3> velocities(1,make_double3(0.0, 0.0, 0.0));
     std::vector<double3> angularVelocities(1,make_double3(0.0, 0.0, 0.0));
@@ -47,7 +47,7 @@ int main()
     0);
 
     test.setLinearContactModelForPair(0, 0, 
-    1.e3, 
+    2.e5, 
     0.0, 
     0.0, 
     0.0, 
@@ -59,7 +59,7 @@ int main()
     0.0, 
     0.0);
 
-    test.setTimeStep(1.e-4);
+    test.setTimeStep(2.e-5);
     test.setGravity(make_double3(0.0, 0.0, -9.81));
     test.setDomain(make_double3(-1.0, -1.0, -1.0), 
     make_double3(2.0, 2.0, 2.0));

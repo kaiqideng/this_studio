@@ -180,197 +180,173 @@ ballFalling.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/ballFalling.cpp.s
 .PHONY : ballFalling.cpp.s
 
-kernel/DEMBallSolver.o: kernel/DEMBallSolver.cpp.o
-.PHONY : kernel/DEMBallSolver.o
+kernel/DEMBaseSolver.o: kernel/DEMBaseSolver.cpp.o
+.PHONY : kernel/DEMBaseSolver.o
 
 # target to build an object file
-kernel/DEMBallSolver.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.o
-.PHONY : kernel/DEMBallSolver.cpp.o
+kernel/DEMBaseSolver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o
+.PHONY : kernel/DEMBaseSolver.cpp.o
 
-kernel/DEMBallSolver.i: kernel/DEMBallSolver.cpp.i
-.PHONY : kernel/DEMBallSolver.i
+kernel/DEMBaseSolver.i: kernel/DEMBaseSolver.cpp.i
+.PHONY : kernel/DEMBaseSolver.i
 
 # target to preprocess a source file
-kernel/DEMBallSolver.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.i
-.PHONY : kernel/DEMBallSolver.cpp.i
+kernel/DEMBaseSolver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.i
+.PHONY : kernel/DEMBaseSolver.cpp.i
 
-kernel/DEMBallSolver.s: kernel/DEMBallSolver.cpp.s
-.PHONY : kernel/DEMBallSolver.s
+kernel/DEMBaseSolver.s: kernel/DEMBaseSolver.cpp.s
+.PHONY : kernel/DEMBaseSolver.s
 
 # target to generate assembly for a file
-kernel/DEMBallSolver.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBallSolver.cpp.s
-.PHONY : kernel/DEMBallSolver.cpp.s
+kernel/DEMBaseSolver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.s
+.PHONY : kernel/DEMBaseSolver.cpp.s
 
-kernel/ballHandler.o: kernel/ballHandler.cpp.o
-.PHONY : kernel/ballHandler.o
+kernel/cudaKernel/ballIntegration.o: kernel/cudaKernel/ballIntegration.cu.o
+.PHONY : kernel/cudaKernel/ballIntegration.o
 
 # target to build an object file
-kernel/ballHandler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.o
-.PHONY : kernel/ballHandler.cpp.o
+kernel/cudaKernel/ballIntegration.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o
+.PHONY : kernel/cudaKernel/ballIntegration.cu.o
 
-kernel/ballHandler.i: kernel/ballHandler.cpp.i
-.PHONY : kernel/ballHandler.i
+kernel/cudaKernel/ballIntegration.i: kernel/cudaKernel/ballIntegration.cu.i
+.PHONY : kernel/cudaKernel/ballIntegration.i
 
 # target to preprocess a source file
-kernel/ballHandler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.i
-.PHONY : kernel/ballHandler.cpp.i
+kernel/cudaKernel/ballIntegration.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.i
+.PHONY : kernel/cudaKernel/ballIntegration.cu.i
 
-kernel/ballHandler.s: kernel/ballHandler.cpp.s
-.PHONY : kernel/ballHandler.s
+kernel/cudaKernel/ballIntegration.s: kernel/cudaKernel/ballIntegration.cu.s
+.PHONY : kernel/cudaKernel/ballIntegration.s
 
 # target to generate assembly for a file
-kernel/ballHandler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballHandler.cpp.s
-.PHONY : kernel/ballHandler.cpp.s
+kernel/cudaKernel/ballIntegration.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.s
+.PHONY : kernel/cudaKernel/ballIntegration.cu.s
 
-kernel/ballIntegration.o: kernel/ballIntegration.cu.o
-.PHONY : kernel/ballIntegration.o
+kernel/cudaKernel/ballMeshWallIntegration.o: kernel/cudaKernel/ballMeshWallIntegration.cu.o
+.PHONY : kernel/cudaKernel/ballMeshWallIntegration.o
 
 # target to build an object file
-kernel/ballIntegration.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.o
-.PHONY : kernel/ballIntegration.cu.o
+kernel/cudaKernel/ballMeshWallIntegration.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o
+.PHONY : kernel/cudaKernel/ballMeshWallIntegration.cu.o
 
-kernel/ballIntegration.i: kernel/ballIntegration.cu.i
-.PHONY : kernel/ballIntegration.i
+kernel/cudaKernel/ballMeshWallIntegration.i: kernel/cudaKernel/ballMeshWallIntegration.cu.i
+.PHONY : kernel/cudaKernel/ballMeshWallIntegration.i
 
 # target to preprocess a source file
-kernel/ballIntegration.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.i
-.PHONY : kernel/ballIntegration.cu.i
+kernel/cudaKernel/ballMeshWallIntegration.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.i
+.PHONY : kernel/cudaKernel/ballMeshWallIntegration.cu.i
 
-kernel/ballIntegration.s: kernel/ballIntegration.cu.s
-.PHONY : kernel/ballIntegration.s
+kernel/cudaKernel/ballMeshWallIntegration.s: kernel/cudaKernel/ballMeshWallIntegration.cu.s
+.PHONY : kernel/cudaKernel/ballMeshWallIntegration.s
 
 # target to generate assembly for a file
-kernel/ballIntegration.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballIntegration.cu.s
-.PHONY : kernel/ballIntegration.cu.s
+kernel/cudaKernel/ballMeshWallIntegration.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.s
+.PHONY : kernel/cudaKernel/ballMeshWallIntegration.cu.s
 
-kernel/ballMeshWallIntegration.o: kernel/ballMeshWallIntegration.cu.o
-.PHONY : kernel/ballMeshWallIntegration.o
+kernel/cudaKernel/ballMeshWallNeighbor.o: kernel/cudaKernel/ballMeshWallNeighbor.cu.o
+.PHONY : kernel/cudaKernel/ballMeshWallNeighbor.o
 
 # target to build an object file
-kernel/ballMeshWallIntegration.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.o
-.PHONY : kernel/ballMeshWallIntegration.cu.o
+kernel/cudaKernel/ballMeshWallNeighbor.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o
+.PHONY : kernel/cudaKernel/ballMeshWallNeighbor.cu.o
 
-kernel/ballMeshWallIntegration.i: kernel/ballMeshWallIntegration.cu.i
-.PHONY : kernel/ballMeshWallIntegration.i
+kernel/cudaKernel/ballMeshWallNeighbor.i: kernel/cudaKernel/ballMeshWallNeighbor.cu.i
+.PHONY : kernel/cudaKernel/ballMeshWallNeighbor.i
 
 # target to preprocess a source file
-kernel/ballMeshWallIntegration.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.i
-.PHONY : kernel/ballMeshWallIntegration.cu.i
+kernel/cudaKernel/ballMeshWallNeighbor.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.i
+.PHONY : kernel/cudaKernel/ballMeshWallNeighbor.cu.i
 
-kernel/ballMeshWallIntegration.s: kernel/ballMeshWallIntegration.cu.s
-.PHONY : kernel/ballMeshWallIntegration.s
+kernel/cudaKernel/ballMeshWallNeighbor.s: kernel/cudaKernel/ballMeshWallNeighbor.cu.s
+.PHONY : kernel/cudaKernel/ballMeshWallNeighbor.s
 
 # target to generate assembly for a file
-kernel/ballMeshWallIntegration.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallIntegration.cu.s
-.PHONY : kernel/ballMeshWallIntegration.cu.s
+kernel/cudaKernel/ballMeshWallNeighbor.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.s
+.PHONY : kernel/cudaKernel/ballMeshWallNeighbor.cu.s
 
-kernel/ballMeshWallNeighbor.o: kernel/ballMeshWallNeighbor.cu.o
-.PHONY : kernel/ballMeshWallNeighbor.o
+kernel/cudaKernel/ballNeighborSearch.o: kernel/cudaKernel/ballNeighborSearch.cu.o
+.PHONY : kernel/cudaKernel/ballNeighborSearch.o
 
 # target to build an object file
-kernel/ballMeshWallNeighbor.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.o
-.PHONY : kernel/ballMeshWallNeighbor.cu.o
+kernel/cudaKernel/ballNeighborSearch.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o
+.PHONY : kernel/cudaKernel/ballNeighborSearch.cu.o
 
-kernel/ballMeshWallNeighbor.i: kernel/ballMeshWallNeighbor.cu.i
-.PHONY : kernel/ballMeshWallNeighbor.i
+kernel/cudaKernel/ballNeighborSearch.i: kernel/cudaKernel/ballNeighborSearch.cu.i
+.PHONY : kernel/cudaKernel/ballNeighborSearch.i
 
 # target to preprocess a source file
-kernel/ballMeshWallNeighbor.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.i
-.PHONY : kernel/ballMeshWallNeighbor.cu.i
+kernel/cudaKernel/ballNeighborSearch.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.i
+.PHONY : kernel/cudaKernel/ballNeighborSearch.cu.i
 
-kernel/ballMeshWallNeighbor.s: kernel/ballMeshWallNeighbor.cu.s
-.PHONY : kernel/ballMeshWallNeighbor.s
+kernel/cudaKernel/ballNeighborSearch.s: kernel/cudaKernel/ballNeighborSearch.cu.s
+.PHONY : kernel/cudaKernel/ballNeighborSearch.s
 
 # target to generate assembly for a file
-kernel/ballMeshWallNeighbor.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballMeshWallNeighbor.cu.s
-.PHONY : kernel/ballMeshWallNeighbor.cu.s
+kernel/cudaKernel/ballNeighborSearch.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.s
+.PHONY : kernel/cudaKernel/ballNeighborSearch.cu.s
 
-kernel/ballNeighborSearch.o: kernel/ballNeighborSearch.cu.o
-.PHONY : kernel/ballNeighborSearch.o
+kernel/cudaKernel/biuldHashStartEnd.o: kernel/cudaKernel/biuldHashStartEnd.cu.o
+.PHONY : kernel/cudaKernel/biuldHashStartEnd.o
 
 # target to build an object file
-kernel/ballNeighborSearch.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.o
-.PHONY : kernel/ballNeighborSearch.cu.o
+kernel/cudaKernel/biuldHashStartEnd.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o
+.PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.o
 
-kernel/ballNeighborSearch.i: kernel/ballNeighborSearch.cu.i
-.PHONY : kernel/ballNeighborSearch.i
+kernel/cudaKernel/biuldHashStartEnd.i: kernel/cudaKernel/biuldHashStartEnd.cu.i
+.PHONY : kernel/cudaKernel/biuldHashStartEnd.i
 
 # target to preprocess a source file
-kernel/ballNeighborSearch.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.i
-.PHONY : kernel/ballNeighborSearch.cu.i
+kernel/cudaKernel/biuldHashStartEnd.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.i
+.PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.i
 
-kernel/ballNeighborSearch.s: kernel/ballNeighborSearch.cu.s
-.PHONY : kernel/ballNeighborSearch.s
+kernel/cudaKernel/biuldHashStartEnd.s: kernel/cudaKernel/biuldHashStartEnd.cu.s
+.PHONY : kernel/cudaKernel/biuldHashStartEnd.s
 
 # target to generate assembly for a file
-kernel/ballNeighborSearch.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/ballNeighborSearch.cu.s
-.PHONY : kernel/ballNeighborSearch.cu.s
+kernel/cudaKernel/biuldHashStartEnd.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.s
+.PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.s
 
-kernel/biuldHashStartEnd.o: kernel/biuldHashStartEnd.cu.o
-.PHONY : kernel/biuldHashStartEnd.o
+kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o: kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o
 
 # target to build an object file
-kernel/biuldHashStartEnd.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.o
-.PHONY : kernel/biuldHashStartEnd.cu.o
+kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
 
-kernel/biuldHashStartEnd.i: kernel/biuldHashStartEnd.cu.i
-.PHONY : kernel/biuldHashStartEnd.i
-
-# target to preprocess a source file
-kernel/biuldHashStartEnd.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.i
-.PHONY : kernel/biuldHashStartEnd.cu.i
-
-kernel/biuldHashStartEnd.s: kernel/biuldHashStartEnd.cu.s
-.PHONY : kernel/biuldHashStartEnd.s
-
-# target to generate assembly for a file
-kernel/biuldHashStartEnd.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/biuldHashStartEnd.cu.s
-.PHONY : kernel/biuldHashStartEnd.cu.s
-
-kernel/myStruct/myUtility/myCUDAOperation.o: kernel/myStruct/myUtility/myCUDAOperation.cu.o
-.PHONY : kernel/myStruct/myUtility/myCUDAOperation.o
-
-# target to build an object file
-kernel/myStruct/myUtility/myCUDAOperation.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.o
-.PHONY : kernel/myStruct/myUtility/myCUDAOperation.cu.o
-
-kernel/myStruct/myUtility/myCUDAOperation.i: kernel/myStruct/myUtility/myCUDAOperation.cu.i
-.PHONY : kernel/myStruct/myUtility/myCUDAOperation.i
+kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.i: kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.i
 
 # target to preprocess a source file
-kernel/myStruct/myUtility/myCUDAOperation.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.i
-.PHONY : kernel/myStruct/myUtility/myCUDAOperation.cu.i
+kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i
 
-kernel/myStruct/myUtility/myCUDAOperation.s: kernel/myStruct/myUtility/myCUDAOperation.cu.s
-.PHONY : kernel/myStruct/myUtility/myCUDAOperation.s
+kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.s: kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.s
 
 # target to generate assembly for a file
-kernel/myStruct/myUtility/myCUDAOperation.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/myStruct/myUtility/myCUDAOperation.cu.s
-.PHONY : kernel/myStruct/myUtility/myCUDAOperation.cu.s
+kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
 
 test.o: test.cpp.o
 .PHONY : test.o
@@ -410,30 +386,27 @@ help:
 	@echo "... ballFalling.o"
 	@echo "... ballFalling.i"
 	@echo "... ballFalling.s"
-	@echo "... kernel/DEMBallSolver.o"
-	@echo "... kernel/DEMBallSolver.i"
-	@echo "... kernel/DEMBallSolver.s"
-	@echo "... kernel/ballHandler.o"
-	@echo "... kernel/ballHandler.i"
-	@echo "... kernel/ballHandler.s"
-	@echo "... kernel/ballIntegration.o"
-	@echo "... kernel/ballIntegration.i"
-	@echo "... kernel/ballIntegration.s"
-	@echo "... kernel/ballMeshWallIntegration.o"
-	@echo "... kernel/ballMeshWallIntegration.i"
-	@echo "... kernel/ballMeshWallIntegration.s"
-	@echo "... kernel/ballMeshWallNeighbor.o"
-	@echo "... kernel/ballMeshWallNeighbor.i"
-	@echo "... kernel/ballMeshWallNeighbor.s"
-	@echo "... kernel/ballNeighborSearch.o"
-	@echo "... kernel/ballNeighborSearch.i"
-	@echo "... kernel/ballNeighborSearch.s"
-	@echo "... kernel/biuldHashStartEnd.o"
-	@echo "... kernel/biuldHashStartEnd.i"
-	@echo "... kernel/biuldHashStartEnd.s"
-	@echo "... kernel/myStruct/myUtility/myCUDAOperation.o"
-	@echo "... kernel/myStruct/myUtility/myCUDAOperation.i"
-	@echo "... kernel/myStruct/myUtility/myCUDAOperation.s"
+	@echo "... kernel/DEMBaseSolver.o"
+	@echo "... kernel/DEMBaseSolver.i"
+	@echo "... kernel/DEMBaseSolver.s"
+	@echo "... kernel/cudaKernel/ballIntegration.o"
+	@echo "... kernel/cudaKernel/ballIntegration.i"
+	@echo "... kernel/cudaKernel/ballIntegration.s"
+	@echo "... kernel/cudaKernel/ballMeshWallIntegration.o"
+	@echo "... kernel/cudaKernel/ballMeshWallIntegration.i"
+	@echo "... kernel/cudaKernel/ballMeshWallIntegration.s"
+	@echo "... kernel/cudaKernel/ballMeshWallNeighbor.o"
+	@echo "... kernel/cudaKernel/ballMeshWallNeighbor.i"
+	@echo "... kernel/cudaKernel/ballMeshWallNeighbor.s"
+	@echo "... kernel/cudaKernel/ballNeighborSearch.o"
+	@echo "... kernel/cudaKernel/ballNeighborSearch.i"
+	@echo "... kernel/cudaKernel/ballNeighborSearch.s"
+	@echo "... kernel/cudaKernel/biuldHashStartEnd.o"
+	@echo "... kernel/cudaKernel/biuldHashStartEnd.i"
+	@echo "... kernel/cudaKernel/biuldHashStartEnd.s"
+	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o"
+	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.i"
+	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.s"
 	@echo "... test.o"
 	@echo "... test.i"
 	@echo "... test.s"

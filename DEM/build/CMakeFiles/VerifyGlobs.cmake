@@ -16,8 +16,7 @@ endif()
 # CORE_CPP at CMakeLists.txt:25 (file)
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/teamspace/studios/this_studio/DEM/kernel/*.cpp")
 set(OLD_GLOB
-  "/teamspace/studios/this_studio/DEM/kernel/DEMBallSolver.cpp"
-  "/teamspace/studios/this_studio/DEM/kernel/ballHandler.cpp"
+  "/teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")
@@ -27,12 +26,12 @@ endif()
 # CORE_CUDA at CMakeLists.txt:26 (file)
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/teamspace/studios/this_studio/DEM/kernel/*.cu")
 set(OLD_GLOB
-  "/teamspace/studios/this_studio/DEM/kernel/ballIntegration.cu"
-  "/teamspace/studios/this_studio/DEM/kernel/ballMeshWallIntegration.cu"
-  "/teamspace/studios/this_studio/DEM/kernel/ballMeshWallNeighbor.cu"
-  "/teamspace/studios/this_studio/DEM/kernel/ballNeighborSearch.cu"
-  "/teamspace/studios/this_studio/DEM/kernel/biuldHashStartEnd.cu"
-  "/teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility/myCUDAOperation.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/biuldHashStartEnd.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")
