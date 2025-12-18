@@ -332,6 +332,10 @@ private:
     constantHostDeviceArray1D<double> soundSpeed_;
     constantHostDeviceArray1D<double> kinematicViscosity_;
 
+    // device-only
+    DeviceArray1D<int> hashIndex_;
+    DeviceArray1D<int> hashValue_;
+
 public:
     SPH() = default;
     ~SPH() = default;
@@ -410,6 +414,13 @@ public:
         smoothLength_.download(stream);
         soundSpeed_.download(stream);
         kinematicViscosity_.download(stream);
+
+        // device-only arrays sized according to number of particles
+        const size_t n = deviceSize();
+        hashIndex_.allocDeviceArray(n, stream);
+        hashValue_.allocDeviceArray(n, stream);
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
     }
 
     void upload(cudaStream_t stream)
@@ -425,7 +436,6 @@ public:
     double3* position()       { return position_.d_ptr; }
     double3* velocity()       { return velocity_.d_ptr; }
     double3* acceleration()   { return acceleration_.d_ptr; }
-
     double*  density()        { return density_.d_ptr; }
     double*  pressure()       { return pressure_.d_ptr; }
 
@@ -434,6 +444,9 @@ public:
     const double* smoothLength()      { return smoothLength_.d_ptr; }
     const double* soundSpeed()        { return soundSpeed_.d_ptr; }
     const double* kinematicViscosity(){ return kinematicViscosity_.d_ptr; }
+
+    int*           hashIndex()        { return hashIndex_.d_ptr; }
+    int*           hashValue()        { return hashValue_.d_ptr; }
 
     std::vector<double3> positionVector()     { return position_.getHostData(); }
     std::vector<double3> velocityVector()     { return velocity_.getHostData(); }

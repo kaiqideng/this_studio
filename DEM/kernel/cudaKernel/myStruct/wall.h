@@ -542,6 +542,4 @@ public:
 
         return a + (term1 + term2) * invDen;
     }
-
-
 };

@@ -3,15 +3,7 @@
 void DEMBaseSolver::download()
 {
     downloadContactModelParams(stream_);
-
-    size_t numBalls0 = ballHandler_.balls().deviceSize();
     ballHandler_.download(getDomainOrigin(), getDomainSize(), stream_);
-    size_t numBalls1 = ballHandler_.balls().deviceSize();
-    if(numBalls1 > numBalls0)
-    {
-        ballInteractions_.alloc(numBalls1 * 6, stream_);
-        ballInteractionMap_.alloc(numBalls1, numBalls1, stream_);
-    }
 }
 
 bool DEMBaseSolver::initialize()
@@ -42,44 +34,23 @@ void DEMBaseSolver::outputData()
 
 void DEMBaseSolver::neighborSearch()
 {
-    launchBallNeighborSearch(ballInteractions_, 
-    ballInteractionMap_, 
-    ballHandler_.balls(),
-    getBallSpatialGrids(),
-    getGPUMaxThreadsPerBlock(),
-    stream_);
+    ballHandler_.neighborSearch(getGPUMaxThreadsPerBlock(), stream_);
 }
 
 void DEMBaseSolver::integration1st(const double dt)
 {
-    launchBall1stHalfIntegration(ballHandler_.balls(), 
-    getGravity(), 
-    dt, 
-    getGPUMaxThreadsPerBlock(), 
-    stream_);
+    ballHandler_.integration1st(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
 }
 
 void DEMBaseSolver::contactCalculation(const double dt)
 {
-    launchBallContactCalculation(ballInteractions_, 
-    bondedBallInteractions_, 
-    ballHandler_.balls(), 
-    getContactModelParams(), 
-    ballInteractionMap_,
-    dt, 
-    getGPUMaxThreadsPerBlock(), 
-    stream_);
+    ballHandler_.contactCalculation(getContactModelParams(), dt, getGPUMaxThreadsPerBlock(), stream_);
 }
 
 void DEMBaseSolver::integration2nd(const double dt)
 {
-    launchBall2ndHalfIntegration(ballHandler_.balls(), 
-    getGravity(), 
-    dt, 
-    getGPUMaxThreadsPerBlock(), 
-    stream_);
+    ballHandler_.integration2nd(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
 }
-
 
 void DEMBaseSolver::solve()
 {
@@ -115,42 +86,6 @@ void DEMBaseSolver::solve()
     }
 }
 
-void DEMBaseSolver::addBondedObjects(const std::vector<int> &object0, const std::vector<int> &object1)
-{
-    bondedBallInteractions_.add(object0,
-    object1,
-    ballHandler_.balls().positionVector(),
-    stream_);
-}
-
-void DEMBaseSolver::addBallExternalForce(const std::vector<double3>& externalForce)
-{
-    if(externalForce.size() > ballHandler_.balls().hostSize()) return;
-    std::vector<double3> force = ballHandler_.balls().forceVector();
-    std::vector<double3> totalF(ballHandler_.balls().hostSize(),make_double3(0.0, 0.0, 0.0));
-    
-    std::transform(
-    externalForce.begin(), externalForce.end(),
-    force.begin(), 
-    totalF.begin(),
-    [](const double3& elem_a, const double3& elem_b) {return elem_a + elem_b;});
-    ballHandler_.balls().setForceVector(totalF, stream_);
-}
-
-void DEMBaseSolver::addBallExternalTorque(const std::vector<double3>& externalTorque)
-{
-    if(externalTorque.size() > ballHandler_.balls().hostSize()) return;
-    std::vector<double3> torque = ballHandler_.balls().torqueVector();
-    std::vector<double3> totalT(ballHandler_.balls().hostSize(),make_double3(0.0, 0.0, 0.0));
-    
-    std::transform(
-    externalTorque.begin(), externalTorque.end(),
-    torque.begin(), 
-    totalT.begin(),
-    [](const double3& elem_a, const double3& elem_b) {return elem_a + elem_b;});
-    ballHandler_.balls().setTorqueVector(totalT, stream_);
-}
-
 bool DEMBaseSolver::handleHostArrayInLoop() 
 {
     return false;
@@ -159,9 +94,4 @@ bool DEMBaseSolver::handleHostArrayInLoop()
 ballHandler& DEMBaseSolver::getBallHandler()
 {
     return ballHandler_;
-}
-
-spatialGrid& DEMBaseSolver::getBallSpatialGrids() 
-{
-    return ballHandler_.spatialGrids();
 }

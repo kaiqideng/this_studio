@@ -1,10 +1,11 @@
 #include "kernel/DEMBallMeshWallSolver.h"
-#include <vector_functions.h>
 
 class problem:
     public DEMBallMeshWallSolver
 {
 public:
+    double ct = 0.005;
+
     problem(): DEMBallMeshWallSolver(0) {}
 
     bool handleHostArrayInLoop() override
@@ -16,7 +17,7 @@ public:
 int main()
 {
     problem test;
-    test.setProblemName("ballFalling");
+    test.setProblemName("elasticBounce");
 
     std::vector<double3> positions(1,make_double3(0.0, 0.0, 0.0));
     std::vector<double> radius(1,0.01);
@@ -46,8 +47,9 @@ int main()
     make_double3(0.0, 0.0, 0.0), 
     0);
 
+    double mass = 4.0 / 3.0 * pow(0.01,3.0) * pi() * 2000;
     test.setLinearContactModelForPair(0, 0, 
-    2.e5, 
+    5.0 * mass * sqrt(pi() / test.ct), 
     0.0, 
     0.0, 
     0.0, 
@@ -59,7 +61,7 @@ int main()
     0.0, 
     0.0);
 
-    test.setTimeStep(2.e-5);
+    test.setTimeStep(test.ct / 50.);
     test.setGravity(make_double3(0.0, 0.0, -9.81));
     test.setDomain(make_double3(-1.0, -1.0, -1.0), 
     make_double3(2.0, 2.0, 2.0));

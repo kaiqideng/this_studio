@@ -1,7 +1,10 @@
 #pragma once
 #include "cudaKernel/myStruct/particle.h"
 #include "cudaKernel/myStruct/spatialGrid.h"
+#include "cudaKernel/myStruct/interaction.h"
 #include "cudaKernel/myStruct/myUtility/myFileEdit.h"
+#include "cudaKernel/ballNeighborSearch.h"
+#include "cudaKernel/ballIntegration.h"
 
 class ballHandler
 {
@@ -50,7 +53,7 @@ public:
     cudaStream_t stream,
     int clumpID = -1)
     {
-        if(!downLoadFlag_) 
+        if(!downLoadFlag_)
         {
             downLoadFlag_ = true;
             balls_.upload(stream);
@@ -69,26 +72,69 @@ public:
         }
     }
 
-    ball& balls() {return balls_;}
+    void addBondedObjects(const std::vector<int> &object0, const std::vector<int> &object1, cudaStream_t stream)
+    {
+        bondedBallInteractions_.add(object0,
+        object1,
+        balls_.positionVector(),
+        stream);
+    }
 
-    spatialGrid& spatialGrids() {return spatialGrids_;}
+    void addExternalForce(const std::vector<double3>& externalForce, cudaStream_t stream)
+    {
+        if(externalForce.size() > balls_.hostSize()) return;
+        std::vector<double3> force = balls_.forceVector();
+        std::vector<double3> totalF(balls_.hostSize(),make_double3(0.0, 0.0, 0.0));
+        
+        std::transform(
+        externalForce.begin(), externalForce.end(),
+        force.begin(), 
+        totalF.begin(),
+        [](const double3& elem_a, const double3& elem_b) {return elem_a + elem_b;});
+        balls_.setForceVector(totalF, stream);
+    }
+
+    void addExternalTorque(const std::vector<double3>& externalTorque, cudaStream_t stream)
+    {
+        if(externalTorque.size() > balls_.hostSize()) return;
+        std::vector<double3> torque = balls_.torqueVector();
+        std::vector<double3> totalT(balls_.hostSize(),make_double3(0.0, 0.0, 0.0));
+        
+        std::transform(
+        externalTorque.begin(), externalTorque.end(),
+        torque.begin(), 
+        totalT.begin(),
+        [](const double3& elem_a, const double3& elem_b) {return elem_a + elem_b;});
+        balls_.setTorqueVector(totalT, stream);
+    }
+
+    ball& getBalls() {return balls_;}
+
+    solidInteraction& getBallInteractions() {return ballInteractions_;}
 
     void download(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
     {
         if(downLoadFlag_)
         {
+            size_t numBalls0 = balls_.deviceSize();
             balls_.download(stream);
-            downLoadFlag_ = false;
-
-            double cellSizeOneDim = 0.0;
-            std::vector<double> rad = balls_.radiusVector();
-            if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * 1.1;
-            if(cellSizeOneDim > spatialGrids_.cellSize.x 
-            || cellSizeOneDim > spatialGrids_.cellSize.y 
-            || cellSizeOneDim > spatialGrids_.cellSize.z)
+            size_t numBalls1 = balls_.deviceSize();
+            if(numBalls1 != numBalls0)
             {
-                spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
+                ballInteractions_.alloc(numBalls1 * 6, stream);
+                ballInteractionMap_.alloc(numBalls1, numBalls1, stream);
+
+                double cellSizeOneDim = 0.0;
+                std::vector<double> rad = balls_.radiusVector();
+                if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * 1.1;
+                if(cellSizeOneDim > spatialGrids_.cellSize.x 
+                || cellSizeOneDim > spatialGrids_.cellSize.y 
+                || cellSizeOneDim > spatialGrids_.cellSize.z)
+                {
+                    spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
+                }
             }
+            downLoadFlag_ = false;
         }
     }
 
@@ -179,8 +225,52 @@ public:
             "</VTKFile>\n";
     }
 
+    void neighborSearch(const size_t maxThreads, cudaStream_t stream)
+    {
+        launchBallNeighborSearch(ballInteractions_, 
+        ballInteractionMap_, 
+        balls_,
+        spatialGrids_,
+        maxThreads,
+        stream);
+    }
+
+    void integration1st(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    {
+        launchBall1stHalfIntegration(balls_, 
+        g, 
+        dt, 
+        maxThreads, 
+        stream);
+    }
+
+    void contactCalculation(contactModelParameters& contactModelParams, const double dt, const size_t maxThreads, cudaStream_t stream)
+    {
+        launchBallContactCalculation(ballInteractions_, 
+        bondedBallInteractions_, 
+        balls_, 
+        contactModelParams, 
+        ballInteractionMap_,
+        dt, 
+        maxThreads, 
+        stream);
+    }
+
+    void integration2nd(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    {
+        launchBall2ndHalfIntegration(balls_, 
+        g, 
+        dt, 
+        maxThreads, 
+        stream);
+    }
+
 private:
     bool downLoadFlag_;
     ball balls_;
     spatialGrid spatialGrids_;
+
+    solidInteraction ballInteractions_;
+    bondedInteraction bondedBallInteractions_;
+	interactionMap ballInteractionMap_;
 };

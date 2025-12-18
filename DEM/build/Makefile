@@ -131,54 +131,78 @@ DEM_core/fast:
 .PHONY : DEM_core/fast
 
 #=============================================================================
-# Target rules for targets named ballFalling
+# Target rules for targets named 11BondedBallsBeam
 
 # Build rule for target.
-ballFalling: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ballFalling
-.PHONY : ballFalling
+11BondedBallsBeam: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 11BondedBallsBeam
+.PHONY : 11BondedBallsBeam
 
 # fast build rule for target.
-ballFalling/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/build
-.PHONY : ballFalling/fast
+11BondedBallsBeam/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/11BondedBallsBeam.dir/build.make CMakeFiles/11BondedBallsBeam.dir/build
+.PHONY : 11BondedBallsBeam/fast
 
 #=============================================================================
-# Target rules for targets named test
+# Target rules for targets named elasticBounce
 
 # Build rule for target.
-test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test
-.PHONY : test
+elasticBounce: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 elasticBounce
+.PHONY : elasticBounce
 
 # fast build rule for target.
-test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
-.PHONY : test/fast
+elasticBounce/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/elasticBounce.dir/build.make CMakeFiles/elasticBounce.dir/build
+.PHONY : elasticBounce/fast
 
-ballFalling.o: ballFalling.cpp.o
-.PHONY : ballFalling.o
+11BondedBallsBeam.o: 11BondedBallsBeam.cpp.o
+.PHONY : 11BondedBallsBeam.o
 
 # target to build an object file
-ballFalling.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/ballFalling.cpp.o
-.PHONY : ballFalling.cpp.o
+11BondedBallsBeam.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/11BondedBallsBeam.dir/build.make CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.o
+.PHONY : 11BondedBallsBeam.cpp.o
 
-ballFalling.i: ballFalling.cpp.i
-.PHONY : ballFalling.i
+11BondedBallsBeam.i: 11BondedBallsBeam.cpp.i
+.PHONY : 11BondedBallsBeam.i
 
 # target to preprocess a source file
-ballFalling.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/ballFalling.cpp.i
-.PHONY : ballFalling.cpp.i
+11BondedBallsBeam.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/11BondedBallsBeam.dir/build.make CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.i
+.PHONY : 11BondedBallsBeam.cpp.i
 
-ballFalling.s: ballFalling.cpp.s
-.PHONY : ballFalling.s
+11BondedBallsBeam.s: 11BondedBallsBeam.cpp.s
+.PHONY : 11BondedBallsBeam.s
 
 # target to generate assembly for a file
-ballFalling.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ballFalling.dir/build.make CMakeFiles/ballFalling.dir/ballFalling.cpp.s
-.PHONY : ballFalling.cpp.s
+11BondedBallsBeam.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/11BondedBallsBeam.dir/build.make CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.s
+.PHONY : 11BondedBallsBeam.cpp.s
+
+elasticBounce.o: elasticBounce.cpp.o
+.PHONY : elasticBounce.o
+
+# target to build an object file
+elasticBounce.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/elasticBounce.dir/build.make CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o
+.PHONY : elasticBounce.cpp.o
+
+elasticBounce.i: elasticBounce.cpp.i
+.PHONY : elasticBounce.i
+
+# target to preprocess a source file
+elasticBounce.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/elasticBounce.dir/build.make CMakeFiles/elasticBounce.dir/elasticBounce.cpp.i
+.PHONY : elasticBounce.cpp.i
+
+elasticBounce.s: elasticBounce.cpp.s
+.PHONY : elasticBounce.s
+
+# target to generate assembly for a file
+elasticBounce.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/elasticBounce.dir/build.make CMakeFiles/elasticBounce.dir/elasticBounce.cpp.s
+.PHONY : elasticBounce.cpp.s
 
 kernel/DEMBaseSolver.o: kernel/DEMBaseSolver.cpp.o
 .PHONY : kernel/DEMBaseSolver.o
@@ -203,6 +227,30 @@ kernel/DEMBaseSolver.s: kernel/DEMBaseSolver.cpp.s
 kernel/DEMBaseSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.s
 .PHONY : kernel/DEMBaseSolver.cpp.s
+
+kernel/cudaKernel/SPHNeighborSearch.o: kernel/cudaKernel/SPHNeighborSearch.cu.o
+.PHONY : kernel/cudaKernel/SPHNeighborSearch.o
+
+# target to build an object file
+kernel/cudaKernel/SPHNeighborSearch.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o
+.PHONY : kernel/cudaKernel/SPHNeighborSearch.cu.o
+
+kernel/cudaKernel/SPHNeighborSearch.i: kernel/cudaKernel/SPHNeighborSearch.cu.i
+.PHONY : kernel/cudaKernel/SPHNeighborSearch.i
+
+# target to preprocess a source file
+kernel/cudaKernel/SPHNeighborSearch.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.i
+.PHONY : kernel/cudaKernel/SPHNeighborSearch.cu.i
+
+kernel/cudaKernel/SPHNeighborSearch.s: kernel/cudaKernel/SPHNeighborSearch.cu.s
+.PHONY : kernel/cudaKernel/SPHNeighborSearch.s
+
+# target to generate assembly for a file
+kernel/cudaKernel/SPHNeighborSearch.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.s
+.PHONY : kernel/cudaKernel/SPHNeighborSearch.cu.s
 
 kernel/cudaKernel/ballIntegration.o: kernel/cudaKernel/ballIntegration.cu.o
 .PHONY : kernel/cudaKernel/ballIntegration.o
@@ -348,30 +396,6 @@ kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
 .PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
 
-test.o: test.cpp.o
-.PHONY : test.o
-
-# target to build an object file
-test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.o
-.PHONY : test.cpp.o
-
-test.i: test.cpp.i
-.PHONY : test.i
-
-# target to preprocess a source file
-test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.i
-.PHONY : test.cpp.i
-
-test.s: test.cpp.s
-.PHONY : test.s
-
-# target to generate assembly for a file
-test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.s
-.PHONY : test.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -380,15 +404,21 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... 11BondedBallsBeam"
 	@echo "... DEM_core"
-	@echo "... ballFalling"
-	@echo "... test"
-	@echo "... ballFalling.o"
-	@echo "... ballFalling.i"
-	@echo "... ballFalling.s"
+	@echo "... elasticBounce"
+	@echo "... 11BondedBallsBeam.o"
+	@echo "... 11BondedBallsBeam.i"
+	@echo "... 11BondedBallsBeam.s"
+	@echo "... elasticBounce.o"
+	@echo "... elasticBounce.i"
+	@echo "... elasticBounce.s"
 	@echo "... kernel/DEMBaseSolver.o"
 	@echo "... kernel/DEMBaseSolver.i"
 	@echo "... kernel/DEMBaseSolver.s"
+	@echo "... kernel/cudaKernel/SPHNeighborSearch.o"
+	@echo "... kernel/cudaKernel/SPHNeighborSearch.i"
+	@echo "... kernel/cudaKernel/SPHNeighborSearch.s"
 	@echo "... kernel/cudaKernel/ballIntegration.o"
 	@echo "... kernel/cudaKernel/ballIntegration.i"
 	@echo "... kernel/cudaKernel/ballIntegration.s"
@@ -407,9 +437,6 @@ help:
 	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o"
 	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.i"
 	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.s"
-	@echo "... test.o"
-	@echo "... test.i"
-	@echo "... test.s"
 .PHONY : help
 
 

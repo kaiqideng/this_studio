@@ -12,16 +12,16 @@ public:
     
     bool handleHostArrayInLoop() override
     {
-        if(getStep() ==0 )
+        if(getStep() ==0)
         {
-            addBondedObjects(getBallInteractions().objectPointedVector(), 
-            getBallInteractions().objectPointingVector());
+            getBallHandler().addBondedObjects(getBallHandler().getBallInteractions().objectPointedVector(), 
+            getBallHandler().getBallInteractions().objectPointingVector(),0);
         }
 
-        std::vector<double3> v = getBallHandler().balls().velocityVector();
-        std::vector<double3> w = getBallHandler().balls().angularVelocityVector();
-        std::vector<double3> f = getBallHandler().balls().forceVector();
-        std::vector<double3> t = getBallHandler().balls().torqueVector();
+        std::vector<double3> v = getBallHandler().getBalls().velocityVector();
+        std::vector<double3> w = getBallHandler().getBalls().angularVelocityVector();
+        std::vector<double3> f = getBallHandler().getBalls().forceVector();
+        std::vector<double3> t = getBallHandler().getBalls().torqueVector();
         std::vector<double3> F_e(v.size(),make_double3(0, 0, 0));
         std::vector<double3> T_e(v.size(),make_double3(0, 0, 0));
         double time = getTime();
@@ -34,8 +34,8 @@ public:
             F_e[i] -= c_d * length(f[i]) * normalize(v[i]);
             T_e[i] -= c_d * length(t[i]) * normalize(w[i]);
         }
-        addBallExternalForce(F_e);
-        addBallExternalTorque(T_e);
+        getBallHandler().addExternalForce(F_e, 0);
+        getBallHandler().addExternalTorque(T_e, 0);
         return true;
     }
 };
@@ -43,7 +43,7 @@ public:
 int main()
 {
     problem test;
-    test.setProblemName("11BondedParticleBeamBendedByConstantVerticalForceAtEndOfBeam");
+    test.setProblemName("11BondedBallsBeam");
 
     std::vector<double3> positions(1,make_double3(0, 0, 0));
     std::vector<double> radius(1,test.r);

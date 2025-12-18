@@ -5,8 +5,8 @@ cmake_policy(SET CMP0009 NEW)
 # ROOT_MAINS at CMakeLists.txt:56 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/teamspace/studios/this_studio/DEM/*.cpp")
 set(OLD_GLOB
-  "/teamspace/studios/this_studio/DEM/ballFalling.cpp"
-  "/teamspace/studios/this_studio/DEM/test.cpp"
+  "/teamspace/studios/this_studio/DEM/11BondedBallsBeam.cpp"
+  "/teamspace/studios/this_studio/DEM/elasticBounce.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")
@@ -26,6 +26,7 @@ endif()
 # CORE_CUDA at CMakeLists.txt:26 (file)
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/teamspace/studios/this_studio/DEM/kernel/*.cu")
 set(OLD_GLOB
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.cu"
   "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu"
   "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu"
   "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu"

@@ -1,4 +1,5 @@
 #include "ballNeighborSearch.h"
+#include <cstddef>
 
 __global__ void calculateHash(int* hashValue, 
 double3* position, 
@@ -58,7 +59,57 @@ cudaStream_t stream)
     stream);
 }
 
-__global__ void setBallInteractionsKernel(int* objectPointed, 
+__global__ void countBallInteractionsKernel(double3* ballPosition, 
+const double* radius, 
+const double* invMass, 
+const int* clumpID, 
+int* ballHashIndex, 
+int* neighborCountA, 
+int* cellStart, 
+int* cellEnd, 
+const double3 minBound, 
+const double3 cellSize, 
+const int3 gridSize, 
+const size_t numBalls)
+{
+    int idxA = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idxA >= numBalls) return;
+    int count = 0;
+
+    double3 posA = ballPosition[idxA];
+    double radA = radius[idxA];
+    int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
+    for (int zz = -1; zz <= 1; zz++)
+    {
+        for (int yy = -1; yy <= 1; yy++)
+        {
+            for (int xx = -1; xx <= 1; xx++)
+            {
+                int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
+                if (gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
+                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
+                int hashB = calculateHash(gridPositionB, gridSize);
+                int startIndex = cellStart[hashB];
+                if (startIndex == 0xFF) continue;
+                int endIndex = cellEnd[hashB];
+                for (int i = startIndex; i < endIndex; i++)
+                {
+                    int idxB = ballHashIndex[i];
+                    if (idxA >= idxB) continue;
+                    if (clumpID[idxA] >= 0 && clumpID[idxA] == clumpID[idxB]) continue;
+					if (invMass[idxA] < 1.e-20 && invMass[idxB] < 1.e-20) continue;
+                    double cut = 1.1 * (radA + radius[idxB]);
+                    double3 posB = ballPosition[idxB];
+                    double3 rAB = posA - posB;
+                    if ((cut * cut - dot(rAB, rAB)) >= 0.) count++;
+                }
+            }
+        }
+    }
+    neighborCountA[idxA] = count;
+}
+
+__global__ void writeBallInteractionsKernel(int* objectPointed, 
 int* objectPointing, 
 double3* contactForce, 
 double3* contactTorque, 
@@ -75,7 +126,6 @@ const double* invMass,
 const int* clumpID, 
 int* ballHashIndex, 
 int* interactionMapHashIndex,
-int* neighborCountA, 
 int* neighborPrefixSumA, 
 int* interactionStartB, 
 int* interactionEndB,
@@ -84,17 +134,11 @@ int* cellEnd,
 const double3 minBound, 
 const double3 cellSize, 
 const int3 gridSize, 
-const size_t numGrids,
-const size_t flag,
 const size_t numBalls)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
     if (idxA >= numBalls) return;
 
-    neighborCountA[idxA] = 0;
-    if(flag == 0) neighborPrefixSumA[idxA] = 0;
-
-    int count = 0;
     int base_w = 0;
     if (idxA > 0) base_w = neighborPrefixSumA[idxA - 1];
     double3 posA = ballPosition[idxA];
@@ -107,60 +151,53 @@ const size_t numBalls)
             for (int xx = -1; xx <= 1; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if(gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
-                if(gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
+                if (gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
+                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellStart[hashB];
-                int endIndex = cellEnd[hashB];
                 if (startIndex == 0xFF) continue;
+                int endIndex = cellEnd[hashB];
+                int countInOneCell = 0;
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = ballHashIndex[i];
                     if (idxA >= idxB) continue;
                     if (clumpID[idxA] >= 0 && clumpID[idxA] == clumpID[idxB]) continue;
 					if (invMass[idxA] < 1.e-20 && invMass[idxB] < 1.e-20) continue;
+                    double cut = 1.1 * (radA + radius[idxB]);
                     double3 posB = ballPosition[idxB];
-                    double radB = radius[idxB];
                     double3 rAB = posA - posB;
-                    double dis = length(rAB);
-                    double overlap = 1.1 * (radB + radA) - dis;
-                    if (overlap >= 0.)
+                    if ((cut * cut - dot(rAB, rAB)) >= 0.)
                     {
-                        if (flag == 0) count++;
-                        else
+                        int index_w = base_w + countInOneCell;
+                        objectPointed[index_w] = idxA;
+                        objectPointing[index_w] = idxB;
+                        contactForce[index_w] = make_double3(0, 0, 0);
+                        contactTorque[index_w] = make_double3(0, 0, 0);
+                        slidingSpring[index_w] = make_double3(0, 0, 0);
+                        rollingSpring[index_w] = make_double3(0, 0, 0);
+                        torsionSpring[index_w] = make_double3(0, 0, 0);
+                        if (interactionStartB[idxB] != 0xFFFFFFFF)
                         {
-                            int offset_w = atomicAdd(&neighborCountA[idxA], 1);
-                            int index_w = base_w + offset_w;
-                            objectPointed[index_w] = idxA;
-                            objectPointing[index_w] = idxB;
-                            contactForce[index_w] = make_double3(0, 0, 0);
-                            contactTorque[index_w] = make_double3(0, 0, 0);
-							slidingSpring[index_w] = make_double3(0, 0, 0);
-							rollingSpring[index_w] = make_double3(0, 0, 0);
-							torsionSpring[index_w] = make_double3(0, 0, 0);
-                            if (interactionStartB[idxB] != 0xFFFFFFFF)
+                            for (int j = interactionStartB[idxB]; j < interactionEndB[idxB]; j++)
                             {
-                                for (int j = interactionStartB[idxB]; j < interactionEndB[idxB]; j++)
+                                int j1 = interactionMapHashIndex[j];
+                                int idxA1 = objectPointed_history[j1];
+                                if (idxA == idxA1)
                                 {
-                                    int j1 = interactionMapHashIndex[j];
-                                    if (j1 < 0) return;
-                                    int idxA1 = objectPointed_history[j1];
-                                    if (idxA == idxA1)
-                                    {
-                                        slidingSpring[index_w] = slidingSpring_history[j1];
-                                        rollingSpring[index_w] = rollingSpring_history[j1];
-                                        torsionSpring[index_w] = torsionSpring_history[j1];
-                                        break;
-                                    }
+                                    slidingSpring[index_w] = slidingSpring_history[j1];
+                                    rollingSpring[index_w] = rollingSpring_history[j1];
+                                    torsionSpring[index_w] = torsionSpring_history[j1];
+                                    break;
                                 }
                             }
                         }
+                        countInOneCell++;
                     }
                 }
             }
         }
     }
-    if (flag == 0) neighborCountA[idxA] = count;
 }
 
 extern "C" void launchBallNeighborSearch(solidInteraction& ballInteractions, 
@@ -179,57 +216,61 @@ cudaStream_t stream)
     maxThreadsPerBlock,
     stream);
 
+    ballInteractions.updateHistory(stream);
+
     //debug_dump_device_array(spatialGrids.cellHashStart(), spatialGrids.deviceSize(), "spatialGrids.cellHashStart");
     //debug_dump_device_array(spatialGrids.cellHashEnd(), spatialGrids.deviceSize(), "spatialGrids.cellHashEnd");
-
     size_t grid = 1, block = 1;
     computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
+    countBallInteractionsKernel <<<grid, block, 0, stream>>> (balls.position(),
+    balls.radius(),
+    balls.inverseMass(),
+    balls.clumpID(),
+    balls.hashIndex(),
+    ballInteractionMap.countA(),
+    spatialGrids.cellHashStart(),
+    spatialGrids.cellHashEnd(),
+    spatialGrids.minBound,
+    spatialGrids.cellSize,
+    spatialGrids.gridSize,
+    balls.deviceSize());
 
-    for (size_t flag = 0; flag < 2; flag++)
-    {
-        setBallInteractionsKernel <<<grid, block, 0, stream>>> (ballInteractions.objectPointed(),
-        ballInteractions.objectPointing(),
-        ballInteractions.force(),
-        ballInteractions.torque(),
-        ballInteractions.slidingSpring(),
-        ballInteractions.rollingSpring(),
-        ballInteractions.torsionSpring(),
-        ballInteractions.objectPointedHistory(),
-        ballInteractions.slidingSpringHistory(),
-        ballInteractions.rollingSpringHistory(),
-        ballInteractions.torsionSpringHistory(),
-        balls.position(),
-        balls.radius(),
-        balls.inverseMass(),
-        balls.clumpID(),
-        balls.hashIndex(),
-        ballInteractionMap.hashIndex(),
-        ballInteractionMap.countA(),
-        ballInteractionMap.prefixSumA(),
-        ballInteractionMap.startB(),
-        ballInteractionMap.endB(),
-        spatialGrids.cellHashStart(),
-        spatialGrids.cellHashEnd(),
-        spatialGrids.minBound,
-        spatialGrids.cellSize,
-        spatialGrids.gridSize,
-        spatialGrids.deviceSize(),
-        flag,
-        balls.deviceSize());
+    //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "ballInteractionMap.countA");
+    int activeNumber = 0;
+    auto exec = thrust::cuda::par.on(stream);
+    thrust::inclusive_scan(exec,
+    thrust::device_pointer_cast(ballInteractionMap.countA()),
+    thrust::device_pointer_cast(ballInteractionMap.countA() + ballInteractionMap.ASize()),
+    thrust::device_pointer_cast(ballInteractionMap.prefixSumA()));
+    cuda_copy_sync(&activeNumber, ballInteractionMap.prefixSumA() + ballInteractionMap.ASize() - 1, 1, CopyDir::D2H);
+    ballInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
 
-        if (flag == 0)
-        {
-            //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "ballInteractionMap.countA");
-            int activeNumber = 0;
-            auto exec = thrust::cuda::par.on(stream);
-            thrust::inclusive_scan(exec,
-            thrust::device_pointer_cast(ballInteractionMap.countA()),
-            thrust::device_pointer_cast(ballInteractionMap.countA() + ballInteractionMap.ASize()),
-            thrust::device_pointer_cast(ballInteractionMap.prefixSumA()));
-            cuda_copy_sync(&activeNumber, ballInteractionMap.prefixSumA() + ballInteractionMap.ASize() - 1, 1, CopyDir::D2H);
-            ballInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
-        }
-    }
+    writeBallInteractionsKernel <<<grid, block, 0, stream>>> (ballInteractions.objectPointed(),
+    ballInteractions.objectPointing(),
+    ballInteractions.force(),
+    ballInteractions.torque(),
+    ballInteractions.slidingSpring(),
+    ballInteractions.rollingSpring(),
+    ballInteractions.torsionSpring(),
+    ballInteractions.objectPointedHistory(),
+    ballInteractions.slidingSpringHistory(),
+    ballInteractions.rollingSpringHistory(),
+    ballInteractions.torsionSpringHistory(),
+    balls.position(),
+    balls.radius(),
+    balls.inverseMass(),
+    balls.clumpID(),
+    balls.hashIndex(),
+    ballInteractionMap.hashIndex(),
+    ballInteractionMap.prefixSumA(),
+    ballInteractionMap.startB(),
+    ballInteractionMap.endB(),
+    spatialGrids.cellHashStart(),
+    spatialGrids.cellHashEnd(),
+    spatialGrids.minBound,
+    spatialGrids.cellSize,
+    spatialGrids.gridSize,
+    balls.deviceSize());
 
     ballInteractionMap.hashInit(ballInteractions.objectPointing(), ballInteractions.activeSize(), stream);
     buildHashStartEnd(ballInteractionMap.startB(), 

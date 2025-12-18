@@ -2,6 +2,7 @@
 #include "cudaKernel/myStruct/wall.h"
 #include "cudaKernel/myStruct/spatialGrid.h"
 #include "cudaKernel/myStruct/myUtility/myFileEdit.h"
+#include "cudaKernel/ballMeshWallIntegration.h"
 
 class wallHandler
 {
@@ -35,24 +36,28 @@ public:
         matirialID);
     }
 
-    meshWall& meshWalls() {return meshWalls_;}
+    meshWall& getMeshWalls() {return meshWalls_;}
 
-    spatialGrid& spatialGrids() {return spatialGrids_;}
+    spatialGrid& getSpatialGrids() {return spatialGrids_;}
 
     void download(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
     {
         if(downLoadFlag_)
         {
+            size_t numTriangles0 = meshWalls_.triangles().deviceSize();
             meshWalls_.download(stream);
-            downLoadFlag_ = false;
-
-            double cellSizeOneDim = meshWalls_.getMaxEdgeLength() * 1.2;
-            if(cellSizeOneDim > spatialGrids_.cellSize.x 
-            || cellSizeOneDim > spatialGrids_.cellSize.y 
-            || cellSizeOneDim > spatialGrids_.cellSize.z)
+            size_t numTriangles1 = meshWalls_.triangles().deviceSize();
+            if(numTriangles1 != numTriangles0)
             {
-                spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
+                double cellSizeOneDim = meshWalls_.getMaxEdgeLength() * 1.2;
+                if(cellSizeOneDim > spatialGrids_.cellSize.x 
+                || cellSizeOneDim > spatialGrids_.cellSize.y 
+                || cellSizeOneDim > spatialGrids_.cellSize.z)
+                {
+                    spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
+                }
             }
+            downLoadFlag_ = false;
         }
     }
 
@@ -163,6 +168,14 @@ public:
             << "  </UnstructuredGrid>\n"
             << "</VTKFile>\n";
     }
+
+    void integration(const double dt, const size_t maxThreads, cudaStream_t stream)
+	{
+        launchMeshWallIntegration(meshWalls_, 
+        dt, 
+        maxThreads, 
+        stream);
+	}
 
 private:
     bool downLoadFlag_ ;

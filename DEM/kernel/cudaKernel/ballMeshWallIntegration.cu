@@ -1,5 +1,140 @@
 #include"ballMeshWallIntegration.h"
 
+__global__ void calBallTriangleContactSpringContactPoint(double3* contactPoint,
+double3* slidingSpring, 
+double3* rollingSpring, 
+double3* torsionSpring, 
+int* objectPointing,
+int* cancelFlag, 
+double3* position, 
+const double* radius, 
+int* interactionMapPrefixSumA,
+const int* vertIndex0_t, 
+const int* vertIndex1_t, 
+const int* vertIndex2_t, 
+double3* globalVertices,
+const size_t numBalls)
+{
+	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= numBalls) return;
+
+    int start = 0;
+	if (idx_i > 0) start = interactionMapPrefixSumA[idx_i - 1];
+	int end = interactionMapPrefixSumA[idx_i];
+	for(int idx_c = start; idx_c < end; idx_c++)
+	{
+		const int idx_j = objectPointing[idx_c];
+
+		const double rad_i = radius[idx_i];
+		const double3 r_i = position[idx_i];
+
+		const double3 p0 = globalVertices[vertIndex0_t[idx_j]];
+		const double3 p1 = globalVertices[vertIndex1_t[idx_j]];
+		const double3 p2 = globalVertices[vertIndex2_t[idx_j]];
+		
+		double3 r_c;
+		SphereTriangleContactType type = classifySphereTriangleContact(r_i, rad_i,
+									p0, p1, p2,
+									r_c);
+
+		contactPoint[idx_c] = r_c;
+
+        if(type == SphereTriangleContactType::None) continue;
+
+		if(type != SphereTriangleContactType::Face)
+		{
+			for(int idx_c1 = start; idx_c1 < end; idx_c1++)
+			{
+				if(idx_c1 == idx_c) continue;
+
+				const int idx_j1 = objectPointing[idx_c1];
+				const double3 p01 = globalVertices[vertIndex0_t[idx_j1]];
+				const double3 p11 = globalVertices[vertIndex1_t[idx_j1]];
+				const double3 p21 = globalVertices[vertIndex2_t[idx_j1]];
+
+				double3 r_c1;
+				SphereTriangleContactType type1 = classifySphereTriangleContact(r_i, rad_i,
+									p01, p11, p21,
+									r_c1);
+				if(type1 == SphereTriangleContactType::None) continue;
+				else if(type1 == SphereTriangleContactType::Face)
+				{
+					// Find sharing face
+					if(lengthSquared(cross(r_c - p01, p11 - p01)) < 1.e-20) 
+					{
+						slidingSpring[idx_c] = slidingSpring[idx_c1];
+						rollingSpring[idx_c] = rollingSpring[idx_c1];
+						torsionSpring[idx_c] = torsionSpring[idx_c1];
+						cancelFlag[idx_c] = 1;
+						break;
+					}
+					if(lengthSquared(cross(r_c - p11, p21 - p11)) < 1.e-20)
+					{
+						slidingSpring[idx_c] = slidingSpring[idx_c1];
+						rollingSpring[idx_c] = rollingSpring[idx_c1];
+						torsionSpring[idx_c] = torsionSpring[idx_c1];
+						cancelFlag[idx_c] = 1;
+						break;
+					}
+					if(lengthSquared(cross(r_c - p01, p21 - p01)) < 1.e-20) 
+					{
+						slidingSpring[idx_c] = slidingSpring[idx_c1];
+						rollingSpring[idx_c] = rollingSpring[idx_c1];
+						torsionSpring[idx_c] = torsionSpring[idx_c1];
+						cancelFlag[idx_c] = 1;
+						break;
+					}
+				}
+				else if(type1 == SphereTriangleContactType::Edge)
+				{
+					if(type == type1)
+					{
+						if(idx_c1 < idx_c)
+						{
+							if(lengthSquared(r_c - r_c1) < 1.e-20)
+							{
+								slidingSpring[idx_c] = slidingSpring[idx_c1];
+								rollingSpring[idx_c] = rollingSpring[idx_c1];
+								torsionSpring[idx_c] = torsionSpring[idx_c1];
+								cancelFlag[idx_c] = 1;
+								break;
+							}
+						}
+					}
+					else 
+					{
+						if(lengthSquared(r_c - r_c1) < 1.e-20)
+						{
+							slidingSpring[idx_c] = slidingSpring[idx_c1];
+							rollingSpring[idx_c] = rollingSpring[idx_c1];
+							torsionSpring[idx_c] = torsionSpring[idx_c1];
+							cancelFlag[idx_c] = 1;
+							break;
+						}
+					}
+				}
+				else
+				{
+					if(type == type1)
+					{
+						if(idx_c1 < idx_c)
+						{
+							if(lengthSquared(r_c - r_c1) < 1.e-20)
+							{
+								slidingSpring[idx_c] = slidingSpring[idx_c1];
+								rollingSpring[idx_c] = rollingSpring[idx_c1];
+								torsionSpring[idx_c] = torsionSpring[idx_c1];
+								cancelFlag[idx_c] = 1;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 __global__ void calBallTriangleContactForceTorqueKernel(double3* contactForce, 
 double3* contactTorque,
 double3* contactPoint,
@@ -7,6 +142,7 @@ double3* slidingSpring,
 double3* rollingSpring, 
 double3* torsionSpring, 
 int* objectPointing, 
+int* cancelFlag,
 double3* force,
 double3* torque,
 double3* position, 
@@ -14,17 +150,13 @@ double3* velocity,
 double3* angularVelocity, 
 const double* radius, 
 const double* inverseMass, 
-const int* materialID,
-int* interactionMapPrefixSumA,
+const int* materialID, 
 double3* position_w, 
 double3* velocity_w, 
 double3* angularVelocity_w, 
-const int* materialID_w,
+const int* materialID_w, 
 const int* wallIndex_t, 
-const int* vertIndex0_t, 
-const int* vertIndex1_t, 
-const int* vertIndex2_t, 
-double3* globalVertices,
+int* interactionMapPrefixSumA, 
 double* hertzianE, 
 double* hertzianG, 
 double* hertzianRes, 
@@ -57,108 +189,22 @@ const size_t numBalls)
 	int end = interactionMapPrefixSumA[idx_i];
 	for(int idx_c = start; idx_c < end; idx_c++)
 	{
+		if (cancelFlag[idx_c] == 1) continue;
+
 		contactForce[idx_c] = make_double3(0, 0, 0);
 	    contactTorque[idx_c] = make_double3(0, 0, 0);
 
-		const int idx_j = objectPointing[idx_c];
-
 		const double rad_i = radius[idx_i];
 		const double3 r_i = position[idx_i];
-
-		const double3 p0 = globalVertices[vertIndex0_t[idx_j]];
-		const double3 p1 = globalVertices[vertIndex1_t[idx_j]];
-		const double3 p2 = globalVertices[vertIndex2_t[idx_j]];
 		
-		double3 r_c;
-		SphereTriangleContactType type = classifySphereTriangleContact(r_i, rad_i,
-									p0, p1, p2,
-									r_c);
-
+		double3 r_c = contactPoint[idx_c];
 		double3 n_ij = normalize(r_i - r_c);
 		double delta = rad_i - length(r_i - r_c);
-
-        if(type == SphereTriangleContactType::None) continue;
-
-        bool calculateFlag = true;
-		if(type != SphereTriangleContactType::Face)
-		{
-			for(int idx_c1 = start; idx_c1 < end; idx_c1++)
-			{
-				if(idx_c1 == idx_c) continue;
-
-				const int idx_j1 = objectPointing[idx_c1];
-				const double3 p01 = globalVertices[vertIndex0_t[idx_j1]];
-				const double3 p11 = globalVertices[vertIndex1_t[idx_j1]];
-				const double3 p21 = globalVertices[vertIndex2_t[idx_j1]];
-
-				double3 r_c1;
-				SphereTriangleContactType type1 = classifySphereTriangleContact(r_i, rad_i,
-									p01, p11, p21,
-									r_c1);
-				if(type1 == SphereTriangleContactType::None) continue;
-
-				if(type == SphereTriangleContactType::Vertex)
-				{
-					if(length(r_c - r_c1) < 1.e-20) //vertex, edge or face
-					{
-						if(!(type1 == SphereTriangleContactType::Vertex || idx_c1 > idx_c))
-						{
-							slidingSpring[idx_c] = slidingSpring[idx_c1];
-							rollingSpring[idx_c] = rollingSpring[idx_c1];
-							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							calculateFlag = false;
-							break;
-						}
-					}
-				}
-				else if(type == SphereTriangleContactType::Edge)
-				{
-					if(type1 == type)
-					{
-						if(length(r_c - r_c1) < 1.e-20) // share edge
-						{
-							slidingSpring[idx_c] = slidingSpring[idx_c1];
-							rollingSpring[idx_c] = rollingSpring[idx_c1];
-							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							calculateFlag = false;
-							break;
-						}
-					}
-					else if(type1 == SphereTriangleContactType::Face) // share face
-					{
-						if(length(cross(r_c - p01, p11 - p01)) < 1.e-20) 
-						{
-							slidingSpring[idx_c] = slidingSpring[idx_c1];
-							rollingSpring[idx_c] = rollingSpring[idx_c1];
-							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							calculateFlag = false;
-							break;
-						}
-						if(length(cross(r_c - p11, p21 - p11)) < 1.e-20)
-						{
-							slidingSpring[idx_c] = slidingSpring[idx_c1];
-							rollingSpring[idx_c] = rollingSpring[idx_c1];
-							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							calculateFlag = false;
-							break;
-						}
-						if(length(cross(r_c - p01, p21 - p01)) < 1.e-20) 
-						{
-							slidingSpring[idx_c] = slidingSpring[idx_c1];
-							rollingSpring[idx_c] = rollingSpring[idx_c1];
-							torsionSpring[idx_c] = torsionSpring[idx_c1];
-							calculateFlag = false;
-							break;
-						}
-					}
-				}
-			}
-		}
-		if(!calculateFlag) continue;
 
 		const double m_ij = 1. / inverseMass[idx_i];
 		const double rad_ij = rad_i;
 
+		const int idx_j = objectPointing[idx_c];
         const size_t idx_w = wallIndex_t[idx_j];
 		const double3 r_w = position_w[idx_w];
 
@@ -225,7 +271,6 @@ const size_t numBalls)
 
 		contactForce[idx_c] = F_c;
 		contactTorque[idx_c] = T_c;
-		contactPoint[idx_c] = r_c;
 		slidingSpring[idx_c] = epsilon_s;
 		rollingSpring[idx_c] = epsilon_r;
 		torsionSpring[idx_c] = epsilon_t;
@@ -240,7 +285,7 @@ const double3* localVertices,
 const int* triangleIndex_v,
 const int* numTrianglesPrefixSum_v,
 const int* wallIndex_t,
-quaternion* orientation_w, 
+quaternion* orientation_w,
 double3* position_w,
 const double dt,
 const size_t numVertices)
@@ -254,18 +299,33 @@ const size_t numVertices)
 	globalVertices[idx_i] = position_w[idx_w] + rotateVectorByQuaternion(orientation_w[idx_w], localVertices[idx_i]);
 }
 
-extern "C" void launchBallMeshWallInteractionCalculation(solidInteraction &ballTriangleInteractions, 
-ball &balls, 
+extern "C" void launchBallMeshWallInteractionCalculation(solidInteraction &ballTriangleInteractions,
+ball &balls,
 meshWall &meshWalls,
 contactModelParameters &contactModelParams,
 interactionMap &ballTriangleInteractionMap,
-const double timeStep, 
-const size_t maxThreadsPerBlock, 
+const double timeStep,
+const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
     size_t grid = 1, block = 1;
 
 	computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
+	calBallTriangleContactSpringContactPoint <<<grid, block, 0, stream>>> (ballTriangleInteractions.contactPoint(),
+	ballTriangleInteractions.slidingSpring(),
+	ballTriangleInteractions.rollingSpring(),
+	ballTriangleInteractions.torsionSpring(),
+	ballTriangleInteractions.objectPointing(),
+	ballTriangleInteractions.cancelFlag(),
+	balls.position(),
+	balls.radius(),
+    ballTriangleInteractionMap.prefixSumA(),
+    meshWalls.triangles().index0(),
+    meshWalls.triangles().index1(),
+    meshWalls.triangles().index2(),
+    meshWalls.globalVertices(),
+	balls.deviceSize());
+
     calBallTriangleContactForceTorqueKernel <<<grid, block, 0, stream>>> (ballTriangleInteractions.force(),
 	ballTriangleInteractions.torque(),
 	ballTriangleInteractions.contactPoint(),
@@ -273,6 +333,7 @@ cudaStream_t stream)
 	ballTriangleInteractions.rollingSpring(),
 	ballTriangleInteractions.torsionSpring(),
 	ballTriangleInteractions.objectPointing(),
+	ballTriangleInteractions.cancelFlag(),
 	balls.force(),
 	balls.torque(),
 	balls.position(),
@@ -281,16 +342,12 @@ cudaStream_t stream)
 	balls.radius(),
     balls.inverseMass(),
 	balls.materialID(),
-    ballTriangleInteractionMap.prefixSumA(),
     meshWalls.position(),
     meshWalls.velocity(),
     meshWalls.angularVelocity(),
     meshWalls.materialID(),
     meshWalls.triangles().wallIndex(),
-    meshWalls.triangles().index0(),
-    meshWalls.triangles().index1(),
-    meshWalls.triangles().index2(),
-    meshWalls.globalVertices(),
+    ballTriangleInteractionMap.prefixSumA(),
 	contactModelParams.hertzian.effectiveYoungsModulus,
 	contactModelParams.hertzian.effectiveShearModulus,
 	contactModelParams.hertzian.restitutionCoefficient,
@@ -320,21 +377,21 @@ cudaStream_t stream)
 }
 
 extern "C" void launchMeshWallIntegration(meshWall &meshWalls, 
-const double timeStep, 
-const size_t maxThreadsPerBlock, 
+const double timeStep,
+const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
 	size_t grid = 1, block = 1;
 
 	computeGPUGridSizeBlockSize(grid, block, meshWalls.deviceSize(), maxThreadsPerBlock);
     orientationIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.orientation(), 
-    meshWalls.angularVelocity(), 
-    timeStep, 
+    meshWalls.angularVelocity(),
+    timeStep,
     meshWalls.deviceSize());
 
-	positionIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.position(), 
-    meshWalls.velocity(), 
-    timeStep, 
+	positionIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.position(),
+    meshWalls.velocity(),
+    timeStep,
     meshWalls.deviceSize());
 
     computeGPUGridSizeBlockSize(grid, block, meshWalls.vertices().deviceSize(), maxThreadsPerBlock);

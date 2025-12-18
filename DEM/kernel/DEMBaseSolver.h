@@ -1,11 +1,7 @@
 #pragma once
 #include "solverParams.h"
 #include "contactModelParams.h"
-#include "cudaKernel/myStruct/myUtility/myFileEdit.h"
 #include "ballHandler.h"
-#include "cudaKernel/myStruct/interaction.h"
-#include "cudaKernel/ballNeighborSearch.h"
-#include "cudaKernel/ballIntegration.h"
 
 class DEMBaseSolver:
     public solverParams, public contactModelParams
@@ -62,20 +58,6 @@ protected:
 
 	ballHandler& getBallHandler();
 
-	spatialGrid& getBallSpatialGrids();
-
-	solidInteraction& getBallInteractions() {return ballInteractions_;}
-
-	interactionMap& getBallInteractionMap() {return ballInteractionMap_;}
-
-	bondedInteraction& getBondedBallInteractions() {return bondedBallInteractions_;}
-
-	void addBondedObjects(const std::vector<int> &object0, const std::vector<int> &object1);
-
-	void addBallExternalForce(const std::vector<double3>& externalForce);
-
-    void addBallExternalTorque(const std::vector<double3>& externalTorque);
-
 private:
     //Be fucking careful to this motherfucker, making sure that you have correct "A" size and "B" size of the interactionMap
     virtual void download();
@@ -101,8 +83,4 @@ private:
 	cudaStream_t stream_;
 
 	ballHandler ballHandler_;
-
-    solidInteraction ballInteractions_;
-    bondedInteraction bondedBallInteractions_;
-	interactionMap ballInteractionMap_;
 };

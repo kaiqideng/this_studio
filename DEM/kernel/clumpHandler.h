@@ -29,7 +29,7 @@ public:
         }
 
         int clumpID = static_cast<int>(clumps_.hostSize());
-        size_t pebbleStart = bH.balls().hostSize();
+        size_t pebbleStart = bH.getBalls().hostSize();
         size_t pebbleEnd = pebbleStart + points.size();
 
         double volume = 0;
@@ -80,7 +80,7 @@ public:
         }
 
         int clumpID = static_cast<int>(clumps_.hostSize());
-        size_t pebbleStart = bH.balls().hostSize();
+        size_t pebbleStart = bH.getBalls().hostSize();
         size_t pebbleEnd = pebbleStart + points.size();
 
         bH.addFixedCluster(points, radius, materialID, stream, clumpID);
@@ -98,7 +98,7 @@ public:
         pebbleEnd);
     }
 
-    clump &clumps() { return clumps_; }
+    clump &getClumps() { return clumps_; }
 
     void download(cudaStream_t stream)
     {
@@ -108,6 +108,26 @@ public:
             downloadFlag_ = false;
         }
     }
+
+    void integration1st(ball& balls, const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+	{
+        launchClump1stHalfIntegration(clumps_, 
+        balls, 
+        g, 
+        dt, 
+        maxThreads, 
+        stream);
+	}
+
+    void integration2nd(ball& balls, const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+	{
+        launchClump2ndHalfIntegration(clumps_, 
+        balls, 
+        g, 
+        dt, 
+        maxThreads, 
+        stream);
+	}
 
 private:
     bool downloadFlag_;

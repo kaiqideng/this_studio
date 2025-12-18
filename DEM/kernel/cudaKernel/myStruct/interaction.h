@@ -1,5 +1,6 @@
 #pragma once
 #include "myUtility/myHostDeviceArray1D.h"
+#include <csignal>
 
 struct solidInteraction
 {
@@ -12,6 +13,7 @@ private:
     HostDeviceArray1D<double3> slidingSpring_;
     HostDeviceArray1D<double3> rollingSpring_;
     HostDeviceArray1D<double3> torsionSpring_;
+    DeviceArray1D<int>         cancelFlag_;
 
     DeviceArray1D<int>         objectPointedHistory_;
     DeviceArray1D<int>         objectPointingHistory_;
@@ -20,7 +22,6 @@ private:
     DeviceArray1D<double3>     torsionSpringHistory_;
 
     size_t activeSize_ {0};
-    size_t activeSizeHistory_{0};
 
 public:
     solidInteraction() = default;
@@ -30,51 +31,7 @@ public:
     solidInteraction(solidInteraction&&) noexcept = default;
     solidInteraction& operator=(solidInteraction&&) noexcept = default;
 
-    size_t deviceSize() const{ return objectPointed_.deviceSize(); }
     size_t activeSize() const{ return activeSize_; }
-
-    void addHost(const int     objectPointed,
-                 const int     objectPointing,
-                 const double3 force,
-                 const double3 torque,
-                 const double3 contactPoint,
-                 const double3 slidingSpring,
-                 const double3 rollingSpring,
-                 const double3 torsionSpring)
-    {
-        objectPointed_.addHostData(objectPointed);
-        objectPointing_.addHostData(objectPointing);
-        force_.addHostData(force);
-        torque_.addHostData(torque);
-        contactPoint_.addHostData(contactPoint);
-        slidingSpring_.addHostData(slidingSpring);
-        rollingSpring_.addHostData(rollingSpring);
-        torsionSpring_.addHostData(torsionSpring);
-    }
-
-    void removeHost(size_t index)
-    {
-        objectPointed_.removeHostData(index);
-        objectPointing_.removeHostData(index);
-        force_.removeHostData(index);
-        torque_.removeHostData(index);
-        contactPoint_.removeHostData(index);
-        slidingSpring_.removeHostData(index);
-        rollingSpring_.removeHostData(index);
-        torsionSpring_.removeHostData(index);
-    }
-
-    void clearHost()
-    {
-        objectPointed_.clearHostData();
-        objectPointing_.clearHostData();
-        force_.clearHostData();
-        torque_.clearHostData();
-        contactPoint_.clearHostData();
-        slidingSpring_.clearHostData();
-        rollingSpring_.clearHostData();
-        torsionSpring_.clearHostData();
-    }
 
     void alloc(size_t n, cudaStream_t stream)
     {
@@ -86,6 +43,7 @@ public:
         slidingSpring_.allocDeviceArray(n, stream);
         rollingSpring_.allocDeviceArray(n, stream);
         torsionSpring_.allocDeviceArray(n, stream);
+        cancelFlag_.allocDeviceArray(n, stream);
         objectPointedHistory_.allocDeviceArray(n, stream);
         objectPointingHistory_.allocDeviceArray(n, stream);
         slidingSpringHistory_.allocDeviceArray(n, stream);
@@ -96,7 +54,7 @@ public:
     void setActiveSize(size_t n, cudaStream_t stream)
     {
         activeSize_ = n;
-        if(n > deviceSize())
+        if(n > objectPointed_.deviceSize())
         {
             objectPointed_.allocDeviceArray(n, stream);
             objectPointing_.allocDeviceArray(n, stream);
@@ -106,12 +64,13 @@ public:
             slidingSpring_.allocDeviceArray(n, stream);
             rollingSpring_.allocDeviceArray(n, stream);
             torsionSpring_.allocDeviceArray(n, stream);
+            cancelFlag_.allocDeviceArray(n, stream);
         }
     }
 
     void updateHistory(cudaStream_t stream)
     {
-        if(activeSize_ > activeSizeHistory_)
+        if(activeSize_ > objectPointedHistory_.deviceSize())
         {
             objectPointedHistory_.allocDeviceArray(activeSize_, stream);
             objectPointingHistory_.allocDeviceArray(activeSize_, stream);
@@ -127,7 +86,6 @@ public:
             cuda_copy(rollingSpringHistory(), rollingSpring(), activeSize_,CopyDir::D2D, stream);
             cuda_copy(torsionSpringHistory(), torsionSpring(), activeSize_,CopyDir::D2D, stream);
         }
-        activeSizeHistory_ = activeSize_;
     }
 
     int*           objectPointed()        { return objectPointed_.d_ptr; }
@@ -138,6 +96,7 @@ public:
     double3*       slidingSpring()        { return slidingSpring_.d_ptr; }
     double3*       rollingSpring()        { return rollingSpring_.d_ptr; }
     double3*       torsionSpring()        { return torsionSpring_.d_ptr; }
+    int*           cancelFlag()           { return cancelFlag_.d_ptr; }
 
     int*           objectPointedHistory()   { return objectPointedHistory_.d_ptr; }
     int*           objectPointingHistory()  { return objectPointingHistory_.d_ptr; }
@@ -153,6 +112,47 @@ public:
     std::vector<double3> slidingSpringVector()   { return slidingSpring_.getHostData(); }
     std::vector<double3> rollingSpringVector()   { return rollingSpring_.getHostData(); }
     std::vector<double3> torsionSpringVector()   { return torsionSpring_.getHostData(); }
+};
+
+struct SPHInteraction
+{
+private:
+    HostDeviceArray1D<int>     objectPointed_;
+    HostDeviceArray1D<int>     objectPointing_;
+
+    size_t activeSize_ {0};
+
+public:
+    SPHInteraction() = default;
+    ~SPHInteraction() = default;
+    SPHInteraction(const SPHInteraction&) = delete;
+    SPHInteraction& operator=(const SPHInteraction&) = delete;
+    SPHInteraction(SPHInteraction&&) noexcept = default;
+    SPHInteraction& operator=(SPHInteraction&&) noexcept = default;
+
+    size_t activeSize() const{ return activeSize_; }
+
+    void alloc(size_t n, cudaStream_t stream)
+    {
+        objectPointed_.allocDeviceArray(n, stream);
+        objectPointing_.allocDeviceArray(n, stream);
+    }
+
+    void setActiveSize(size_t n, cudaStream_t stream)
+    {
+        activeSize_ = n;
+        if(n > objectPointed_.deviceSize())
+        {
+            objectPointed_.allocDeviceArray(n, stream);
+            objectPointing_.allocDeviceArray(n, stream);
+        }
+    }
+
+    int*           objectPointed()        { return objectPointed_.d_ptr; }
+    int*           objectPointing()       { return objectPointing_.d_ptr; }
+
+    std::vector<int>     objectPointedVector()   { return objectPointed_.getHostData(); }
+    std::vector<int>     objectPointingVector()  { return objectPointing_.getHostData(); }
 };
 
 struct bondedInteraction
@@ -689,23 +689,23 @@ public:
         cuda_copy(bondedFrictionCoefficient_.d_ptr,
                   h_mu_b.data(), pairTableSize, CopyDir::H2D, stream);
 
-        hertzian.effectiveYoungsModulus                 = hertzianEffectiveYoungsModulus_.d_ptr;
-        hertzian.effectiveShearModulus                  = hertzianEffectiveShearModulus_.d_ptr;
-        hertzian.restitutionCoefficient                 = hertzianRestitutionCoefficient_.d_ptr;
-        hertzian.rollingStiffnessToShearStiffnessRatio  = hertzianRollingStiffnessToShearStiffnessRatio_.d_ptr;
-        hertzian.torsionStiffnessToShearStiffnessRatio  = hertzianTorsionStiffnessToShearStiffnessRatio_.d_ptr;
-        hertzian.slidingFrictionCoefficient             = hertzianSlidingFrictionCoefficient_.d_ptr;
-        hertzian.rollingFrictionCoefficient             = hertzianRollingFrictionCoefficient_.d_ptr;
-        hertzian.torsionFrictionCoefficient             = hertzianTorsionFrictionCoefficient_.d_ptr;
+        hertzian.effectiveYoungsModulus                = hertzianEffectiveYoungsModulus_.d_ptr;
+        hertzian.effectiveShearModulus                 = hertzianEffectiveShearModulus_.d_ptr;
+        hertzian.restitutionCoefficient                = hertzianRestitutionCoefficient_.d_ptr;
+        hertzian.rollingStiffnessToShearStiffnessRatio = hertzianRollingStiffnessToShearStiffnessRatio_.d_ptr;
+        hertzian.torsionStiffnessToShearStiffnessRatio = hertzianTorsionStiffnessToShearStiffnessRatio_.d_ptr;
+        hertzian.slidingFrictionCoefficient            = hertzianSlidingFrictionCoefficient_.d_ptr;
+        hertzian.rollingFrictionCoefficient            = hertzianRollingFrictionCoefficient_.d_ptr;
+        hertzian.torsionFrictionCoefficient            = hertzianTorsionFrictionCoefficient_.d_ptr;
 
-        linear.normalStiffness          = linearNormalStiffness_.d_ptr;
+        linear.normalStiffness            = linearNormalStiffness_.d_ptr;
         linear.slidingStiffness           = linearSlidingStiffness_.d_ptr;
-        linear.rollingStiffness         = linearRollingStiffness_.d_ptr;
-        linear.torsionStiffness         = linearTorsionStiffness_.d_ptr;
-        linear.normalDampingCoefficient = linearNormalDampingCoefficient_.d_ptr;
+        linear.rollingStiffness           = linearRollingStiffness_.d_ptr;
+        linear.torsionStiffness           = linearTorsionStiffness_.d_ptr;
+        linear.normalDampingCoefficient   = linearNormalDampingCoefficient_.d_ptr;
         linear.slidingDampingCoefficient  = linearSlidingDampingCoefficient_.d_ptr;
-        linear.rollingDampingCoefficient= linearRollingDampingCoefficient_.d_ptr;
-        linear.torsionDampingCoefficient= linearTorsionDampingCoefficient_.d_ptr;
+        linear.rollingDampingCoefficient  = linearRollingDampingCoefficient_.d_ptr;
+        linear.torsionDampingCoefficient  = linearTorsionDampingCoefficient_.d_ptr;
         linear.slidingFrictionCoefficient = linearSlidingFrictionCoefficient_.d_ptr;
         linear.rollingFrictionCoefficient = linearRollingFrictionCoefficient_.d_ptr;
         linear.torsionFrictionCoefficient = linearTorsionFrictionCoefficient_.d_ptr;

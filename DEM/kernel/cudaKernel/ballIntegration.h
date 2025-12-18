@@ -30,8 +30,8 @@ __device__ __forceinline__ size_t getContactParameterArraryIndex(int mIDA, int m
 }
 
 __device__ __forceinline__ int ParallelBondedContact(double& bondNormalForce, double& bondTorsionalTorque, double3& bondShearForce, double3& bondBendingTorque,
-	const double3 contactNormalPrev,
-	const double3 contactNormal,
+	double3 contactNormalPrev,
+	double3 contactNormal,
 	const double3 relativeVelocityAtContact,
 	const double3 angularVelocityA,
 	const double3 angularVelocityB,

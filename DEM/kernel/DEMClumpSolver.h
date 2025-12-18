@@ -54,49 +54,20 @@ private:
     void download() override
     {
         downloadContactModelParams(stream_);
-        
-        size_t numBalls0 = getBallHandler().balls().deviceSize();
         getBallHandler().download(getDomainOrigin(), getDomainSize(), stream_);
-        size_t numBalls1 = getBallHandler().balls().deviceSize();
-        if(numBalls1 > numBalls0)
-        {
-            getBallInteractions().alloc(numBalls1 * 6, stream_);
-            getBallInteractionMap().alloc(numBalls1, numBalls1, stream_);
-        }
-
         clumpHandler_.download(stream_);
     }
 
     void integration1st(const double dt) override
 	{
-        launchClump1stHalfIntegration(clumpHandler_.clumps(), 
-        getBallHandler().balls(), 
-        getGravity(), 
-        dt, 
-        getGPUMaxThreadsPerBlock(), 
-        stream_);
-
-		launchBall1stHalfIntegration(getBallHandler().balls(), 
-		getGravity(), 
-		dt, 
-		getGPUMaxThreadsPerBlock(), 
-		stream_);
+        getClumpHandler().integration1st(getBallHandler().getBalls(), getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+        getBallHandler().integration1st(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
 	}
 
     void integration2nd(const double dt) override
 	{
-        launchClump2ndHalfIntegration(clumpHandler_.clumps(), 
-        getBallHandler().balls(), 
-        getGravity(), 
-        dt, 
-        getGPUMaxThreadsPerBlock(), 
-        stream_);
-
-		launchBall2ndHalfIntegration(getBallHandler().balls(), 
-		getGravity(), 
-		dt, 
-		getGPUMaxThreadsPerBlock(), 
-		stream_);
+        getClumpHandler().integration2nd(getBallHandler().getBalls(), getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+        getBallHandler().integration2nd(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
 	}
 
     cudaStream_t stream_;
