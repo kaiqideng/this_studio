@@ -119,6 +119,7 @@ struct SPHInteraction
 private:
     HostDeviceArray1D<int>     objectPointed_;
     HostDeviceArray1D<int>     objectPointing_;
+    HostDeviceArray1D<double3> force_;
 
     size_t activeSize_ {0};
 
@@ -136,6 +137,7 @@ public:
     {
         objectPointed_.allocDeviceArray(n, stream);
         objectPointing_.allocDeviceArray(n, stream);
+        force_.allocDeviceArray(n, stream);
     }
 
     void setActiveSize(size_t n, cudaStream_t stream)
@@ -145,14 +147,17 @@ public:
         {
             objectPointed_.allocDeviceArray(n, stream);
             objectPointing_.allocDeviceArray(n, stream);
+            force_.allocDeviceArray(n, stream);
         }
     }
 
-    int*           objectPointed()        { return objectPointed_.d_ptr; }
-    int*           objectPointing()       { return objectPointing_.d_ptr; }
+    int*     objectPointed()  { return objectPointed_.d_ptr; }
+    int*     objectPointing() { return objectPointing_.d_ptr; }
+    double3* force()          { return force_.d_ptr; }
 
-    std::vector<int>     objectPointedVector()   { return objectPointed_.getHostData(); }
-    std::vector<int>     objectPointingVector()  { return objectPointing_.getHostData(); }
+    std::vector<int>     objectPointedVector()  { return objectPointed_.getHostData(); }
+    std::vector<int>     objectPointingVector() { return objectPointing_.getHostData(); }
+    std::vector<double3> forceVector()          { return force_.getHostData(); }
 };
 
 struct bondedInteraction

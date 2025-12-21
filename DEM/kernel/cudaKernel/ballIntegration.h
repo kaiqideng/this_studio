@@ -1,18 +1,20 @@
 #pragma once
 #include "ballNeighborSearch.h"
 
-__device__ __forceinline__ size_t getContactParameterArraryIndex(int mIDA, int mIDB,
-                      size_t numberOfMaterials,
-                      size_t d_size)
+__device__ __forceinline__ size_t getContactParameterArraryIndex(int mIDA, 
+int mIDB,
+size_t numberOfMaterials,
+size_t d_size)
 {
     const size_t N   = numberOfMaterials;
     const size_t cap = d_size;
 
     if (N == 0 || cap == 0) return 0;
 
-    if (mIDA < 0 || mIDB < 0 ||
-        mIDA >= static_cast<int>(N) ||
-        mIDB >= static_cast<int>(N))
+    if (mIDA < 0 || 
+	mIDB < 0 ||
+    mIDA >= static_cast<int>(N) ||
+    mIDB >= static_cast<int>(N))
     {
         return cap - 1;
     }
@@ -29,21 +31,24 @@ __device__ __forceinline__ size_t getContactParameterArraryIndex(int mIDA, int m
     return idx;
 }
 
-__device__ __forceinline__ int ParallelBondedContact(double& bondNormalForce, double& bondTorsionalTorque, double3& bondShearForce, double3& bondBendingTorque,
-	double3 contactNormalPrev,
-	double3 contactNormal,
-	const double3 relativeVelocityAtContact,
-	const double3 angularVelocityA,
-	const double3 angularVelocityB,
-	const double radiusA,
-	const double radiusB,
-	const double timeStep,
-	double bondMultiplier,
-	double bondElasticModulus,
-	double bondStiffnessRatioNormalToShear,
-	double bondTensileStrength,
-	double bondCohesion,
-	double bondFrictionCoefficient)
+__device__ __forceinline__ int ParallelBondedContact(double& bondNormalForce, 
+double& bondTorsionalTorque, 
+double3& bondShearForce, 
+double3& bondBendingTorque,
+const double3 contactNormalPrev,
+const double3 contactNormal,
+const double3 relativeVelocityAtContact,
+const double3 angularVelocityA,
+const double3 angularVelocityB,
+const double radiusA,
+const double radiusB,
+const double timeStep,
+const double bondMultiplier,
+const double bondElasticModulus,
+const double bondStiffnessRatioNormalToShear,
+const double bondTensileStrength,
+const double bondCohesion,
+const double bondFrictionCoefficient)
 {
 	const double3 theta1 = cross(contactNormalPrev, contactNormal);
 	bondShearForce = rotateVector(bondShearForce, theta1);
@@ -88,9 +93,9 @@ static __device__ __forceinline__ double3 integrateSlidingOrRollingSpring(const 
 const double3 springVelocity, 
 const double3 contactNormal, 
 const double3 normalContactForce, 
-double frictionCoefficient, 
-double stiffness, 
-double dampingCoefficient, 
+const double frictionCoefficient, 
+const double stiffness, 
+const double dampingCoefficient, 
 const double timeStep)
 {
 	double3 spring = make_double3(0., 0., 0.);
@@ -120,9 +125,9 @@ static __device__ __forceinline__ double3 integrateTorsionSpring(const double3 s
 const double3 torsionRelativeVelocity, 
 const double3 contactNormal, 
 const double3 normalContactForce, 
-double frictionCoefficient, 
-double stiffness, 
-double dampingCoefficient, 
+const double frictionCoefficient, 
+const double stiffness, 
+const double dampingCoefficient, 
 const double timeStep)
 {
 	double3 spring = make_double3(0., 0., 0.);
@@ -142,48 +147,73 @@ const double timeStep)
 	return spring;
 }
 
-__device__ __forceinline__ void LinearContact(double3& contactForce, double3& contactTorque, double3& slidingSpring, double3& rollingSpring, double3& torsionSpring,
-	const double3 relativeVelocityAtContact,
-	const double3 relativeAngularVelocityAtContact,
-	const double3 contactNormal,
-	const double normalOverlap,
-	const double effectiveMass,
-	const double effectiveRadius,
-	const double timeStep,
-	double normalStiffness,
-	double slidingStiffness,
-	double rollingStiffness,
-	double torsionStiffness,
-	double normalDissipation,
-	double slidingDissipation,
-	double rollingDissipation,
-	double torsionDissipation,
-	double slidingFrictionCoefficient,
-	double rollingFrictionCoefficient,
-	double torsionFrictionCoefficient)
+__device__ __forceinline__ void LinearContact(double3& contactForce, 
+double3& contactTorque, 
+double3& slidingSpring, 
+double3& rollingSpring, 
+double3& torsionSpring,
+const double3 relativeVelocityAtContact,
+const double3 relativeAngularVelocityAtContact,
+const double3 contactNormal,
+const double normalOverlap,
+const double effectiveMass,
+const double effectiveRadius,
+const double timeStep,
+const double normalStiffness,
+const double slidingStiffness,
+const double rollingStiffness,
+const double torsionStiffness,
+const double normalDissipation,
+const double slidingDissipation,
+const double rollingDissipation,
+const double torsionDissipation,
+const double slidingFrictionCoefficient,
+const double rollingFrictionCoefficient,
+const double torsionFrictionCoefficient)
 {
 	if (normalOverlap > 0)
 	{
-		double normalDampingCoefficient = 2. * normalDissipation * sqrt(effectiveMass * normalStiffness);
-		double slidingDampingCoefficient = 2. * slidingDissipation * sqrt(effectiveMass * slidingStiffness);
-		double rollingDampingCoefficient = 2. * rollingDissipation * sqrt(effectiveMass * rollingStiffness);
-		double torsionDampingCoefficient = 2. * torsionDissipation * sqrt(effectiveMass * torsionStiffness);
+		const double normalDampingCoefficient = 2. * normalDissipation * sqrt(effectiveMass * normalStiffness);
+		const double slidingDampingCoefficient = 2. * slidingDissipation * sqrt(effectiveMass * slidingStiffness);
+		const double rollingDampingCoefficient = 2. * rollingDissipation * sqrt(effectiveMass * rollingStiffness);
+		const double torsionDampingCoefficient = 2. * torsionDissipation * sqrt(effectiveMass * torsionStiffness);
 
 		const double3 normalRelativeVelocityAtContact = dot(relativeVelocityAtContact, contactNormal) * contactNormal;
 		const double3 normalContactForce = normalStiffness * normalOverlap * contactNormal - normalRelativeVelocityAtContact * normalDampingCoefficient;
 
 		const double3 slidingRelativeVelocity = relativeVelocityAtContact - normalRelativeVelocityAtContact;
-		slidingSpring = integrateSlidingOrRollingSpring(slidingSpring, slidingRelativeVelocity, contactNormal, normalContactForce, slidingFrictionCoefficient, slidingStiffness, slidingDampingCoefficient, timeStep);
+		slidingSpring = integrateSlidingOrRollingSpring(slidingSpring, 
+		slidingRelativeVelocity, 
+		contactNormal, 
+		normalContactForce, 
+		slidingFrictionCoefficient, 
+		slidingStiffness, 
+		slidingDampingCoefficient, 
+		timeStep);
 		const double3 slidingForce = -slidingStiffness * slidingSpring - slidingDampingCoefficient * slidingRelativeVelocity;
 
 		const double3 rollingRelativeVelocity = -effectiveRadius * cross(contactNormal, relativeAngularVelocityAtContact);
-		rollingSpring = integrateSlidingOrRollingSpring(rollingSpring, rollingRelativeVelocity, contactNormal, normalContactForce, rollingFrictionCoefficient, rollingStiffness, rollingDampingCoefficient, timeStep);
+		rollingSpring = integrateSlidingOrRollingSpring(rollingSpring, 
+		rollingRelativeVelocity, 
+		contactNormal, 
+		normalContactForce, 
+		rollingFrictionCoefficient, 
+		rollingStiffness, 
+		rollingDampingCoefficient, 
+		timeStep);
 		const double3 rollingForce = -rollingStiffness * rollingSpring - rollingDampingCoefficient * rollingRelativeVelocity;
 		const double3 rollingTorque = effectiveRadius * cross(contactNormal, rollingForce);
 
 		const double effectiveDiameter = 2 * effectiveRadius;
 		const double3 torsionRelativeVelocity = effectiveDiameter * dot(relativeAngularVelocityAtContact, contactNormal) * contactNormal;
-		torsionSpring = integrateTorsionSpring(torsionSpring, torsionRelativeVelocity, contactNormal, normalContactForce, torsionFrictionCoefficient, torsionStiffness, torsionDampingCoefficient, timeStep);
+		torsionSpring = integrateTorsionSpring(torsionSpring, 
+		torsionRelativeVelocity, 
+		contactNormal, 
+		normalContactForce, 
+		torsionFrictionCoefficient, 
+		torsionStiffness, 
+		torsionDampingCoefficient, 
+		timeStep);
 		const double3 torsionForce = -torsionStiffness * torsionSpring - torsionDampingCoefficient * torsionRelativeVelocity;
 		const double3 torsionTorque = effectiveDiameter * torsionForce;
 
@@ -198,50 +228,75 @@ __device__ __forceinline__ void LinearContact(double3& contactForce, double3& co
 	}
 }
 
-__device__ __forceinline__ void HertzianMindlinContact(double3& contactForce, double3& contactTorque, double3& slidingSpring, double3& rollingSpring, double3& torsionSpring,
-	const double3 relativeVelocityAtContact,
-	const double3 relativeAngularVelocityAtContact,
-	const double3 contactNormal,
-	const double normalOverlap,
-	const double effectiveMass,
-	const double effectiveRadius,
-	const double timeStep,
-	const double dissipation,
-	double effectiveElasticModulus,
-	double effectiveShearModulus,
-	double stiffnessRatioRollingToSliding,
-	double stiffnessRatioTorsionToSliding,
-	double slidingFrictionCoefficient,
-	double rollingFrictionCoefficient,
-	double torsionFrictionCoefficient)
+__device__ __forceinline__ void HertzianMindlinContact(double3& contactForce, 
+double3& contactTorque, 
+double3& slidingSpring, 
+double3& rollingSpring, 
+double3& torsionSpring,
+const double3 relativeVelocityAtContact,
+const double3 relativeAngularVelocityAtContact,
+const double3 contactNormal,
+const double normalOverlap,
+const double effectiveMass,
+const double effectiveRadius,
+const double timeStep,
+const double dissipation,
+const double effectiveElasticModulus,
+const double effectiveShearModulus,
+const double stiffnessRatioRollingToSliding,
+const double stiffnessRatioTorsionToSliding,
+const double slidingFrictionCoefficient,
+const double rollingFrictionCoefficient,
+const double torsionFrictionCoefficient)
 {
 	if (normalOverlap > 0)
 	{
 		const double normalStiffness = 4. / 3. * effectiveElasticModulus * sqrt(effectiveRadius * normalOverlap);
-		double slidingStiffness = 8. * effectiveShearModulus * sqrt(effectiveRadius * normalOverlap);
+		const double slidingStiffness = 8. * effectiveShearModulus * sqrt(effectiveRadius * normalOverlap);
 		const double normalDampingCoefficient = 2. * sqrt(5. / 6.) * dissipation * sqrt(effectiveMass * normalStiffness);
-		double slidingDampingCoefficient = 2. * sqrt(5. / 6.) * dissipation * sqrt(effectiveMass * slidingStiffness);
+		const double slidingDampingCoefficient = 2. * sqrt(5. / 6.) * dissipation * sqrt(effectiveMass * slidingStiffness);
 
-		double rollingStiffness = slidingStiffness * stiffnessRatioRollingToSliding;
-		double torsionStiffness = slidingStiffness * stiffnessRatioTorsionToSliding;
-		double rollingDampingCoefficient = 2. * sqrt(5. / 6.) * dissipation * sqrt(effectiveMass * rollingStiffness);
-		double torsionDampingCoefficient = 2. * sqrt(5. / 6.) * dissipation * sqrt(effectiveMass * torsionStiffness);
+		const double rollingStiffness = slidingStiffness * stiffnessRatioRollingToSliding;
+		const double torsionStiffness = slidingStiffness * stiffnessRatioTorsionToSliding;
+		const double rollingDampingCoefficient = 2. * sqrt(5. / 6.) * dissipation * sqrt(effectiveMass * rollingStiffness);
+		const double torsionDampingCoefficient = 2. * sqrt(5. / 6.) * dissipation * sqrt(effectiveMass * torsionStiffness);
 
 		const double3 normalRelativeVelocityAtContact = dot(relativeVelocityAtContact, contactNormal) * contactNormal;
 		const double3 normalContactForce = normalStiffness * normalOverlap * contactNormal - normalRelativeVelocityAtContact * normalDampingCoefficient;
 
 		const double3 slidingRelativeVelocity = relativeVelocityAtContact - normalRelativeVelocityAtContact;
-		slidingSpring = integrateSlidingOrRollingSpring(slidingSpring, slidingRelativeVelocity, contactNormal, normalContactForce, slidingFrictionCoefficient, slidingStiffness, slidingDampingCoefficient, timeStep);
+		slidingSpring = integrateSlidingOrRollingSpring(slidingSpring, 
+		slidingRelativeVelocity, 
+		contactNormal, 
+		normalContactForce, 
+		slidingFrictionCoefficient, 
+		slidingStiffness, 
+		slidingDampingCoefficient, 
+		timeStep);
 		const double3 slidingForce = -slidingStiffness * slidingSpring - slidingDampingCoefficient * slidingRelativeVelocity;
 
 		const double3 rollingRelativeVelocity = -effectiveRadius * cross(contactNormal, relativeAngularVelocityAtContact);
-		rollingSpring = integrateSlidingOrRollingSpring(rollingSpring, rollingRelativeVelocity, contactNormal, normalContactForce, rollingFrictionCoefficient, rollingStiffness, rollingDampingCoefficient, timeStep);
+		rollingSpring = integrateSlidingOrRollingSpring(rollingSpring, 
+		rollingRelativeVelocity, 
+		contactNormal, 
+		normalContactForce, 
+		rollingFrictionCoefficient, 
+		rollingStiffness, 
+		rollingDampingCoefficient, 
+		timeStep);
 		const double3 rollingForce = -rollingStiffness * rollingSpring - rollingDampingCoefficient * rollingRelativeVelocity;
 		const double3 rollingTorque = effectiveRadius * cross(contactNormal, rollingForce);
 
 		const double effectiveDiameter = 2 * effectiveRadius;
 		const double3 torsionRelativeVelocity = effectiveDiameter * dot(relativeAngularVelocityAtContact, contactNormal) * contactNormal;
-		torsionSpring = integrateTorsionSpring(torsionSpring, torsionRelativeVelocity, contactNormal, normalContactForce, torsionFrictionCoefficient, torsionStiffness, torsionDampingCoefficient, timeStep);
+		torsionSpring = integrateTorsionSpring(torsionSpring, 
+		torsionRelativeVelocity, 
+		contactNormal, 
+		normalContactForce, 
+		torsionFrictionCoefficient, 
+		torsionStiffness, 
+		torsionDampingCoefficient, 
+		timeStep);
 		const double3 torsionForce = -torsionStiffness * torsionSpring - torsionDampingCoefficient * torsionRelativeVelocity;
 		const double3 torsionTorque = effectiveDiameter * torsionForce;
 
@@ -257,8 +312,8 @@ __device__ __forceinline__ void HertzianMindlinContact(double3& contactForce, do
 }
 
 __global__ void positionIntegrationKernel(double3* position, double3* velocity, 
-	const double dt,
-	const size_t num);
+const double dt,
+const size_t num);
 
 __global__ void orientationIntegrationKernel(quaternion* orientation, 
 double3* angularVelocity, 

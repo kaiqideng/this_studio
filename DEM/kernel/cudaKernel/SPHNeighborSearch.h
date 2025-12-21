@@ -2,8 +2,11 @@
 #include "ballNeighborSearch.h"
 
 extern "C" void launchSPHNeighborSearch(SPHInteraction& SPHInteractions, 
-interactionMap &SPHInteractionMap,
+interactionMap& SPHInteractionMap,
 SPH& SPHs, 
-spatialGrid& SPHSpatialGrids, 
+SPHInteraction& SPHVirtualInteractions, 
+interactionMap& SPHVirtualInteractionMap,
+virtualParticle& virtualParticles, 
+spatialGrid& SPHVirtualSpatialGrids, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);

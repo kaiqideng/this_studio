@@ -1,5 +1,6 @@
 #pragma once
 #include "cudaKernel/SPHNeighborSearch.h"
+#include "cudaKernel/SPHIntegration.h"
 #include "cudaKernel/myStruct/particle.h"
 #include "cudaKernel/myStruct/spatialGrid.h"
 #include "cudaKernel/myStruct/interaction.h"
@@ -10,14 +11,16 @@ class SPHHandler
 public:
     SPHHandler()
     {
-        downLoadFlag_ = false;
+        downloadSPHFlag_ = false;
+        downloadVirtualParticleFlag_ = false;
+        maximumAbsluteVelocity = 0.0;
     }
 
     ~SPHHandler() = default;
 
     void download(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
     {
-        if(downLoadFlag_)
+        if(downloadSPHFlag_)
         {
             size_t numSPHs0 = SPHs_.deviceSize();
             SPHs_.download(stream);
@@ -36,8 +39,21 @@ public:
                     spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
                 }
             }
-            downLoadFlag_ = false;
         }
+
+        if(downloadVirtualParticleFlag_)
+        {
+            virtualParticles_.download(stream);
+        }
+
+        if(downloadVirtualParticleFlag_ || downloadSPHFlag_)
+        {
+            SPHVirtualInteractions_.alloc(SPHs_.deviceSize() * 60, stream);
+            SPHVirtualInteractionMap_.alloc(SPHs_.deviceSize(), virtualParticles_.deviceSize(), stream);
+        }
+
+        downloadSPHFlag_ = false;
+        downloadVirtualParticleFlag_ = false;
     }
 
     void neighborSearch(const size_t maxThreads, cudaStream_t stream)
@@ -45,26 +61,39 @@ public:
         launchSPHNeighborSearch(SPHInteractions_, 
         SPHInteractionMap_, 
         SPHs_, 
+        SPHVirtualInteractions_,
+        SPHVirtualInteractionMap_,
+        virtualParticles_,
         spatialGrids_, 
         maxThreads, 
         stream);
     }
 
-    void integration1st(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
     {
-
+        launchSPHIntegration(SPHs_, 
+        SPHInteractions_, 
+        SPHInteractionMap_, 
+        virtualParticles_, 
+        SPHVirtualInteractions_, 
+        SPHVirtualInteractionMap_, 
+        maximumAbsluteVelocity, 
+        g, 
+        dt, 
+        maxThreads, 
+        stream);
     }
-
-    void integration2nd(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
-    {
-        
-    }
-
+    
 private:
-    bool downLoadFlag_;
+    bool downloadSPHFlag_;
+    bool downloadVirtualParticleFlag_;
     SPH SPHs_;
+    virtualParticle virtualParticles_;
     spatialGrid spatialGrids_;
+    double maximumAbsluteVelocity;
 
     SPHInteraction SPHInteractions_;
     interactionMap SPHInteractionMap_;
+    SPHInteraction SPHVirtualInteractions_;
+    interactionMap SPHVirtualInteractionMap_;
 };
