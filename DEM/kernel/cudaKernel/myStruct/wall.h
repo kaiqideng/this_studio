@@ -208,7 +208,8 @@ private:
 
     HostDeviceArray1D<double3> globalVertices_;
 
-    struct EdgeKey {
+    struct EdgeKey 
+    {
         int a, b;
         EdgeKey() = default;
         EdgeKey(int i, int j) {
@@ -222,7 +223,7 @@ private:
     };
 
     void buildEdgesAndVertexAdjacency(const std::vector<double3>& vertex,
-                                    const std::vector<int3>&    triIndices)
+    const std::vector<int3>& triIndices)
     {
         edges_.clearHost();
         vertices_.clearHost();
@@ -324,12 +325,12 @@ public:
     size_t deviceSize() const { return position_.deviceSize(); }
 
     void addWallFromMesh(const std::vector<double3>& newVertices,
-                        const std::vector<int3>&    newTriIndices,
-                        const double3&              pos,
-                        const double3&              vel,
-                        const double3&              angVel,
-                        const quaternion&           q,
-                        int                         matID)
+    const std::vector<int3>& newTriIndices,
+    const double3& pos,
+    const double3& vel,
+    const double3& angVel,
+    const quaternion& q,
+    int matID)
     {
         const int nVerts = static_cast<int>(newVertices.size());
         const int nTris  = static_cast<int>(newTriIndices.size());
@@ -429,15 +430,15 @@ public:
         globalVertices_.upload(stream);
     }
 
-    double3* position()        { return position_.d_ptr; }
-    double3* velocity()        { return velocity_.d_ptr; }
+    double3* position() { return position_.d_ptr; }
+    double3* velocity() { return velocity_.d_ptr; }
     double3* angularVelocity() { return angularVelocity_.d_ptr; }
-    quaternion* orientation()  { return orientation_.d_ptr; }
-    int* materialID()          { return materialID_.d_ptr; }
+    quaternion* orientation() { return orientation_.d_ptr; }
+    int* materialID() { return materialID_.d_ptr; }
 
     triangle& triangles() { return triangles_; }
-    edge&     edges()  { return edges_; }
-    vertex& vertices()  { return vertices_; }
+    edge& edges() { return edges_; }
+    vertex& vertices() { return vertices_; }
 
     double3* globalVertices() { return globalVertices_.d_ptr; }
 
@@ -517,8 +518,8 @@ public:
     }
 
     double3 triangleCircumcenter(const double3& a,
-                                 const double3& b,
-                                 const double3& c)
+    const double3& b,
+    const double3& c)
     {
         // Edges from vertex a
         double3 ab = b - a;

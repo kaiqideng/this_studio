@@ -9,10 +9,11 @@ int* cellEnd,
 const double3 minBound, 
 const double3 cellSize, 
 const int3 gridSize, 
-const size_t numSPHs)
+const size_t numSPHs,
+const size_t numSPHAndGhosts)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idxA >= numSPHs) return;
+    if (idxA >= numSPHAndGhosts) return;
     int count = 0;
 
     double3 posA = position[idxA];
@@ -34,7 +35,9 @@ const size_t numSPHs)
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = SPHHashIndex[i];
-                    double cut = 2.0 * fmax(radA, smoothLength[idxB]);;
+                    if (idxA == idxB) continue;
+                    if (idxA >= numSPHs && idxB >= numSPHs) continue;
+                    double cut = 2.0 * radA;
                     double3 posB = position[idxB];
                     double3 rAB = posA - posB;
                     if ((cut * cut - dot(rAB, rAB)) >= 0.) count++;
@@ -56,10 +59,11 @@ int* cellEnd,
 const double3 minBound, 
 const double3 cellSize, 
 const int3 gridSize, 
-const size_t numSPHs)
+const size_t numSPHs,
+const size_t numSPHAndGhosts)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idxA >= numSPHs) return;
+    if (idxA >= numSPHAndGhosts) return;
 
     int base_w = 0;
     if (idxA > 0) base_w = neighborPrefixSumA[idxA - 1];
@@ -83,7 +87,9 @@ const size_t numSPHs)
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = SPHHashIndex[i];
-                    double cut = 2.0 * fmax(radA, smoothLength[idxB]);
+                    if (idxA == idxB) continue;
+                    if (idxA >= numSPHs && idxB >= numSPHs) continue;
+                    double cut = 2.0 * radA;
                     double3 posB = position[idxB];
                     double3 rAB = posA - posB;
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
@@ -100,8 +106,8 @@ const size_t numSPHs)
 }
 
 __global__ void countSPHVirtualInteractionsKernel(double3* position_SPH, 
-const double* smoothLength, 
 double3* position_virtual,
+double* effectiveRadius_virtual,
 int* virtualHashIndex, 
 int* neighborCountA, 
 int* cellStart, 
@@ -116,7 +122,6 @@ const size_t numSPHs)
     int count = 0;
 
     double3 posA = position_SPH[idxA];
-    double radA = smoothLength[idxA];
     int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
     for (int zz = -1; zz <= 1; zz++)
     {
@@ -134,7 +139,7 @@ const size_t numSPHs)
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = virtualHashIndex[i];
-                    double cut = 2.0 * radA;
+                    double cut = effectiveRadius_virtual[idxB];
                     double3 posB = position_virtual[idxB];
                     double3 rAB = posA - posB;
                     if ((cut * cut - dot(rAB, rAB)) >= 0.) count++;
@@ -149,8 +154,8 @@ __global__ void writeSPHVirtualInteractionsKernel(int* objectPointed,
 int* objectPointing, 
 double3* force_interaction, 
 double3* position_SPH, 
-const double* smoothLength, 
 double3* position_virtual, 
+double* effectiveRadius_virtual,
 int* virtualHashIndex, 
 int* neighborPrefixSumA, 
 int* cellStart, 
@@ -166,7 +171,6 @@ const size_t numSPHs)
     int base_w = 0;
     if (idxA > 0) base_w = neighborPrefixSumA[idxA - 1];
     double3 posA = position_SPH[idxA];
-    double radA = smoothLength[idxA];
     int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
     for (int zz = -1; zz <= 1; zz++)
     {
@@ -185,7 +189,7 @@ const size_t numSPHs)
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = virtualHashIndex[i];
-                    double cut = 2.0 * fmax(radA, smoothLength[idxB]);
+                    double cut = effectiveRadius_virtual[idxB];
                     double3 posB = position_virtual[idxB];
                     double3 rAB = posA - posB;
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
@@ -204,36 +208,33 @@ const size_t numSPHs)
 
 extern "C" void launchSPHNeighborSearch(SPHInteraction& SPHInteractions, 
 interactionMap& SPHInteractionMap,
-SPH& SPHs, 
-SPHInteraction& SPHVirtualInteractions, 
-interactionMap& SPHVirtualInteractionMap,
-virtualParticle& virtualParticles, 
+SPH& SPHAndGhosts, 
 spatialGrid& spatialGrids, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
     size_t grid = 1, block = 1;
 
-    //SPH-SPH
     updateGridCellStartEnd(spatialGrids,
-    SPHs.hashIndex(),
-    SPHs.hashValue(),
-    SPHs.position(),
-    SPHs.deviceSize(),
+    SPHAndGhosts.hashIndex(),
+    SPHAndGhosts.hashValue(),
+    SPHAndGhosts.position(),
+    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize(),
     maxThreadsPerBlock,
     stream);
 
-    computeGPUGridSizeBlockSize(grid, block, SPHs.deviceSize(), maxThreadsPerBlock);
-    countSPHInteractionsKernel <<<grid, block, 0, stream>>> (SPHs.position(),
-    SPHs.smoothLength(),
-    SPHs.hashIndex(),
+    computeGPUGridSizeBlockSize(grid, block, SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize(), maxThreadsPerBlock);
+    countSPHInteractionsKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.position(),
+    SPHAndGhosts.smoothLength(),
+    SPHAndGhosts.hashIndex(),
     SPHInteractionMap.countA(),
     spatialGrids.cellHashStart(),
     spatialGrids.cellHashEnd(),
     spatialGrids.minBound,
     spatialGrids.cellSize,
     spatialGrids.gridSize,
-    SPHs.deviceSize());
+    SPHAndGhosts.SPHDeviceSize(),
+    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize());
 
     int activeNumber = 0;
     auto exec = thrust::cuda::par.on(stream);
@@ -246,18 +247,29 @@ cudaStream_t stream)
 
     writeSPHInteractionsKernel <<<grid, block, 0, stream>>> (SPHInteractions.objectPointed(),
     SPHInteractions.objectPointing(),
-    SPHs.position(),
-    SPHs.smoothLength(),
-    SPHs.hashIndex(),
+    SPHAndGhosts.position(),
+    SPHAndGhosts.smoothLength(),
+    SPHAndGhosts.hashIndex(),
     SPHInteractionMap.prefixSumA(),
     spatialGrids.cellHashStart(),
     spatialGrids.cellHashEnd(),
     spatialGrids.minBound,
     spatialGrids.cellSize,
     spatialGrids.gridSize,
-    SPHs.deviceSize());
+    SPHAndGhosts.SPHDeviceSize(),
+    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize());
+}
 
-    //SPH-virtual
+extern "C" void launchSPHVirtualParticleNeighborSearch(SPHInteraction& SPHVirtualInteractions, 
+interactionMap& SPHVirtualInteractionMap,
+SPH& SPHAndGhosts, 
+virtualParticle& virtualParticles, 
+spatialGrid& spatialGrids, 
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+    if (virtualParticles.deviceSize() == 0) return;
+
     updateGridCellStartEnd(spatialGrids,
     virtualParticles.hashIndex(),
     virtualParticles.hashValue(),
@@ -266,9 +278,12 @@ cudaStream_t stream)
     maxThreadsPerBlock,
     stream);
 
-    countSPHVirtualInteractionsKernel <<<grid, block, 0, stream>>> (SPHs.position(),
-    SPHs.smoothLength(),
+    size_t grid = 1, block = 1;
+
+    computeGPUGridSizeBlockSize(grid, block, SPHAndGhosts.SPHDeviceSize(), maxThreadsPerBlock);
+    countSPHVirtualInteractionsKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.position(),
     virtualParticles.position(),
+    virtualParticles.effectiveRadius(),
     virtualParticles.hashIndex(),
     SPHVirtualInteractionMap.countA(),
     spatialGrids.cellHashStart(),
@@ -276,23 +291,23 @@ cudaStream_t stream)
     spatialGrids.minBound,
     spatialGrids.cellSize,
     spatialGrids.gridSize,
-    SPHs.deviceSize());
+    SPHAndGhosts.SPHDeviceSize());
 
-    int activeNumber1 = 0;
-    auto exec1 = thrust::cuda::par.on(stream);
-    thrust::inclusive_scan(exec1,
+    int activeNumber = 0;
+    auto exec = thrust::cuda::par.on(stream);
+    thrust::inclusive_scan(exec,
     thrust::device_pointer_cast(SPHVirtualInteractionMap.countA()),
     thrust::device_pointer_cast(SPHVirtualInteractionMap.countA() + SPHVirtualInteractionMap.ASize()),
     thrust::device_pointer_cast(SPHVirtualInteractionMap.prefixSumA()));
-    cuda_copy_sync(&activeNumber1, SPHVirtualInteractionMap.prefixSumA() + SPHVirtualInteractionMap.ASize() - 1, 1, CopyDir::D2H);
-    SPHVirtualInteractions.setActiveSize(static_cast<size_t>(activeNumber1), stream);
+    cuda_copy_sync(&activeNumber, SPHVirtualInteractionMap.prefixSumA() + SPHVirtualInteractionMap.ASize() - 1, 1, CopyDir::D2H);
+    SPHVirtualInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
 
     writeSPHVirtualInteractionsKernel <<<grid, block, 0, stream>>> (SPHVirtualInteractions.objectPointed(),
     SPHVirtualInteractions.objectPointing(),
     SPHVirtualInteractions.force(),
-    SPHs.position(),
-    SPHs.smoothLength(),
+    SPHAndGhosts.position(),
     virtualParticles.position(),
+    virtualParticles.effectiveRadius(),
     virtualParticles.hashIndex(),
     SPHVirtualInteractionMap.prefixSumA(),
     spatialGrids.cellHashStart(),
@@ -300,5 +315,5 @@ cudaStream_t stream)
     spatialGrids.minBound,
     spatialGrids.cellSize,
     spatialGrids.gridSize,
-    SPHs.deviceSize());
+    SPHAndGhosts.SPHDeviceSize());
 }

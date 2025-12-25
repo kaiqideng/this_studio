@@ -12,8 +12,6 @@ public:
     SPHHandler()
     {
         downloadSPHFlag_ = false;
-        downloadVirtualParticleFlag_ = false;
-        maximumAbsluteVelocity = 0.0;
     }
 
     ~SPHHandler() = default;
@@ -22,15 +20,15 @@ public:
     {
         if(downloadSPHFlag_)
         {
-            size_t numSPHs0 = SPHs_.deviceSize();
-            SPHs_.download(stream);
-            size_t numSPHs1 = SPHs_.deviceSize();
-            if(numSPHs1 != numSPHs0)
+            size_t num0 = SPHAndGhosts_.deviceCap();
+            SPHAndGhosts_.download(stream);
+            size_t num1 = SPHAndGhosts_.deviceCap();
+            if(num1 != num0)
             {
-                SPHInteractions_.alloc(numSPHs1 * 60, stream);
-                SPHInteractionMap_.alloc(numSPHs1, numSPHs1, stream);
+                SPHInteractions_.alloc(num1 * 60, stream);
+                SPHInteractionMap_.alloc(num1, num1, stream);
                 double cellSizeOneDim = 0.0;
-                std::vector<double> h = SPHs_.smoothLengthVector();
+                std::vector<double> h = SPHAndGhosts_.smoothLengthVector();
                 if(h.size() > 0) cellSizeOneDim = *std::max_element(h.begin(), h.end()) * 2.0;
                 if(cellSizeOneDim > spatialGrids_.cellSize.x 
                 || cellSizeOneDim > spatialGrids_.cellSize.y 
@@ -39,61 +37,58 @@ public:
                     spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
                 }
             }
+            downloadSPHFlag_ = false;
         }
-
-        if(downloadVirtualParticleFlag_)
-        {
-            virtualParticles_.download(stream);
-        }
-
-        if(downloadVirtualParticleFlag_ || downloadSPHFlag_)
-        {
-            SPHVirtualInteractions_.alloc(SPHs_.deviceSize() * 60, stream);
-            SPHVirtualInteractionMap_.alloc(SPHs_.deviceSize(), virtualParticles_.deviceSize(), stream);
-        }
-
-        downloadSPHFlag_ = false;
-        downloadVirtualParticleFlag_ = false;
     }
 
     void neighborSearch(const size_t maxThreads, cudaStream_t stream)
     {
         launchSPHNeighborSearch(SPHInteractions_, 
         SPHInteractionMap_, 
-        SPHs_, 
-        SPHVirtualInteractions_,
-        SPHVirtualInteractionMap_,
-        virtualParticles_,
+        SPHAndGhosts_, 
         spatialGrids_, 
         maxThreads, 
         stream);
     }
 
-    void integration(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration1st(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
     {
-        launchSPHIntegration(SPHs_, 
-        SPHInteractions_, 
-        SPHInteractionMap_, 
-        virtualParticles_, 
-        SPHVirtualInteractions_, 
-        SPHVirtualInteractionMap_, 
-        maximumAbsluteVelocity, 
-        g, 
-        dt, 
-        maxThreads, 
+        launchSPH1stHalfIntegration(SPHAndGhosts_,
+        SPHInteractions_,
+        SPHInteractionMap_,
+        g,
+        dt,
+        maxThreads,
+        stream);
+    }
+
+    void integration2nd(const double dt, const size_t maxThreads, cudaStream_t stream)
+    {
+        launchSPH2ndHalfIntegration(SPHAndGhosts_,
+        SPHInteractions_,
+        SPHInteractionMap_,
+        dt,
+        maxThreads,
+        stream);
+    }
+
+    void updateBoundaryCondition(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    {
+        launchAdamiBoundaryCondition(SPHAndGhosts_,
+        SPHInteractions_,
+        SPHInteractionMap_,
+        g,
+        dt,
+        maxThreads,
         stream);
     }
     
 private:
     bool downloadSPHFlag_;
-    bool downloadVirtualParticleFlag_;
-    SPH SPHs_;
-    virtualParticle virtualParticles_;
+
+    SPH SPHAndGhosts_;
     spatialGrid spatialGrids_;
-    double maximumAbsluteVelocity;
 
     SPHInteraction SPHInteractions_;
     interactionMap SPHInteractionMap_;
-    SPHInteraction SPHVirtualInteractions_;
-    interactionMap SPHVirtualInteractionMap_;
 };

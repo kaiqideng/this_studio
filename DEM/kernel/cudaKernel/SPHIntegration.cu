@@ -1,5 +1,5 @@
 #include "SPHIntegration.h"
-#include "myStruct/interaction.h"
+#include <vector_functions.h>
 
 __global__ void calVelocityStarPositionStarKernel(double3* positionStar,
 double3* velocityStar,
@@ -9,8 +9,9 @@ const double* mass,
 const double* initialDensity,
 const double* smoothLength,
 const double* kinematicViscosity,
-int* neighborPrifixSum_SPH,
-int* objectPointing_SPH,
+int* neighborPrifixSum,
+int* objectPointing,
+double3* gradientKernel,
 const double3 gravity,
 const double timeStep,
 const size_t numSPHs)
@@ -27,11 +28,11 @@ const size_t numSPHs)
 
     double3 viscosityTerm = make_double3(0.0, 0.0, 0.0);
     int start = 0;
-    if (idx_i > 0) start = neighborPrifixSum_SPH[idx_i - 1];
-    int end = neighborPrifixSum_SPH[idx_i];
+    if (idx_i > 0) start = neighborPrifixSum[idx_i - 1];
+    int end = neighborPrifixSum[idx_i];
     for (int k = start; k < end; k++)
     {
-        int idx_j = objectPointing_SPH[k];
+        int idx_j = objectPointing[k];
 
         double3 r_j = position[idx_j];
         double3 u_j = velocity[idx_j];
@@ -43,6 +44,7 @@ const size_t numSPHs)
         double3 r_ij = r_i - r_j;
         double h_ij = 0.5 * (h_i + h_j);
         double3 dW_ij = gradWendlandKernel3D(r_ij, h_ij);
+        gradientKernel[k] = dW_ij;
 
         double gamma = 0.001 * h_ij;
         viscosityTerm += m_j * 8.0 * (nu_i + nu_j) * dot(u_i - u_j, r_ij) * dW_ij 
@@ -54,18 +56,19 @@ const size_t numSPHs)
 }
 
 __global__ void calDensityStarKernel(double* densityStar,
+const double* initialDensity, 
 double3* positionStar,
 double3* velocityStar,
 const double* mass,
-const double* initialDensity, 
 const double* smoothLength,
-int* neighborPrifixSum_SPH,
-int* objectPointing_SPH,
+int* neighborPrifixSum,
+int* objectPointing,
+double3* gradientKernelStar,
 const double timeStep,
-const size_t numSPHs)
+const size_t numSPHAndGhosts)
 {
     size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
-	if (idx_i >= numSPHs) return;
+	if (idx_i >= numSPHAndGhosts) return;
 
     double3 rs_i = positionStar[idx_i];
     double3 us_i = velocityStar[idx_i];
@@ -74,11 +77,11 @@ const size_t numSPHs)
 
     double dRho_i = 0.0;
     int start = 0;
-    if (idx_i > 0) start = neighborPrifixSum_SPH[idx_i - 1];
-    int end = neighborPrifixSum_SPH[idx_i];
+    if (idx_i > 0) start = neighborPrifixSum[idx_i - 1];
+    int end = neighborPrifixSum[idx_i];
     for (int k = start; k < end; k++)
     {
-        int idx_j = objectPointing_SPH[k];
+        int idx_j = objectPointing[k];
 
         double3 rs_j = positionStar[idx_j];
         double3 us_j = velocityStar[idx_j];
@@ -88,6 +91,8 @@ const size_t numSPHs)
         double3 rs_ij = rs_i - rs_j;
         double h_ij = 0.5 * (h_i + h_j);
         double3 dW_ij = gradWendlandKernel3D(rs_ij, h_ij);
+
+        gradientKernelStar[k] = dW_ij;
 
         dRho_i += m_j * dot(us_i - us_j, dW_ij);
     }
@@ -101,15 +106,15 @@ double3* velocityStar,
 double* densityStar,
 double* pressure,
 const double* mass,
-const double* initialDensity,
 const double* smoothLength,
-int* neighborPrifixSum_SPH,
-int* objectPointing_SPH,
+int* neighborPrifixSum,
+int* objectPointing,
+double3* gradientKernelStar,
 const double timeStep,
-const size_t numSPHs)
+const size_t numSPHAndGhosts)
 {
     size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
-	if (idx_i >= numSPHs) return;
+	if (idx_i >= numSPHAndGhosts) return;
 
     double3 rs_i = positionStar[idx_i];
     double3 us_i = velocityStar[idx_i];
@@ -122,11 +127,11 @@ const size_t numSPHs)
     double A_i = 0.0;
     double AP_i = 0.0;
     int start = 0;
-    if (idx_i > 0) start = neighborPrifixSum_SPH[idx_i - 1];
-    int end = neighborPrifixSum_SPH[idx_i];
+    if (idx_i > 0) start = neighborPrifixSum[idx_i - 1];
+    int end = neighborPrifixSum[idx_i];
     for (int k = start; k < end; k++)
     {
-        int idx_j = objectPointing_SPH[k];
+        int idx_j = objectPointing[k];
 
         double3 rs_j = positionStar[idx_j];
         double3 us_j = velocityStar[idx_j];
@@ -137,21 +142,23 @@ const size_t numSPHs)
 
         double3 rs_ij = rs_i - rs_j;
         double h_ij = 0.5 * (h_i + h_j);
-        double3 dW_ij = gradWendlandKernel3D(rs_ij, h_ij);
+
+        double3 dW_ij = gradientKernelStar[k];
 
         double gamma = 0.001 * h_ij;
         double invRhos_ij = 1.0 / (rhos_i + rhos_j);
         double invRhos2_ij = invRhos_ij * invRhos_ij;
         double A_ij = m_j * 8.0 * invRhos2_ij * dot(rs_ij, dW_ij) 
         / (dot(rs_ij, rs_ij) + gamma * gamma);
-        B_i += -m_j * dot(us_i - us_j, dW_ij) / rhos_j / timeStep;
+        B_i += -m_j * dot(us_i - us_j, dW_ij) / rhos_j;
         AP_i += A_ij * p_j;
         A_i += A_ij;
     }
 
+    B_i /= timeStep;
     double ps_i = 0.0;
-    if(fabs(A_i) > 1.e-20) ps_i = (B_i + AP_i) / A_i;
-    if(ps_i < 0.0) ps_i = 0.0;
+    if (fabs(A_i) > 1.e-20) ps_i = (B_i + AP_i) / A_i;
+    if (ps_i < 0.0) ps_i = 0.0;
     pressureStar[idx_i] = ps_i;
 }
 
@@ -162,14 +169,218 @@ double3* velocityStar,
 double* densityStar,
 double* pressureStar,
 const double* mass,
-const double* initialDensity, 
+int* neighborPrifixSum,
+int* objectPointing,
+double3* gradientKernelStar,
+const double timeStep,
+const size_t numSPHs)
+{
+    size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= numSPHs) return;
+
+    double3 r_i = position[idx_i];
+
+    double rhos_i = densityStar[idx_i];
+    double ps_i = pressureStar[idx_i];
+    double m_i = mass[idx_i];
+
+    double3 dp_rhos_i = make_double3(0.0, 0.0, 0.0);
+    int start = 0;
+    if (idx_i > 0) start = neighborPrifixSum[idx_i - 1];
+    int end = neighborPrifixSum[idx_i];
+    for (int k = start; k < end; k++)
+    {
+        int idx_j = objectPointing[k];
+
+        double rhos_j = densityStar[idx_j];
+        double ps_j = pressureStar[idx_j];
+        double m_j = mass[idx_j];
+
+        double3 dW_ij = gradientKernelStar[k];
+
+        dp_rhos_i += -m_j * (ps_i / (rhos_i * rhos_i) + ps_j / (rhos_j * rhos_j)) * dW_ij;
+    }
+
+    double3 u_i = velocity[idx_i];
+    double3 u1_i = velocityStar[idx_i] + dp_rhos_i * timeStep;
+    velocity[idx_i] = u1_i;
+    position[idx_i] += 0.5 * (u_i + u1_i) * timeStep;
+}
+
+__global__ void setDummyKernel(double3* velocityStar, 
+double* pressure, 
+double3* velocity, 
+double3* position, 
+const double* initialDensity,
 const double* smoothLength,
-int* neighborPrifixSum_SPH,
-int* objectPointing_SPH,
+int* neighborPrifixSum,
+int* objectPointing,
+const double3 gravity,
+const size_t numSPHs,
+const size_t numGhosts)
+{
+    size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= numGhosts) return;
+    idx_i += numSPHs;
+    velocityStar[idx_i] = make_double3(0.0, 0.0, 0.0);
+    pressure[idx_i] = 0.0;
+
+    double3 r_i = position[idx_i];
+    double h_i = smoothLength[idx_i];
+
+    double3 u_i = make_double3(0.0, 0.0, 0.0);
+    double p_i = 0.0;
+    double3 u_smooth = make_double3(0.0, 0.0, 0.0);
+    double W_i = 0.0;
+    double WP_i = 0.0;
+    double3 WRho_i = make_double3(0.0, 0.0, 0.0);
+    int start = 0;
+    if (idx_i > 0) start = neighborPrifixSum[idx_i - 1];
+    int end = neighborPrifixSum[idx_i];
+    for (int k = start; k < end; k++)
+    {
+        int idx_j = objectPointing[k];
+
+        double3 r_j = position[idx_j];
+        double h_j = smoothLength[idx_j];
+        double3 r_ij = r_i - r_j;
+        double h_ij = 0.5 * (h_i + h_j);
+        double W_ij = wendlandKernel3D(length(r_ij), h_ij);
+
+        double3 u_j = velocity[idx_j];
+        u_smooth += u_j * W_ij;
+
+        W_i += W_ij;
+
+        double p_j = pressure[idx_j];
+        double rho_j = initialDensity[idx_j];
+        WP_i += W_ij * p_j;
+        WRho_i = W_ij * rho_j * r_ij;
+    }
+
+    if(W_i > 1.e-20)
+    {
+        u_smooth /= W_i;
+        velocityStar[idx_i] = 2 * velocity[idx_i] - u_smooth;
+        pressure[idx_i] = (WP_i + dot(gravity, WRho_i)) / W_i;
+    }
+}
+
+extern "C" void launchSPH1stHalfIntegration(SPH& SPHAndGhosts, 
+SPHInteraction& SPHInteractions, 
+interactionMap& SPHInteractionMap,
+const double3 gravity,
+const double timeStep,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+    size_t grid = 1, block = 1;
+    computeGPUGridSizeBlockSize(grid, block, SPHAndGhosts.SPHDeviceSize(), maxThreadsPerBlock);
+    calVelocityStarPositionStarKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.positionStar(),
+    SPHAndGhosts.velocityStar(),
+    SPHAndGhosts.position(),
+    SPHAndGhosts.velocity(),
+    SPHAndGhosts.mass(),
+    SPHAndGhosts.initialDensity(),
+    SPHAndGhosts.smoothLength(),
+    SPHAndGhosts.kinematicViscosity(), 
+    SPHInteractionMap.prefixSumA(),
+    SPHInteractions.objectPointing(),
+    SPHInteractions.gradientKernel(),
+    gravity,
+    timeStep, 
+    SPHAndGhosts.SPHDeviceSize());
+}
+
+extern "C" void launchSPH2ndHalfIntegration(SPH& SPHAndGhosts, 
+SPHInteraction& SPHInteractions, 
+interactionMap& SPHInteractionMap,
+const double timeStep,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+    size_t grid = 1, block = 1;
+
+    computeGPUGridSizeBlockSize(grid, block, SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize(), maxThreadsPerBlock);
+    calDensityStarKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.densityStar(),
+    SPHAndGhosts.initialDensity(),
+    SPHAndGhosts.positionStar(),
+    SPHAndGhosts.velocityStar(),
+    SPHAndGhosts.mass(),
+    SPHAndGhosts.smoothLength(),
+    SPHInteractionMap.prefixSumA(),
+    SPHInteractions.objectPointing(),
+    SPHInteractions.gradientKernelStar(),
+    timeStep, 
+    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize());
+
+    calPresssureStarKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.pressureStar(),
+    SPHAndGhosts.positionStar(),
+    SPHAndGhosts.velocityStar(),
+    SPHAndGhosts.densityStar(),
+    SPHAndGhosts.pressure(),
+    SPHAndGhosts.mass(),
+    SPHAndGhosts.smoothLength(),
+    SPHInteractionMap.prefixSumA(),
+    SPHInteractions.objectPointing(),
+    SPHInteractions.gradientKernelStar(),
+    timeStep, 
+    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize());
+
+    cuda_copy(SPHAndGhosts.pressure(), SPHAndGhosts.pressureStar(), SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize(), CopyDir::D2D, stream);
+
+    computeGPUGridSizeBlockSize(grid, block, SPHAndGhosts.SPHDeviceSize(), maxThreadsPerBlock);
+    velocityPositionIntegrationKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.position(),
+    SPHAndGhosts.velocity(),
+    SPHAndGhosts.positionStar(),
+    SPHAndGhosts.velocityStar(),
+    SPHAndGhosts.densityStar(),
+    SPHAndGhosts.pressureStar(),
+    SPHAndGhosts.mass(),
+    SPHInteractionMap.prefixSumA(),
+    SPHInteractions.objectPointing(),
+    SPHInteractions.gradientKernelStar(),
+    timeStep, 
+    SPHAndGhosts.SPHDeviceSize());
+}
+
+extern "C" void launchAdamiBoundaryCondition(SPH& SPHAndGhosts, 
+SPHInteraction& SPHInteractions, 
+interactionMap& SPHInteractionMap,
+const double3 gravity,
+const double timeStep,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream)
+{
+    size_t grid = 1, block = 1;
+
+    size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
+    size_t numGhosts = SPHAndGhosts.ghostDeviceSize();
+
+    computeGPUGridSizeBlockSize(grid, block, numGhosts, maxThreadsPerBlock);
+    setDummyKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.velocityStar(),
+    SPHAndGhosts.pressure(), 
+    SPHAndGhosts.velocity(), 
+    SPHAndGhosts.position(), 
+    SPHAndGhosts.initialDensity(), 
+    SPHAndGhosts.smoothLength(),
+    SPHInteractionMap.prefixSumA(),
+    SPHInteractions.objectPointing(),
+    gravity,
+    numSPHs,
+    numGhosts);
+
+    cuda_copy(SPHAndGhosts.positionStar() + numSPHs, SPHAndGhosts.position() + numSPHs, numGhosts, CopyDir::D2D, stream);
+}
+
+
+__global__ void velocityPositionIntegrationFromRepulsiveForceKernel(double3* position,
+double3* velocity,
+const double* mass,
 double3* position_virtual,
 double* effectiveRadius_virtual,
 int* neighborPrifixSum_virtual,
-int* objectPointing_virtual,
+int* objectPointing_SPHVirtual,
 double3* force_SPHVirtual,
 const double maximumAbsluteVelocity,
 const double timeStep,
@@ -179,136 +390,30 @@ const size_t numSPHs)
 	if (idx_i >= numSPHs) return;
 
     double3 r_i = position[idx_i];
-    
-    double3 rs_i = positionStar[idx_i];
-    double rhos_i = densityStar[idx_i];
-    double ps_i = pressureStar[idx_i];
     double m_i = mass[idx_i];
-    double h_i = smoothLength[idx_i];
-
-    double3 dp_rhos_i = make_double3(0.0, 0.0, 0.0);
-    int start = 0;
-    if (idx_i > 0) start = neighborPrifixSum_SPH[idx_i - 1];
-    int end = neighborPrifixSum_SPH[idx_i];
-    for (int k = start; k < end; k++)
-    {
-        int idx_j = objectPointing_SPH[k];
-
-        double3 rs_j = positionStar[idx_j];
-        double rhos_j = densityStar[idx_j];
-        double ps_j = pressureStar[idx_j];
-        double m_j = mass[idx_j];
-        double h_j = smoothLength[idx_j];
-
-        double3 rs_ij = rs_i - rs_j;
-        double h_ij = 0.5 * (h_i + h_j);
-        double3 dW_ij = gradWendlandKernel3D(rs_ij, h_ij);
-
-        dp_rhos_i += -m_j * (ps_i / (rhos_i * rhos_i) + ps_j / (rhos_j * rhos_j)) * dW_ij;
-    }
 
     double3 PB_i = make_double3(0.0, 0.0, 0.0);
-    start = 0;
+    int start = 0;
     if (idx_i > 0) start = neighborPrifixSum_virtual[idx_i - 1];
-    end = neighborPrifixSum_virtual[idx_i];
+    int end = neighborPrifixSum_virtual[idx_i];
     for (int k = start; k < end; k++)
     {
-        int idx_v = objectPointing_virtual[k];
+        int idx_v = objectPointing_SPHVirtual[k];
 
         double3 r_v = position_virtual[idx_v];
         double D = maximumAbsluteVelocity * maximumAbsluteVelocity;
-        double r2 = effectiveRadius_virtual[idx_v] * effectiveRadius_virtual[idx_v];
+        double rad2 = effectiveRadius_virtual[idx_v] * effectiveRadius_virtual[idx_v];
         double3 r_iv = r_i - r_v;
         double r2_iv = dot(r_iv, r_iv);
         double3 PB_iv = make_double3(0.0, 0.0, 0.0);
-        if(r2_iv > 1.e-20 && r2 / r2_iv >= 1.0)
+        if(r2_iv > 1.e-20 && rad2 / r2_iv >= 1.0)
         {
-            PB_iv = D * (pow(r2 / r2_iv, 6.0) - pow(r2 / r2_iv, 2.0)) / r2_iv * r_iv;
+            PB_iv = D * (pow(rad2 / r2_iv, 6.0) - pow(rad2 / r2_iv, 2.0)) / r2_iv * r_iv;
             PB_i += PB_iv;
         }
         force_SPHVirtual[k] = PB_iv * m_i;
     }
 
-    double3 u_i = velocity[idx_i];
-    double3 u1_i = velocityStar[idx_i] + dp_rhos_i * timeStep;
-    u1_i += PB_i * timeStep;
-    velocity[idx_i] = u1_i;
-    position[idx_i] += 0.5 * (u_i + u1_i) * timeStep;
-}
-
-extern "C" void launchSPHIntegration(SPH& SPHs, 
-SPHInteraction& SPHInteractions, 
-interactionMap &SPHInteractionMap,
-virtualParticle& virtualParticles, 
-SPHInteraction& SPHVirtualInteractions, 
-interactionMap &SPHVirtualInteractionMap,
-const double maximumAbsluteVelocity,
-const double3 gravity,
-const double timeStep,
-const size_t maxThreadsPerBlock, 
-cudaStream_t stream)
-{
-    size_t grid = 1, block = 1;
-    computeGPUGridSizeBlockSize(grid, block, SPHs.deviceSize(), maxThreadsPerBlock);
-
-    calVelocityStarPositionStarKernel <<<grid, block, 0, stream>>> (SPHs.positionStar(),
-    SPHs.velocityStar(),
-    SPHs.position(),
-    SPHs.velocity(),
-    SPHs.mass(),
-    SPHs.initialDensity(),
-    SPHs.smoothLength(),
-    SPHs.kinematicViscosity(), 
-    SPHInteractionMap.prefixSumA(),
-    SPHInteractions.objectPointing(),
-   
-    gravity,
-    timeStep, 
-    SPHs.deviceSize());
-
-    calDensityStarKernel <<<grid, block, 0, stream>>> (SPHs.densityStar(),
-    SPHs.positionStar(),
-    SPHs.velocityStar(),
-    SPHs.mass(),
-    SPHs.initialDensity(),
-    SPHs.smoothLength(),
-    SPHInteractionMap.prefixSumA(),
-    SPHInteractions.objectPointing(),
-    timeStep, 
-    SPHs.deviceSize());
-
-    calPresssureStarKernel <<<grid, block, 0, stream>>> (SPHs.pressureStar(),
-    SPHs.positionStar(),
-    SPHs.velocityStar(),
-    SPHs.densityStar(),
-    SPHs.pressure(),
-    SPHs.mass(),
-    SPHs.initialDensity(),
-    SPHs.smoothLength(),
-    SPHInteractionMap.prefixSumA(),
-    SPHInteractions.objectPointing(),
-    timeStep, 
-    SPHs.deviceSize());
-
-    cuda_copy(SPHs.pressure(), SPHs.pressureStar(), SPHs.deviceSize(), CopyDir::D2D, stream);
-
-    velocityPositionIntegrationKernel <<<grid, block, 0, stream>>> (SPHs.position(),
-    SPHs.velocity(),
-    SPHs.positionStar(),
-    SPHs.velocityStar(),
-    SPHs.densityStar(),
-    SPHs.pressureStar(),
-    SPHs.mass(),
-    SPHs.initialDensity(),
-    SPHs.smoothLength(),
-    SPHInteractionMap.prefixSumA(),
-    SPHInteractions.objectPointing(),
-    virtualParticles.position(),
-    virtualParticles.effectiveRadius(),
-    SPHVirtualInteractionMap.prefixSumA(),
-    SPHVirtualInteractions.objectPointing(),
-    SPHVirtualInteractions.force(),
-    maximumAbsluteVelocity,
-    timeStep, 
-    SPHs.deviceSize());
+    velocity[idx_i] += PB_i * timeStep;
+    position[idx_i] += 0.5 * PB_i * timeStep * timeStep;
 }

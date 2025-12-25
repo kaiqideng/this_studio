@@ -38,25 +38,11 @@ public:
 
     meshWall& getMeshWalls() {return meshWalls_;}
 
-    spatialGrid& getSpatialGrids() {return spatialGrids_;}
-
-    void download(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
+    void download(cudaStream_t stream)
     {
         if(downLoadFlag_)
         {
-            size_t numTriangles0 = meshWalls_.triangles().deviceSize();
             meshWalls_.download(stream);
-            size_t numTriangles1 = meshWalls_.triangles().deviceSize();
-            if(numTriangles1 != numTriangles0)
-            {
-                double cellSizeOneDim = meshWalls_.getMaxEdgeLength() * 1.2;
-                if(cellSizeOneDim > spatialGrids_.cellSize.x 
-                || cellSizeOneDim > spatialGrids_.cellSize.y 
-                || cellSizeOneDim > spatialGrids_.cellSize.z)
-                {
-                    spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
-                }
-            }
             downLoadFlag_ = false;
         }
     }

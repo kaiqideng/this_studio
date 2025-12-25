@@ -76,45 +76,45 @@ const size_t numInteractions)
 	if (linearK_n[param_ij] > 1.e-20)
 	{
 		LinearContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
-			v_c_ij,
-			w_ij,
-			n_ij,
-			delta,
-			m_ij,
-			rad_ij,
-			dt,
-			linearK_n[param_ij],
-			linearK_s[param_ij],
-			linearK_r[param_ij],
-			linearK_t[param_ij],
-			linearD_n[param_ij],
-			linearD_s[param_ij],
-			linearD_r[param_ij],
-			linearD_t[param_ij],
-			linearMu_s[param_ij],
-			linearMu_r[param_ij],
-			linearMu_t[param_ij]);
+		v_c_ij,
+		w_ij,
+		n_ij,
+		delta,
+		m_ij,
+		rad_ij,
+		dt,
+		linearK_n[param_ij],
+		linearK_s[param_ij],
+		linearK_r[param_ij],
+		linearK_t[param_ij],
+		linearD_n[param_ij],
+		linearD_s[param_ij],
+		linearD_r[param_ij],
+		linearD_t[param_ij],
+		linearMu_s[param_ij],
+		linearMu_r[param_ij],
+		linearMu_t[param_ij]);
 	}
 	else
 	{
 		const double logR = log(hertzianRes[param_ij]);
 		const double hertzianD = -logR / sqrt(logR * logR + pi() * pi());
 		HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
-			v_c_ij,
-			w_ij,
-			n_ij,
-			delta,
-			m_ij,
-			rad_ij,
-			dt,
-			hertzianD,
-			hertzianE[param_ij],
-			hertzianG[param_ij],
-			hertzianK_r_k_s[param_ij],
-			hertzianK_t_k_s[param_ij],
-			hertzianMu_s[param_ij],
-			hertzianMu_r[param_ij],
-			hertzianMu_t[param_ij]);
+		v_c_ij,
+		w_ij,
+		n_ij,
+		delta,
+		m_ij,
+		rad_ij,
+		dt,
+		hertzianD,
+		hertzianE[param_ij],
+		hertzianG[param_ij],
+		hertzianK_r_k_s[param_ij],
+		hertzianK_t_k_s[param_ij],
+		hertzianMu_s[param_ij],
+		hertzianMu_r[param_ij],
+		hertzianMu_t[param_ij]);
 	}
 
 	contactForce[idx] = F_c;
@@ -184,20 +184,20 @@ const size_t numBondedInteractions)
 	double T_t = torsionTorque[idx];
 	double3 T_b = bendingTorque[idx];
 	isBonded[idx] = ParallelBondedContact(F_n, T_t, F_s, T_b,
-		n_ij0,
-		n_ij,
-		v_c_ij,
-		w_i,
-		w_j,
-		rad_i,
-		rad_j,
-		dt,
-		bondedGamma[param_ij],
-		bondedE[param_ij],
-		bondedK_n_k_s[param_ij],
-		bondedSigma_s[param_ij],
-		bondedC[param_ij],
-		bondedMu[param_ij]);
+	n_ij0,
+	n_ij,
+	v_c_ij,
+	w_i,
+	w_j,
+	rad_i,
+	rad_j,
+	dt,
+	bondedGamma[param_ij],
+	bondedE[param_ij],
+	bondedK_n_k_s[param_ij],
+	bondedSigma_s[param_ij],
+	bondedC[param_ij],
+	bondedMu[param_ij]);
 
 	normalForce[idx] = F_n;
 	shearForce[idx] = F_s;

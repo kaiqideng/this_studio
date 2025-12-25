@@ -21,6 +21,6 @@ int* end,
 int* index, 
 int* hash, 
 const int maxHashValue,
-const size_t activeHashSize, 
+const size_t hashListSize, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);

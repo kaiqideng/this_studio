@@ -31,13 +31,24 @@ __device__ __forceinline__ double3 gradWendlandKernel3D(const double3& rij, doub
 	return factor * rij;
 }
 
-extern "C" void launchSPHIntegration(SPH& SPHs, 
+extern "C" void launchSPH1stHalfIntegration(SPH& SPHAndGhosts, 
 SPHInteraction& SPHInteractions, 
 interactionMap &SPHInteractionMap,
-virtualParticle& virtualParticles, 
-SPHInteraction& SPHVirtualInteractions, 
-interactionMap &SPHVirtualInteractionMap,
-const double maximumAbsluteVelocity,
+const double3 gravity,
+const double timeStep,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
+extern "C" void launchSPH2ndHalfIntegration(SPH& SPHAndGhosts, 
+SPHInteraction& SPHInteractions, 
+interactionMap &SPHInteractionMap,
+const double timeStep,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
+extern "C" void launchAdamiBoundaryCondition(SPH& SPHAndGhosts, 
+SPHInteraction& SPHInteractions, 
+interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
 const size_t maxThreadsPerBlock, 

@@ -4,7 +4,7 @@
 struct spatialGrid
 {
 public:
-    int3    gridSize{ make_int3(0, 0, 0) };       // Number of cells in x, y, z directions
+    int3 gridSize{ make_int3(0, 0, 0) }; // Number of cells in x, y, z directions
     double3 cellSize{ make_double3(0., 0., 0.) }; // Size of one cellHashValue (h)
     double3 minBound{ make_double3(0., 0., 0.) }; // Minimum corner of the domain
     double3 maxBound{ make_double3(0., 0., 0.) }; // Maximum corner of the domain
@@ -53,5 +53,5 @@ public:
     }
 
     int* cellHashStart() { return cellHashStart_.d_ptr; }
-    int* cellHashEnd()   { return cellHashEnd_.d_ptr; }
+    int* cellHashEnd() { return cellHashEnd_.d_ptr; }
 };

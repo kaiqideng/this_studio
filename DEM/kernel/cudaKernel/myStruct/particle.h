@@ -102,8 +102,8 @@ public:
         const size_t n = deviceSize();
         hashIndex_.allocDeviceArray(n, stream);
         hashValue_.allocDeviceArray(n, stream);
-        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
     }
 
     // D2H: only for non-constant fields
@@ -277,17 +277,17 @@ public:
     quaternion* orientation() { return orientation_.d_ptr; }
 
     const symMatrix* inverseInertiaTensor() const { return inverseInertiaTensor_.d_ptr; }
-    const double*    inverseMass()          const { return inverseMass_.d_ptr; }
-    const int*       materialID()           const { return materialID_.d_ptr; }
-    const int*       pebbleStart()          const { return pebbleStart_.d_ptr; }
-    const int*       pebbleEnd()            const { return pebbleEnd_.d_ptr; }
+    const double* inverseMass() const { return inverseMass_.d_ptr; }
+    const int* materialID() const { return materialID_.d_ptr; }
+    const int* pebbleStart() const { return pebbleStart_.d_ptr; }
+    const int* pebbleEnd() const { return pebbleEnd_.d_ptr; }
 
-    std::vector<double3> positionVector()        { return position_.getHostData(); }
-    std::vector<double3> velocityVector()        { return velocity_.getHostData(); }
+    std::vector<double3> positionVector() { return position_.getHostData(); }
+    std::vector<double3> velocityVector() { return velocity_.getHostData(); }
     std::vector<double3> angularVelocityVector() { return angularVelocity_.getHostData(); }
-    std::vector<double3> forceVector()           { return force_.getHostData(); }
-    std::vector<double3> torqueVector()          { return torque_.getHostData(); }
-    std::vector<quaternion> orientationVector()  { return orientation_.getHostData();}
+    std::vector<double3> forceVector() { return force_.getHostData(); }
+    std::vector<double3> torqueVector() { return torque_.getHostData(); }
+    std::vector<quaternion> orientationVector() { return orientation_.getHostData();}
 
     const std::vector<symMatrix>& inverseInertiaTensorVector() const
     {
@@ -338,6 +338,11 @@ private:
     DeviceArray1D<double> densityStar_;
     DeviceArray1D<double> pressureStar_;
 
+    size_t SPHHostSize_ {0};
+    size_t SPHDeviceSize_ {0};
+    size_t ghostHostSize_ {0};
+    size_t ghostDeviceSize_ {0};
+
 public:
     SPH() = default;
     ~SPH() = default;
@@ -346,17 +351,42 @@ public:
     SPH(SPH&&) noexcept = default;
     SPH& operator=(SPH&&) noexcept = default;
 
-    size_t hostSize() const  { return position_.hostSize(); }
-    size_t deviceSize() const{ return position_.deviceSize(); }
+    size_t hostCap() const { return position_.hostSize(); }
+    size_t deviceCap() const { return position_.deviceSize(); }
+    size_t SPHHostSize() const { return SPHHostSize_; }
+    size_t SPHDeviceSize() const { return SPHDeviceSize_; }
+    size_t ghostHostSize() const { return ghostHostSize_; }
+    size_t ghostDeviceSize() const { return ghostDeviceSize_; }
 
-    void addHost(const double3 pos,
+    void addSPHHost(const double3 pos,
     const double3 vel,
     const double p,
     const double m,
     const double rho0,
     const double h,
-    const double nu,
-    const int gF)
+    const double nu)
+    {
+        size_t n = SPHHostSize_;
+
+        position_.insertHostData(n, pos);
+        velocity_.insertHostData(n, vel);
+        pressure_.insertHostData(n, p);
+
+        mass_.insertHostData(n, m);
+        initialDensity_.insertHostData(n, rho0);
+        smoothLength_.insertHostData(n, h);
+        kinematicViscosity_.insertHostData(n, nu);
+
+        SPHHostSize_++;
+    }
+
+    void addGhostHost(const double3 pos,
+    const double3 vel,
+    const double p,
+    const double m,
+    const double rho0,
+    const double h,
+    const double nu)
     {
         position_.addHostData(pos);
         velocity_.addHostData(vel);
@@ -366,30 +396,30 @@ public:
         initialDensity_.addHostData(rho0);
         smoothLength_.addHostData(h);
         kinematicViscosity_.addHostData(nu);
+
+        ghostHostSize_++;
     }
 
-    void removeHost(size_t index)
+    void setGhostDeviceSize(size_t n, cudaStream_t stream)
     {
-        position_.removeHostData(index);
-        velocity_.removeHostData(index);
-        pressure_.removeHostData(index);
-
-        mass_.removeHostData(index);
-        initialDensity_.removeHostData(index);
-        smoothLength_.removeHostData(index);
-        kinematicViscosity_.removeHostData(index);
-    }
-
-    void clearHost()
-    {
-        position_.clearHostData();
-        velocity_.clearHostData();
-        pressure_.clearHostData();
-
-        mass_.clearHostData();
-        initialDensity_.clearHostData();
-        smoothLength_.clearHostData();
-        kinematicViscosity_.clearHostData();
+        if (SPHDeviceSize_ == 0) return; 
+        if (SPHDeviceSize_ + n > deviceCap()) 
+        {
+            upload(stream);
+            size_t n1 = SPHDeviceSize_ + n - deviceCap();
+            for(size_t i = 0; i < n1; i++)
+            {
+                addGhostHost(make_double3(0.0, 0.0, 0.0),
+                make_double3(0.0, 0.0, 0.0),
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0);
+            }
+            download(stream);
+        }
+        ghostDeviceSize_ = n;
     }
 
     void download(cudaStream_t stream)
@@ -404,7 +434,7 @@ public:
         kinematicViscosity_.download(stream);
 
         // device-only arrays sized according to number of particles
-        const size_t n = deviceSize();
+        const size_t n = deviceCap();
         hashIndex_.allocDeviceArray(n, stream);
         hashValue_.allocDeviceArray(n, stream);
         CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
@@ -414,6 +444,9 @@ public:
         velocityStar_.allocDeviceArray(n, stream);
         pressureStar_.allocDeviceArray(n, stream);
         densityStar_.allocDeviceArray(n, stream);
+
+        SPHDeviceSize_ = SPHHostSize_;
+        ghostDeviceSize_ = ghostHostSize_;
     }
 
     void upload(cudaStream_t stream)
@@ -421,6 +454,9 @@ public:
         position_.upload(stream);
         velocity_.upload(stream);
         pressure_.upload(stream);
+
+        SPHHostSize_ = SPHDeviceSize_;
+        ghostHostSize_ = ghostDeviceSize_;
     }
 
     // device pointers
@@ -428,9 +464,9 @@ public:
     double3* velocity() { return velocity_.d_ptr; }
     double*  pressure() { return pressure_.d_ptr; }
 
-    const double* mass()               { return mass_.d_ptr; }
-    const double* initialDensity()     { return initialDensity_.d_ptr; }
-    const double* smoothLength()       { return smoothLength_.d_ptr; }
+    const double* mass() { return mass_.d_ptr; }
+    const double* initialDensity() { return initialDensity_.d_ptr; }
+    const double* smoothLength() { return smoothLength_.d_ptr; }
     const double* kinematicViscosity() { return kinematicViscosity_.d_ptr; }
 
     int* hashIndex() { return hashIndex_.d_ptr; }
@@ -438,8 +474,8 @@ public:
 
     double3* positionStar() { return positionStar_.d_ptr; }
     double3* velocityStar() { return velocityStar_.d_ptr; }
-    double* pressureStar()  { return pressureStar_.d_ptr; }
-    double* densityStar()   { return densityStar_.d_ptr; }
+    double* pressureStar() { return pressureStar_.d_ptr; }
+    double* densityStar() { return densityStar_.d_ptr; }
 
     std::vector<double3> positionVector() { return position_.getHostData(); }
     std::vector<double3> velocityVector() { return velocity_.getHostData(); }
@@ -484,7 +520,7 @@ public:
     size_t deviceSize() const{ return position_.deviceSize(); }
 
     void addHost(const double3 pos,
-                 const double r)
+    const double r)
     {
         position_.addHostData(pos);
         effectiveRadius_.addHostData(r);
@@ -510,8 +546,8 @@ public:
         const size_t n = deviceSize();
         hashIndex_.allocDeviceArray(n, stream);
         hashValue_.allocDeviceArray(n, stream);
-        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
     }
 
     void upload(cudaStream_t stream)
@@ -520,12 +556,12 @@ public:
         effectiveRadius_.upload(stream);
     }
 
-    double3* position()       { return position_.d_ptr; }
+    double3* position() { return position_.d_ptr; }
     double* effectiveRadius() { return effectiveRadius_.d_ptr; }
 
     int* hashIndex() { return hashIndex_.d_ptr; }
     int* hashValue() { return hashValue_.d_ptr; }
 
-    std::vector<double3> positionVector()        { return position_.getHostData(); }
-    std::vector<double>  effectiveRadiusVector() { return effectiveRadius_.getHostData(); }
+    std::vector<double3> positionVector() { return position_.getHostData(); }
+    std::vector<double> effectiveRadiusVector() { return effectiveRadius_.getHostData(); }
 };

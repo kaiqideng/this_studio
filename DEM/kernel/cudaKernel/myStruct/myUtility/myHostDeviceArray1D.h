@@ -87,6 +87,12 @@ public:
         h_data.push_back(value);
     }
 
+    void insertHostData(size_t index, const T& value)
+    {
+        if (index > hostSize()) h_data.push_back(value);
+        h_data.insert(h_data.begin() + static_cast<std::ptrdiff_t>(index), value);
+    }
+
     void removeHostData(size_t index)
     {
         if (index >= h_data.size()) return;
@@ -210,6 +216,12 @@ public:
     void addHostData(const T& value)
     {
         h_data.push_back(value);
+    }
+
+    void insertHostData(size_t index, const T& value)
+    {
+        if (index > hostSize()) h_data.push_back(value);
+        h_data.insert(h_data.begin() + static_cast<std::ptrdiff_t>(index), value);
     }
 
     void removeHostData(size_t index)

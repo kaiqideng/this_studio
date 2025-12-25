@@ -1,25 +1,24 @@
 #pragma once
 #include "myUtility/myHostDeviceArray1D.h"
-#include <csignal>
 
 struct solidInteraction
 {
 private:
-    HostDeviceArray1D<int>     objectPointed_;
-    HostDeviceArray1D<int>     objectPointing_;
+    HostDeviceArray1D<int> objectPointed_;
+    HostDeviceArray1D<int> objectPointing_;
     HostDeviceArray1D<double3> force_;
     HostDeviceArray1D<double3> torque_;
     HostDeviceArray1D<double3> contactPoint_;
     HostDeviceArray1D<double3> slidingSpring_;
     HostDeviceArray1D<double3> rollingSpring_;
     HostDeviceArray1D<double3> torsionSpring_;
-    DeviceArray1D<int>         cancelFlag_;
+    DeviceArray1D<int> cancelFlag_;
 
-    DeviceArray1D<int>         objectPointedHistory_;
-    DeviceArray1D<int>         objectPointingHistory_;
-    DeviceArray1D<double3>     slidingSpringHistory_;
-    DeviceArray1D<double3>     rollingSpringHistory_;
-    DeviceArray1D<double3>     torsionSpringHistory_;
+    DeviceArray1D<int> objectPointedHistory_;
+    DeviceArray1D<int> objectPointingHistory_;
+    DeviceArray1D<double3> slidingSpringHistory_;
+    DeviceArray1D<double3> rollingSpringHistory_;
+    DeviceArray1D<double3> torsionSpringHistory_;
 
     size_t activeSize_ {0};
 
@@ -31,7 +30,7 @@ public:
     solidInteraction(solidInteraction&&) noexcept = default;
     solidInteraction& operator=(solidInteraction&&) noexcept = default;
 
-    size_t activeSize() const{ return activeSize_; }
+    size_t activeSize() const { return activeSize_; }
 
     void alloc(size_t n, cudaStream_t stream)
     {
@@ -88,38 +87,41 @@ public:
         }
     }
 
-    int*           objectPointed()        { return objectPointed_.d_ptr; }
-    int*           objectPointing()       { return objectPointing_.d_ptr; }
-    double3*       force()                { return force_.d_ptr; }
-    double3*       torque()               { return torque_.d_ptr; }
-    double3*       contactPoint()         { return contactPoint_.d_ptr; }
-    double3*       slidingSpring()        { return slidingSpring_.d_ptr; }
-    double3*       rollingSpring()        { return rollingSpring_.d_ptr; }
-    double3*       torsionSpring()        { return torsionSpring_.d_ptr; }
-    int*           cancelFlag()           { return cancelFlag_.d_ptr; }
+    int* objectPointed() { return objectPointed_.d_ptr; }
+    int* objectPointing() { return objectPointing_.d_ptr; }
+    double3* force() { return force_.d_ptr; }
+    double3* torque() { return torque_.d_ptr; }
+    double3* contactPoint() { return contactPoint_.d_ptr; }
+    double3* slidingSpring() { return slidingSpring_.d_ptr; }
+    double3* rollingSpring() { return rollingSpring_.d_ptr; }
+    double3* torsionSpring() { return torsionSpring_.d_ptr; }
+    int* cancelFlag() { return cancelFlag_.d_ptr; }
 
-    int*           objectPointedHistory()   { return objectPointedHistory_.d_ptr; }
-    int*           objectPointingHistory()  { return objectPointingHistory_.d_ptr; }
-    double3*       slidingSpringHistory()   { return slidingSpringHistory_.d_ptr; }
-    double3*       rollingSpringHistory()   { return rollingSpringHistory_.d_ptr; }
-    double3*       torsionSpringHistory()   { return torsionSpringHistory_.d_ptr; }
+    int* objectPointedHistory() { return objectPointedHistory_.d_ptr; }
+    int* objectPointingHistory() { return objectPointingHistory_.d_ptr; }
+    double3* slidingSpringHistory() { return slidingSpringHistory_.d_ptr; }
+    double3* rollingSpringHistory() { return rollingSpringHistory_.d_ptr; }
+    double3* torsionSpringHistory() { return torsionSpringHistory_.d_ptr; }
 
-    std::vector<int>     objectPointedVector()   { return objectPointed_.getHostData(); }
-    std::vector<int>     objectPointingVector()  { return objectPointing_.getHostData(); }
-    std::vector<double3> forceVector()           { return force_.getHostData(); }
-    std::vector<double3> torqueVector()          { return torque_.getHostData(); }
-    std::vector<double3> contactPointVector()    { return contactPoint_.getHostData(); }
-    std::vector<double3> slidingSpringVector()   { return slidingSpring_.getHostData(); }
-    std::vector<double3> rollingSpringVector()   { return rollingSpring_.getHostData(); }
-    std::vector<double3> torsionSpringVector()   { return torsionSpring_.getHostData(); }
+    std::vector<int> objectPointedVector() { return objectPointed_.getHostData(); }
+    std::vector<int> objectPointingVector() { return objectPointing_.getHostData(); }
+    std::vector<double3> forceVector() { return force_.getHostData(); }
+    std::vector<double3> torqueVector() { return torque_.getHostData(); }
+    std::vector<double3> contactPointVector() { return contactPoint_.getHostData(); }
+    std::vector<double3> slidingSpringVector() { return slidingSpring_.getHostData(); }
+    std::vector<double3> rollingSpringVector() { return rollingSpring_.getHostData(); }
+    std::vector<double3> torsionSpringVector() { return torsionSpring_.getHostData(); }
 };
 
 struct SPHInteraction
 {
 private:
-    HostDeviceArray1D<int>     objectPointed_;
-    HostDeviceArray1D<int>     objectPointing_;
+    HostDeviceArray1D<int> objectPointed_;
+    HostDeviceArray1D<int> objectPointing_;
     HostDeviceArray1D<double3> force_;
+
+    DeviceArray1D<double3> gradientKernel_;
+    DeviceArray1D<double3> gradientKernelStar_;
 
     size_t activeSize_ {0};
 
@@ -131,13 +133,15 @@ public:
     SPHInteraction(SPHInteraction&&) noexcept = default;
     SPHInteraction& operator=(SPHInteraction&&) noexcept = default;
 
-    size_t activeSize() const{ return activeSize_; }
+    size_t activeSize() const { return activeSize_; }
 
     void alloc(size_t n, cudaStream_t stream)
     {
         objectPointed_.allocDeviceArray(n, stream);
         objectPointing_.allocDeviceArray(n, stream);
         force_.allocDeviceArray(n, stream);
+        gradientKernel_.allocDeviceArray(n, stream);
+        gradientKernelStar_.allocDeviceArray(n, stream);
     }
 
     void setActiveSize(size_t n, cudaStream_t stream)
@@ -145,32 +149,33 @@ public:
         activeSize_ = n;
         if(n > objectPointed_.deviceSize())
         {
-            objectPointed_.allocDeviceArray(n, stream);
-            objectPointing_.allocDeviceArray(n, stream);
-            force_.allocDeviceArray(n, stream);
+            alloc(n, stream);
         }
     }
 
-    int*     objectPointed()  { return objectPointed_.d_ptr; }
-    int*     objectPointing() { return objectPointing_.d_ptr; }
-    double3* force()          { return force_.d_ptr; }
+    int* objectPointed() { return objectPointed_.d_ptr; }
+    int* objectPointing() { return objectPointing_.d_ptr; }
+    double3* force() { return force_.d_ptr; }
 
-    std::vector<int>     objectPointedVector()  { return objectPointed_.getHostData(); }
-    std::vector<int>     objectPointingVector() { return objectPointing_.getHostData(); }
-    std::vector<double3> forceVector()          { return force_.getHostData(); }
+    double3* gradientKernel() { return gradientKernel_.d_ptr; }
+    double3* gradientKernelStar() {return gradientKernelStar_.d_ptr;}
+
+    std::vector<int> objectPointedVector() { return objectPointed_.getHostData(); }
+    std::vector<int> objectPointingVector() { return objectPointing_.getHostData(); }
+    std::vector<double3> forceVector() { return force_.getHostData(); }
 };
 
 struct bondedInteraction
 {
 private:
-    HostDeviceArray1D<int>     objectPointed_;
-    HostDeviceArray1D<int>     objectPointing_;
-    HostDeviceArray1D<double>  normalForce_;
-    HostDeviceArray1D<double>  torsionTorque_;
+    HostDeviceArray1D<int> objectPointed_;
+    HostDeviceArray1D<int> objectPointing_;
+    HostDeviceArray1D<double> normalForce_;
+    HostDeviceArray1D<double> torsionTorque_;
     HostDeviceArray1D<double3> shearForce_;
     HostDeviceArray1D<double3> bendingTorque_;
     HostDeviceArray1D<double3> contactNormal_;
-    HostDeviceArray1D<int>     isBonded_;
+    HostDeviceArray1D<int> isBonded_;
 
 public:
     bondedInteraction() = default;
@@ -180,8 +185,8 @@ public:
     bondedInteraction(bondedInteraction&&) noexcept = default;
     bondedInteraction& operator=(bondedInteraction&&) noexcept = default;
 
-    size_t hostSize() const  { return objectPointed_.hostSize(); }
-    size_t deviceSize() const{ return objectPointed_.deviceSize(); }
+    size_t hostSize() const { return objectPointed_.hostSize(); }
+    size_t deviceSize() const { return objectPointed_.deviceSize(); }
     
     void add(const std::vector<int> &ob0,
         const std::vector<int> &ob1,
@@ -292,24 +297,24 @@ public:
     }
 
     // ---------- device pointers ----------
-    int*      objectPointed()   { return objectPointed_.d_ptr; }
-    int*      objectPointing()  { return objectPointing_.d_ptr; }
-    double*   normalForce()     { return normalForce_.d_ptr; }
-    double*   torsionTorque()   { return torsionTorque_.d_ptr; }
-    double3*  shearForce()      { return shearForce_.d_ptr; }
-    double3*  bendingTorque()   { return bendingTorque_.d_ptr; }
-    double3*  contactNormal()   { return contactNormal_.d_ptr; }
-    int*      isBonded()        { return isBonded_.d_ptr; }
+    int* objectPointed() { return objectPointed_.d_ptr; }
+    int* objectPointing() { return objectPointing_.d_ptr; }
+    double* normalForce() { return normalForce_.d_ptr; }
+    double* torsionTorque() { return torsionTorque_.d_ptr; }
+    double3* shearForce() { return shearForce_.d_ptr; }
+    double3* bendingTorque() { return bendingTorque_.d_ptr; }
+    double3* contactNormal() { return contactNormal_.d_ptr; }
+    int* isBonded() { return isBonded_.d_ptr; }
 
     // ---------- host vectors (copies) ----------
-    std::vector<int>     objectPointedVector()   { return objectPointed_.getHostData(); }
-    std::vector<int>     objectPointingVector()  { return objectPointing_.getHostData(); }
-    std::vector<double>  normalForceVector()     { return normalForce_.getHostData(); }
-    std::vector<double>  torsionTorqueVector()   { return torsionTorque_.getHostData(); }
-    std::vector<double3> shearForceVector()      { return shearForce_.getHostData(); }
-    std::vector<double3> bendingTorqueVector()   { return bendingTorque_.getHostData(); }
-    std::vector<double3> contactNormalVector()   { return contactNormal_.getHostData(); }
-    std::vector<int>     isBondedVector()        { return isBonded_.getHostData(); }
+    std::vector<int> objectPointedVector() { return objectPointed_.getHostData(); }
+    std::vector<int> objectPointingVector() { return objectPointing_.getHostData(); }
+    std::vector<double> normalForceVector() { return normalForce_.getHostData(); }
+    std::vector<double> torsionTorqueVector() { return torsionTorque_.getHostData(); }
+    std::vector<double3> shearForceVector() { return shearForce_.getHostData(); }
+    std::vector<double3> bendingTorqueVector() { return bendingTorque_.getHostData(); }
+    std::vector<double3> contactNormalVector() { return contactNormal_.getHostData(); }
+    std::vector<int> isBondedVector() { return isBonded_.getHostData(); }
 };
 
 struct HertzianContactParameterTable
@@ -401,8 +406,8 @@ struct BondedRow
 
 struct contactModelParameters
 {
-    std::size_t numberOfMaterials{0};
-    std::size_t pairTableSize{0};
+    std::size_t numberOfMaterials {0};
+    std::size_t pairTableSize {0};
 
 private:
     // Hertzian
@@ -438,14 +443,14 @@ private:
 
 public:
     HertzianContactParameterTable hertzian;
-    LinearContactParameterTable   linear;
-    BondedContactParameterTable   bonded;
+    LinearContactParameterTable linear;
+    BondedContactParameterTable bonded;
 
-    contactModelParameters()  = default;
+    contactModelParameters() = default;
     ~contactModelParameters() = default;
-    contactModelParameters(const contactModelParameters&)            = delete;
+    contactModelParameters(const contactModelParameters&) = delete;
     contactModelParameters& operator=(const contactModelParameters&) = delete;
-    contactModelParameters(contactModelParameters&&) noexcept        = default;
+    contactModelParameters(contactModelParameters&&) noexcept = default;
     contactModelParameters& operator=(contactModelParameters&&) noexcept = default;
 
     void releaseDeviceArray()
@@ -479,11 +484,10 @@ public:
         bondedFrictionCoefficient_.releaseDeviceArray();
 
         numberOfMaterials = 0;
-        pairTableSize     = 0;
+        pairTableSize = 0;
     }
 
-    std::size_t hostContactParameterArrayIndex(
-    int materialIndexA,
+    std::size_t contactParameterArrayIndexHost(int materialIndexA,
     int materialIndexB,
     std::size_t numberOfMaterials,
     std::size_t cap)
@@ -511,9 +515,9 @@ public:
     }
 
     void buildFromTables(const std::vector<HertzianRow>& hertzianTable,
-                         const std::vector<LinearRow>&   linearTable,
-                         const std::vector<BondedRow>&   bondedTable,
-                         cudaStream_t                    stream)
+    const std::vector<LinearRow>& linearTable,
+    const std::vector<BondedRow>& bondedTable,
+    cudaStream_t stream)
     {
         releaseDeviceArray();
 
@@ -594,51 +598,51 @@ public:
 
         for (const auto& row : hertzianTable)
         {
-            std::size_t idx = hostContactParameterArrayIndex(
-                row.materialIndexA, row.materialIndexB,
-                numberOfMaterials, pairTableSize);
+            std::size_t idx = contactParameterArrayIndexHost(row.materialIndexA, 
+            row.materialIndexB,
+            numberOfMaterials, pairTableSize);
 
-            h_E_star[idx]  = row.effectiveYoungsModulus;
-            h_G_star[idx]  = row.effectiveShearModulus;
-            h_e[idx]       = row.restitutionCoefficient;
-            h_krks[idx]    = row.rollingStiffnessToShearStiffnessRatio;
-            h_ktks[idx]    = row.torsionStiffnessToShearStiffnessRatio;
-            h_mu_s_h[idx]  = row.slidingFrictionCoefficient;
-            h_mu_r_h[idx]  = row.rollingFrictionCoefficient;
-            h_mu_t_h[idx]  = row.torsionFrictionCoefficient;
+            h_E_star[idx] = row.effectiveYoungsModulus;
+            h_G_star[idx] = row.effectiveShearModulus;
+            h_e[idx] = row.restitutionCoefficient;
+            h_krks[idx] = row.rollingStiffnessToShearStiffnessRatio;
+            h_ktks[idx] = row.torsionStiffnessToShearStiffnessRatio;
+            h_mu_s_h[idx] = row.slidingFrictionCoefficient;
+            h_mu_r_h[idx] = row.rollingFrictionCoefficient;
+            h_mu_t_h[idx] = row.torsionFrictionCoefficient;
         }
 
         for (const auto& row : linearTable)
         {
-            std::size_t idx = hostContactParameterArrayIndex(
-                row.materialIndexA, row.materialIndexB,
-                numberOfMaterials, pairTableSize);
+            std::size_t idx = contactParameterArrayIndexHost(row.materialIndexA, 
+            row.materialIndexB,
+            numberOfMaterials, pairTableSize);
 
-            h_kn[idx]      = row.normalStiffness;
-            h_ks[idx]      = row.slidingStiffness;
-            h_kr[idx]      = row.rollingStiffness;
-            h_kt[idx]      = row.torsionStiffness;
-            h_dn[idx]      = row.normalDampingCoefficient;
-            h_ds[idx]      = row.slidingDampingCoefficient;
-            h_dr[idx]      = row.rollingDampingCoefficient;
-            h_dt[idx]      = row.torsionDampingCoefficient;
-            h_mu_s_l[idx]  = row.slidingFrictionCoefficient;
-            h_mu_r_l[idx]  = row.rollingFrictionCoefficient;
-            h_mu_t_l[idx]  = row.torsionFrictionCoefficient;
+            h_kn[idx] = row.normalStiffness;
+            h_ks[idx] = row.slidingStiffness;
+            h_kr[idx] = row.rollingStiffness;
+            h_kt[idx] = row.torsionStiffness;
+            h_dn[idx] = row.normalDampingCoefficient;
+            h_ds[idx] = row.slidingDampingCoefficient;
+            h_dr[idx] = row.rollingDampingCoefficient;
+            h_dt[idx] = row.torsionDampingCoefficient;
+            h_mu_s_l[idx] = row.slidingFrictionCoefficient;
+            h_mu_r_l[idx] = row.rollingFrictionCoefficient;
+            h_mu_t_l[idx] = row.torsionFrictionCoefficient;
         }
 
         for (const auto& row : bondedTable)
         {
-            std::size_t idx = hostContactParameterArrayIndex(
-                row.materialIndexA, row.materialIndexB,
-                numberOfMaterials, pairTableSize);
+            std::size_t idx = contactParameterArrayIndexHost(row.materialIndexA, 
+            row.materialIndexB,
+            numberOfMaterials, pairTableSize);
 
-            h_gamma[idx]   = row.bondRadiusMultiplier;
-            h_Eb[idx]      = row.bondYoungsModulus;
-            h_knks[idx]    = row.normalToShearStiffnessRatio;
+            h_gamma[idx] = row.bondRadiusMultiplier;
+            h_Eb[idx] = row.bondYoungsModulus;
+            h_knks[idx] = row.normalToShearStiffnessRatio;
             h_sigma_s[idx] = row.tensileStrength;
-            h_C[idx]       = row.cohesion;
-            h_mu_b[idx]    = row.frictionCoefficient;
+            h_C[idx] = row.cohesion;
+            h_mu_b[idx] = row.frictionCoefficient;
         }
 
         cuda_copy(hertzianEffectiveYoungsModulus_.d_ptr,
@@ -694,33 +698,33 @@ public:
         cuda_copy(bondedFrictionCoefficient_.d_ptr,
                   h_mu_b.data(), pairTableSize, CopyDir::H2D, stream);
 
-        hertzian.effectiveYoungsModulus                = hertzianEffectiveYoungsModulus_.d_ptr;
-        hertzian.effectiveShearModulus                 = hertzianEffectiveShearModulus_.d_ptr;
-        hertzian.restitutionCoefficient                = hertzianRestitutionCoefficient_.d_ptr;
+        hertzian.effectiveYoungsModulus = hertzianEffectiveYoungsModulus_.d_ptr;
+        hertzian.effectiveShearModulus = hertzianEffectiveShearModulus_.d_ptr;
+        hertzian.restitutionCoefficient = hertzianRestitutionCoefficient_.d_ptr;
         hertzian.rollingStiffnessToShearStiffnessRatio = hertzianRollingStiffnessToShearStiffnessRatio_.d_ptr;
         hertzian.torsionStiffnessToShearStiffnessRatio = hertzianTorsionStiffnessToShearStiffnessRatio_.d_ptr;
-        hertzian.slidingFrictionCoefficient            = hertzianSlidingFrictionCoefficient_.d_ptr;
-        hertzian.rollingFrictionCoefficient            = hertzianRollingFrictionCoefficient_.d_ptr;
-        hertzian.torsionFrictionCoefficient            = hertzianTorsionFrictionCoefficient_.d_ptr;
+        hertzian.slidingFrictionCoefficient = hertzianSlidingFrictionCoefficient_.d_ptr;
+        hertzian.rollingFrictionCoefficient = hertzianRollingFrictionCoefficient_.d_ptr;
+        hertzian.torsionFrictionCoefficient = hertzianTorsionFrictionCoefficient_.d_ptr;
 
-        linear.normalStiffness            = linearNormalStiffness_.d_ptr;
-        linear.slidingStiffness           = linearSlidingStiffness_.d_ptr;
-        linear.rollingStiffness           = linearRollingStiffness_.d_ptr;
-        linear.torsionStiffness           = linearTorsionStiffness_.d_ptr;
-        linear.normalDampingCoefficient   = linearNormalDampingCoefficient_.d_ptr;
-        linear.slidingDampingCoefficient  = linearSlidingDampingCoefficient_.d_ptr;
-        linear.rollingDampingCoefficient  = linearRollingDampingCoefficient_.d_ptr;
-        linear.torsionDampingCoefficient  = linearTorsionDampingCoefficient_.d_ptr;
+        linear.normalStiffness = linearNormalStiffness_.d_ptr;
+        linear.slidingStiffness = linearSlidingStiffness_.d_ptr;
+        linear.rollingStiffness = linearRollingStiffness_.d_ptr;
+        linear.torsionStiffness = linearTorsionStiffness_.d_ptr;
+        linear.normalDampingCoefficient = linearNormalDampingCoefficient_.d_ptr;
+        linear.slidingDampingCoefficient = linearSlidingDampingCoefficient_.d_ptr;
+        linear.rollingDampingCoefficient = linearRollingDampingCoefficient_.d_ptr;
+        linear.torsionDampingCoefficient = linearTorsionDampingCoefficient_.d_ptr;
         linear.slidingFrictionCoefficient = linearSlidingFrictionCoefficient_.d_ptr;
         linear.rollingFrictionCoefficient = linearRollingFrictionCoefficient_.d_ptr;
         linear.torsionFrictionCoefficient = linearTorsionFrictionCoefficient_.d_ptr;
 
-        bonded.bondRadiusMultiplier        = bondedBondRadiusMultiplier_.d_ptr;
-        bonded.bondYoungsModulus           = bondedYoungsModulus_.d_ptr;
+        bonded.bondRadiusMultiplier = bondedBondRadiusMultiplier_.d_ptr;
+        bonded.bondYoungsModulus = bondedYoungsModulus_.d_ptr;
         bonded.normalToShearStiffnessRatio = bondedNormalToShearStiffnessRatio_.d_ptr;
-        bonded.tensileStrength             = bondedTensileStrength_.d_ptr;
-        bonded.cohesion                    = bondedCohesion_.d_ptr;
-        bonded.frictionCoefficient         = bondedFrictionCoefficient_.d_ptr;
+        bonded.tensileStrength = bondedTensileStrength_.d_ptr;
+        bonded.cohesion = bondedCohesion_.d_ptr;
+        bonded.frictionCoefficient = bondedFrictionCoefficient_.d_ptr;
     }
 };
 
@@ -736,13 +740,13 @@ private:
 
     size_t activeHashSize_;
 public:
-    interactionMap()  = default;
+    interactionMap() = default;
     ~interactionMap() = default;
 
-    interactionMap(const interactionMap&)            = delete;
+    interactionMap(const interactionMap&) = delete;
     interactionMap& operator=(const interactionMap&) = delete;
 
-    interactionMap(interactionMap&&) noexcept            = default;
+    interactionMap(interactionMap&&) noexcept = default;
     interactionMap& operator=(interactionMap&&) noexcept = default;
 
     void alloc(size_t objectASize, size_t objectBSize, cudaStream_t stream)
@@ -769,13 +773,13 @@ public:
         CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr,   0xFF, endB_.deviceSize() * sizeof(int), stream));
     }
 
-    size_t ASize() const      { return countA_.deviceSize(); }
-    size_t BSize() const      { return startB_.deviceSize(); }
-    size_t activeHashSize() const   { return activeHashSize_; }
-    int* hashIndex()          { return hashIndex_.d_ptr; }
-    int* hashValue()          { return hashValue_.d_ptr; }
-    int* countA()             { return countA_.d_ptr; }
-    int* prefixSumA()         { return prefixSumA_.d_ptr; }
-    int* startB()  { return startB_.d_ptr; }
-    int* endB()    { return endB_.d_ptr; }
+    size_t ASize() const { return countA_.deviceSize(); }
+    size_t BSize() const { return startB_.deviceSize(); }
+    size_t activeHashSize() const { return activeHashSize_; }
+    int* hashIndex() { return hashIndex_.d_ptr; }
+    int* hashValue() { return hashValue_.d_ptr; }
+    int* countA() { return countA_.d_ptr; }
+    int* prefixSumA() { return prefixSumA_.d_ptr; }
+    int* startB() { return startB_.d_ptr; }
+    int* endB() { return endB_.d_ptr; }
 };
