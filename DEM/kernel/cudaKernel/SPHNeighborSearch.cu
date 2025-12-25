@@ -10,10 +10,10 @@ const double3 minBound,
 const double3 cellSize, 
 const int3 gridSize, 
 const size_t numSPHs,
-const size_t numSPHAndGhosts)
+const size_t numGhosts)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idxA >= numSPHAndGhosts) return;
+    if (idxA >= numSPHs + numGhosts) return;
     int count = 0;
 
     double3 posA = position[idxA];
@@ -60,10 +60,10 @@ const double3 minBound,
 const double3 cellSize, 
 const int3 gridSize, 
 const size_t numSPHs,
-const size_t numSPHAndGhosts)
+const size_t numGhosts)
 {
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idxA >= numSPHAndGhosts) return;
+    if (idxA >= numSPHs + numGhosts) return;
 
     int base_w = 0;
     if (idxA > 0) base_w = neighborPrefixSumA[idxA - 1];
@@ -234,7 +234,7 @@ cudaStream_t stream)
     spatialGrids.cellSize,
     spatialGrids.gridSize,
     SPHAndGhosts.SPHDeviceSize(),
-    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize());
+    SPHAndGhosts.ghostDeviceSize());
 
     int activeNumber = 0;
     auto exec = thrust::cuda::par.on(stream);
@@ -257,7 +257,7 @@ cudaStream_t stream)
     spatialGrids.cellSize,
     spatialGrids.gridSize,
     SPHAndGhosts.SPHDeviceSize(),
-    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize());
+    SPHAndGhosts.ghostDeviceSize());
 }
 
 extern "C" void launchSPHVirtualParticleNeighborSearch(SPHInteraction& SPHVirtualInteractions, 

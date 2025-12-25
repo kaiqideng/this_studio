@@ -53,7 +53,7 @@ public:
 
     void integration1st(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
     {
-        launchSPH1stHalfIntegration(SPHAndGhosts_,
+        launchSPH1stIntegration(SPHAndGhosts_,
         SPHInteractions_,
         SPHInteractionMap_,
         g,
@@ -64,7 +64,17 @@ public:
 
     void integration2nd(const double dt, const size_t maxThreads, cudaStream_t stream)
     {
-        launchSPH2ndHalfIntegration(SPHAndGhosts_,
+        launchSPH2ndIntegration(SPHAndGhosts_,
+        SPHInteractions_,
+        SPHInteractionMap_,
+        dt,
+        maxThreads,
+        stream);
+    }
+
+    void integration3rd(const double dt, const size_t maxThreads, cudaStream_t stream)
+    {
+        launchSPH3rdIntegration(SPHAndGhosts_,
         SPHInteractions_,
         SPHInteractionMap_,
         dt,

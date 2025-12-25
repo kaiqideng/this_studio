@@ -31,7 +31,7 @@ __device__ __forceinline__ double3 gradWendlandKernel3D(const double3& rij, doub
 	return factor * rij;
 }
 
-extern "C" void launchSPH1stHalfIntegration(SPH& SPHAndGhosts, 
+extern "C" void launchSPH1stIntegration(SPH& SPHAndGhosts, 
 SPHInteraction& SPHInteractions, 
 interactionMap &SPHInteractionMap,
 const double3 gravity,
@@ -39,7 +39,14 @@ const double timeStep,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);
 
-extern "C" void launchSPH2ndHalfIntegration(SPH& SPHAndGhosts, 
+extern "C" void launchSPH2ndIntegration(SPH& SPHAndGhosts, 
+SPHInteraction& SPHInteractions, 
+interactionMap &SPHInteractionMap,
+const double timeStep,
+const size_t maxThreadsPerBlock, 
+cudaStream_t stream);
+
+extern "C" void launchSPH3rdIntegration(SPH& SPHAndGhosts, 
 SPHInteraction& SPHInteractions, 
 interactionMap &SPHInteractionMap,
 const double timeStep,
