@@ -25,7 +25,7 @@ const size_t hashListSize)
     else
     {
         int a = hash[index - 1];
-        if(a >= 0 && a < maxHashValue && a != h)
+        if (a >= 0 && a < maxHashValue && a != h)
         {
             start[h] = static_cast<int>(index);
             end[a] = static_cast<int>(index);
@@ -65,7 +65,7 @@ cudaStream_t stream)
 
         thrust::sort_by_key(exec,
                             hash,
-                            hash + static_cast<long>(hashListSize),
+                            hash + hashListSize,
                             index);
 
         cudaError_t err1 = cudaGetLastError();

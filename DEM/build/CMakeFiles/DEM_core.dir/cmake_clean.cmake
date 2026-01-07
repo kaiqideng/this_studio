@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o"
   "CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o.d"
+  "CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o"
+  "CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o.d"
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o"
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o.d"
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o"

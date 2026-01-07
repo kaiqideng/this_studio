@@ -1,5 +1,4 @@
 #include "ballNeighborSearch.h"
-#include <cstddef>
 
 __global__ void calculateHash(int* hashValue, 
 double3* position, 
@@ -30,7 +29,7 @@ extern "C" void updateGridCellStartEnd(spatialGrid& sptialGrids,
 int* hashIndex, 
 int* hashValue, 
 double3* position, 
-const size_t numObjects,
+size_t numObjects,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
@@ -55,7 +54,7 @@ cudaStream_t stream)
     hashValue, 
     static_cast<int>(sptialGrids.deviceSize()),
     numObjects,
-    maxThreadsPerBlock, 
+    maxThreadsPerBlock,
     stream);
 }
 

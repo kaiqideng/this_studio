@@ -351,8 +351,6 @@ public:
     SPH(SPH&&) noexcept = default;
     SPH& operator=(SPH&&) noexcept = default;
 
-    size_t hostCap() const { return position_.hostSize(); }
-    size_t deviceCap() const { return position_.deviceSize(); }
     size_t SPHHostSize() const { return SPHHostSize_; }
     size_t SPHDeviceSize() const { return SPHDeviceSize_; }
     size_t ghostHostSize() const { return ghostHostSize_; }
@@ -388,38 +386,18 @@ public:
     const double h,
     const double nu)
     {
-        position_.addHostData(pos);
-        velocity_.addHostData(vel);
-        pressure_.addHostData(p);
+        size_t n = SPHHostSize_ + ghostHostSize_; 
 
-        mass_.addHostData(m);
-        initialDensity_.addHostData(rho0);
-        smoothLength_.addHostData(h);
-        kinematicViscosity_.addHostData(nu);
+        position_.insertHostData(n, pos);
+        velocity_.insertHostData(n, vel);
+        pressure_.insertHostData(n, p);
+
+        mass_.insertHostData(n, m);
+        initialDensity_.insertHostData(n, rho0);
+        smoothLength_.insertHostData(n, h);
+        kinematicViscosity_.insertHostData(n, nu);
 
         ghostHostSize_++;
-    }
-
-    void setGhostDeviceSize(size_t n, cudaStream_t stream)
-    {
-        if (SPHDeviceSize_ == 0) return; 
-        if (SPHDeviceSize_ + n > deviceCap()) 
-        {
-            upload(stream);
-            size_t n1 = SPHDeviceSize_ + n - deviceCap();
-            for(size_t i = 0; i < n1; i++)
-            {
-                addGhostHost(make_double3(0.0, 0.0, 0.0),
-                make_double3(0.0, 0.0, 0.0),
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0);
-            }
-            download(stream);
-        }
-        ghostDeviceSize_ = n;
     }
 
     void download(cudaStream_t stream)
@@ -434,11 +412,11 @@ public:
         kinematicViscosity_.download(stream);
 
         // device-only arrays sized according to number of particles
-        const size_t n = deviceCap();
+        size_t n = SPHHostSize_ + ghostHostSize_;
         hashIndex_.allocDeviceArray(n, stream);
         hashValue_.allocDeviceArray(n, stream);
-        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, n * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, n * sizeof(int), stream));
 
         positionStar_.allocDeviceArray(n, stream);
         velocityStar_.allocDeviceArray(n, stream);

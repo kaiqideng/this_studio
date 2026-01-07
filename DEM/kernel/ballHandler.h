@@ -11,7 +11,7 @@ class ballHandler
 public:
     ballHandler()
     {
-        downLoadFlag_ = false;
+        downloadFlag_ = false;
     }
 
     ~ballHandler() = default;
@@ -25,9 +25,9 @@ public:
     cudaStream_t stream,
     int clumpID = -1)
     {
-        if(!downLoadFlag_) 
+        if(!downloadFlag_) 
         {
-            downLoadFlag_ = true;
+            downloadFlag_ = true;
             balls_.upload(stream);
         }
         for (size_t i = 0; i < positions.size(); i++)
@@ -53,9 +53,9 @@ public:
     cudaStream_t stream,
     int clumpID = -1)
     {
-        if(!downLoadFlag_)
+        if(!downloadFlag_)
         {
-            downLoadFlag_ = true;
+            downloadFlag_ = true;
             balls_.upload(stream);
         }
         for (size_t i = 0; i < positions.size(); i++)
@@ -114,27 +114,16 @@ public:
 
     void download(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
     {
-        if(downLoadFlag_)
+        if(downloadFlag_)
         {
-            size_t numBalls0 = balls_.deviceSize();
             balls_.download(stream);
-            size_t numBalls1 = balls_.deviceSize();
-            if(numBalls1 != numBalls0)
-            {
-                ballInteractions_.alloc(numBalls1 * 6, stream);
-                ballInteractionMap_.alloc(numBalls1, numBalls1, stream);
-
-                double cellSizeOneDim = 0.0;
-                std::vector<double> rad = balls_.radiusVector();
-                if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * 1.1;
-                if(cellSizeOneDim > spatialGrids_.cellSize.x 
-                || cellSizeOneDim > spatialGrids_.cellSize.y 
-                || cellSizeOneDim > spatialGrids_.cellSize.z)
-                {
-                    spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
-                }
-            }
-            downLoadFlag_ = false;
+            ballInteractions_.alloc(balls_.deviceSize() * 6, stream);
+            ballInteractionMap_.alloc(balls_.deviceSize(), balls_.deviceSize(), stream);
+            double cellSizeOneDim = 0.0;
+            std::vector<double> rad = balls_.radiusVector();
+            if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * 1.1;
+            spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
+            downloadFlag_ = false;
         }
     }
 
@@ -266,7 +255,7 @@ public:
     }
 
 private:
-    bool downLoadFlag_;
+    bool downloadFlag_;
     ball balls_;
     spatialGrid spatialGrids_;
 

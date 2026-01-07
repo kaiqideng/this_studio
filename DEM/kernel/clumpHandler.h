@@ -1,4 +1,5 @@
 #include "ballHandler.h"
+#include "cudaKernel/myStruct/myUtility/myVec.h"
 #include "cudaKernel/myStruct/particle.h"
 
 class clumpHandler
@@ -32,15 +33,16 @@ public:
         size_t pebbleStart = bH.getBalls().hostSize();
         size_t pebbleEnd = pebbleStart + points.size();
 
+        std::vector<double3> vel(points.size(), velocity);
+        std::vector<double3> angVel(points.size(), angularVelocity);
         double volume = 0;
         for (size_t i = 0; i < points.size(); i++)
         {
             volume += 4.0 / 3.0 * pi() * pow(radius[i], 3.0);
+            vel[i] = vel[i] + cross(angularVelocity, points[i] - centroidPosition);
         }
         double density_ave = 0;
         if (volume > 0.) density_ave = mass / volume;
-        std::vector<double3> vel(points.size(), velocity);
-        std::vector<double3> angVel(points.size(), angularVelocity);
 
         bH.addCluster(points, 
         vel, 
@@ -83,7 +85,11 @@ public:
         size_t pebbleStart = bH.getBalls().hostSize();
         size_t pebbleEnd = pebbleStart + points.size();
 
-        bH.addFixedCluster(points, radius, materialID, stream, clumpID);
+        bH.addFixedCluster(points, 
+        radius, 
+        materialID, 
+        stream, 
+        clumpID);
 
         clumps_.addHost(centroidPosition, 
         make_double3(0.0, 0.0, 0.0), 

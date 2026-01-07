@@ -61,7 +61,7 @@ void DEMBaseSolver::solve()
 
     if (initialize()) 
     {
-        if (handleHostArrayInLoop()) {download();}
+        if (handleHostArrayInLoop()) download();
         outputData();
         size_t numSteps = size_t((getMaximumTime()) / timeStep) + 1;
         size_t frameInterval = numSteps / getNumFrames();

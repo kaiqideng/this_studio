@@ -59,7 +59,6 @@ protected:
 	ballHandler& getBallHandler();
 
 private:
-    //Be fucking careful to this motherfucker, making sure that you have correct "A" size and "B" size of the interactionMap
     virtual void download();
 
     bool initialize();

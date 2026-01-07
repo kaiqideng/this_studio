@@ -89,7 +89,7 @@ public:
 
     void insertHostData(size_t index, const T& value)
     {
-        if (index > hostSize()) h_data.push_back(value);
+        if (index > hostSize()) index = hostSize();
         h_data.insert(h_data.begin() + static_cast<std::ptrdiff_t>(index), value);
     }
 
@@ -193,7 +193,7 @@ public:
     }
 
     size_t hostSize() const { return h_data.size(); }
-    size_t deviceSize() const{ return d_size; }
+    size_t deviceSize() const { return d_size; }
 
     void releaseDeviceArray()
     {
@@ -220,7 +220,7 @@ public:
 
     void insertHostData(size_t index, const T& value)
     {
-        if (index > hostSize()) h_data.push_back(value);
+        if (index > hostSize()) index = hostSize();
         h_data.insert(h_data.begin() + static_cast<std::ptrdiff_t>(index), value);
     }
 
@@ -297,7 +297,7 @@ public:
         return *this;
     }
 
-    size_t deviceSize() const{ return d_size; }
+    size_t deviceSize() const { return d_size; }
 
     void releaseDeviceArray()
     {

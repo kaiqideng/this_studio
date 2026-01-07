@@ -213,17 +213,20 @@ spatialGrid& spatialGrids,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
+    size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
+    size_t numGhosts = SPHAndGhosts.ghostDeviceSize();
+
     size_t grid = 1, block = 1;
 
     updateGridCellStartEnd(spatialGrids,
     SPHAndGhosts.hashIndex(),
     SPHAndGhosts.hashValue(),
     SPHAndGhosts.position(),
-    SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize(),
+    numSPHs + numGhosts,
     maxThreadsPerBlock,
     stream);
 
-    computeGPUGridSizeBlockSize(grid, block, SPHAndGhosts.SPHDeviceSize() + SPHAndGhosts.ghostDeviceSize(), maxThreadsPerBlock);
+    computeGPUGridSizeBlockSize(grid, block, numSPHs + numGhosts, maxThreadsPerBlock);
     countSPHInteractionsKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.position(),
     SPHAndGhosts.smoothLength(),
     SPHAndGhosts.hashIndex(),
@@ -233,8 +236,8 @@ cudaStream_t stream)
     spatialGrids.minBound,
     spatialGrids.cellSize,
     spatialGrids.gridSize,
-    SPHAndGhosts.SPHDeviceSize(),
-    SPHAndGhosts.ghostDeviceSize());
+    numSPHs,
+    numGhosts);
 
     int activeNumber = 0;
     auto exec = thrust::cuda::par.on(stream);
@@ -256,8 +259,8 @@ cudaStream_t stream)
     spatialGrids.minBound,
     spatialGrids.cellSize,
     spatialGrids.gridSize,
-    SPHAndGhosts.SPHDeviceSize(),
-    SPHAndGhosts.ghostDeviceSize());
+    numSPHs,
+    numGhosts);
 }
 
 extern "C" void launchSPHVirtualParticleNeighborSearch(SPHInteraction& SPHVirtualInteractions, 

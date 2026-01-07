@@ -12,8 +12,8 @@ public:
     ~contactModelParams() = default;
 
     void setHertzianContactModelForPair(
-		int    materialIdA,
-		int    materialIdB,
+		int materialIdA,
+		int materialIdB,
 		double effectiveYoungModulus,         // E*
 		double effectiveShearModulus,         // G*
 		double coefficientOfRestitution,      // e
@@ -43,8 +43,8 @@ public:
 	};
 
 	void setLinearContactModelForPair(
-		int    materialIdA,
-		int    materialIdB,
+		int materialIdA,
+		int materialIdB,
 		double normalStiffness_k_n,
 		double slidingStiffness_k_s,
 		double rollingStiffness_k_r,
@@ -80,8 +80,8 @@ public:
 	};
 
 	void setBondedContactModelForPair(
-		int    materialIdA,
-		int    materialIdB,
+		int materialIdA,
+		int materialIdB,
 		double bondRadiusMultiplier_gamma,
 		double bondYoungModulus_Eb,
 		double normalToShearStiffnessRatio_k_n_over_k_s,
