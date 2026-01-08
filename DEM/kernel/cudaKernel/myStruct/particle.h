@@ -185,17 +185,17 @@ public:
     size_t hostSize() const  { return position_.hostSize(); }
     size_t deviceSize() const{ return position_.deviceSize(); }
 
-    void addHost(const double3& pos,
-    const double3& vel,
-    const double3& angVel,
-    const double3& F,
-    const double3& T,
-    const quaternion& q,
-    const symMatrix& invInertia,
-    double invMass,
-    int matID,
-    int pebbleStartIdx,
-    int pebbleEndIdx)
+    void addHost(const double3 pos,
+    const double3 vel,
+    const double3 angVel,
+    const double3 F,
+    const double3 T,
+    const quaternion q,
+    const symMatrix invInertia,
+    const double invMass,
+    const int matID,
+    const int pebbleStartIdx,
+    const int pebbleEndIdx)
     {
         position_.addHostData(pos);
         velocity_.addHostData(vel);
@@ -437,10 +437,9 @@ public:
         ghostHostSize_ = ghostDeviceSize_;
     }
 
-    // device pointers
     double3* position() { return position_.d_ptr; }
     double3* velocity() { return velocity_.d_ptr; }
-    double*  pressure() { return pressure_.d_ptr; }
+    double* pressure() { return pressure_.d_ptr; }
 
     const double* mass() { return mass_.d_ptr; }
     const double* initialDensity() { return initialDensity_.d_ptr; }

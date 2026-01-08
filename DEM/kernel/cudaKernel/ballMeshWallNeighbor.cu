@@ -39,8 +39,6 @@ const size_t numTri,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    sptialGrids.cellInit(stream);
-
     size_t grid = 1, block = 1;
     computeGPUGridSizeBlockSize(grid, block, numTri, maxThreadsPerBlock);
 

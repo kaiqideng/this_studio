@@ -49,7 +49,7 @@ public:
         if(downloadFlag_)
         {
             SPHAndGhosts_.download(stream);
-            SPHInteractions_.alloc(SPHAndGhosts_.SPHDeviceSize() * 60, stream);
+            SPHInteractions_.alloc(SPHAndGhosts_.SPHDeviceSize() * 80, stream);
             SPHInteractionMap_.alloc(SPHAndGhosts_.SPHDeviceSize() + SPHAndGhosts_.ghostDeviceSize(),
             SPHAndGhosts_.SPHDeviceSize() + SPHAndGhosts_.ghostDeviceSize(), 
             stream);

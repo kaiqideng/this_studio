@@ -93,6 +93,7 @@ elasticBounce_EXTERNAL_OBJECTS =
 CMakeFiles/elasticBounce.dir/cmake_device_link.o: CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o
 CMakeFiles/elasticBounce.dir/cmake_device_link.o: CMakeFiles/elasticBounce.dir/build.make
 CMakeFiles/elasticBounce.dir/cmake_device_link.o: lib/libDEM_core.a
+CMakeFiles/elasticBounce.dir/cmake_device_link.o: lib/libDEM_sort.a
 CMakeFiles/elasticBounce.dir/cmake_device_link.o: CMakeFiles/elasticBounce.dir/deviceLinkLibs.rsp
 CMakeFiles/elasticBounce.dir/cmake_device_link.o: CMakeFiles/elasticBounce.dir/deviceObjects1.rsp
 CMakeFiles/elasticBounce.dir/cmake_device_link.o: CMakeFiles/elasticBounce.dir/dlink.txt
@@ -113,6 +114,7 @@ elasticBounce_EXTERNAL_OBJECTS =
 bin/elasticBounce: CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o
 bin/elasticBounce: CMakeFiles/elasticBounce.dir/build.make
 bin/elasticBounce: lib/libDEM_core.a
+bin/elasticBounce: lib/libDEM_sort.a
 bin/elasticBounce: CMakeFiles/elasticBounce.dir/cmake_device_link.o
 bin/elasticBounce: CMakeFiles/elasticBounce.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable bin/elasticBounce"

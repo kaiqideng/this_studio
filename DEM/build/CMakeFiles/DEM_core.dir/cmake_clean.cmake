@@ -13,8 +13,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o.d"
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o"
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o.d"
-  "CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o"
-  "CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o.d"
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o"
   "CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o.d"
   "lib/libDEM_core.a"

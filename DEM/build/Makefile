@@ -118,6 +118,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named DEM_sort
+
+# Build rule for target.
+DEM_sort: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 DEM_sort
+.PHONY : DEM_sort
+
+# fast build rule for target.
+DEM_sort/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/build
+.PHONY : DEM_sort/fast
+
+#=============================================================================
 # Target rules for targets named DEM_core
 
 # Build rule for target.
@@ -414,7 +427,7 @@ kernel/cudaKernel/biuldHashStartEnd.o: kernel/cudaKernel/biuldHashStartEnd.cu.o
 
 # target to build an object file
 kernel/cudaKernel/biuldHashStartEnd.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o
 .PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.o
 
 kernel/cudaKernel/biuldHashStartEnd.i: kernel/cudaKernel/biuldHashStartEnd.cu.i
@@ -422,7 +435,7 @@ kernel/cudaKernel/biuldHashStartEnd.i: kernel/cudaKernel/biuldHashStartEnd.cu.i
 
 # target to preprocess a source file
 kernel/cudaKernel/biuldHashStartEnd.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.i
 .PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.i
 
 kernel/cudaKernel/biuldHashStartEnd.s: kernel/cudaKernel/biuldHashStartEnd.cu.s
@@ -430,7 +443,7 @@ kernel/cudaKernel/biuldHashStartEnd.s: kernel/cudaKernel/biuldHashStartEnd.cu.s
 
 # target to generate assembly for a file
 kernel/cudaKernel/biuldHashStartEnd.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/biuldHashStartEnd.cu.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.s
 .PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.s
 
 kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o: kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
@@ -467,6 +480,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... 11BondedBallsBeam"
 	@echo "... DEM_core"
+	@echo "... DEM_sort"
 	@echo "... damBreak"
 	@echo "... elasticBounce"
 	@echo "... 11BondedBallsBeam.o"

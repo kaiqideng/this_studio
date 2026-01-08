@@ -1,1 +1,1 @@
-/usr/bin/g++-12 -O3 -DNDEBUG CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o CMakeFiles/elasticBounce.dir/cmake_device_link.o -o bin/elasticBounce   -L/usr/lib/x86_64-linux-gnu/stubs  lib/libDEM_core.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl 
+/usr/bin/g++-12 -g CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o CMakeFiles/elasticBounce.dir/cmake_device_link.o -o bin/elasticBounce   -L/usr/lib/x86_64-linux-gnu/stubs  lib/libDEM_core.a lib/libDEM_sort.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl 

@@ -93,6 +93,7 @@ damBreak_EXTERNAL_OBJECTS =
 CMakeFiles/damBreak.dir/cmake_device_link.o: CMakeFiles/damBreak.dir/damBreak.cpp.o
 CMakeFiles/damBreak.dir/cmake_device_link.o: CMakeFiles/damBreak.dir/build.make
 CMakeFiles/damBreak.dir/cmake_device_link.o: lib/libDEM_core.a
+CMakeFiles/damBreak.dir/cmake_device_link.o: lib/libDEM_sort.a
 CMakeFiles/damBreak.dir/cmake_device_link.o: CMakeFiles/damBreak.dir/deviceLinkLibs.rsp
 CMakeFiles/damBreak.dir/cmake_device_link.o: CMakeFiles/damBreak.dir/deviceObjects1.rsp
 CMakeFiles/damBreak.dir/cmake_device_link.o: CMakeFiles/damBreak.dir/dlink.txt
@@ -113,6 +114,7 @@ damBreak_EXTERNAL_OBJECTS =
 bin/damBreak: CMakeFiles/damBreak.dir/damBreak.cpp.o
 bin/damBreak: CMakeFiles/damBreak.dir/build.make
 bin/damBreak: lib/libDEM_core.a
+bin/damBreak: lib/libDEM_sort.a
 bin/damBreak: CMakeFiles/damBreak.dir/cmake_device_link.o
 bin/damBreak: CMakeFiles/damBreak.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable bin/damBreak"

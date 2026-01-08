@@ -38,7 +38,7 @@ extern "C" void buildHashStartEnd(int* start,
 int* end, 
 int* index, 
 int* hash, 
-const int maxHashValue,
+const int maxHashValue,  //size of start/end
 const size_t hashListSize, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
@@ -52,6 +52,7 @@ cudaStream_t stream)
     computeGPUGridSizeBlockSize(grid, block, hashListSize, maxThreadsPerBlock);
     setInitialIndices <<<grid, block, 0, stream>>> (index, hashListSize);
     CUDA_CHECK(cudaGetLastError());
+    //CUDA_CHECK(cudaStreamSynchronize(stream));
 
     auto exec = thrust::cuda::par.on(stream);
     try

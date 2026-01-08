@@ -93,6 +93,7 @@ CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.s: cmake_force
 CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o: CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.o
 CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o: CMakeFiles/11BondedBallsBeam.dir/build.make
 CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o: lib/libDEM_core.a
+CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o: lib/libDEM_sort.a
 CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o: CMakeFiles/11BondedBallsBeam.dir/deviceLinkLibs.rsp
 CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o: CMakeFiles/11BondedBallsBeam.dir/deviceObjects1.rsp
 CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o: CMakeFiles/11BondedBallsBeam.dir/dlink.txt
@@ -113,6 +114,7 @@ CMakeFiles/11BondedBallsBeam.dir/build: CMakeFiles/11BondedBallsBeam.dir/cmake_d
 bin/11BondedBallsBeam: CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.o
 bin/11BondedBallsBeam: CMakeFiles/11BondedBallsBeam.dir/build.make
 bin/11BondedBallsBeam: lib/libDEM_core.a
+bin/11BondedBallsBeam: lib/libDEM_sort.a
 bin/11BondedBallsBeam: CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o
 bin/11BondedBallsBeam: CMakeFiles/11BondedBallsBeam.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable bin/11BondedBallsBeam"

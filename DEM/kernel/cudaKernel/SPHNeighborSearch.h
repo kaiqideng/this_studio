@@ -7,11 +7,3 @@ SPH& SPHAndGhosts,
 spatialGrid& spatialGrids, 
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream);
-
-extern "C" void launchSPHVirtualParticleNeighborSearch(SPHInteraction& SPHVirtualInteractions, 
-interactionMap& SPHVirtualInteractionMap,
-SPH& SPHAndGhosts, 
-virtualParticle& virtualParticles, 
-spatialGrid& spatialGrids, 
-const size_t maxThreadsPerBlock, 
-cudaStream_t stream);

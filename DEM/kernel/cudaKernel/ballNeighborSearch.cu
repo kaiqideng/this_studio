@@ -29,12 +29,10 @@ extern "C" void updateGridCellStartEnd(spatialGrid& sptialGrids,
 int* hashIndex, 
 int* hashValue, 
 double3* position, 
-size_t numObjects,
+const size_t numObjects,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    sptialGrids.cellInit(stream);
-
     size_t grid = 1, block = 1;
     computeGPUGridSizeBlockSize(grid, block, numObjects, maxThreadsPerBlock);
 

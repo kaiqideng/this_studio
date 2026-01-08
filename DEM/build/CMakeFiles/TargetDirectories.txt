@@ -1,3 +1,4 @@
+/teamspace/studios/this_studio/DEM/build/CMakeFiles/DEM_sort.dir
 /teamspace/studios/this_studio/DEM/build/CMakeFiles/DEM_core.dir
 /teamspace/studios/this_studio/DEM/build/CMakeFiles/11BondedBallsBeam.dir
 /teamspace/studios/this_studio/DEM/build/CMakeFiles/damBreak.dir

@@ -63,6 +63,7 @@ CMAKE_BINARY_DIR = /teamspace/studios/this_studio/DEM/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/DEM_sort.dir/all
 all: CMakeFiles/DEM_core.dir/all
 all: CMakeFiles/11BondedBallsBeam.dir/all
 all: CMakeFiles/damBreak.dir/all
@@ -74,6 +75,7 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/DEM_sort.dir/clean
 clean: CMakeFiles/DEM_core.dir/clean
 clean: CMakeFiles/11BondedBallsBeam.dir/clean
 clean: CMakeFiles/damBreak.dir/clean
@@ -81,18 +83,44 @@ clean: CMakeFiles/elasticBounce.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/DEM_sort.dir
+
+# All Build rule for target.
+CMakeFiles/DEM_sort.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=13,14 "Built target DEM_sort"
+.PHONY : CMakeFiles/DEM_sort.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/DEM_sort.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/DEM_sort.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 0
+.PHONY : CMakeFiles/DEM_sort.dir/rule
+
+# Convenience name for target.
+DEM_sort: CMakeFiles/DEM_sort.dir/rule
+.PHONY : DEM_sort
+
+# clean rule for target.
+CMakeFiles/DEM_sort.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/clean
+.PHONY : CMakeFiles/DEM_sort.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/DEM_core.dir
 
 # All Build rule for target.
-CMakeFiles/DEM_core.dir/all:
+CMakeFiles/DEM_core.dir/all: CMakeFiles/DEM_sort.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13 "Built target DEM_core"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12 "Built target DEM_core"
 .PHONY : CMakeFiles/DEM_core.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/DEM_core.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 11
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/DEM_core.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 0
 .PHONY : CMakeFiles/DEM_core.dir/rule
@@ -110,6 +138,7 @@ CMakeFiles/DEM_core.dir/clean:
 # Target rules for target CMakeFiles/11BondedBallsBeam.dir
 
 # All Build rule for target.
+CMakeFiles/11BondedBallsBeam.dir/all: CMakeFiles/DEM_sort.dir/all
 CMakeFiles/11BondedBallsBeam.dir/all: CMakeFiles/DEM_core.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/11BondedBallsBeam.dir/build.make CMakeFiles/11BondedBallsBeam.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/11BondedBallsBeam.dir/build.make CMakeFiles/11BondedBallsBeam.dir/build
@@ -118,7 +147,7 @@ CMakeFiles/11BondedBallsBeam.dir/all: CMakeFiles/DEM_core.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/11BondedBallsBeam.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/11BondedBallsBeam.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 0
 .PHONY : CMakeFiles/11BondedBallsBeam.dir/rule
@@ -136,15 +165,16 @@ CMakeFiles/11BondedBallsBeam.dir/clean:
 # Target rules for target CMakeFiles/damBreak.dir
 
 # All Build rule for target.
+CMakeFiles/damBreak.dir/all: CMakeFiles/DEM_sort.dir/all
 CMakeFiles/damBreak.dir/all: CMakeFiles/DEM_core.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/damBreak.dir/build.make CMakeFiles/damBreak.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/damBreak.dir/build.make CMakeFiles/damBreak.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=14,15,16 "Built target damBreak"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=15,16,17 "Built target damBreak"
 .PHONY : CMakeFiles/damBreak.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/damBreak.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/damBreak.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 0
 .PHONY : CMakeFiles/damBreak.dir/rule
@@ -162,15 +192,16 @@ CMakeFiles/damBreak.dir/clean:
 # Target rules for target CMakeFiles/elasticBounce.dir
 
 # All Build rule for target.
+CMakeFiles/elasticBounce.dir/all: CMakeFiles/DEM_sort.dir/all
 CMakeFiles/elasticBounce.dir/all: CMakeFiles/DEM_core.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/elasticBounce.dir/build.make CMakeFiles/elasticBounce.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/elasticBounce.dir/build.make CMakeFiles/elasticBounce.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=17,18,19 "Built target elasticBounce"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=18,19,20 "Built target elasticBounce"
 .PHONY : CMakeFiles/elasticBounce.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/elasticBounce.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/elasticBounce.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /teamspace/studios/this_studio/DEM/build/CMakeFiles 0
 .PHONY : CMakeFiles/elasticBounce.dir/rule
