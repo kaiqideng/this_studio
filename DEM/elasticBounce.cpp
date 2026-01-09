@@ -49,7 +49,7 @@ int main()
 
     double mass = 4.0 / 3.0 * pow(0.01,3.0) * pi() * 2000;
     test.setLinearContactModelForPair(0, 0, 
-    5.0 * mass * sqrt(pi() / test.ct), 
+    0.5 * mass * pi() * pi() / test.ct / test.ct, 
     0.0, 
     0.0, 
     0.0, 

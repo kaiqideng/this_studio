@@ -43,6 +43,7 @@ const size_t numSPHs)
         double3 r_ij = r_i - r_j;
         double h_ij = 0.5 * (h_i + h_j);
         double3 dW_ij = gradWendlandKernel3D(r_ij, h_ij);
+        
         gradientKernel[k] = dW_ij;
 
         double gamma = 0.001 * h_ij;
@@ -138,7 +139,6 @@ const size_t numSPHs)
 
         double3 rs_ij = rs_i - rs_j;
         double h_ij = 0.5 * (h_i + h_j);
-
         double3 dW_ij = gradientKernelStar[k];
 
         double gamma = 0.001 * h_ij;
@@ -188,7 +188,6 @@ const size_t numSPHs)
         double rhos_j = densityStar[idx_j];
         double p_j = pressure[idx_j];
         double m_j = mass[idx_j];
-
         double3 dW_ij = gradientKernelStar[k];
 
         dp_rhos_i += -m_j * (p_i / (rhos_i * rhos_i) + p_j / (rhos_j * rhos_j)) * dW_ij;
@@ -253,15 +252,11 @@ SPHInteraction& SPHInteractions,
 interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim, 
 cudaStream_t stream)
 {
-    size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
-
-    size_t grid = 1, block = 1;
-
-    computeGPUGridSizeBlockSize(grid, block, numSPHs, maxThreadsPerBlock);
-    calVelocityStarPositionStarKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.positionStar(),
+    calVelocityStarPositionStarKernel <<<gridDim, blockDim, 0, stream>>> (SPHAndGhosts.positionStar(),
     SPHAndGhosts.velocityStar(),
     SPHAndGhosts.position(),
     SPHAndGhosts.velocity(),
@@ -274,22 +269,20 @@ cudaStream_t stream)
     SPHInteractions.gradientKernel(),
     gravity,
     timeStep, 
-    numSPHs);
+    SPHAndGhosts.SPHDeviceSize());
 }
 
 extern "C" void launchSPH2ndIntegration(SPH& SPHAndGhosts, 
 SPHInteraction& SPHInteractions, 
 interactionMap& SPHInteractionMap,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim, 
 cudaStream_t stream)
 {
     size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
 
-    size_t grid = 1, block = 1;
-
-    computeGPUGridSizeBlockSize(grid, block, numSPHs, maxThreadsPerBlock);
-    calDensityStarKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.densityStar(),
+    calDensityStarKernel <<<gridDim, blockDim, 0, stream>>> (SPHAndGhosts.densityStar(),
     SPHAndGhosts.initialDensity(),
     SPHAndGhosts.positionStar(),
     SPHAndGhosts.velocityStar(),
@@ -301,7 +294,7 @@ cudaStream_t stream)
     timeStep, 
     numSPHs);
 
-    calPresssureStarKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.pressureStar(),
+    calPresssureStarKernel <<<gridDim, blockDim, 0, stream>>> (SPHAndGhosts.pressureStar(),
     SPHAndGhosts.positionStar(),
     SPHAndGhosts.velocityStar(),
     SPHAndGhosts.densityStar(),
@@ -321,15 +314,11 @@ extern "C" void launchSPH3rdIntegration(SPH& SPHAndGhosts,
 SPHInteraction& SPHInteractions, 
 interactionMap& SPHInteractionMap,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim,
 cudaStream_t stream)
 {
-    size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
-
-    size_t grid = 1, block = 1;
-    
-    computeGPUGridSizeBlockSize(grid, block, numSPHs, maxThreadsPerBlock);
-    velocityPositionIntegrationKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.position(),
+    velocityPositionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (SPHAndGhosts.position(),
     SPHAndGhosts.velocity(),
     SPHAndGhosts.positionStar(),
     SPHAndGhosts.velocityStar(),
@@ -340,7 +329,7 @@ cudaStream_t stream)
     SPHInteractions.objectPointing(),
     SPHInteractions.gradientKernelStar(),
     timeStep, 
-    numSPHs);
+    SPHAndGhosts.SPHDeviceSize());
 }
 
 extern "C" void launchAdamiBoundaryCondition(SPH& SPHAndGhosts, 
@@ -348,7 +337,8 @@ SPHInteraction& SPHInteractions,
 interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim,
 cudaStream_t stream)
 {
     size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
@@ -357,10 +347,7 @@ cudaStream_t stream)
     cuda_copy(SPHAndGhosts.velocityStar() + numSPHs, SPHAndGhosts.velocity() + numSPHs, numGhosts, CopyDir::D2D, stream);
     cuda_copy(SPHAndGhosts.densityStar() + numSPHs, SPHAndGhosts.initialDensity() + numSPHs, numGhosts, CopyDir::D2D, stream);
 
-    size_t grid = 1, block = 1;
-
-    computeGPUGridSizeBlockSize(grid, block, numGhosts, maxThreadsPerBlock);
-    setDummyPressureKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.pressure(), 
+    setDummyPressureKernel <<<gridDim, blockDim, 0, stream>>> (SPHAndGhosts.pressure(), 
     SPHAndGhosts.velocity(), 
     SPHAndGhosts.position(), 
     SPHAndGhosts.initialDensity(), 

@@ -126,14 +126,26 @@ const size_t numInteractions)
 }
 
 __global__ void calBondedForceTorqueKernel(double* normalForce, 
-double* torsionTorque, double3* shearForce, double3* bendingTorque, 
-double3* contactNormal, int* isBonded, int* objectPointed_b, int* objectPointing_b, 
-double3* contactForce, double3* contactTorque, int* objectPointed, int* objectPointing, 
-double3* force, double3* torque, double3* position, double3* velocity, double3* angularVelocity, 
+double* torsionTorque, 
+double3* shearForce, 
+double3* bendingTorque, 
+double3* contactNormal, 
+int* isBonded, 
+int* objectPointed_b, 
+int* objectPointing_b, 
+double3* contactForce, 
+double3* contactTorque, 
+int* objectPointed, 
+int* objectPointing, 
+double3* force, 
+double3* torque, 
+double3* position, 
+double3* velocity, 
+double3* angularVelocity, 
 const double* radius, 
 const double* inverseMass, 
 const int* materialID, 
-int* interactionMaPrefixSumA,
+int* interactionMapPrefixSumA,
 const double* bondedGamma, 
 const double* bondedE, 
 const double* bondedK_n_k_s, 
@@ -207,8 +219,8 @@ const size_t numBondedInteractions)
 
 	bool flag = false;
 	int idx_c = 0;
-	const int neighborStart_i = idx_i > 0 ? interactionMaPrefixSumA[idx_i - 1] : 0;
-	const int neighborEnd_i = interactionMaPrefixSumA[idx_i];
+	const int neighborStart_i = idx_i > 0 ? interactionMapPrefixSumA[idx_i - 1] : 0;
+	const int neighborEnd_i = interactionMapPrefixSumA[idx_i];
 	for (int k = neighborStart_i; k < neighborEnd_i; k++)
 	{
 		if (objectPointing[k] == idx_j)
@@ -389,42 +401,38 @@ __global__ void positionIntegrationKernel(double3* position, double3* velocity,
 extern "C" void launchBall1stHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim, 
 cudaStream_t stream)
 {
-	size_t grid = 1, block = 1;
-
-	computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
-	ballVelocityAngularVelocityIntegrationKernel <<<grid, block, 0, stream>>> (balls.velocity(), 
-    balls.angularVelocity(), 
+	ballVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (balls.velocity(), 
+	balls.angularVelocity(), 
 	balls.force(), 
-    balls.torque(), 
-    balls.radius(), 
-    balls.inverseMass(), 
-    balls.clumpID(), 
+	balls.torque(), 
+	balls.radius(), 
+	balls.inverseMass(), 
+	balls.clumpID(), 
 	gravity, 
-    0.5 * timeStep, 
-    balls.deviceSize());
+	0.5 * timeStep, 
+	balls.deviceSize());
 
-	positionIntegrationKernel <<<grid, block, 0, stream>>> (balls.position(), 
-    balls.velocity(), 
-    timeStep,
-    balls.deviceSize());
+	positionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (balls.position(), 
+	balls.velocity(), 
+	timeStep,
+	balls.deviceSize());
 
-    CUDA_CHECK(cudaMemsetAsync(balls.force(), 0, balls.deviceSize() * sizeof(double3), stream));
-    CUDA_CHECK(cudaMemsetAsync(balls.torque(), 0, balls.deviceSize() * sizeof(double3), stream));
+	CUDA_CHECK(cudaMemsetAsync(balls.force(), 0, balls.deviceSize() * sizeof(double3), stream));
+	CUDA_CHECK(cudaMemsetAsync(balls.torque(), 0, balls.deviceSize() * sizeof(double3), stream));
 }
 
 extern "C" void launchBall2ndHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim, 
 cudaStream_t stream)
 {
-	size_t grid = 1, block = 1;
-
-	computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
-	ballVelocityAngularVelocityIntegrationKernel <<<grid, block, 0, stream>>> (balls.velocity(), 
+	ballVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (balls.velocity(), 
     balls.angularVelocity(), 
 	balls.force(), 
     balls.torque(), 
@@ -440,14 +448,11 @@ extern "C" void launchClump1stHalfIntegration(clump& clumps,
 ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim, 
 cudaStream_t stream)
 {
-	if(clumps.deviceSize() == 0) return;
-	size_t grid = 1, block = 1;
-
-	computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
-	clumpVelocityAngularVelocityIntegrationKernel <<<grid, block, 0, stream>>> (clumps.velocity(),
+	clumpVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.velocity(),
 	clumps.angularVelocity(),
 	clumps.position(),
 	clumps.force(),
@@ -464,12 +469,12 @@ cudaStream_t stream)
 	0.5 * timeStep,
 	clumps.deviceSize());
 
-	orientationIntegrationKernel <<<grid, block, 0, stream>>> (clumps.orientation(), 
+	orientationIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.orientation(), 
 	clumps.angularVelocity(), 
 	timeStep, 
 	clumps.deviceSize());
 
-	positionIntegrationKernel <<<grid, block, 0, stream>>> (clumps.position(), 
+	positionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.position(), 
     clumps.velocity(), 
     timeStep,
     clumps.deviceSize());
@@ -482,14 +487,11 @@ extern "C" void launchClump2ndHalfIntegration(clump& clumps,
 ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim, 
 cudaStream_t stream)
 {
-	if(clumps.deviceSize() == 0) return;
-	size_t grid = 1, block = 1;
-
-    computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
-	sumClumpForceTorqueKernel <<<grid, block, 0, stream>>> (clumps.force(), 
+	sumClumpForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (clumps.force(), 
 	clumps.torque(), 
 	clumps.position(), 
 	clumps.pebbleStart(), 
@@ -499,8 +501,7 @@ cudaStream_t stream)
 	balls.position(), 
 	clumps.deviceSize());
 
-	computeGPUGridSizeBlockSize(grid, block, clumps.deviceSize(), maxThreadsPerBlock);
-	clumpVelocityAngularVelocityIntegrationKernel <<<grid, block, 0, stream>>> (clumps.velocity(),
+	clumpVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.velocity(),
 	clumps.angularVelocity(),
 	clumps.position(),
 	clumps.force(),
@@ -527,93 +528,98 @@ const double timeStep,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    size_t grid = 1, block = 1;
+    size_t gridDim = 1, blockDim = 1;
 
-	computeGPUGridSizeBlockSize(grid, block, ballInteractions.activeSize(), maxThreadsPerBlock);
-    calBallContactForceTorqueKernel <<<grid, block, 0, stream>>> (ballInteractions.force(),
-	ballInteractions.torque(),
-	ballInteractions.contactPoint(),
-	ballInteractions.slidingSpring(),
-	ballInteractions.rollingSpring(),
-	ballInteractions.torsionSpring(),
-	ballInteractions.objectPointed(),
-	ballInteractions.objectPointing(),
-	balls.position(),
-	balls.velocity(),
-	balls.angularVelocity(),
-	balls.radius(),
-	balls.inverseMass(),
-	balls.materialID(),
-	contactModelParams.hertzian.effectiveYoungsModulus,
-	contactModelParams.hertzian.effectiveShearModulus,
-	contactModelParams.hertzian.restitutionCoefficient,
-	contactModelParams.hertzian.rollingStiffnessToShearStiffnessRatio,
-	contactModelParams.hertzian.torsionStiffnessToShearStiffnessRatio,
-	contactModelParams.hertzian.slidingFrictionCoefficient,
-	contactModelParams.hertzian.rollingFrictionCoefficient,
-	contactModelParams.hertzian.torsionFrictionCoefficient,
-	contactModelParams.linear.normalStiffness,
-	contactModelParams.linear.slidingStiffness,
-	contactModelParams.linear.rollingStiffness,
-	contactModelParams.linear.torsionStiffness,
-	contactModelParams.linear.normalDampingCoefficient,
-	contactModelParams.linear.slidingDampingCoefficient,
-	contactModelParams.linear.rollingDampingCoefficient,
-	contactModelParams.linear.torsionDampingCoefficient,
-	contactModelParams.linear.slidingFrictionCoefficient,
-	contactModelParams.linear.rollingFrictionCoefficient,
-	contactModelParams.linear.torsionFrictionCoefficient,
-	contactModelParams.numberOfMaterials,
-	contactModelParams.pairTableSize,
-	timeStep,
-	ballInteractions.activeSize());
+	if (setGPUGridBlockDim(gridDim, blockDim, ballInteractions.activeSize(), maxThreadsPerBlock))
+	{
+		calBallContactForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (ballInteractions.force(),
+		ballInteractions.torque(),
+		ballInteractions.contactPoint(),
+		ballInteractions.slidingSpring(),
+		ballInteractions.rollingSpring(),
+		ballInteractions.torsionSpring(),
+		ballInteractions.objectPointed(),
+		ballInteractions.objectPointing(),
+		balls.position(),
+		balls.velocity(),
+		balls.angularVelocity(),
+		balls.radius(),
+		balls.inverseMass(),
+		balls.materialID(),
+		contactModelParams.hertzian.effectiveYoungsModulus,
+		contactModelParams.hertzian.effectiveShearModulus,
+		contactModelParams.hertzian.restitutionCoefficient,
+		contactModelParams.hertzian.rollingStiffnessToShearStiffnessRatio,
+		contactModelParams.hertzian.torsionStiffnessToShearStiffnessRatio,
+		contactModelParams.hertzian.slidingFrictionCoefficient,
+		contactModelParams.hertzian.rollingFrictionCoefficient,
+		contactModelParams.hertzian.torsionFrictionCoefficient,
+		contactModelParams.linear.normalStiffness,
+		contactModelParams.linear.slidingStiffness,
+		contactModelParams.linear.rollingStiffness,
+		contactModelParams.linear.torsionStiffness,
+		contactModelParams.linear.normalDampingCoefficient,
+		contactModelParams.linear.slidingDampingCoefficient,
+		contactModelParams.linear.rollingDampingCoefficient,
+		contactModelParams.linear.torsionDampingCoefficient,
+		contactModelParams.linear.slidingFrictionCoefficient,
+		contactModelParams.linear.rollingFrictionCoefficient,
+		contactModelParams.linear.torsionFrictionCoefficient,
+		contactModelParams.numberOfMaterials,
+		contactModelParams.pairTableSize,
+		timeStep,
+		ballInteractions.activeSize());
+	}
 
-    computeGPUGridSizeBlockSize(grid, block, bondedBallInteractions.deviceSize(), maxThreadsPerBlock);
-	calBondedForceTorqueKernel <<<grid, block, 0, stream>>> (
-	bondedBallInteractions.normalForce(),
-	bondedBallInteractions.torsionTorque(),
-	bondedBallInteractions.shearForce(),
-	bondedBallInteractions.bendingTorque(),
-	bondedBallInteractions.contactNormal(),
-	bondedBallInteractions.isBonded(),
-	bondedBallInteractions.objectPointed(),
-	bondedBallInteractions.objectPointing(),
-	ballInteractions.force(),
-	ballInteractions.torque(),
-	ballInteractions.objectPointed(),
-	ballInteractions.objectPointing(),
-	balls.force(),
-	balls.torque(),
-	balls.position(),
-	balls.velocity(),
-	balls.angularVelocity(),
-	balls.radius(),
-	balls.inverseMass(),
-	balls.materialID(),
-	ballInteractionMap.prefixSumA(),
-	contactModelParams.bonded.bondRadiusMultiplier,
-	contactModelParams.bonded.bondYoungsModulus,
-	contactModelParams.bonded.normalToShearStiffnessRatio,
-	contactModelParams.bonded.tensileStrength,
-	contactModelParams.bonded.cohesion,
-	contactModelParams.bonded.frictionCoefficient,
-	contactModelParams.numberOfMaterials,
-	contactModelParams.pairTableSize,
-	timeStep,
-	bondedBallInteractions.deviceSize());
-
-    computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
-    sumForceTorqueFromInteractionKernel <<<grid, block, 0, stream>>> (ballInteractions.force(),
-	ballInteractions.torque(),
-	ballInteractions.contactPoint(),
-	ballInteractions.objectPointed(),
-	ballInteractions.objectPointing(),
-	balls.force(),
-	balls.torque(),
-	balls.position(),
-    ballInteractionMap.hashIndex(),
-	ballInteractionMap.prefixSumA(),
-	ballInteractionMap.startB(),
-	ballInteractionMap.endB(),
-	balls.deviceSize());
+	if (setGPUGridBlockDim(gridDim, blockDim, bondedBallInteractions.deviceSize(), maxThreadsPerBlock))
+	{
+		calBondedForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (bondedBallInteractions.normalForce(),
+		bondedBallInteractions.torsionTorque(),
+		bondedBallInteractions.shearForce(),
+		bondedBallInteractions.bendingTorque(),
+		bondedBallInteractions.contactNormal(),
+		bondedBallInteractions.isBonded(),
+		bondedBallInteractions.objectPointed(),
+		bondedBallInteractions.objectPointing(),
+		ballInteractions.force(),
+		ballInteractions.torque(),
+		ballInteractions.objectPointed(),
+		ballInteractions.objectPointing(),
+		balls.force(),
+		balls.torque(),
+		balls.position(),
+		balls.velocity(),
+		balls.angularVelocity(),
+		balls.radius(),
+		balls.inverseMass(),
+		balls.materialID(),
+		ballInteractionMap.prefixSumA(),
+		contactModelParams.bonded.bondRadiusMultiplier,
+		contactModelParams.bonded.bondYoungsModulus,
+		contactModelParams.bonded.normalToShearStiffnessRatio,
+		contactModelParams.bonded.tensileStrength,
+		contactModelParams.bonded.cohesion,
+		contactModelParams.bonded.frictionCoefficient,
+		contactModelParams.numberOfMaterials,
+		contactModelParams.pairTableSize,
+		timeStep,
+		bondedBallInteractions.deviceSize());
+	}
+	
+	if (setGPUGridBlockDim(gridDim, blockDim, balls.deviceSize(), maxThreadsPerBlock))
+	{
+		sumForceTorqueFromInteractionKernel <<<gridDim, blockDim, 0, stream>>> (ballInteractions.force(),
+		ballInteractions.torque(),
+		ballInteractions.contactPoint(),
+		ballInteractions.objectPointed(),
+		ballInteractions.objectPointing(),
+		balls.force(),
+		balls.torque(),
+		balls.position(),
+		ballInteractionMap.hashIndex(),
+		ballInteractionMap.prefixSumA(),
+		ballInteractionMap.startB(),
+		ballInteractionMap.endB(),
+		balls.deviceSize());
+	}
 }

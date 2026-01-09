@@ -33,8 +33,8 @@ set(OLD_GLOB
   "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu"
   "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu"
   "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu"
-  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/biuldHashStartEnd.cu"
-  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu"
+  "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")

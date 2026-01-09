@@ -4,6 +4,11 @@ void DEMBaseSolver::download()
 {
     downloadContactModelParams(stream_);
     ballHandler_.download(getDomainOrigin(), getDomainSize(), stream_);
+    
+    const size_t maxThreads = getGPUMaxThreadsPerBlock();
+    const size_t numBalls = ballHandler_.getBalls().deviceSize();
+    if (numBalls > 0 && maxThreads > 1) blockDim_ = maxThreads < numBalls ? maxThreads : numBalls;
+    if (blockDim_ > 0) gridDim_ = (numBalls + blockDim_ - 1) / blockDim_;
 }
 
 bool DEMBaseSolver::initialize()
@@ -39,7 +44,7 @@ void DEMBaseSolver::neighborSearch()
 
 void DEMBaseSolver::integration1st(const double dt)
 {
-    ballHandler_.integration1st(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+    ballHandler_.integration1st(getGravity(), dt, gridDim_, blockDim_, stream_);
 }
 
 void DEMBaseSolver::contactCalculation(const double dt)
@@ -49,7 +54,7 @@ void DEMBaseSolver::contactCalculation(const double dt)
 
 void DEMBaseSolver::integration2nd(const double dt)
 {
-    ballHandler_.integration2nd(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+    ballHandler_.integration2nd(getGravity(), dt, gridDim_, blockDim_, stream_);
 }
 
 void DEMBaseSolver::solve()
@@ -94,4 +99,24 @@ bool DEMBaseSolver::handleHostArrayInLoop()
 ballHandler& DEMBaseSolver::getBallHandler()
 {
     return ballHandler_;
+}
+
+void DEMBaseSolver::setBallGPUGridDim(size_t gridDim)
+{
+    gridDim_ = gridDim;
+}
+
+void DEMBaseSolver::setBallGPUBlockDim(size_t blockDim)
+{
+    blockDim_ = blockDim;
+}
+
+const size_t& DEMBaseSolver::getBallGPUGridDim() const
+{
+    return gridDim_;
+}
+
+const size_t& DEMBaseSolver::getBallGPUBlockDim() const
+{
+    return blockDim_;
 }

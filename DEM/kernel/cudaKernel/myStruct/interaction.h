@@ -147,10 +147,7 @@ public:
     void setActiveSize(size_t n, cudaStream_t stream)
     {
         activeSize_ = n;
-        if(n > objectPointed_.deviceSize())
-        {
-            alloc(n, stream);
-        }
+        if (n > objectPointed_.deviceSize()) { alloc(n, stream); }
     }
 
     int* objectPointed() { return objectPointed_.d_ptr; }
@@ -158,7 +155,7 @@ public:
     double3* force() { return force_.d_ptr; }
 
     double3* gradientKernel() { return gradientKernel_.d_ptr; }
-    double3* gradientKernelStar() {return gradientKernelStar_.d_ptr;}
+    double3* gradientKernelStar() { return gradientKernelStar_.d_ptr; }
 
     std::vector<int> objectPointedVector() { return objectPointed_.getHostData(); }
     std::vector<int> objectPointingVector() { return objectPointing_.getHostData(); }
@@ -189,9 +186,9 @@ public:
     size_t deviceSize() const { return objectPointed_.deviceSize(); }
     
     void add(const std::vector<int> &ob0,
-        const std::vector<int> &ob1,
-        const std::vector<double3> &p,
-        cudaStream_t stream)
+    const std::vector<int> &ob1,
+    const std::vector<double3> &p,
+    cudaStream_t stream)
     {
         if (ob0.size() != ob1.size()) return;
 
@@ -228,7 +225,7 @@ public:
             existingPointed.push_back(a);
             existingPointing.push_back(b);
 
-            double3 n      = p[a] - p[b];
+            double3 n = p[a] - p[b];
             double3 n_norm = normalize(n);
 
             objectPointed_.addHostData(a);

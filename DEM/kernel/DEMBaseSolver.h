@@ -16,6 +16,8 @@ public:
 		time_ = 0.0;
 
 		stream_ = s;
+        gridDim_ = 1;
+        blockDim_ = 1;
 	}
 
 	~DEMBaseSolver() = default;
@@ -58,6 +60,14 @@ protected:
 
 	ballHandler& getBallHandler();
 
+    void setBallGPUGridDim(size_t gridDim);
+
+    void setBallGPUBlockDim(size_t blockDim);
+
+    const size_t& getBallGPUGridDim() const;
+
+    const size_t& getBallGPUBlockDim() const;
+
 private:
     virtual void download();
 
@@ -82,4 +92,6 @@ private:
 	cudaStream_t stream_;
 
 	ballHandler ballHandler_;
+    size_t gridDim_;
+    size_t blockDim_;
 };

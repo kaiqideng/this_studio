@@ -169,13 +169,13 @@ inline SphereTriangleContactType classifySphereTriangleContact(
     return SphereTriangleContactType::None;
 }
 
-extern "C" void launchBallMeshWallInteractionCalculation(solidInteraction &ballTriangleInteractions, 
-ball &balls, 
+extern "C" void launchBallMeshWallInteractionCalculation(solidInteraction &ballTriangleInteractions,
+ball &balls,
 meshWall &meshWalls,
 contactModelParameters &contactModelParams,
 interactionMap &ballTriangleInteractionMap,
-const double timeStep, 
-const size_t maxThreadsPerBlock, 
+const double timeStep,
+const size_t maxThreadsPerBlock,
 cudaStream_t stream);
 
 extern "C" void launchMeshWallIntegration(meshWall &meshWalls, 

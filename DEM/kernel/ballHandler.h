@@ -117,6 +117,7 @@ public:
         if(downloadFlag_)
         {
             balls_.download(stream);
+
             ballInteractions_.alloc(balls_.deviceSize() * 6, stream);
             ballInteractionMap_.alloc(balls_.deviceSize(), balls_.deviceSize(), stream);
             double cellSizeOneDim = 0.0;
@@ -224,12 +225,13 @@ public:
         stream);
     }
 
-    void integration1st(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration1st(const double3 g, const double dt, const size_t gridDim, const size_t blockDim, cudaStream_t stream)
     {
         launchBall1stHalfIntegration(balls_, 
         g, 
         dt, 
-        maxThreads, 
+        gridDim,
+        blockDim,
         stream);
     }
 
@@ -245,12 +247,13 @@ public:
         stream);
     }
 
-    void integration2nd(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration2nd(const double3 g, const double dt, const size_t gridDim, const size_t blockDim, cudaStream_t stream)
     {
         launchBall2ndHalfIntegration(balls_, 
         g, 
         dt, 
-        maxThreads, 
+        gridDim,
+        blockDim,
         stream);
     }
 

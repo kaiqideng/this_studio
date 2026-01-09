@@ -1,4 +1,4 @@
-#include "myCUDAArrayOperation.h"
+#include "myCUDA.h"
 
 template <typename T>
 __global__ void device_fill_kernel(T* data, size_t n, T value)

@@ -54,13 +54,17 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h \
+ /usr/include/x86_64-linux-gnu/bits/select2.h \
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
  /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h \
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h /usr/include/alloca.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h \
  /usr/include/c++/12/bits/specfun.h \
  /usr/include/c++/12/bits/stl_algobase.h \
  /usr/include/c++/12/bits/functexcept.h \
@@ -98,6 +102,8 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h \
  /usr/include/c++/12/exception /usr/include/c++/12/bits/exception.h \
  /usr/include/c++/12/bits/exception_ptr.h \
  /usr/include/c++/12/bits/cxxabi_init_exception.h \
@@ -152,9 +158,11 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/c++/12/cerrno /usr/include/errno.h \
- /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h /usr/include/c++/12/cerrno \
+ /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
+ /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/12/bits/charconv.h \
@@ -190,28 +198,9 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /teamspace/studios/this_studio/DEM/kernel/SPHHandler.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h \
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h \
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h \
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h \
- /usr/include/cuda_runtime.h /usr/include/crt/host_config.h \
- /usr/include/library_types.h /usr/include/channel_descriptor.h \
- /usr/include/driver_functions.h /usr/include/vector_functions.h \
- /usr/include/c++/12/utility /usr/include/c++/12/bits/stl_relops.h \
- /usr/include/c++/12/iomanip /usr/include/c++/12/locale \
- /usr/include/c++/12/bits/locale_facets_nonio.h /usr/include/c++/12/ctime \
- /usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/12/bits/codecvt.h \
- /usr/include/c++/12/bits/locale_facets_nonio.tcc \
- /usr/include/c++/12/bits/locale_conv.h \
- /usr/include/c++/12/bits/quoted_string.h /usr/include/c++/12/sstream \
- /usr/include/c++/12/bits/sstream.tcc /usr/include/c++/12/vector \
- /usr/include/c++/12/bits/stl_uninitialized.h \
- /usr/include/c++/12/bits/stl_vector.h \
- /usr/include/c++/12/bits/stl_bvector.h \
- /usr/include/c++/12/bits/vector.tcc /usr/include/thrust/device_vector.h \
- /usr/include/thrust/detail/config.h /usr/include/thrust/version.h \
- /usr/include/thrust/detail/config/config.h \
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h \
+ /usr/include/thrust/device_vector.h /usr/include/thrust/detail/config.h \
+ /usr/include/thrust/version.h /usr/include/thrust/detail/config/config.h \
  /usr/include/thrust/detail/config/simple_defines.h \
  /usr/include/thrust/detail/config/compiler.h \
  /usr/include/thrust/detail/config/cpp_dialect.h \
@@ -258,7 +247,8 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/cub/util_namespace.cuh /usr/include/cub/version.cuh \
  /usr/include/cub/util_debug.cuh /usr/include/cub/util_arch.cuh \
  /usr/include/cub/util_cpp_dialect.cuh /usr/include/cub/util_compiler.cuh \
- /usr/include/cub/util_macro.cuh \
+ /usr/include/cub/util_macro.cuh /usr/include/c++/12/utility \
+ /usr/include/c++/12/bits/stl_relops.h \
  /usr/include/cub/detail/detect_cuda_runtime.cuh \
  /usr/include/cuda_runtime_api.h \
  /usr/include/thrust/detail/allocator_aware_execution_policy.h \
@@ -298,6 +288,7 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/thrust/detail/allocator/allocator_traits.h \
  /usr/include/thrust/detail/type_traits/has_member_function.h \
  /usr/include/thrust/detail/memory_wrapper.h /usr/include/c++/12/memory \
+ /usr/include/c++/12/bits/stl_uninitialized.h \
  /usr/include/c++/12/bits/stl_tempbuf.h \
  /usr/include/c++/12/bits/stl_raw_storage_iter.h \
  /usr/include/c++/12/bits/align.h /usr/include/c++/12/bit \
@@ -336,7 +327,10 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/c++/12/bits/enable_special_members.h \
  /usr/include/c++/12/bits/node_handle.h \
  /usr/include/c++/12/bits/unordered_map.h \
- /usr/include/c++/12/bits/erase_if.h /usr/include/c++/12/array \
+ /usr/include/c++/12/bits/erase_if.h /usr/include/c++/12/vector \
+ /usr/include/c++/12/bits/stl_vector.h \
+ /usr/include/c++/12/bits/stl_bvector.h \
+ /usr/include/c++/12/bits/vector.tcc /usr/include/c++/12/array \
  /usr/include/c++/12/compare /usr/include/c++/12/bits/stl_algo.h \
  /usr/include/c++/12/bits/algorithmfwd.h \
  /usr/include/c++/12/bits/stl_heap.h \
@@ -396,6 +390,8 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/thrust/system/detail/sequential/general_copy.h \
  /usr/include/thrust/system/detail/sequential/trivial_copy.h \
  /usr/include/c++/12/cstring /usr/include/string.h /usr/include/strings.h \
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
  /usr/include/thrust/type_traits/is_trivially_relocatable.h \
  /usr/include/thrust/system/cuda/detail/guarded_cuda_runtime_api.h \
  /usr/include/thrust/system/cpp/detail/copy.h \
@@ -576,7 +572,7 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/thrust/mr/memory_resource.h \
  /usr/include/c++/12/memory_resource /usr/include/c++/12/shared_mutex \
  /usr/include/c++/12/bits/chrono.h /usr/include/c++/12/ratio \
- /usr/include/c++/12/bits/parse_numbers.h \
+ /usr/include/c++/12/ctime /usr/include/c++/12/bits/parse_numbers.h \
  /usr/include/c++/12/bits/std_mutex.h \
  /usr/include/c++/12/bits/uses_allocator_args.h \
  /usr/include/thrust/mr/polymorphic_adaptor.h \
@@ -639,11 +635,25 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h \
  /usr/include/c++/12/algorithm \
  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h \
+ /usr/include/cuda_runtime.h /usr/include/crt/host_config.h \
+ /usr/include/library_types.h /usr/include/channel_descriptor.h \
+ /usr/include/driver_functions.h /usr/include/vector_functions.h \
+ /usr/include/c++/12/iomanip /usr/include/c++/12/locale \
+ /usr/include/c++/12/bits/locale_facets_nonio.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/12/bits/codecvt.h \
+ /usr/include/c++/12/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/12/bits/locale_conv.h \
+ /usr/include/c++/12/bits/quoted_string.h /usr/include/c++/12/sstream \
+ /usr/include/c++/12/bits/sstream.tcc \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myQua.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myVec.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/particle.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/spatialGrid.h \
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHIntegration.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myFileEdit.h \
  /usr/include/c++/12/fstream \

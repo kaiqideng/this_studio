@@ -6,14 +6,14 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
   /teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.h \
   /teamspace/studios/this_studio/DEM/kernel/ballHandler.h \
   /teamspace/studios/this_studio/DEM/kernel/contactModelParams.h \
+  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h \
-  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h \
+  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h \
-  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myFileEdit.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h \
@@ -696,7 +696,9 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
   /usr/include/x86_64-linux-gnu/bits/sched.h \
+  /usr/include/x86_64-linux-gnu/bits/select-decl.h \
   /usr/include/x86_64-linux-gnu/bits/select.h \
+  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/x86_64-linux-gnu/bits/setjmp.h \
   /usr/include/x86_64-linux-gnu/bits/stat.h \
   /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
@@ -704,8 +706,15 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
+  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/struct_stat.h \
@@ -747,6 +756,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
@@ -812,6 +823,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
 
+/usr/include/x86_64-linux-gnu/bits/wchar2.h:
+
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
@@ -854,6 +867,10 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio2-decl.h:
+
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-least.h:
@@ -866,6 +883,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
 
+/usr/include/x86_64-linux-gnu/bits/select-decl.h:
+
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
@@ -873,6 +892,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
 
@@ -1104,6 +1125,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/cuda_device_runtime_api.h:
 
+/usr/include/x86_64-linux-gnu/bits/wchar2-decl.h:
+
 /usr/include/linux/errno.h:
 
 /usr/include/thrust/device_allocator.h:
@@ -1222,6 +1245,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/c++/12/bits/charconv.h:
 
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:
+
 /usr/include/thrust/detail/functional/actor.inl:
 
 /usr/include/thrust/device_ptr.h:
@@ -1281,6 +1306,12 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 /usr/include/dirent.h:
 
 /usr/include/c++/12/pstl/glue_memory_defs.h:
+
+/usr/include/thrust/system_error.h:
+
+/usr/include/c++/12/tr1/special_function_util.h:
+
+/usr/include/c++/12/ext/alloc_traits.h:
 
 /usr/include/thrust/detail/type_traits/function_traits.h:
 
@@ -1404,6 +1435,34 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/thrust/system/detail/adl/scan.h:
 
+/usr/include/thrust/detail/preprocessor.h:
+
+/usr/include/cub/util_debug.cuh:
+
+/usr/include/thrust/system/cpp/detail/swap_ranges.h:
+
+/usr/include/c++/12/bits/align.h:
+
+/usr/include/device_types.h:
+
+/usr/include/crt/host_defines.h:
+
+/usr/include/thrust/scan.h:
+
+/usr/include/c++/12/bits/ios_base.h:
+
+/usr/include/c++/12/tr1/modified_bessel_func.tcc:
+
+/usr/include/c++/12/ext/aligned_buffer.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/c++/12/bits/stream_iterator.h:
+
+/usr/include/c++/12/ios:
+
+/usr/include/c++/12/bits/hashtable_policy.h:
+
 /usr/include/thrust/system/detail/sequential/copy.h:
 
 /usr/include/c++/12/ratio:
@@ -1416,21 +1475,15 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/assert.h:
 
-/usr/include/asm-generic/bitsperlong.h:
-
-/usr/include/c++/12/ext/type_traits.h:
-
-/usr/include/asm-generic/types.h:
-
-/usr/include/thrust/detail/swap.inl:
-
-/usr/include/thrust/detail/allocator/temporary_allocator.h:
-
 /usr/include/features.h:
 
 /usr/include/limits.h:
 
 /usr/include/c++/12/new:
+
+/usr/include/c++/12/typeinfo:
+
+/usr/include/thrust/advance.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
 
@@ -1476,43 +1529,19 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /teamspace/studios/this_studio/DEM/kernel/ballHandler.h:
 
-/usr/include/thrust/detail/preprocessor.h:
+/usr/include/c++/12/ext/type_traits.h:
 
-/usr/include/cub/util_debug.cuh:
+/usr/include/asm-generic/bitsperlong.h:
 
-/usr/include/thrust/system/cpp/detail/swap_ranges.h:
+/usr/include/asm-generic/types.h:
 
-/usr/include/c++/12/bits/align.h:
+/usr/include/thrust/detail/swap.inl:
 
-/usr/include/device_types.h:
+/usr/include/thrust/detail/allocator/temporary_allocator.h:
 
-/usr/include/crt/host_defines.h:
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
 
-/usr/include/thrust/scan.h:
-
-/usr/include/c++/12/bits/ios_base.h:
-
-/usr/include/c++/12/tr1/modified_bessel_func.tcc:
-
-/usr/include/c++/12/ext/aligned_buffer.h:
-
-/usr/include/stdlib.h:
-
-/usr/include/c++/12/bits/stream_iterator.h:
-
-/usr/include/c++/12/ios:
-
-/usr/include/thrust/system_error.h:
-
-/usr/include/c++/12/tr1/special_function_util.h:
-
-/usr/include/c++/12/ext/alloc_traits.h:
-
-/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h:
-
-/usr/include/thrust/system/detail/generic/select_system.h:
-
-/usr/include/thrust/detail/overlapped_copy.h:
+/usr/include/thrust/detail/config/simple_defines.h:
 
 /usr/include/thrust/mr/fancy_pointer_resource.h:
 
@@ -1520,17 +1549,11 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/c++/12/ctime:
 
-/usr/include/c++/12/typeinfo:
-
-/usr/include/thrust/advance.h:
-
-/teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h:
-
-/usr/include/thrust/iterator/detail/iterator_traits.inl:
-
 /usr/include/c++/12/bits/atomic_lockfree_defines.h:
 
 /usr/include/thrust/system/detail/adl/get_value.h:
+
+/teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h:
 
 /usr/include/c++/12/bits/ostream_insert.h:
 
@@ -1568,6 +1591,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/thrust/system/cuda/detail/scan_by_key.h:
 
+/usr/include/c++/12/bits/functexcept.h:
+
 /usr/include/c++/12/bits/unordered_map.h:
 
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
@@ -1578,9 +1603,25 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/c++/12/bits/stl_iterator.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
+/usr/include/thrust/type_traits/remove_cvref.h:
 
-/usr/include/thrust/detail/config/simple_defines.h:
+/usr/include/c++/12/tuple:
+
+/usr/include/c++/12/unordered_map:
+
+/usr/include/x86_64-linux-gnu/bits/stdio.h:
+
+/usr/include/thrust/detail/vector_base.inl:
+
+/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/spatialGrid.h:
+
+/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/wall.h:
+
+/usr/include/c++/12/bits/exception_ptr.h:
+
+/usr/include/thrust/iterator/detail/distance_from_result.h:
+
+/usr/include/thrust/detail/allocator/fill_construct_range.inl:
 
 /usr/include/thrust/system/detail/system_error.inl:
 
@@ -1609,24 +1650,6 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 /usr/include/c++/12/ostream:
 
 /usr/include/thrust/system/cuda/detail/equal.h:
-
-/usr/include/thrust/type_traits/remove_cvref.h:
-
-/usr/include/c++/12/tuple:
-
-/usr/include/c++/12/unordered_map:
-
-/usr/include/thrust/detail/vector_base.inl:
-
-/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/spatialGrid.h:
-
-/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/wall.h:
-
-/usr/include/c++/12/bits/exception_ptr.h:
-
-/usr/include/thrust/iterator/detail/distance_from_result.h:
-
-/usr/include/thrust/detail/allocator/fill_construct_range.inl:
 
 /usr/include/thrust/detail/config/host_device.h:
 
@@ -1692,8 +1715,6 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/thrust/mr/host_memory_resource.h:
 
-/usr/include/c++/12/bits/functexcept.h:
-
 /usr/include/c++/12/bits/hash_bytes.h:
 
 /usr/include/thrust/detail/functional/operators/operator_adaptors.h:
@@ -1706,8 +1727,6 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/thrust/detail/reverse.inl:
 
-/usr/include/c++/12/bits/hashtable_policy.h:
-
 /usr/include/cuda/std/detail/libcxx/include/version:
 
 /usr/include/c++/12/bits/locale_classes.tcc:
@@ -1717,6 +1736,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 /usr/include/thrust/detail/pointer.inl:
 
 /usr/include/c++/12/bits/locale_facets.tcc:
+
+/teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h:
 
 /usr/include/c++/12/cstddef:
 
@@ -1791,6 +1812,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 /usr/include/c++/12/bits/stl_construct.h:
 
 /usr/include/c++/12/initializer_list:
+
+/usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
 
 /usr/include/c++/12/tr1/bessel_function.tcc:
 
@@ -2024,6 +2047,10 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/thrust/device_reference.h:
 
+/usr/include/thrust/system/detail/generic/select_system.h:
+
+/usr/include/thrust/detail/overlapped_copy.h:
+
 /usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h:
 
 /usr/include/thrust/detail/pointer.h:
@@ -2110,6 +2137,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 
 /usr/include/thrust/system/detail/adl/fill.h:
 
+/usr/include/x86_64-linux-gnu/bits/stdlib.h:
+
 /usr/include/thrust/detail/type_traits/has_trivial_assign.h:
 
 /usr/include/thrust/detail/type_traits/is_call_possible.h:
@@ -2145,6 +2174,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 /usr/include/thrust/iterator/detail/iterator_category_to_system.h:
 
 /usr/include/thrust/iterator/detail/iterator_facade_category.h:
+
+/usr/include/thrust/iterator/detail/iterator_traits.inl:
 
 /usr/include/thrust/system/detail/sequential/scan_by_key.h:
 
@@ -2227,6 +2258,8 @@ CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o: /teamspace/studios/this_studio
 /usr/include/thrust/system/cpp/detail/transform.h:
 
 /usr/include/thrust/system/cuda/detail/find.h:
+
+/usr/include/x86_64-linux-gnu/bits/select2.h:
 
 /usr/include/c++/12/bits/stl_multimap.h:
 

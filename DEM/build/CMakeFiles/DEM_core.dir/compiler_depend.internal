@@ -6,12 +6,12 @@ CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o
  /teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.h
  /teamspace/studios/this_studio/DEM/kernel/ballHandler.h
  /teamspace/studios/this_studio/DEM/kernel/contactModelParams.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myFileEdit.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h
@@ -688,7 +688,9 @@ CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stat.h
  /usr/include/x86_64-linux-gnu/bits/statx-generic.h
@@ -696,8 +698,15 @@ CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/struct_stat.h
@@ -739,6 +748,8 @@ CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
@@ -773,13 +784,13 @@ CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.o
 
 CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHIntegration.cu
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myQua.h
@@ -1600,13 +1611,22 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
@@ -1645,6 +1665,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
@@ -1676,12 +1698,12 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o
 
 CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.cu
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myQua.h
@@ -2502,13 +2524,22 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
@@ -2547,6 +2578,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
@@ -2578,12 +2611,12 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o
 
 CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myQua.h
@@ -3404,13 +3437,22 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
@@ -3449,6 +3491,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
@@ -3480,13 +3524,13 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballIntegration.cu.o
 
 CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myQua.h
@@ -4312,13 +4356,22 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
@@ -4357,6 +4410,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
@@ -4388,12 +4443,12 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallIntegration.cu.o
 
 CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myQua.h
@@ -5219,13 +5274,22 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
@@ -5264,6 +5328,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
@@ -5295,11 +5361,11 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballMeshWallNeighbor.cu.o
 
 CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myMat.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myQua.h
@@ -6120,13 +6186,22 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
@@ -6165,6 +6240,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
@@ -6194,10 +6271,9 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.o
  /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h
  /usr/lib/gcc/x86_64-linux-gnu/12/include/syslimits.h
 
-CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu
+CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
- /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
@@ -6419,13 +6495,22 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperatio
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h
  /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
+ /usr/include/x86_64-linux-gnu/bits/stdio.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
@@ -6464,6 +6549,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperatio
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h

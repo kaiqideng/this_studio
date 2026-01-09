@@ -59,8 +59,9 @@ int main()
     test.addGhostParticles(p_ghost, make_double3(0, 0, 0), test.spacing, 1000);
     test.addSPHParticles(p_SPH, make_double3(0, 0, 0), test.spacing, 1000, 1.e-3);
     
-    test.setTimeStep(0.25 * test.H / (sqrt(2 * 9.81 * test.H)));
+    test.setTimeStep(0.0001);
     test.setGravity(make_double3(0.0, 0.0, -9.81));
+    test.setMaximumTime(5.0);
     test.setNumFrames(100);
     test.solve();
 }

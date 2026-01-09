@@ -15,6 +15,10 @@ public:
 		time_ = 0.0;
 
 		stream_ = s;
+		SPHGPUGridDim_ = 1;
+		SPHGPUBlockDim_ = 1;
+		ghostGPUGridDim_ = 1;
+		ghostGPUBlockDim_ = 1;
 	}
 
 	~SPHSolver() = default;
@@ -84,6 +88,15 @@ private:
     virtual void download() 
 	{
 		SPHHandler_.download(getDomainOrigin(), getDomainSize(), stream_);
+
+		const size_t maxThreads = getGPUMaxThreadsPerBlock();
+		const size_t numSPHs = SPHHandler_.getSPHAndGhosts().SPHDeviceSize();
+		if (numSPHs > 0 && maxThreads > 1) SPHGPUBlockDim_ = maxThreads < numSPHs ? maxThreads : numSPHs;
+		if (SPHGPUBlockDim_ > 0) SPHGPUGridDim_ = (numSPHs + SPHGPUBlockDim_ - 1) / SPHGPUBlockDim_;
+
+        const size_t numGhosts = SPHHandler_.getSPHAndGhosts().ghostDeviceSize();
+		if (numGhosts > 0 && maxThreads > 1) ghostGPUBlockDim_ = maxThreads < numGhosts ? maxThreads : numGhosts;
+		if (ghostGPUBlockDim_ > 0) ghostGPUGridDim_ = (numGhosts + ghostGPUBlockDim_ - 1) / ghostGPUBlockDim_;
 	}
 
 	bool initialize()
@@ -119,11 +132,10 @@ private:
 
 	virtual void integration(const double dt)
 	{
-		SPHHandler_.integration1st(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
-		SPHHandler_.updateBoundaryCondition(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
-		SPHHandler_.integration2nd(dt, getGPUMaxThreadsPerBlock(), stream_);
-		SPHHandler_.updateBoundaryCondition(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
-		SPHHandler_.integration3rd(dt, getGPUMaxThreadsPerBlock(), stream_);
+		SPHHandler_.integration1st(getGravity(), dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
+		SPHHandler_.updateBoundaryCondition(getGravity(), dt, ghostGPUGridDim_, ghostGPUBlockDim_, stream_);
+		SPHHandler_.integration2nd(dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
+		SPHHandler_.integration3rd(dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
 	}
 
     bool setNameFlag_;
@@ -135,4 +147,8 @@ private:
 	cudaStream_t stream_;
 
 	SPHHandler SPHHandler_;
+	size_t SPHGPUGridDim_;
+	size_t SPHGPUBlockDim_;
+	size_t ghostGPUGridDim_;
+	size_t ghostGPUBlockDim_;
 };

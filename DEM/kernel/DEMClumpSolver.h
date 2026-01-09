@@ -9,6 +9,8 @@ public:
     DEMClumpSolver(cudaStream_t s) : DEMBaseSolver(s)
 	{
         stream_ = s;
+        gridDim_ = 1;
+        blockDim_ = 1;
     }
 
     ~DEMClumpSolver() = default;
@@ -48,7 +50,15 @@ public:
     }
 
 protected:
-    clumpHandler& getClumpHandler() {return clumpHandler_;}
+    clumpHandler& getClumpHandler() { return clumpHandler_; }
+
+    void setClumpGPUGridDim(size_t gridDim) { gridDim_ = gridDim; }
+
+    void setClumpGPUBlockDim(size_t blockDim) { blockDim_ = blockDim;}
+
+    const size_t& getClumpGPUGridDim() const { return gridDim_; }
+
+    const size_t& getClumpGPUBlockDim() const { return blockDim_; }
     
 private:
     void download() override
@@ -56,21 +66,33 @@ private:
         downloadContactModelParams(stream_);
         getBallHandler().download(getDomainOrigin(), getDomainSize(), stream_);
         clumpHandler_.download(stream_);
+
+        const size_t numBalls = getBallHandler().getBalls().deviceSize();
+        const size_t maxThreads = getGPUMaxThreadsPerBlock();
+        if (numBalls > 0 && maxThreads > 1) setBallGPUBlockDim(maxThreads < numBalls ? maxThreads : numBalls);
+        const size_t ballBlockDim = getBallGPUBlockDim();
+        if (ballBlockDim > 0) setBallGPUGridDim((numBalls + ballBlockDim - 1) / ballBlockDim);
+
+        const size_t numClumps = clumpHandler_.getClumps().deviceSize();
+        if (numClumps > 0 && maxThreads > 1) blockDim_ = maxThreads < numClumps ? maxThreads : numClumps;
+        if (blockDim_ > 0) gridDim_ = (numClumps + blockDim_ - 1) / blockDim_;
     }
 
     void integration1st(const double dt) override
 	{
-        getClumpHandler().integration1st(getBallHandler().getBalls(), getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
-        getBallHandler().integration1st(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+        getClumpHandler().integration1st(getBallHandler().getBalls(), getGravity(), dt, gridDim_, blockDim_, stream_);
+        getBallHandler().integration1st(getGravity(), dt, getBallGPUGridDim(), getBallGPUBlockDim(), stream_);
 	}
 
     void integration2nd(const double dt) override
 	{
-        getClumpHandler().integration2nd(getBallHandler().getBalls(), getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
-        getBallHandler().integration2nd(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+        getClumpHandler().integration2nd(getBallHandler().getBalls(), getGravity(), dt, gridDim_, blockDim_, stream_);
+        getBallHandler().integration2nd(getGravity(), dt, getBallGPUGridDim(), getBallGPUBlockDim(), stream_);
 	}
 
     cudaStream_t stream_;
 
     clumpHandler clumpHandler_;
+    size_t gridDim_;
+    size_t blockDim_;
 };

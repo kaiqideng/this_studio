@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o"
-  "CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o.d"
+  "CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o"
+  "CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o.d"
   "lib/libDEM_sort.a"
   "lib/libDEM_sort.pdb"
 )

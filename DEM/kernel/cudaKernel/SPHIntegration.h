@@ -36,21 +36,24 @@ SPHInteraction& SPHInteractions,
 interactionMap &SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim,
 cudaStream_t stream);
 
 extern "C" void launchSPH2ndIntegration(SPH& SPHAndGhosts, 
 SPHInteraction& SPHInteractions, 
 interactionMap &SPHInteractionMap,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim,
 cudaStream_t stream);
 
 extern "C" void launchSPH3rdIntegration(SPH& SPHAndGhosts, 
 SPHInteraction& SPHInteractions, 
 interactionMap &SPHInteractionMap,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim,
+const size_t blockDim,
 cudaStream_t stream);
 
 extern "C" void launchAdamiBoundaryCondition(SPH& SPHAndGhosts, 
@@ -58,5 +61,6 @@ SPHInteraction& SPHInteractions,
 interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim, //ghosts
+const size_t blockDim, //ghosts
 cudaStream_t stream);

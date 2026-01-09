@@ -422,53 +422,53 @@ kernel/cudaKernel/ballNeighborSearch.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/ballNeighborSearch.cu.s
 .PHONY : kernel/cudaKernel/ballNeighborSearch.cu.s
 
-kernel/cudaKernel/biuldHashStartEnd.o: kernel/cudaKernel/biuldHashStartEnd.cu.o
-.PHONY : kernel/cudaKernel/biuldHashStartEnd.o
+kernel/cudaKernel/cudaSort/biuldHashStartEnd.o: kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o
+.PHONY : kernel/cudaKernel/cudaSort/biuldHashStartEnd.o
 
 # target to build an object file
-kernel/cudaKernel/biuldHashStartEnd.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o
-.PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.o
+kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o
+.PHONY : kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o
 
-kernel/cudaKernel/biuldHashStartEnd.i: kernel/cudaKernel/biuldHashStartEnd.cu.i
-.PHONY : kernel/cudaKernel/biuldHashStartEnd.i
+kernel/cudaKernel/cudaSort/biuldHashStartEnd.i: kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.i
+.PHONY : kernel/cudaKernel/cudaSort/biuldHashStartEnd.i
 
 # target to preprocess a source file
-kernel/cudaKernel/biuldHashStartEnd.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.i
-.PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.i
+kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.i
+.PHONY : kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.i
 
-kernel/cudaKernel/biuldHashStartEnd.s: kernel/cudaKernel/biuldHashStartEnd.cu.s
-.PHONY : kernel/cudaKernel/biuldHashStartEnd.s
+kernel/cudaKernel/cudaSort/biuldHashStartEnd.s: kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.s
+.PHONY : kernel/cudaKernel/cudaSort/biuldHashStartEnd.s
 
 # target to generate assembly for a file
-kernel/cudaKernel/biuldHashStartEnd.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.s
-.PHONY : kernel/cudaKernel/biuldHashStartEnd.cu.s
+kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_sort.dir/build.make CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.s
+.PHONY : kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.s
 
-kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o: kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
-.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o
+kernel/cudaKernel/myStruct/myUtility/myCUDA.o: kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDA.o
 
 # target to build an object file
-kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
-.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.o
+kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o
 
-kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.i: kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i
-.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.i
+kernel/cudaKernel/myStruct/myUtility/myCUDA.i: kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.i
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDA.i
 
 # target to preprocess a source file
-kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i
-.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.i
+kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.i
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.i
 
-kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.s: kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
-.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.s
+kernel/cudaKernel/myStruct/myUtility/myCUDA.s: kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.s
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDA.s
 
 # target to generate assembly for a file
-kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
-.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.cu.s
+kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.s
+.PHONY : kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.s
 
 # Help Target
 help:
@@ -513,12 +513,12 @@ help:
 	@echo "... kernel/cudaKernel/ballNeighborSearch.o"
 	@echo "... kernel/cudaKernel/ballNeighborSearch.i"
 	@echo "... kernel/cudaKernel/ballNeighborSearch.s"
-	@echo "... kernel/cudaKernel/biuldHashStartEnd.o"
-	@echo "... kernel/cudaKernel/biuldHashStartEnd.i"
-	@echo "... kernel/cudaKernel/biuldHashStartEnd.s"
-	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.o"
-	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.i"
-	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDAArrayOperation.s"
+	@echo "... kernel/cudaKernel/cudaSort/biuldHashStartEnd.o"
+	@echo "... kernel/cudaKernel/cudaSort/biuldHashStartEnd.i"
+	@echo "... kernel/cudaKernel/cudaSort/biuldHashStartEnd.s"
+	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDA.o"
+	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDA.i"
+	@echo "... kernel/cudaKernel/myStruct/myUtility/myCUDA.s"
 .PHONY : help
 
 

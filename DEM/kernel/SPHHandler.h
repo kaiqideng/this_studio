@@ -55,7 +55,7 @@ public:
             stream);
             double cellSizeOneDim = 0.0;
             std::vector<double> h = SPHAndGhosts_.smoothLengthVector();
-            if(h.size() > 0) cellSizeOneDim = *std::max_element(h.begin(), h.end()) * 2.0;
+            if (h.size() > 0) cellSizeOneDim = *std::max_element(h.begin(), h.end()) * 2.0;
             spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
             downloadFlag_ = false;
         }
@@ -67,49 +67,53 @@ public:
         SPHInteractionMap_, 
         SPHAndGhosts_, 
         spatialGrids_, 
-        maxThreads, 
+        maxThreads,
         stream);
     }
 
-    void integration1st(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration1st(const double3 g, const double dt, const size_t gridDim, const size_t blockDim, cudaStream_t stream)
     {
         launchSPH1stIntegration(SPHAndGhosts_,
         SPHInteractions_,
         SPHInteractionMap_,
         g,
         dt,
-        maxThreads,
+        gridDim,
+        blockDim,
         stream);
     }
 
-    void integration2nd(const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration2nd(const double dt, const size_t gridDim, const size_t blockDim, cudaStream_t stream)
     {
         launchSPH2ndIntegration(SPHAndGhosts_,
         SPHInteractions_,
         SPHInteractionMap_,
         dt,
-        maxThreads,
+        gridDim,
+        blockDim,
         stream);
     }
 
-    void integration3rd(const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration3rd(const double dt, const size_t gridDim, const size_t blockDim, cudaStream_t stream)
     {
         launchSPH3rdIntegration(SPHAndGhosts_,
         SPHInteractions_,
         SPHInteractionMap_,
         dt,
-        maxThreads,
+        gridDim,
+        blockDim,
         stream);
     }
 
-    void updateBoundaryCondition(const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void updateBoundaryCondition(const double3 g, const double dt, const size_t gridDim, const size_t blockDim, cudaStream_t stream)
     {
         launchAdamiBoundaryCondition(SPHAndGhosts_,
         SPHInteractions_,
         SPHInteractionMap_,
         g,
         dt,
-        maxThreads,
+        gridDim,
+        blockDim,
         stream);
     }
 

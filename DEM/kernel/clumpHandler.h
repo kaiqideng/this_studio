@@ -115,23 +115,25 @@ public:
         }
     }
 
-    void integration1st(ball& balls, const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration1st(ball& balls, const double3 g, const double dt, const size_t gridDim, const size_t blockDim, cudaStream_t stream)
 	{
         launchClump1stHalfIntegration(clumps_, 
         balls, 
         g, 
         dt, 
-        maxThreads, 
+        gridDim,
+        blockDim,
         stream);
 	}
 
-    void integration2nd(ball& balls, const double3 g, const double dt, const size_t maxThreads, cudaStream_t stream)
+    void integration2nd(ball& balls, const double3 g, const double dt,  const size_t gridDim, const size_t blockDim, cudaStream_t stream)
 	{
         launchClump2ndHalfIntegration(clumps_, 
         balls, 
         g, 
         dt, 
-        maxThreads, 
+        gridDim,
+        blockDim,
         stream);
 	}
 

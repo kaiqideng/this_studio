@@ -109,55 +109,56 @@ extern "C" void launchSPHNeighborSearch(SPHInteraction& SPHInteractions,
 interactionMap& SPHInteractionMap,
 SPH& SPHAndGhosts, 
 spatialGrid& spatialGrids, 
-const size_t maxThreadsPerBlock, 
+const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
     size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
     size_t numGhosts = SPHAndGhosts.ghostDeviceSize();
 
-    size_t grid = 1, block = 1;
+    size_t gridDim = 1, blockDim = 1;
+    if (setGPUGridBlockDim(gridDim, blockDim, numSPHs + numGhosts, maxThreadsPerBlock))
+    {
+        updateGridCellStartEnd(spatialGrids,
+        SPHAndGhosts.hashIndex(),
+        SPHAndGhosts.hashValue(),
+        SPHAndGhosts.position(),
+        numSPHs + numGhosts,
+        gridDim,
+        blockDim,
+        stream);
 
-    updateGridCellStartEnd(spatialGrids,
-    SPHAndGhosts.hashIndex(),
-    SPHAndGhosts.hashValue(),
-    SPHAndGhosts.position(),
-    numSPHs + numGhosts,
-    maxThreadsPerBlock,
-    stream);
+        countSPHInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (SPHAndGhosts.position(),
+        SPHAndGhosts.smoothLength(),
+        SPHAndGhosts.hashIndex(),
+        SPHInteractionMap.countA(),
+        spatialGrids.cellHashStart(),
+        spatialGrids.cellHashEnd(),
+        spatialGrids.minBound,
+        spatialGrids.cellSize,
+        spatialGrids.gridSize,
+        numSPHs,
+        numGhosts);
 
-    computeGPUGridSizeBlockSize(grid, block, numSPHs + numGhosts, maxThreadsPerBlock);
-    countSPHInteractionsKernel <<<grid, block, 0, stream>>> (SPHAndGhosts.position(),
-    SPHAndGhosts.smoothLength(),
-    SPHAndGhosts.hashIndex(),
-    SPHInteractionMap.countA(),
-    spatialGrids.cellHashStart(),
-    spatialGrids.cellHashEnd(),
-    spatialGrids.minBound,
-    spatialGrids.cellSize,
-    spatialGrids.gridSize,
-    numSPHs,
-    numGhosts);
+        buildPrefixSum(SPHInteractionMap.prefixSumA(), 
+        SPHInteractionMap.countA(), 
+        SPHInteractionMap.ASize(), 
+        stream);
+        int activeNumber = 0;
+        cuda_copy_sync(&activeNumber, SPHInteractionMap.prefixSumA() + SPHInteractionMap.ASize() - 1, 1, CopyDir::D2H);
+        SPHInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
 
-    int activeNumber = 0;
-    auto exec = thrust::cuda::par.on(stream);
-    thrust::inclusive_scan(exec,
-    thrust::device_pointer_cast(SPHInteractionMap.countA()),
-    thrust::device_pointer_cast(SPHInteractionMap.countA() + SPHInteractionMap.ASize()),
-    thrust::device_pointer_cast(SPHInteractionMap.prefixSumA()));
-    cuda_copy_sync(&activeNumber, SPHInteractionMap.prefixSumA() + SPHInteractionMap.ASize() - 1, 1, CopyDir::D2H);
-    SPHInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
-
-    writeSPHInteractionsKernel <<<grid, block, 0, stream>>> (SPHInteractions.objectPointed(),
-    SPHInteractions.objectPointing(),
-    SPHAndGhosts.position(),
-    SPHAndGhosts.smoothLength(),
-    SPHAndGhosts.hashIndex(),
-    SPHInteractionMap.prefixSumA(),
-    spatialGrids.cellHashStart(),
-    spatialGrids.cellHashEnd(),
-    spatialGrids.minBound,
-    spatialGrids.cellSize,
-    spatialGrids.gridSize,
-    numSPHs,
-    numGhosts);
+        writeSPHInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (SPHInteractions.objectPointed(),
+        SPHInteractions.objectPointing(),
+        SPHAndGhosts.position(),
+        SPHAndGhosts.smoothLength(),
+        SPHAndGhosts.hashIndex(),
+        SPHInteractionMap.prefixSumA(),
+        spatialGrids.cellHashStart(),
+        spatialGrids.cellHashEnd(),
+        spatialGrids.minBound,
+        spatialGrids.cellSize,
+        spatialGrids.gridSize,
+        numSPHs,
+        numGhosts);
+    }
 }

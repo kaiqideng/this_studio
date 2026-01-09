@@ -1,2 +1,2 @@
-/usr/bin/ar qc lib/libDEM_sort.a CMakeFiles/DEM_sort.dir/kernel/cudaKernel/biuldHashStartEnd.cu.o
+/usr/bin/ar qc lib/libDEM_sort.a CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o
 /usr/bin/ranlib lib/libDEM_sort.a

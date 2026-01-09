@@ -206,3 +206,8 @@ inline void cuda_copy_sync(T* dst,
 
     CUDA_CHECK(cudaMemcpy(dst, src, n * sizeof(T), kind));
 }
+
+template <typename T>
+inline void device_fill(T* d_ptr, size_t n, T value, cudaStream_t stream = 0);
+
+__device__ void atomicAddDouble3(double3* arr, size_t idx, const double3& v);

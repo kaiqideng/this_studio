@@ -1,22 +1,22 @@
 #include "buildHashStartEnd.h"
 
-__global__ void setInitialIndices(int* initialIndices, 
+__global__ void setInitialIndices(int* hashIndex, 
 const size_t hashListSize)
 {
     size_t index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= hashListSize) return;
-    initialIndices[index] = static_cast<int>(index);
+    hashIndex[index] = static_cast<int>(index);
 }
 
 __global__ void findStartAndEnd(int* start, 
 int* end, 
-int* hash, 
+int* hashValue, 
 const int maxHashValue,
 const size_t hashListSize)
 {
     size_t index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= hashListSize) return;
-    int h = hash[index];
+    int h = hashValue[index];
     if (h < 0 || h >= maxHashValue) return;
     if (index == 0)
     {
@@ -24,7 +24,7 @@ const size_t hashListSize)
     }
     else
     {
-        int a = hash[index - 1];
+        int a = hashValue[index - 1];
         if (a >= 0 && a < maxHashValue && a != h)
         {
             start[h] = static_cast<int>(index);
@@ -36,23 +36,18 @@ const size_t hashListSize)
 
 extern "C" void buildHashStartEnd(int* start, 
 int* end, 
-int* index, 
-int* hash, 
-const int maxHashValue,  //size of start/end
+int* hashIndex, 
+int* hashValue, 
+const int maxHashValue, 
 const size_t hashListSize, 
-const size_t maxThreadsPerBlock, 
+const size_t gridDim, 
+const size_t blockDim, 
 cudaStream_t stream)
 {
-    if (hashListSize < 1) return;
-    //debug_dump_device_array(hash, hashListSize, "hash");
-    CUDA_CHECK(cudaMemsetAsync(start, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream));
-    CUDA_CHECK(cudaMemsetAsync(end, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream));
+    cudaMemsetAsync(start, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
+    cudaMemsetAsync(end, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
 
-    size_t grid = 1, block = 1;
-    computeGPUGridSizeBlockSize(grid, block, hashListSize, maxThreadsPerBlock);
-    setInitialIndices <<<grid, block, 0, stream>>> (index, hashListSize);
-    CUDA_CHECK(cudaGetLastError());
-    //CUDA_CHECK(cudaStreamSynchronize(stream));
+    setInitialIndices <<<gridDim, blockDim, 0, stream>>> (hashIndex, hashListSize);
 
     auto exec = thrust::cuda::par.on(stream);
     try
@@ -65,9 +60,9 @@ cudaStream_t stream)
         }
 
         thrust::sort_by_key(exec,
-                            hash,
-                            hash + hashListSize,
-                            index);
+                            hashValue,
+                            hashValue + hashListSize,
+                            hashIndex);
 
         cudaError_t err1 = cudaGetLastError();
         if (err1 != cudaSuccess)
@@ -82,6 +77,17 @@ cudaStream_t stream)
         throw;
     }
 
-    findStartAndEnd <<<grid, block, 0, stream>>> (start, end, hash, maxHashValue, hashListSize);
-    CUDA_CHECK(cudaGetLastError());
+    findStartAndEnd <<<gridDim, blockDim, 0, stream>>> (start, end, hashValue, maxHashValue, hashListSize);
+}
+
+extern "C" void buildPrefixSum(int* prefixSum, 
+int* count, 
+const size_t size, 
+cudaStream_t stream)
+{
+    auto exec = thrust::cuda::par.on(stream);
+    thrust::inclusive_scan(exec,
+                           thrust::device_pointer_cast(count),
+                           thrust::device_pointer_cast(count + size),
+                           thrust::device_pointer_cast(prefixSum));
 }

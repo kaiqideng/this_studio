@@ -52,6 +52,12 @@ private:
         }
         ballTriangleInteractions_.alloc(getBallHandler().getBalls().deviceSize(), stream_);
         ballTriangleInteractionMap_.alloc(getBallHandler().getBalls().deviceSize(), wallHandler_.getMeshWalls().deviceSize(), stream_);
+
+        const size_t numBalls = getBallHandler().getBalls().deviceSize();
+        const size_t maxThreads = getGPUMaxThreadsPerBlock();
+        if (numBalls > 0 && maxThreads > 0)setBallGPUBlockDim(maxThreads < numBalls ? maxThreads : numBalls);
+        const size_t ballBlockDim = getBallGPUBlockDim();
+        if (ballBlockDim > 0) setBallGPUGridDim((numBalls + ballBlockDim - 1) / ballBlockDim);
     }
 
     void outputData() override
@@ -75,7 +81,7 @@ private:
 
 	void integration1st(const double dt) override
 	{
-		getBallHandler().integration1st(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+		getBallHandler().integration1st(getGravity(), dt, getBallGPUGridDim(), getBallGPUBlockDim(), stream_);
         wallHandler_.integration(dt, getGPUMaxThreadsPerBlock(), stream_);
 	}
 
@@ -86,11 +92,14 @@ private:
         wallHandler_.getMeshWalls(), 
         getContactModelParams(), 
         ballTriangleInteractionMap_, 
+        dt,
+        getGPUMaxThreadsPerBlock(),
+        stream_);
+
+		getBallHandler().contactCalculation(getContactModelParams(), 
         dt, 
         getGPUMaxThreadsPerBlock(), 
         stream_);
-
-		getBallHandler().contactCalculation(getContactModelParams(), dt, getGPUMaxThreadsPerBlock(), stream_);
 	}
 
     cudaStream_t stream_;

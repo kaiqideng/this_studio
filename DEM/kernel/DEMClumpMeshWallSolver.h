@@ -36,6 +36,17 @@ private:
         }
         ballTriangleInteractions_.alloc(getBallHandler().getBalls().deviceSize(), stream_);
         ballTriangleInteractionMap_.alloc(getBallHandler().getBalls().deviceSize(), wallHandler_.getMeshWalls().deviceSize(), stream_);
+
+        const size_t numBalls = getBallHandler().getBalls().deviceSize();
+        const size_t maxThreads = getGPUMaxThreadsPerBlock();
+        if (numBalls > 0 && maxThreads > 0) setBallGPUBlockDim(maxThreads < numBalls ? maxThreads : numBalls);
+        const size_t ballBlockDim = getBallGPUBlockDim();
+        if (ballBlockDim > 0) setBallGPUGridDim((numBalls + ballBlockDim - 1) / ballBlockDim);
+
+        const size_t numClumps = getClumpHandler().getClumps().deviceSize();
+        if (numClumps > 0 && maxThreads > 0) setClumpGPUBlockDim(maxThreads < numClumps ? maxThreads : numClumps);
+        const size_t clumpBlockDim = getClumpGPUBlockDim();
+        if (clumpBlockDim > 0) setClumpGPUGridDim((numClumps + clumpBlockDim - 1) / clumpBlockDim);
      }
 
     void outputData() override
@@ -46,7 +57,8 @@ private:
 
 	void neighborSearch() override
 	{
-		getBallHandler().neighborSearch(getGPUMaxThreadsPerBlock(), stream_);
+		getBallHandler().neighborSearch(getGPUMaxThreadsPerBlock(), 
+        stream_);
 
         launchBallTriangleNeighborSearch(ballTriangleInteractions_, 
         ballTriangleInteractionMap_, 
@@ -59,8 +71,8 @@ private:
 
 	void integration1st(const double dt) override
 	{
-        getClumpHandler().integration1st(getBallHandler().getBalls(), getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
-		getBallHandler().integration1st(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+        getClumpHandler().integration1st(getBallHandler().getBalls(), getGravity(), dt, getClumpGPUGridDim(), getClumpGPUBlockDim(), stream_);
+        getBallHandler().integration1st(getGravity(), dt, getBallGPUGridDim(), getBallGPUBlockDim(), stream_);
         wallHandler_.integration(dt, getGPUMaxThreadsPerBlock(), stream_);
 	}
 
@@ -72,16 +84,13 @@ private:
         getContactModelParams(), 
         ballTriangleInteractionMap_, 
         dt, 
-        getGPUMaxThreadsPerBlock(), 
+        getGPUMaxThreadsPerBlock(),
         stream_);
 
-		getBallHandler().contactCalculation(getContactModelParams(), dt, getGPUMaxThreadsPerBlock(), stream_);
-	}
-
-    void integration2nd(const double dt) override
-	{
-        getClumpHandler().integration2nd(getBallHandler().getBalls(), getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
-        getBallHandler().integration2nd(getGravity(), dt, getGPUMaxThreadsPerBlock(), stream_);
+		getBallHandler().contactCalculation(getContactModelParams(), 
+        dt, 
+        getGPUMaxThreadsPerBlock(), 
+        stream_);
 	}
 
     cudaStream_t stream_;

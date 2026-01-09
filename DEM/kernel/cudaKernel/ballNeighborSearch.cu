@@ -30,13 +30,11 @@ int* hashIndex,
 int* hashValue, 
 double3* position, 
 const size_t numObjects,
-const size_t maxThreadsPerBlock, 
+const size_t gridDim, 
+const size_t blockDim, 
 cudaStream_t stream)
 {
-    size_t grid = 1, block = 1;
-    computeGPUGridSizeBlockSize(grid, block, numObjects, maxThreadsPerBlock);
-
-    calculateHash <<< grid, block, 0, stream >>> (hashValue, 
+    calculateHash <<< gridDim, blockDim, 0, stream >>> (hashValue, 
     position, 
     sptialGrids.minBound, 
     sptialGrids.maxBound, 
@@ -52,7 +50,8 @@ cudaStream_t stream)
     hashValue, 
     static_cast<int>(sptialGrids.deviceSize()),
     numObjects,
-    maxThreadsPerBlock,
+    gridDim,
+    blockDim, 
     stream);
 }
 
@@ -83,8 +82,8 @@ const size_t numBalls)
             for (int xx = -1; xx <= 1; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
+                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
+                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellStart[hashB];
                 if (startIndex == 0xFF) continue;
@@ -148,8 +147,8 @@ const size_t numBalls)
             for (int xx = -1; xx <= 1; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
+                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
+                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellStart[hashB];
                 if (startIndex == 0xFF) continue;
@@ -201,81 +200,87 @@ extern "C" void launchBallNeighborSearch(solidInteraction& ballInteractions,
 interactionMap &ballInteractionMap,
 ball& balls, 
 spatialGrid& spatialGrids, 
-const size_t maxThreadsPerBlock, 
+const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-    if(spatialGrids.deviceSize() == 0) return;
-    updateGridCellStartEnd(spatialGrids,
-    balls.hashIndex(),
-    balls.hashValue(),
-    balls.position(),
-    balls.deviceSize(),
-    maxThreadsPerBlock,
-    stream);
+    size_t gridDim = 1, blockDim = 1;
+    if (setGPUGridBlockDim(gridDim, blockDim, balls.deviceSize(), maxThreadsPerBlock))
+    {
+        updateGridCellStartEnd(spatialGrids,
+        balls.hashIndex(),
+        balls.hashValue(),
+        balls.position(),
+        balls.deviceSize(),
+        gridDim, 
+        blockDim, 
+        stream);
 
-    ballInteractions.updateHistory(stream);
+        ballInteractions.updateHistory(stream);
 
-    //debug_dump_device_array(spatialGrids.cellHashStart(), spatialGrids.deviceSize(), "spatialGrids.cellHashStart");
-    //debug_dump_device_array(spatialGrids.cellHashEnd(), spatialGrids.deviceSize(), "spatialGrids.cellHashEnd");
-    size_t grid = 1, block = 1;
-    computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
-    countBallInteractionsKernel <<<grid, block, 0, stream>>> (balls.position(),
-    balls.radius(),
-    balls.inverseMass(),
-    balls.clumpID(),
-    balls.hashIndex(),
-    ballInteractionMap.countA(),
-    spatialGrids.cellHashStart(),
-    spatialGrids.cellHashEnd(),
-    spatialGrids.minBound,
-    spatialGrids.cellSize,
-    spatialGrids.gridSize,
-    balls.deviceSize());
+        //debug_dump_device_array(spatialGrids.cellHashStart(), spatialGrids.deviceSize(), "spatialGrids.cellHashStart");
+        //debug_dump_device_array(spatialGrids.cellHashEnd(), spatialGrids.deviceSize(), "spatialGrids.cellHashEnd");
+        countBallInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (balls.position(),
+        balls.radius(),
+        balls.inverseMass(),
+        balls.clumpID(),
+        balls.hashIndex(),
+        ballInteractionMap.countA(),
+        spatialGrids.cellHashStart(),
+        spatialGrids.cellHashEnd(),
+        spatialGrids.minBound,
+        spatialGrids.cellSize,
+        spatialGrids.gridSize,
+        balls.deviceSize());
 
-    //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "ballInteractionMap.countA");
-    int activeNumber = 0;
-    auto exec = thrust::cuda::par.on(stream);
-    thrust::inclusive_scan(exec,
-    thrust::device_pointer_cast(ballInteractionMap.countA()),
-    thrust::device_pointer_cast(ballInteractionMap.countA() + ballInteractionMap.ASize()),
-    thrust::device_pointer_cast(ballInteractionMap.prefixSumA()));
-    cuda_copy_sync(&activeNumber, ballInteractionMap.prefixSumA() + ballInteractionMap.ASize() - 1, 1, CopyDir::D2H);
-    ballInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
+        //debug_dump_device_array(ballInteractionMap.countA(), ballInteractionMap.ASize(), "ballInteractionMap.countA");
+        buildPrefixSum(ballInteractionMap.prefixSumA(), 
+        ballInteractionMap.countA(), 
+        ballInteractionMap.ASize(), 
+        stream);
+        int activeNumber = 0;
+        cuda_copy_sync(&activeNumber, ballInteractionMap.prefixSumA() + ballInteractionMap.ASize() - 1, 1, CopyDir::D2H);
+        ballInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
 
-    writeBallInteractionsKernel <<<grid, block, 0, stream>>> (ballInteractions.objectPointed(),
-    ballInteractions.objectPointing(),
-    ballInteractions.force(),
-    ballInteractions.torque(),
-    ballInteractions.slidingSpring(),
-    ballInteractions.rollingSpring(),
-    ballInteractions.torsionSpring(),
-    ballInteractions.objectPointedHistory(),
-    ballInteractions.slidingSpringHistory(),
-    ballInteractions.rollingSpringHistory(),
-    ballInteractions.torsionSpringHistory(),
-    balls.position(),
-    balls.radius(),
-    balls.inverseMass(),
-    balls.clumpID(),
-    balls.hashIndex(),
-    ballInteractionMap.hashIndex(),
-    ballInteractionMap.prefixSumA(),
-    ballInteractionMap.startB(),
-    ballInteractionMap.endB(),
-    spatialGrids.cellHashStart(),
-    spatialGrids.cellHashEnd(),
-    spatialGrids.minBound,
-    spatialGrids.cellSize,
-    spatialGrids.gridSize,
-    balls.deviceSize());
+        writeBallInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (ballInteractions.objectPointed(),
+        ballInteractions.objectPointing(),
+        ballInteractions.force(),
+        ballInteractions.torque(),
+        ballInteractions.slidingSpring(),
+        ballInteractions.rollingSpring(),
+        ballInteractions.torsionSpring(),
+        ballInteractions.objectPointedHistory(),
+        ballInteractions.slidingSpringHistory(),
+        ballInteractions.rollingSpringHistory(),
+        ballInteractions.torsionSpringHistory(),
+        balls.position(),
+        balls.radius(),
+        balls.inverseMass(),
+        balls.clumpID(),
+        balls.hashIndex(),
+        ballInteractionMap.hashIndex(),
+        ballInteractionMap.prefixSumA(),
+        ballInteractionMap.startB(),
+        ballInteractionMap.endB(),
+        spatialGrids.cellHashStart(),
+        spatialGrids.cellHashEnd(),
+        spatialGrids.minBound,
+        spatialGrids.cellSize,
+        spatialGrids.gridSize,
+        balls.deviceSize());
+    }
 
     ballInteractionMap.hashInit(ballInteractions.objectPointing(), ballInteractions.activeSize(), stream);
-    buildHashStartEnd(ballInteractionMap.startB(), 
-    ballInteractionMap.endB(), 
-    ballInteractionMap.hashIndex(), 
-    ballInteractionMap.hashValue(),
-    static_cast<int>(ballInteractionMap.BSize()),
-    ballInteractionMap.activeHashSize(),
-    maxThreadsPerBlock, 
-    stream);
+
+    if (setGPUGridBlockDim(gridDim, blockDim, ballInteractionMap.activeHashSize(), maxThreadsPerBlock))
+    {
+        buildHashStartEnd(ballInteractionMap.startB(), 
+        ballInteractionMap.endB(), 
+        ballInteractionMap.hashIndex(), 
+        ballInteractionMap.hashValue(),
+        static_cast<int>(ballInteractionMap.BSize()),
+        ballInteractionMap.activeHashSize(),
+        gridDim,
+        blockDim,
+        stream);
+    }
 }

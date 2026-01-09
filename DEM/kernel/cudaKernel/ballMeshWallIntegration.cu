@@ -292,13 +292,13 @@ double3* position_w,
 const double dt,
 const size_t numVertices)
 {
-	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
-	if (idx_i >= numVertices) return;
+	size_t idx_v = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_v >= numVertices) return;
 
 	size_t idx_t = 0;
-	if(idx_i > 0) idx_t = triangleIndex_v[numTrianglesPrefixSum_v[idx_i - 1]];
+	if(idx_v > 0) idx_t = triangleIndex_v[numTrianglesPrefixSum_v[idx_v - 1]];
 	size_t idx_w = wallIndex_t[idx_t];
-	globalVertices[idx_i] = position_w[idx_w] + rotateVectorByQuaternion(orientation_w[idx_w], localVertices[idx_i]);
+	globalVertices[idx_v] = position_w[idx_w] + rotateVectorByQuaternion(orientation_w[idx_w], localVertices[idx_v]);
 }
 
 extern "C" void launchBallMeshWallInteractionCalculation(solidInteraction &ballTriangleInteractions,
@@ -310,72 +310,70 @@ const double timeStep,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-    size_t grid = 1, block = 1;
+	size_t gridDim = 1, blockDim = 1;
+	if (setGPUGridBlockDim(gridDim, blockDim, balls.deviceSize(), maxThreadsPerBlock))
+	{
+		calBallTriangleContactSpringContactPoint <<<gridDim, blockDim, 0, stream>>> (ballTriangleInteractions.contactPoint(),
+		ballTriangleInteractions.slidingSpring(),
+		ballTriangleInteractions.rollingSpring(),
+		ballTriangleInteractions.torsionSpring(),
+		ballTriangleInteractions.objectPointing(),
+		ballTriangleInteractions.cancelFlag(),
+		balls.position(),
+		balls.radius(),
+		ballTriangleInteractionMap.prefixSumA(),
+		meshWalls.triangles().index0(),
+		meshWalls.triangles().index1(),
+		meshWalls.triangles().index2(),
+		meshWalls.globalVertices(),
+		balls.deviceSize());
 
-	computeGPUGridSizeBlockSize(grid, block, balls.deviceSize(), maxThreadsPerBlock);
-	calBallTriangleContactSpringContactPoint <<<grid, block, 0, stream>>> (ballTriangleInteractions.contactPoint(),
-	ballTriangleInteractions.slidingSpring(),
-	ballTriangleInteractions.rollingSpring(),
-	ballTriangleInteractions.torsionSpring(),
-	ballTriangleInteractions.objectPointing(),
-	ballTriangleInteractions.cancelFlag(),
-	balls.position(),
-	balls.radius(),
-    ballTriangleInteractionMap.prefixSumA(),
-    meshWalls.triangles().index0(),
-    meshWalls.triangles().index1(),
-    meshWalls.triangles().index2(),
-    meshWalls.globalVertices(),
-	balls.deviceSize());
-
-    calBallTriangleContactForceTorqueKernel <<<grid, block, 0, stream>>> (ballTriangleInteractions.force(),
-	ballTriangleInteractions.torque(),
-	ballTriangleInteractions.contactPoint(),
-	ballTriangleInteractions.slidingSpring(),
-	ballTriangleInteractions.rollingSpring(),
-	ballTriangleInteractions.torsionSpring(),
-	ballTriangleInteractions.objectPointing(),
-	ballTriangleInteractions.cancelFlag(),
-	balls.force(),
-	balls.torque(),
-	balls.position(),
-	balls.velocity(),
-	balls.angularVelocity(),
-	balls.radius(),
-    balls.inverseMass(),
-	balls.materialID(),
-    meshWalls.position(),
-    meshWalls.velocity(),
-    meshWalls.angularVelocity(),
-    meshWalls.materialID(),
-    meshWalls.triangles().wallIndex(),
-    ballTriangleInteractionMap.prefixSumA(),
-	contactModelParams.hertzian.effectiveYoungsModulus,
-	contactModelParams.hertzian.effectiveShearModulus,
-	contactModelParams.hertzian.restitutionCoefficient,
-	contactModelParams.hertzian.rollingStiffnessToShearStiffnessRatio,
-	contactModelParams.hertzian.torsionStiffnessToShearStiffnessRatio,
-	contactModelParams.hertzian.slidingFrictionCoefficient,
-	contactModelParams.hertzian.rollingFrictionCoefficient,
-	contactModelParams.hertzian.torsionFrictionCoefficient,
-	contactModelParams.linear.normalStiffness,
-	contactModelParams.linear.slidingStiffness,
-	contactModelParams.linear.rollingStiffness,
-	contactModelParams.linear.torsionStiffness,
-	contactModelParams.linear.normalDampingCoefficient,
-	contactModelParams.linear.slidingDampingCoefficient,
-	contactModelParams.linear.rollingDampingCoefficient,
-	contactModelParams.linear.torsionDampingCoefficient,
-	contactModelParams.linear.slidingFrictionCoefficient,
-	contactModelParams.linear.rollingFrictionCoefficient,
-	contactModelParams.linear.torsionFrictionCoefficient,
-	contactModelParams.numberOfMaterials,
-	contactModelParams.pairTableSize,
-	timeStep,
-	balls.deviceSize());
-
-	//debug_dump_device_array(balls.force(), balls.deviceSize(), "balls.force");
-	//debug_dump_device_array(balls.torque(), balls.deviceSize(), "balls.torque");
+		calBallTriangleContactForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (ballTriangleInteractions.force(),
+		ballTriangleInteractions.torque(),
+		ballTriangleInteractions.contactPoint(),
+		ballTriangleInteractions.slidingSpring(),
+		ballTriangleInteractions.rollingSpring(),
+		ballTriangleInteractions.torsionSpring(),
+		ballTriangleInteractions.objectPointing(),
+		ballTriangleInteractions.cancelFlag(),
+		balls.force(),
+		balls.torque(),
+		balls.position(),
+		balls.velocity(),
+		balls.angularVelocity(),
+		balls.radius(),
+		balls.inverseMass(),
+		balls.materialID(),
+		meshWalls.position(),
+		meshWalls.velocity(),
+		meshWalls.angularVelocity(),
+		meshWalls.materialID(),
+		meshWalls.triangles().wallIndex(),
+		ballTriangleInteractionMap.prefixSumA(),
+		contactModelParams.hertzian.effectiveYoungsModulus,
+		contactModelParams.hertzian.effectiveShearModulus,
+		contactModelParams.hertzian.restitutionCoefficient,
+		contactModelParams.hertzian.rollingStiffnessToShearStiffnessRatio,
+		contactModelParams.hertzian.torsionStiffnessToShearStiffnessRatio,
+		contactModelParams.hertzian.slidingFrictionCoefficient,
+		contactModelParams.hertzian.rollingFrictionCoefficient,
+		contactModelParams.hertzian.torsionFrictionCoefficient,
+		contactModelParams.linear.normalStiffness,
+		contactModelParams.linear.slidingStiffness,
+		contactModelParams.linear.rollingStiffness,
+		contactModelParams.linear.torsionStiffness,
+		contactModelParams.linear.normalDampingCoefficient,
+		contactModelParams.linear.slidingDampingCoefficient,
+		contactModelParams.linear.rollingDampingCoefficient,
+		contactModelParams.linear.torsionDampingCoefficient,
+		contactModelParams.linear.slidingFrictionCoefficient,
+		contactModelParams.linear.rollingFrictionCoefficient,
+		contactModelParams.linear.torsionFrictionCoefficient,
+		contactModelParams.numberOfMaterials,
+		contactModelParams.pairTableSize,
+		timeStep,
+		balls.deviceSize());
+	}
 }
 
 extern "C" void launchMeshWallIntegration(meshWall &meshWalls, 
@@ -383,27 +381,30 @@ const double timeStep,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-	size_t grid = 1, block = 1;
+	size_t gridDim = 1, blockDim = 1;
+	if (setGPUGridBlockDim(gridDim, blockDim, meshWalls.deviceSize(), maxThreadsPerBlock))
+	{
+		orientationIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.orientation(), 
+		meshWalls.angularVelocity(),
+		timeStep,
+		meshWalls.deviceSize());
 
-	computeGPUGridSizeBlockSize(grid, block, meshWalls.deviceSize(), maxThreadsPerBlock);
-    orientationIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.orientation(), 
-    meshWalls.angularVelocity(),
-    timeStep,
-    meshWalls.deviceSize());
+		positionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.position(),
+		meshWalls.velocity(),
+		timeStep,
+		meshWalls.deviceSize());
 
-	positionIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.position(),
-    meshWalls.velocity(),
-    timeStep,
-    meshWalls.deviceSize());
-
-    computeGPUGridSizeBlockSize(grid, block, meshWalls.vertices().deviceSize(), maxThreadsPerBlock);
-    triangleGlobalVerticesIntegrationKernel <<<grid, block, 0, stream>>> (meshWalls.globalVertices(),
-    meshWalls.vertices().localPosition(),
-    meshWalls.vertices().triangleIndex(),
-    meshWalls.vertices().trianglesPrefixSum(),
-    meshWalls.triangles().wallIndex(),
-    meshWalls.orientation(),
-    meshWalls.position(),
-    timeStep,
-    meshWalls.vertices().deviceSize());
+		if (setGPUGridBlockDim(gridDim, blockDim, meshWalls.vertices().deviceSize(), maxThreadsPerBlock))
+		{
+			triangleGlobalVerticesIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.globalVertices(),
+			meshWalls.vertices().localPosition(),
+			meshWalls.vertices().triangleIndex(),
+			meshWalls.vertices().trianglesPrefixSum(),
+			meshWalls.triangles().wallIndex(),
+			meshWalls.orientation(),
+			meshWalls.position(),
+			timeStep,
+			meshWalls.vertices().deviceSize());
+		}
+	}
 }
