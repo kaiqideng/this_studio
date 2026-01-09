@@ -162,7 +162,7 @@ double3* velocity,
 double3* positionStar,
 double3* velocityStar,
 double* densityStar,
-double* pressure,
+double* pressureStar,
 const double* mass,
 int* neighborPrifixSum,
 int* objectPointing,
@@ -174,7 +174,7 @@ const size_t numSPHs)
 	if (idx_i >= numSPHs) return;
 
     double rhos_i = densityStar[idx_i];
-    double p_i = pressure[idx_i];
+    double ps_i = pressureStar[idx_i];
 
     double3 dp_rhos_i = make_double3(0.0, 0.0, 0.0);
     int start = 0;
@@ -185,11 +185,11 @@ const size_t numSPHs)
         int idx_j = objectPointing[k];
 
         double rhos_j = densityStar[idx_j];
-        double p_j = pressure[idx_j];
+        double ps_j = pressureStar[idx_j];
         double m_j = mass[idx_j];
         double3 dW_ij = gradientKernelStar[k];
 
-        dp_rhos_i += -m_j * (p_i / (rhos_i * rhos_i) + p_j / (rhos_j * rhos_j)) * dW_ij;
+        dp_rhos_i += -m_j * (ps_i / (rhos_i * rhos_i) + ps_j / (rhos_j * rhos_j)) * dW_ij;
     }
 
     double3 u_i = velocity[idx_i];
@@ -237,7 +237,7 @@ const size_t numGhosts)
         double p_j = pressure[idx_j];
         double rho_j = initialDensity[idx_j];
         WP_i += W_ij * p_j;
-        WRho_i = W_ij * rho_j * r_ij;
+        WRho_i += W_ij * rho_j * r_ij;
     }
 
     if(W_i > 1.e-20)
@@ -323,7 +323,7 @@ cudaStream_t stream)
     SPHAndGhosts.positionStar(),
     SPHAndGhosts.velocityStar(),
     SPHAndGhosts.densityStar(),
-    SPHAndGhosts.pressure(),
+    SPHAndGhosts.pressureStar(),
     SPHAndGhosts.mass(),
     SPHInteractionMap.prefixSumA(),
     SPHInteractions.objectPointing(),
