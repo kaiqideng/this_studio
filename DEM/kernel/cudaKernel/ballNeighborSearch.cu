@@ -13,8 +13,8 @@ const size_t numObjects)
     if (idx >= numObjects) return;
     double3 p = position[idx];
     if (minBound.x <= p.x && p.x < maxBound.x &&
-        minBound.y <= p.y && p.y < maxBound.y &&
-        minBound.z <= p.z && p.z < maxBound.z)
+    minBound.y <= p.y && p.y < maxBound.y &&
+    minBound.z <= p.z && p.z < maxBound.z)
     {
         int3 gridPosition = calculateGridPosition(p, minBound, cellSize);
         hashValue[idx] = calculateHash(gridPosition, gridSize);

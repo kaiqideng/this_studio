@@ -135,6 +135,7 @@ private:
 		SPHHandler_.integration1st(getGravity(), dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
 		SPHHandler_.updateBoundaryCondition(getGravity(), dt, ghostGPUGridDim_, ghostGPUBlockDim_, stream_);
 		SPHHandler_.integration2nd(dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
+		SPHHandler_.updateBoundaryCondition(getGravity(), dt, ghostGPUGridDim_, ghostGPUBlockDim_, stream_);
 		SPHHandler_.integration3rd(dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
 	}
 

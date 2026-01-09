@@ -15,7 +15,7 @@ __device__ __forceinline__ double wendlandKernel3D(double r, double h)
 __device__ __forceinline__ double3 gradWendlandKernel3D(const double3& rij, double h)
 {
 	double r = length(rij);
-	if (r < 1.e-10 || r >= 2.0 * h) return make_double3(0, 0, 0);
+	if (r < 1.e-20 || r >= 2.0 * h) return make_double3(0, 0, 0);
 
 	double q = r / h;
 	double sigma = 21.0 / (16.0 * pi() * h * h * h);

@@ -127,7 +127,6 @@ double3* contactTorque,
 double3* slidingSpring, 
 double3* rollingSpring, 
 double3* torsionSpring, 
-int* cancelFlag,
 int* objectPointed_history, 
 double3* slidingSpring_history, 
 double3* rollingSpring_history, 
@@ -195,7 +194,6 @@ const size_t numBalls)
                         slidingSpring[index_w] = make_double3(0, 0, 0);
                         rollingSpring[index_w] = make_double3(0, 0, 0);
                         torsionSpring[index_w] = make_double3(0, 0, 0);
-                        cancelFlag[index_w] = 0;
                         if (interactionMapStartB[idxB] != 0xFFFFFFFF)
                         {
                             for (int j = interactionMapStartB[idxB]; j < interactionMapEndB[idxB]; j++)
@@ -278,7 +276,6 @@ cudaStream_t stream)
         ballTriangleInteractions.slidingSpring(),
         ballTriangleInteractions.rollingSpring(),
         ballTriangleInteractions.torsionSpring(),
-        ballTriangleInteractions.cancelFlag(),
         ballTriangleInteractions.objectPointedHistory(),
         ballTriangleInteractions.slidingSpringHistory(),
         ballTriangleInteractions.rollingSpringHistory(),

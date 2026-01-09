@@ -529,7 +529,6 @@ const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
     size_t gridDim = 1, blockDim = 1;
-
 	if (setGPUGridBlockDim(gridDim, blockDim, ballInteractions.activeSize(), maxThreadsPerBlock))
 	{
 		calBallContactForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (ballInteractions.force(),

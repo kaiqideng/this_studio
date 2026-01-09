@@ -48,9 +48,9 @@ public:
     }
 
     void outputMeshWallVTU(const std::string& dir,
-                           const size_t       iFrame,
-                           const size_t       iStep,
-                           double             time)
+    const size_t iFrame,
+    const size_t iStep,
+    double time)
     {
         MKDIR(dir.c_str());
 

@@ -210,6 +210,9 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 //Value Computed by CMake
 DEM_BINARY_DIR:STATIC=/teamspace/studios/this_studio/DEM/build
 
+//Auto-detect GPU arch on this machine (CMAKE_CUDA_ARCHITECTURES=native)
+DEM_CUDA_USE_NATIVE_ARCH:BOOL=ON
+
 //Value Computed by CMake
 DEM_IS_TOP_LEVEL:STATIC=ON
 

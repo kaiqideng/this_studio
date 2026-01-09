@@ -38,7 +38,6 @@ const size_t numSPHs)
         double rho0_j = initialDensity[idx_j];
         double h_j = smoothLength[idx_j];
         double nu_j = kinematicViscosity[idx_j];
-        if(idx_j >= numSPHs) nu_j = nu_i;
 
         double3 r_ij = r_i - r_j;
         double h_ij = 0.5 * (h_i + h_j);
@@ -244,6 +243,7 @@ const size_t numGhosts)
     if(W_i > 1.e-20)
     {
         pressure[idx_i] = (WP_i + dot(gravity, WRho_i)) / W_i;
+        if (pressure[idx_i] < 0.0) pressure[idx_i] = 0.0;
     }
 }
 

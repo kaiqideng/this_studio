@@ -4,9 +4,9 @@
 
 __host__ __device__
 inline bool isSphereEdgeContact(const double3& edgeP0,
-                                const double3& edgeP1,
-                                const double3& sphereCenter,
-                                double         sphereRadius)
+const double3& edgeP1,
+const double3& sphereCenter,
+double sphereRadius)
 {
     // Edge direction
     double3 edge = edgeP1 - edgeP0;
@@ -45,12 +45,12 @@ enum class SphereTriangleContactType {
 
 __host__ __device__
 inline SphereTriangleContactType classifySphereTriangleContact(
-    const double3& sphereCenter,
-    const double   sphereRadius,
-    const double3& v0,
-    const double3& v1,
-    const double3& v2,
-    double3& closestPoint)
+const double3& sphereCenter,
+const double   sphereRadius,
+const double3& v0,
+const double3& v1,
+const double3& v2,
+double3& closestPoint)
 {
     double3 edge01   = v1 - v0;
     double3 edge02   = v2 - v0;

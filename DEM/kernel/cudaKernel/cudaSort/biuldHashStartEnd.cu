@@ -1,6 +1,6 @@
 #include "buildHashStartEnd.h"
 
-__global__ void setInitialIndices(int* hashIndex, 
+__global__ void setHashIndex(int* hashIndex, 
 const size_t hashListSize)
 {
     size_t index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -47,7 +47,7 @@ cudaStream_t stream)
     cudaMemsetAsync(start, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
     cudaMemsetAsync(end, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
 
-    setInitialIndices <<<gridDim, blockDim, 0, stream>>> (hashIndex, hashListSize);
+    setHashIndex <<<gridDim, blockDim, 0, stream>>> (hashIndex, hashListSize);
 
     auto exec = thrust::cuda::par.on(stream);
     try

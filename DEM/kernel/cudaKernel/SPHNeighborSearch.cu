@@ -26,8 +26,8 @@ const size_t numGhosts)
             for (int xx = -1; xx <= 1; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
+                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
+                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellStart[hashB];
                 if (startIndex == 0xFF) continue;
@@ -37,9 +37,8 @@ const size_t numGhosts)
                     int idxB = SPHHashIndex[i];
                     if (idxA == idxB) continue;
                     if (idxA >= numSPHs && idxB >= numSPHs) continue;
-                    double cut = 2.0 * radA;
-                    double3 posB = position[idxB];
-                    double3 rAB = posA - posB;
+                    double cut = 2.0 * fmax(radA, smoothLength[idxB]);
+                    double3 rAB = posA - position[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.) count++;
                 }
             }
@@ -77,8 +76,8 @@ const size_t numGhosts)
             for (int xx = -1; xx <= 1; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 ||gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y ||gridPositionB.z >= gridSize.z) continue;
+                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
+                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellStart[hashB];
                 if (startIndex == 0xFF) continue;
@@ -89,9 +88,8 @@ const size_t numGhosts)
                     int idxB = SPHHashIndex[i];
                     if (idxA == idxB) continue;
                     if (idxA >= numSPHs && idxB >= numSPHs) continue;
-                    double cut = 2.0 * radA;
-                    double3 posB = position[idxB];
-                    double3 rAB = posA - posB;
+                    double cut = 2.0 * fmax(radA, smoothLength[idxB]);
+                    double3 rAB = posA - position[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
                     {
                         int index_w = base_w + countInOneCell;
