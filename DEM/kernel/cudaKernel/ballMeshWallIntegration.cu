@@ -35,9 +35,12 @@ const size_t numBalls)
 		const double3 p2 = globalVertices[vertIndex2_t[idx_j]];
 		
 		double3 r_c;
-		SphereTriangleContactType type = classifySphereTriangleContact(r_i, rad_i,
-									p0, p1, p2,
-									r_c);
+		SphereTriangleContactType type = classifySphereTriangleContact(r_i, 
+		rad_i,
+		p0, 
+		p1, 
+		p2,
+		r_c);
 
 		contactPoint[idx_c] = r_c;
 
@@ -55,9 +58,13 @@ const size_t numBalls)
 				const double3 p21 = globalVertices[vertIndex2_t[idx_j1]];
 
 				double3 r_c1;
-				SphereTriangleContactType type1 = classifySphereTriangleContact(r_i, rad_i,
-									p01, p11, p21,
-									r_c1);
+				SphereTriangleContactType type1 = classifySphereTriangleContact(r_i, 
+				rad_i,
+				p01, 
+				p11, 
+				p21,
+				r_c1);
+				
 				if(type1 == SphereTriangleContactType::None) continue;
 				else if(type1 == SphereTriangleContactType::Face)
 				{

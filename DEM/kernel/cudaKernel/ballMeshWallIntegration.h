@@ -10,15 +10,15 @@ double sphereRadius)
 {
     // Edge direction
     double3 edge = edgeP1 - edgeP0;
-    double  edgeLen2 = dot(edge, edge);
+    double edgeLen2 = dot(edge, edge);
     if (edgeLen2 <= 1e-20) {
         // Degenerate edge -> treat as no edge contact
         return false;
     }
 
     // Project sphere center onto the infinite line of the edge
-    double3 v    = sphereCenter - edgeP0;
-    double  t    = dot(v, edge) / edgeLen2;
+    double3 v = sphereCenter - edgeP0;
+    double t = dot(v, edge) / edgeLen2;
 
     // If projection lies outside [0,1], closest point is a vertex => not edge contact
     if (t <= 0.0 || t >= 1.0) {
@@ -29,18 +29,18 @@ double sphereRadius)
     double3 closest = edgeP0 + edge * t;
 
     // Check distance to the sphere
-    double3 diff  = sphereCenter - closest;
-    double  dist2 = dot(diff, diff);
-    double  r2    = sphereRadius * sphereRadius;
+    double3 diff = sphereCenter - closest;
+    double dist2 = dot(diff, diff);
+    double r2 = sphereRadius * sphereRadius;
 
     return dist2 <= r2;
 }
 
 enum class SphereTriangleContactType {
-    None,
-    Face,
-    Edge,
-    Vertex
+None,
+Face,
+Edge,
+Vertex
 };
 
 __host__ __device__
@@ -52,15 +52,15 @@ const double3& v1,
 const double3& v2,
 double3& closestPoint)
 {
-    double3 edge01   = v1 - v0;
-    double3 edge02   = v2 - v0;
-    double3 v0_to_p  = sphereCenter - v0;
+    double3 edge01 = v1 - v0;
+    double3 edge02 = v2 - v0;
+    double3 v0_to_p = sphereCenter - v0;
 
-    const double r2  = sphereRadius * sphereRadius;
+    const double r2 = sphereRadius * sphereRadius;
     const double eps = 1e-12;
 
-    double3 n      = cross(edge01, edge02);
-    double  area2  = dot(n, n);
+    double3 n = cross(edge01, edge02);
+    double area2 = dot(n, n);
     if (area2 < 1e-20)
     {
         double3 diff0 = sphereCenter - v0;
@@ -145,7 +145,7 @@ double3& closestPoint)
     if (va <= 0.0 && (dot02_v1 - dot01_v1) >= 0.0 && (dot01_v2 - dot02_v2) >= 0.0)
     {
         double t = (dot02_v1 - dot01_v1) /
-                   ((dot02_v1 - dot01_v1) + (dot01_v2 - dot02_v2));
+        ((dot02_v1 - dot01_v1) + (dot01_v2 - dot02_v2));
         closestPoint = v1 + (v2 - v1) * t;
         double3 diff = sphereCenter - closestPoint;
         if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Edge;

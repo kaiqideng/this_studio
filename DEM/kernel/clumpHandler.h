@@ -23,7 +23,7 @@ public:
     ballHandler& bH,
     cudaStream_t stream)
     {
-        if(!downloadFlag_)
+        if (!downloadFlag_)
         {
             clumps_.upload(stream);
             downloadFlag_ = true;
@@ -35,11 +35,15 @@ public:
 
         std::vector<double3> vel(points.size(), velocity);
         std::vector<double3> angVel(points.size(), angularVelocity);
-        double volume = 0;
-        for (size_t i = 0; i < points.size(); i++)
+        double volume = 0, invMass = 0.0;
+        if (mass > 1.e-20)
         {
-            volume += 4.0 / 3.0 * pi() * pow(radius[i], 3.0);
-            vel[i] = vel[i] + cross(angularVelocity, points[i] - centroidPosition);
+            invMass = 1.0 / mass;
+            for (size_t i = 0; i < points.size(); i++)
+            {
+                volume += 4.0 / 3.0 * pi() * pow(radius[i], 3.0);
+                vel[i] = vel[i] + cross(angularVelocity, points[i] - centroidPosition);
+            }
         }
         double density_ave = 0;
         if (volume > 0.) density_ave = mass / volume;
@@ -53,8 +57,6 @@ public:
         stream,
         clumpID);
 
-        double invMass = 0.0;
-        if(mass > 1.e-20) invMass = 1.0 / mass;
         clumps_.addHost(centroidPosition, 
         velocity, 
         angularVelocity, 
@@ -75,7 +77,7 @@ public:
     ballHandler& bH,
     cudaStream_t stream)
     {
-        if(!downloadFlag_)
+        if (!downloadFlag_)
         {
             clumps_.upload(stream);
             downloadFlag_ = true;
@@ -108,7 +110,7 @@ public:
 
     void download(cudaStream_t stream)
     {
-        if(downloadFlag_)
+        if (downloadFlag_)
         {
             clumps_.download(stream);
             downloadFlag_ = false;

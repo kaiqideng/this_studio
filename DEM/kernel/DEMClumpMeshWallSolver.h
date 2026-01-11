@@ -94,7 +94,6 @@ private:
 	}
 
     cudaStream_t stream_;
-
     wallHandler wallHandler_;
     spatialGrid triangleSpatialGrids_;
 

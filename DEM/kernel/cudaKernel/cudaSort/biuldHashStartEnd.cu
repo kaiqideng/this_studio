@@ -60,9 +60,9 @@ cudaStream_t stream)
         }
 
         thrust::sort_by_key(exec,
-                            hashValue,
-                            hashValue + hashListSize,
-                            hashIndex);
+        hashValue,
+        hashValue + hashListSize,
+        hashIndex);
 
         cudaError_t err1 = cudaGetLastError();
         if (err1 != cudaSuccess)
@@ -87,7 +87,7 @@ cudaStream_t stream)
 {
     auto exec = thrust::cuda::par.on(stream);
     thrust::inclusive_scan(exec,
-                           thrust::device_pointer_cast(count),
-                           thrust::device_pointer_cast(count + size),
-                           thrust::device_pointer_cast(prefixSum));
+    thrust::device_pointer_cast(count),
+    thrust::device_pointer_cast(count + size),
+    thrust::device_pointer_cast(prefixSum));
 }

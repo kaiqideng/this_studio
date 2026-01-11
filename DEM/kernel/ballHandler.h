@@ -86,8 +86,8 @@ public:
         std::vector<double3> force = balls_.forceVector();
         std::vector<double3> totalF(balls_.hostSize(),make_double3(0.0, 0.0, 0.0));
         
-        std::transform(
-        externalForce.begin(), externalForce.end(),
+        std::transform(externalForce.begin(), 
+        externalForce.end(),
         force.begin(), 
         totalF.begin(),
         [](const double3& elem_a, const double3& elem_b) {return elem_a + elem_b;});
@@ -100,8 +100,8 @@ public:
         std::vector<double3> torque = balls_.torqueVector();
         std::vector<double3> totalT(balls_.hostSize(),make_double3(0.0, 0.0, 0.0));
         
-        std::transform(
-        externalTorque.begin(), externalTorque.end(),
+        std::transform(externalTorque.begin(), 
+        externalTorque.end(),
         torque.begin(), 
         totalT.begin(),
         [](const double3& elem_a, const double3& elem_b) {return elem_a + elem_b;});

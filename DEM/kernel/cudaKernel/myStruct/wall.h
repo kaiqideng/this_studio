@@ -146,8 +146,8 @@ public:
     size_t deviceSize() const { return localPosition_.deviceSize(); }
 
     void addVertexHost(const double3& p0,
-                   int triPrefix,
-                   int edgePrefix)
+    int triPrefix,
+    int edgePrefix)
     {
         localPosition_.addHostData(p0);
         trianglePrefixSum_.addHostData(triPrefix);
@@ -196,14 +196,14 @@ public:
 struct meshWall
 {
 private:
-    HostDeviceArray1D<double3>     position_;
-    HostDeviceArray1D<double3>     velocity_;
-    HostDeviceArray1D<double3>     angularVelocity_;
-    HostDeviceArray1D<quaternion>  orientation_;
+    HostDeviceArray1D<double3> position_;
+    HostDeviceArray1D<double3> velocity_;
+    HostDeviceArray1D<double3> angularVelocity_;
+    HostDeviceArray1D<quaternion> orientation_;
     constantHostDeviceArray1D<int> materialID_;
 
     triangle triangles_;
-    edge     edges_;
+    edge edges_;
     vertex vertices_;
 
     HostDeviceArray1D<double3> globalVertices_;
@@ -214,7 +214,7 @@ private:
         EdgeKey() = default;
         EdgeKey(int i, int j) {
             if (i < j) { a = i; b = j; }
-            else       { a = j; b = i; }
+            else { a = j; b = i; }
         }
         bool operator<(const EdgeKey& other) const {
             if (a != other.a) return a < other.a;
@@ -222,13 +222,13 @@ private:
         }
     };
 
-    void buildEdgesAndVertexAdjacency(const std::vector<double3>& vertex,
+    void buildEdgesAndVertexAdjacency(const std::vector<double3>& vertices,
     const std::vector<int3>& triIndices)
     {
         edges_.clearHost();
         vertices_.clearHost();
 
-        const int nVerts = static_cast<int>(vertex.size());
+        const int nVerts = static_cast<int>(vertices.size());
         const int nTris  = static_cast<int>(triIndices.size());
         if (nVerts == 0 || nTris == 0) return;
 
@@ -286,8 +286,6 @@ private:
             edgePrefix += static_cast<int>(tris.size());
         }
 
-        vertices_.clearHost();
-
         int triPrefix = 0;
         int edgePrefixV = 0;
         for (int v = 0; v < nVerts; ++v)
@@ -295,7 +293,7 @@ private:
             int triCount  = static_cast<int>(vTriAdj[v].size());
             int edgeCount = static_cast<int>(vEdgeAdj[v].size());
 
-            vertices_.addVertexHost(vertex[v],
+            vertices_.addVertexHost(vertices[v],
                             triPrefix + triCount,
                             edgePrefixV + edgeCount);
 

@@ -287,7 +287,7 @@ public:
     std::vector<double3> angularVelocityVector() { return angularVelocity_.getHostData(); }
     std::vector<double3> forceVector() { return force_.getHostData(); }
     std::vector<double3> torqueVector() { return torque_.getHostData(); }
-    std::vector<quaternion> orientationVector() { return orientation_.getHostData();}
+    std::vector<quaternion> orientationVector() { return orientation_.getHostData(); }
 
     const std::vector<symMatrix>& inverseInertiaTensorVector() const
     {

@@ -1,6 +1,5 @@
 #pragma once
 #include "DEMBaseSolver.h"
-#include "cudaKernel/myStruct/spatialGrid.h"
 #include "wallHandler.h"
 #include "cudaKernel/ballMeshWallNeighbor.h"
 #include "cudaKernel/ballMeshWallIntegration.h"
@@ -103,7 +102,6 @@ private:
 	}
 
     cudaStream_t stream_;
-
     wallHandler wallHandler_;
     spatialGrid triangleSpatialGrids_;
 

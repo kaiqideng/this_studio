@@ -329,12 +329,12 @@ struct HertzianContactParameterTable
 struct LinearContactParameterTable
 {
     double* normalStiffness{nullptr};        // k_n
-    double* slidingStiffness{nullptr};         // k_s
+    double* slidingStiffness{nullptr};       // k_s
     double* rollingStiffness{nullptr};       // k_r
     double* torsionStiffness{nullptr};       // k_t
 
     double* normalDampingCoefficient{nullptr};   // d_n
-    double* slidingDampingCoefficient{nullptr};    // d_s
+    double* slidingDampingCoefficient{nullptr};  // d_s
     double* rollingDampingCoefficient{nullptr};  // d_r
     double* torsionDampingCoefficient{nullptr};  // d_t
 
@@ -374,12 +374,12 @@ struct LinearRow
     int materialIndexB;
 
     double normalStiffness;            // k_n
-    double slidingStiffness;             // k_s
+    double slidingStiffness;           // k_s
     double rollingStiffness;           // k_r
     double torsionStiffness;           // k_t
 
     double normalDampingCoefficient;   // d_n
-    double slidingDampingCoefficient;    // d_s
+    double slidingDampingCoefficient;  // d_s
     double rollingDampingCoefficient;  // d_r
     double torsionDampingCoefficient;  // d_t
 
