@@ -1,22 +1,27 @@
 cmake_minimum_required(VERSION 3.22)
 
 # ============================================================
-# Optional: use gcc-12/g++-12 if available (helps Linux/WSL)
+# Export compile_commands.json for clangd
+# ============================================================
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# ============================================================
+# Optional: try gcc-12/g++-12 (Linux/WSL)
+# NOTE: Compiler must be set BEFORE project()
 # ============================================================
 option(SPH_TRY_GCC12 "Use gcc-12/g++-12 if available" ON)
 if (SPH_TRY_GCC12)
-    find_program(_GCC12 gcc-12)
-    find_program(_GPP12 g++-12)
-    if (_GCC12 AND _GPP12)
-        set(CMAKE_C_COMPILER         ${_GCC12})
-        set(CMAKE_CXX_COMPILER       ${_GPP12})
-        set(CMAKE_CUDA_HOST_COMPILER ${_GPP12})
-        message(STATUS "Using gcc-12/g++-12: ${_GCC12}, ${_GPP12}")
+    find_program(SPH_GCC gcc-12)
+    find_program(SPH_GXX g++-12)
+    if (SPH_GCC AND SPH_GXX)
+        set(CMAKE_C_COMPILER         "${SPH_GCC}")
+        set(CMAKE_CXX_COMPILER       "${SPH_GXX}")
+        set(CMAKE_CUDA_HOST_COMPILER "${SPH_GXX}")
+        message(STATUS "Using gcc-12/g++-12: ${SPH_GCC}, ${SPH_GXX}")
     endif()
 endif()
 
 project(SPH LANGUAGES CXX CUDA)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ============================================================
 # Standards
@@ -27,14 +32,14 @@ set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 # ============================================================
-# Build type
+# Build type (single-config generators)
 # ============================================================
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "" FORCE)
 endif()
 
 # ============================================================
-# CUDA arch
+# CUDA architectures
 # ============================================================
 option(SPH_CUDA_USE_NATIVE_ARCH "Use CMAKE_CUDA_ARCHITECTURES=native" ON)
 if (NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
@@ -47,12 +52,11 @@ endif()
 message(STATUS "CMAKE_CUDA_ARCHITECTURES = ${CMAKE_CUDA_ARCHITECTURES}")
 
 # ============================================================
-# Paths (your current layout: DEM and SPH are siblings)
+# Paths: ProjectRoot/DEM and ProjectRoot/SPH
 # ============================================================
-file(REAL_PATH "${CMAKE_CURRENT_LIST_DIR}/.." PROJECT_ROOT)
-file(REAL_PATH "${PROJECT_ROOT}/DEM" DEM_ROOT)
-set(DEM_KERNEL "${DEM_ROOT}/kernel")
-
+get_filename_component(PROJECT_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." REALPATH)
+set(DEM_ROOT     "${PROJECT_ROOT}/DEM")
+set(DEM_KERNEL   "${DEM_ROOT}/kernel")
 set(SPH_ROOT     "${CMAKE_CURRENT_LIST_DIR}")
 set(SPH_KERNEL   "${SPH_ROOT}/kernel")
 
@@ -68,12 +72,20 @@ message(STATUS "DEM_ROOT     = ${DEM_ROOT}")
 message(STATUS "SPH_ROOT     = ${SPH_ROOT}")
 
 # ============================================================
-# Build DEM inside SPH project (so SPH can link DEM symbols)
+# Common CUDA compile options (debug-friendly)
+# ============================================================
+add_library(cuda_flags INTERFACE)
+target_compile_options(cuda_flags INTERFACE
+    $<$<COMPILE_LANGUAGE:CUDA>:-lineinfo>
+)
+
+# ============================================================
+# DEM: build inside SPH project
 # ============================================================
 file(GLOB_RECURSE DEM_CORE_CPP  CONFIGURE_DEPENDS "${DEM_KERNEL}/*.cpp")
 file(GLOB_RECURSE DEM_CORE_CUDA CONFIGURE_DEPENDS "${DEM_KERNEL}/*.cu")
 
-# TU that calls thrust::sort_by_key (NO RDC)
+# TU that calls thrust::sort_by_key -> RDC OFF
 set(DEM_SORT_CUDA "${DEM_KERNEL}/cudaKernel/cudaSort/biuldHashStartEnd.cu")
 list(FILTER DEM_CORE_CUDA EXCLUDE REGEX ".*[/\\\\]biuldHashStartEnd\\.cu$")
 
@@ -85,10 +97,9 @@ target_include_directories(DEM_sort PUBLIC
 )
 set_target_properties(DEM_sort PROPERTIES
     CUDA_SEPARABLE_COMPILATION OFF
-    CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES}
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
 )
-target_compile_options(DEM_sort PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-lineinfo>)
+target_link_libraries(DEM_sort PRIVATE cuda_flags)
 
 add_library(DEM_core STATIC ${DEM_CORE_CPP} ${DEM_CORE_CUDA})
 target_include_directories(DEM_core PUBLIC
@@ -98,14 +109,13 @@ target_include_directories(DEM_core PUBLIC
 )
 set_target_properties(DEM_core PROPERTIES
     CUDA_SEPARABLE_COMPILATION ON
-    CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES}
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
 )
 target_link_libraries(DEM_core PUBLIC DEM_sort)
-target_compile_options(DEM_core PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-lineinfo>)
+target_link_libraries(DEM_core PRIVATE cuda_flags)
 
 # ============================================================
-# SPH core (all sources under SPH/kernel)
+# SPH core: everything under SPH/kernel
 # ============================================================
 file(GLOB_RECURSE SPH_CPP CONFIGURE_DEPENDS "${SPH_KERNEL}/*.cpp")
 file(GLOB_RECURSE SPH_CU  CONFIGURE_DEPENDS "${SPH_KERNEL}/*.cu")
@@ -113,6 +123,9 @@ file(GLOB_RECURSE SPH_H   CONFIGURE_DEPENDS "${SPH_KERNEL}/*.h")
 
 add_library(SPH_core STATIC ${SPH_CPP} ${SPH_CU} ${SPH_H})
 
+# IMPORTANT:
+# - ${PROJECT_ROOT} enables: #include "DEM/kernel/xxx.h"
+# - ${DEM_KERNEL} etc enables: #include "cudaKernel/..." or "myStruct/..."
 target_include_directories(SPH_core PUBLIC
     ${SPH_KERNEL}
     ${PROJECT_ROOT}
@@ -123,16 +136,18 @@ target_include_directories(SPH_core PUBLIC
 
 set_target_properties(SPH_core PROPERTIES
     CUDA_SEPARABLE_COMPILATION ON
-    CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES}
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
 )
 
 target_link_libraries(SPH_core PUBLIC DEM_core)
-target_compile_options(SPH_core PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-lineinfo>)
+target_link_libraries(SPH_core PRIVATE cuda_flags)
 
-file(GLOB ROOT_MAINS CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
+# ============================================================
+# Executables: all *.cpp directly under SPH/ (e.g. damBreak.cpp)
+# ============================================================
+file(GLOB SPH_MAINS CONFIGURE_DEPENDS "${SPH_ROOT}/*.cpp")
 
-foreach(main_src IN LISTS ROOT_MAINS)
+foreach(main_src IN LISTS SPH_MAINS)
     get_filename_component(exe_name "${main_src}" NAME_WE)
     add_executable(${exe_name} ${main_src})
     target_link_libraries(${exe_name} PRIVATE SPH_core)

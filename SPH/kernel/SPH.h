@@ -145,7 +145,6 @@ public:
 
     int* hashIndex() { return hashIndex_.d_ptr; }
     int* hashValue() { return hashValue_.d_ptr; }
-
     double3* acceleration() { return acc_.d_ptr; }
     double3* normal() { return normal_.d_ptr; }
 

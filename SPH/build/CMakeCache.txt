@@ -89,8 +89,8 @@ CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=
 //Flags used by the linker during RELWITHDEBINFO builds.
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
-//No help, variable specified on the command line.
-CMAKE_EXPORT_COMPILE_COMMANDS:UNINITIALIZED=ON
+//Enable/Disable output of compile commands during generation.
+CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=
 
 //Value Computed by CMake.
 CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=/teamspace/studios/this_studio/SPH/build/CMakeFiles/pkgRedirects
@@ -212,6 +212,12 @@ SPH_BINARY_DIR:STATIC=/teamspace/studios/this_studio/SPH/build
 
 //Use CMAKE_CUDA_ARCHITECTURES=native
 SPH_CUDA_USE_NATIVE_ARCH:BOOL=ON
+
+//Path to a program.
+SPH_GCC:FILEPATH=/usr/bin/gcc-12
+
+//Path to a program.
+SPH_GXX:FILEPATH=/usr/bin/g++-12
 
 //Value Computed by CMake
 SPH_IS_TOP_LEVEL:STATIC=ON
