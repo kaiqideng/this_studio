@@ -44,6 +44,8 @@ const size_t gridDim,
 const size_t blockDim, 
 cudaStream_t stream)
 {
+    if (gridDim * blockDim < hashListSize) return;
+
     cudaMemsetAsync(start, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
     cudaMemsetAsync(end, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
 

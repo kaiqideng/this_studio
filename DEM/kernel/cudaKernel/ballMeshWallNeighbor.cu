@@ -16,8 +16,8 @@ const size_t numTri)
     if (idx >= numTri) return;
     double3 p = (vertexGlobalPosition[index0[idx]] + vertexGlobalPosition[index1[idx]] + vertexGlobalPosition[index2[idx]]) / 3.0;
     if (minBound.x <= p.x && p.x < maxBound.x &&
-        minBound.y <= p.y && p.y < maxBound.y &&
-        minBound.z <= p.z && p.z < maxBound.z)
+    minBound.y <= p.y && p.y < maxBound.y &&
+    minBound.z <= p.z && p.z < maxBound.z)
     {
         int3 gridPosition = calculateGridPosition(p, minBound, cellSize);
         hashValue[idx] = calculateHash(gridPosition, gridSize);

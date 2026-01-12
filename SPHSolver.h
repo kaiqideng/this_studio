@@ -1,6 +1,8 @@
 #pragma once
-#include "solverParams.h"
+#include "DEM/kernel/solverParams.h"
 #include "SPHHandler.h"
+#include "SPHIntegration.h"
+#include <cstddef>
 
 class SPHSolver:
     public solverParams
@@ -15,10 +17,8 @@ public:
 		time_ = 0.0;
 
 		stream_ = s;
-		SPHGPUGridDim_ = 1;
-		SPHGPUBlockDim_ = 1;
-		ghostGPUGridDim_ = 1;
-		ghostGPUBlockDim_ = 1;
+		SPHGridDim_ = 1;
+		SPHBlockDim_ = 1;
 	}
 
 	~SPHSolver() = default;
@@ -29,14 +29,24 @@ public:
 		setNameFlag_ = true;
 	}
 
-	void addSPHParticles(std::vector<double3> points, double3 velocity, double spacing, double density, double kinematicViscosity)
+	void addWCSPHParticles(std::vector<double3> points, double3 velocity, double soundSpeed, double spacing, double density, double kinematicViscosity)
     {
-        SPHHandler_.addSPHParticles(points, velocity, spacing, density, kinematicViscosity, stream_);
+        SPHHandler_.addWCSPHParticles(points, velocity, soundSpeed, spacing, density, kinematicViscosity, stream_);
     }
 
-	void addGhostParticles(std::vector<double3> points, double3 velocity, double spacing, double density)
+	void addWCSPHDummyParticles(std::vector<double3> points, double3 velocity, double soundSpeed, double spacing, double density)
     {
-        SPHHandler_.addGhostParticles(points, velocity, spacing, density, stream_);
+        SPHHandler_.addWCSPHDummyParticles(points, velocity, soundSpeed, spacing, density, stream_);
+    }
+
+	void addISPHParticles(std::vector<double3> points, double3 velocity, double spacing, double density, double kinematicViscosity)
+    {
+        SPHHandler_.addISPHParticles(points, velocity, spacing, density, kinematicViscosity, stream_);
+    }
+
+	void addISPHGhostParticles(std::vector<double3> points, double3 velocity, double spacing, double density)
+    {
+        SPHHandler_.addISPHGhostParticles(points, velocity, spacing, density, stream_);
     }
 
 	void solve()
@@ -60,11 +70,11 @@ public:
 				time_ += timeStep;
 				neighborSearch();
 				integration(timeStep);
-				if(handleHostArrayInLoop()) download();
+				if (handleHostArrayInLoop()) download();
 				if (iStep_ % frameInterval == 0) 
 				{
 					iFrame_++;
-					std::cout << "DEM solver: frame " << iFrame_ << " at time " << time_ << std::endl;
+					std::cout << "SPH solver: frame " << iFrame_ << " at time " << time_ << std::endl;
 					outputData();
 				}
 			}
@@ -85,18 +95,15 @@ protected:
 	SPHHandler& getSPHHandler() {return SPHHandler_;}
 
 private:
-    virtual void download() 
+    void download() 
 	{
 		SPHHandler_.download(getDomainOrigin(), getDomainSize(), stream_);
 
 		const size_t maxThreads = getGPUMaxThreadsPerBlock();
-		const size_t numSPHs = SPHHandler_.getSPHAndGhosts().SPHDeviceSize();
-		if (numSPHs > 0 && maxThreads > 1) SPHGPUBlockDim_ = maxThreads < numSPHs ? maxThreads : numSPHs;
-		if (SPHGPUBlockDim_ > 0) SPHGPUGridDim_ = (numSPHs + SPHGPUBlockDim_ - 1) / SPHGPUBlockDim_;
-
-        const size_t numGhosts = SPHHandler_.getSPHAndGhosts().ghostDeviceSize();
-		if (numGhosts > 0 && maxThreads > 1) ghostGPUBlockDim_ = maxThreads < numGhosts ? maxThreads : numGhosts;
-		if (ghostGPUBlockDim_ > 0) ghostGPUGridDim_ = (numGhosts + ghostGPUBlockDim_ - 1) / ghostGPUBlockDim_;
+		const size_t numSPHs = SPHHandler_.getWCSPHs().SPHDeviceSize();
+		if (numSPHs == 0) SPHHandler_.getISPHs().SPHDeviceSize();
+		if (numSPHs > 0 && maxThreads > 1) SPHBlockDim_ = maxThreads < numSPHs ? maxThreads : numSPHs;
+		if (SPHBlockDim_ > 0) SPHGridDim_ = (numSPHs + SPHBlockDim_ - 1) / SPHBlockDim_;
 	}
 
 	bool initialize()
@@ -120,24 +127,22 @@ private:
 		return true;
 	}
 
-	virtual void outputData()
+	void outputData()
 	{
 		SPHHandler_.outputSPHVTU(getDir(), getFrame(), getStep(), getTime());
 	}
 
 	virtual void neighborSearch()
 	{
-		SPHHandler_.neighborSearch(getGPUMaxThreadsPerBlock(), stream_);
+		SPHHandler_.WCSPHNeighborSearch(getGPUMaxThreadsPerBlock(), stream_);
+		if (getStep() == 0) SPHHandler_.setDummyParticleBoundary(getGPUMaxThreadsPerBlock(), stream_);
 	}
 
-	virtual void integration(const double dt)
-	{
-		SPHHandler_.integration1st(getGravity(), dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
-		SPHHandler_.updateBoundaryCondition(getGravity(), dt, ghostGPUGridDim_, ghostGPUBlockDim_, stream_);
-		SPHHandler_.integration2nd(dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
-		SPHHandler_.updateBoundaryCondition(getGravity(), dt, ghostGPUGridDim_, ghostGPUBlockDim_, stream_);
-		SPHHandler_.integration3rd(dt, SPHGPUGridDim_, SPHGPUBlockDim_, stream_);
-	}
+    virtual void integration(const double dt)
+    {
+		SPHHandler_.WCSPH1stIntegration(getDomainOrigin(), dt, SPHGridDim_, SPHBlockDim_, stream_);
+		SPHHandler_.WCSPH2ndIntegration(getDomainOrigin(), dt, SPHGridDim_, SPHBlockDim_, stream_);
+    }
 
     bool setNameFlag_;
     std::string dir_;
@@ -148,8 +153,6 @@ private:
 	cudaStream_t stream_;
 
 	SPHHandler SPHHandler_;
-	size_t SPHGPUGridDim_;
-	size_t SPHGPUBlockDim_;
-	size_t ghostGPUGridDim_;
-	size_t ghostGPUBlockDim_;
+	size_t SPHGridDim_;
+	size_t SPHBlockDim_;
 };

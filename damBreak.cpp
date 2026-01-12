@@ -1,4 +1,5 @@
-#include "kernel/SPHSolver.h"
+#include "SPHSolver.h"
+#include <cmath>
 
 inline std::vector<double3> getRegularPackedPoints(double3 origin, double3 size, double spacing)
 {
@@ -54,13 +55,13 @@ int main()
         if(p0_ghost[i].x < 0 ||p0_ghost[i].y < 0 ||p0_ghost[i].z < 0 ||p0_ghost[i].x > 5 * test.H ||p0_ghost[i].y > 2 * test.H) p_ghost.push_back(p0_ghost[i]);
     }
 
-    test.setDomain(make_double3(0,0,0) - thick_w, make_double3(5*test.H,2*test.H,2*test.H) + 2*thick_w);
-
-    test.addGhostParticles(p_ghost, make_double3(0, 0, 0), test.spacing, 1000);
-    test.addSPHParticles(p_SPH, make_double3(0, 0, 0), test.spacing, 1000, 1.e-3);
+    double c = 20 * std::sqrt(9.81 * test.H);
+    test.addWCSPHDummyParticles(p_ghost, make_double3(0, 0, 0), c, test.spacing, 1000);
+    test.addWCSPHParticles(p_SPH, make_double3(0, 0, 0), c, test.spacing, 1000, 1.e-3);
     
-    test.setTimeStep(0.0001);
+    test.setDomain(make_double3(0,0,0) - thick_w, make_double3(5*test.H,2*test.H,2*test.H) + 2*thick_w);
     test.setGravity(make_double3(0.0, 0.0, -9.81));
+    test.setTimeStep(0.25 * 1.3 * test.spacing / (c + std::sqrt(2.0 * 9.81 * test.H)));
     test.setMaximumTime(5.0);
     test.setNumFrames(100);
     test.solve();

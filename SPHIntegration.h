@@ -1,5 +1,6 @@
 #pragma once
 #include "SPHNeighborSearch.h"
+#include "DEM/kernel/cudaKernel/ballIntegration.h"
 
 // Wendland 5th-order (C2) kernel in 3D
 __device__ __forceinline__ double wendlandKernel3D(double r, double h)
@@ -31,36 +32,43 @@ __device__ __forceinline__ double3 gradWendlandKernel3D(const double3& rij, doub
 	return factor * rij;
 }
 
-extern "C" void launchSPH1stIntegration(SPH& SPHAndGhosts, 
-SPHInteraction& SPHInteractions, 
-interactionMap &SPHInteractionMap,
-const double3 gravity,
-const double timeStep,
-const size_t gridDim,
-const size_t blockDim,
-cudaStream_t stream);
-
-extern "C" void launchSPH2ndIntegration(SPH& SPHAndGhosts, 
-SPHInteraction& SPHInteractions, 
-interactionMap &SPHInteractionMap,
-const double timeStep,
-const size_t gridDim,
-const size_t blockDim,
-cudaStream_t stream);
-
-extern "C" void launchSPH3rdIntegration(SPH& SPHAndGhosts, 
-SPHInteraction& SPHInteractions, 
-interactionMap &SPHInteractionMap,
-const double timeStep,
-const size_t gridDim,
-const size_t blockDim,
-cudaStream_t stream);
-
-extern "C" void launchAdamiBoundaryCondition(SPH& SPHAndGhosts, 
+extern "C" void launchWCSPH1stIntegration(WCSPH& WCSPHs, 
 SPHInteraction& SPHInteractions, 
 interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t gridDim, //ghosts
-const size_t blockDim, //ghosts
+const size_t gridDim,
+const size_t blockDim, 
+cudaStream_t stream);
+
+extern "C" void launchWCSPH2ndIntegration(WCSPH& WCSPHs, 
+SPHInteraction& SPHInteractions, 
+interactionMap& SPHInteractionMap,
+const double3 gravity,
+const double timeStep,
+const size_t gridDim,
+const size_t blockDim, 
+cudaStream_t stream);
+
+extern "C" void launchConfigDummyParticles(WCSPH& WCSPHs, 
+SPHInteraction& SPHInteractions,
+interactionMap& SPHInteractionMap,
+const size_t maxThreadPerBlock,
+cudaStream_t stream);
+
+extern "C" void launchISPH1stIntegration(ISPH& ISPHs, 
+SPHInteraction& SPHInteractions, 
+interactionMap &SPHInteractionMap,
+const double3 gravity,
+const double timeStep,
+const size_t gridDim,
+const size_t blockDim,
+cudaStream_t stream);
+
+extern "C" void launchISPH2ndIntegration(ISPH& ISPHs, 
+SPHInteraction& SPHInteractions, 
+interactionMap &SPHInteractionMap,
+const double timeStep,
+const size_t gridDim,
+const size_t blockDim,
 cudaStream_t stream);

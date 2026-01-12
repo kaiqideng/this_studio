@@ -36,7 +36,6 @@ const size_t numGhosts)
                 {
                     int idxB = SPHHashIndex[i];
                     if (idxA == idxB) continue;
-                    if (idxA >= numSPHs && idxB >= numSPHs) continue;
                     double cut = 2.0 * fmax(radA, smoothLength[idxB]);
                     double3 rAB = posA - position[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.) count++;
@@ -87,7 +86,6 @@ const size_t numGhosts)
                 {
                     int idxB = SPHHashIndex[i];
                     if (idxA == idxB) continue;
-                    if (idxA >= numSPHs && idxB >= numSPHs) continue;
                     double cut = 2.0 * fmax(radA, smoothLength[idxB]);
                     double3 rAB = posA - position[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
@@ -105,29 +103,31 @@ const size_t numGhosts)
 
 extern "C" void launchSPHNeighborSearch(SPHInteraction& SPHInteractions, 
 interactionMap& SPHInteractionMap,
-SPH& SPHAndGhosts, 
-spatialGrid& spatialGrids, 
+spatialGrid& spatialGrids,
+int* SPHHashIndex,
+int* SPHHashValue,
+double3* SPHPosition,
+const double* SPHSmoothLength,
+const size_t numSPHs,
+const size_t numGhosts,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-    size_t numSPHs = SPHAndGhosts.SPHDeviceSize();
-    size_t numGhosts = SPHAndGhosts.ghostDeviceSize();
-
     size_t gridDim = 1, blockDim = 1;
     if (setGPUGridBlockDim(gridDim, blockDim, numSPHs + numGhosts, maxThreadsPerBlock))
     {
         updateGridCellStartEnd(spatialGrids,
-        SPHAndGhosts.hashIndex(),
-        SPHAndGhosts.hashValue(),
-        SPHAndGhosts.position(),
+        SPHHashIndex,
+        SPHHashValue,
+        SPHPosition,
         numSPHs + numGhosts,
         gridDim,
         blockDim,
         stream);
 
-        countSPHInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (SPHAndGhosts.position(),
-        SPHAndGhosts.smoothLength(),
-        SPHAndGhosts.hashIndex(),
+        countSPHInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (SPHPosition,
+        SPHSmoothLength,
+        SPHHashIndex,
         SPHInteractionMap.countA(),
         spatialGrids.cellHashStart(),
         spatialGrids.cellHashEnd(),
@@ -147,9 +147,9 @@ cudaStream_t stream)
 
         writeSPHInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (SPHInteractions.objectPointed(),
         SPHInteractions.objectPointing(),
-        SPHAndGhosts.position(),
-        SPHAndGhosts.smoothLength(),
-        SPHAndGhosts.hashIndex(),
+        SPHPosition,
+        SPHSmoothLength,
+        SPHHashIndex,
         SPHInteractionMap.prefixSumA(),
         spatialGrids.cellHashStart(),
         spatialGrids.cellHashEnd(),

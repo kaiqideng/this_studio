@@ -12,6 +12,7 @@ private:
     HostDeviceArray1D<double3> slidingSpring_;
     HostDeviceArray1D<double3> rollingSpring_;
     HostDeviceArray1D<double3> torsionSpring_;
+
     DeviceArray1D<int> cancelFlag_;
 
     DeviceArray1D<int> objectPointedHistory_;
@@ -53,7 +54,7 @@ public:
     void setActiveSize(size_t n, cudaStream_t stream)
     {
         activeSize_ = n;
-        if(n > objectPointed_.deviceSize())
+        if (n > objectPointed_.deviceSize())
         {
             objectPointed_.allocDeviceArray(n, stream);
             objectPointing_.allocDeviceArray(n, stream);
@@ -69,7 +70,7 @@ public:
 
     void updateHistory(cudaStream_t stream)
     {
-        if(activeSize_ > objectPointedHistory_.deviceSize())
+        if (activeSize_ > objectPointedHistory_.deviceSize())
         {
             objectPointedHistory_.allocDeviceArray(activeSize_, stream);
             objectPointingHistory_.allocDeviceArray(activeSize_, stream);
@@ -77,7 +78,7 @@ public:
             rollingSpringHistory_.allocDeviceArray(activeSize_, stream);
             torsionSpringHistory_.allocDeviceArray(activeSize_, stream);
         }
-        if(activeSize_ > 0)
+        if (activeSize_ > 0)
         {
             cuda_copy(objectPointedHistory(), objectPointed(), activeSize_,CopyDir::D2D, stream);
             cuda_copy(objectPointingHistory(), objectPointing(), activeSize_,CopyDir::D2D, stream);
@@ -95,6 +96,7 @@ public:
     double3* slidingSpring() { return slidingSpring_.d_ptr; }
     double3* rollingSpring() { return rollingSpring_.d_ptr; }
     double3* torsionSpring() { return torsionSpring_.d_ptr; }
+
     int* cancelFlag() { return cancelFlag_.d_ptr; }
 
     int* objectPointedHistory() { return objectPointedHistory_.d_ptr; }
@@ -111,55 +113,6 @@ public:
     std::vector<double3> slidingSpringVector() { return slidingSpring_.getHostData(); }
     std::vector<double3> rollingSpringVector() { return rollingSpring_.getHostData(); }
     std::vector<double3> torsionSpringVector() { return torsionSpring_.getHostData(); }
-};
-
-struct SPHInteraction
-{
-private:
-    HostDeviceArray1D<int> objectPointed_;
-    HostDeviceArray1D<int> objectPointing_;
-    HostDeviceArray1D<double3> force_;
-
-    DeviceArray1D<double3> gradientKernel_;
-    DeviceArray1D<double3> gradientKernelStar_;
-
-    size_t activeSize_ {0};
-
-public:
-    SPHInteraction() = default;
-    ~SPHInteraction() = default;
-    SPHInteraction(const SPHInteraction&) = delete;
-    SPHInteraction& operator=(const SPHInteraction&) = delete;
-    SPHInteraction(SPHInteraction&&) noexcept = default;
-    SPHInteraction& operator=(SPHInteraction&&) noexcept = default;
-
-    size_t activeSize() const { return activeSize_; }
-
-    void alloc(size_t n, cudaStream_t stream)
-    {
-        objectPointed_.allocDeviceArray(n, stream);
-        objectPointing_.allocDeviceArray(n, stream);
-        force_.allocDeviceArray(n, stream);
-        gradientKernel_.allocDeviceArray(n, stream);
-        gradientKernelStar_.allocDeviceArray(n, stream);
-    }
-
-    void setActiveSize(size_t n, cudaStream_t stream)
-    {
-        activeSize_ = n;
-        if (n > objectPointed_.deviceSize()) { alloc(n, stream); }
-    }
-
-    int* objectPointed() { return objectPointed_.d_ptr; }
-    int* objectPointing() { return objectPointing_.d_ptr; }
-    double3* force() { return force_.d_ptr; }
-
-    double3* gradientKernel() { return gradientKernel_.d_ptr; }
-    double3* gradientKernelStar() { return gradientKernelStar_.d_ptr; }
-
-    std::vector<int> objectPointedVector() { return objectPointed_.getHostData(); }
-    std::vector<int> objectPointingVector() { return objectPointing_.getHostData(); }
-    std::vector<double3> forceVector() { return force_.getHostData(); }
 };
 
 struct bondedInteraction
@@ -203,8 +156,7 @@ public:
             int i1 = ob1[i];
 
             if (i0 < 0 || i1 < 0) continue;
-            if (static_cast<size_t>(i0) >= p.size() ||
-                static_cast<size_t>(i1) >= p.size()) continue;
+            if (static_cast<size_t>(i0) >= p.size() || static_cast<size_t>(i1) >= p.size()) continue;
             if (i0 == i1) continue;
 
             int a = i0;
