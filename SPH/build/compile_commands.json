@@ -1,0 +1,62 @@
+[
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/DEM_sort.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu -o CMakeFiles/DEM_sort.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o",
+  "file": "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu",
+  "output": "CMakeFiles/DEM_sort.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/g++-12  -I/teamspace/studios/this_studio/DEM/kernel -I/teamspace/studios/this_studio/DEM/kernel/myStruct -I/teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp.o -c /teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp",
+  "file": "/teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp",
+  "output": "CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/DEMBaseSolver.cpp.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/DEM_core.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu -o CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu.o",
+  "file": "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu",
+  "output": "CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/DEM_core.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu -o CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu.o",
+  "file": "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu",
+  "output": "CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallIntegration.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/DEM_core.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu -o CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu.o",
+  "file": "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu",
+  "output": "CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballMeshWallNeighbor.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/DEM_core.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu -o CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu.o",
+  "file": "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu",
+  "output": "CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/DEM_core.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu -o CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o",
+  "file": "/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu",
+  "output": "CMakeFiles/DEM_core.dir/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/SPH_core.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -rdc=true -c /teamspace/studios/this_studio/SPH/kernel/SPHIntegration.cu -o CMakeFiles/SPH_core.dir/kernel/SPHIntegration.cu.o",
+  "file": "/teamspace/studios/this_studio/SPH/kernel/SPHIntegration.cu",
+  "output": "CMakeFiles/SPH_core.dir/kernel/SPHIntegration.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12  --options-file CMakeFiles/SPH_core.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -lineinfo -x cu -rdc=true -c /teamspace/studios/this_studio/SPH/kernel/SPHNeighborSearch.cu -o CMakeFiles/SPH_core.dir/kernel/SPHNeighborSearch.cu.o",
+  "file": "/teamspace/studios/this_studio/SPH/kernel/SPHNeighborSearch.cu",
+  "output": "CMakeFiles/SPH_core.dir/kernel/SPHNeighborSearch.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/g++-12  -I/teamspace/studios/this_studio/SPH/kernel -I/teamspace/studios/this_studio -I/teamspace/studios/this_studio/DEM/kernel -I/teamspace/studios/this_studio/DEM/kernel/myStruct -I/teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/damBreak.dir/damBreak.cpp.o -c /teamspace/studios/this_studio/SPH/damBreak.cpp",
+  "file": "/teamspace/studios/this_studio/SPH/damBreak.cpp",
+  "output": "CMakeFiles/damBreak.dir/damBreak.cpp.o"
+}
+]

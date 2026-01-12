@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib/libSPH_core.a CMakeFiles/SPH_core.dir/kernel/SPHIntegration.cu.o CMakeFiles/SPH_core.dir/kernel/SPHNeighborSearch.cu.o
+/usr/bin/ranlib lib/libSPH_core.a

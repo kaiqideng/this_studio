@@ -1,0 +1,1 @@
+-I/teamspace/studios/this_studio/SPH/kernel -I/teamspace/studios/this_studio -I/teamspace/studios/this_studio/DEM/kernel -I/teamspace/studios/this_studio/DEM/kernel/myStruct -I/teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility

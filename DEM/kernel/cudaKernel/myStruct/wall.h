@@ -50,8 +50,8 @@ public:
         const size_t n = deviceSize();
         hashIndex_.allocDeviceArray(n, stream);
         hashValue_.allocDeviceArray(n, stream);
-        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
     }
 
     const int* index0() { return index0_.d_ptr; }
