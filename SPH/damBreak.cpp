@@ -61,7 +61,7 @@ int main()
     test.setDomain(make_double3(0,0,0) - thick_w, make_double3(5*test.H,2*test.H,2*test.H) + 2*thick_w);
     test.setGravity(make_double3(0.0, 0.0, -9.81));
     test.setTimeStep(0.25 * 1.3 * test.spacing / (c + std::sqrt(2.0 * 9.81 * test.H)));
-    test.setMaximumTime(0.1);
+    test.setMaximumTime(5.0);
     test.setNumFrames(100);
     test.solve();
 }
