@@ -2,13 +2,12 @@
 #include "DEM/kernel/solverParams.h"
 #include "SPHHandler.h"
 #include "SPHIntegration.h"
-#include <cstddef>
 
-class SPHSolver:
+class WCSPHSolver:
     public solverParams
 {
 public:
-    SPHSolver(cudaStream_t s) : solverParams()
+    WCSPHSolver(cudaStream_t s) : solverParams()
     {
 		setNameFlag_ = false;
 		dir_ = "SPHOutput";
@@ -21,7 +20,7 @@ public:
 		SPHBlockDim_ = 1;
 	}
 
-	~SPHSolver() = default;
+	~WCSPHSolver() = default;
 
 	void setProblemName(const std::string& name) 
 	{
@@ -37,16 +36,6 @@ public:
 	void addWCSPHDummyParticles(std::vector<double3> points, double3 velocity, double soundSpeed, double spacing, double density)
     {
         SPHHandler_.addWCSPHDummyParticles(points, velocity, soundSpeed, spacing, density, stream_);
-    }
-
-	void addISPHParticles(std::vector<double3> points, double3 velocity, double spacing, double density, double kinematicViscosity)
-    {
-        SPHHandler_.addISPHParticles(points, velocity, spacing, density, kinematicViscosity, stream_);
-    }
-
-	void addISPHGhostParticles(std::vector<double3> points, double3 velocity, double spacing, double density)
-    {
-        SPHHandler_.addISPHGhostParticles(points, velocity, spacing, density, stream_);
     }
 
 	void solve()
@@ -101,7 +90,6 @@ private:
 
 		const size_t maxThreads = getGPUMaxThreadsPerBlock();
 		const size_t numSPHs = SPHHandler_.getWCSPHs().SPHDeviceSize();
-		if (numSPHs == 0) SPHHandler_.getISPHs().SPHDeviceSize();
 		if (numSPHs > 0 && maxThreads > 1) SPHBlockDim_ = maxThreads < numSPHs ? maxThreads : numSPHs;
 		if (SPHBlockDim_ > 0) SPHGridDim_ = (numSPHs + SPHBlockDim_ - 1) / SPHBlockDim_;
 	}
@@ -129,10 +117,10 @@ private:
 
 	void outputData()
 	{
-		SPHHandler_.outputSPHVTU(getDir(), getFrame(), getStep(), getTime());
+		SPHHandler_.outputWCSPHVTU(getDir(), getFrame(), getStep(), getTime());
 	}
 
-	virtual void neighborSearch()
+	void neighborSearch()
 	{
 		SPHHandler_.WCSPHNeighborSearch(getGPUMaxThreadsPerBlock(), stream_);
 		if (getStep() == 0) SPHHandler_.setDummyParticleBoundary(getGPUMaxThreadsPerBlock(), stream_);

@@ -1,5 +1,4 @@
-#include "SPHSolver.h"
-#include <cmath>
+#include "WCSPHSolver.h"
 
 inline std::vector<double3> getRegularPackedPoints(double3 origin, double3 size, double spacing)
 {
@@ -33,10 +32,10 @@ inline std::vector<double3> getRegularPackedPoints(double3 origin, double3 size,
 }
 
 class problem:
-    public SPHSolver
+    public WCSPHSolver
 {
 public:
-    problem(): SPHSolver(0) {}
+    problem(): WCSPHSolver(0) {}
 
     double H = 0.1;
     double spacing = 0.01;
@@ -48,15 +47,15 @@ int main()
     test.setProblemName("damBreak");
     std::vector<double3> p_SPH = getRegularPackedPoints(make_double3(0,0,0), make_double3(test.H,2*test.H,test.H), test.spacing);
     double3 thick_w = make_double3(3*test.spacing, 3*test.spacing,3*test.spacing);
-    std::vector<double3> p0_ghost = getRegularPackedPoints(make_double3(0,0,0) - thick_w, make_double3(5*test.H,2*test.H,2*test.H) + 2*thick_w, test.spacing);
-    std::vector<double3> p_ghost;
-    for(size_t i = 0; i < p0_ghost.size(); i++)
+    std::vector<double3> p0_dumy = getRegularPackedPoints(make_double3(0,0,0) - thick_w, make_double3(5*test.H,2*test.H,2*test.H) + 2*thick_w, test.spacing);
+    std::vector<double3> p_dummy;
+    for(size_t i = 0; i < p0_dumy.size(); i++)
     {
-        if(p0_ghost[i].x < 0 ||p0_ghost[i].y < 0 ||p0_ghost[i].z < 0 ||p0_ghost[i].x > 5 * test.H ||p0_ghost[i].y > 2 * test.H) p_ghost.push_back(p0_ghost[i]);
+        if(p0_dumy[i].x < 0 ||p0_dumy[i].y < 0 ||p0_dumy[i].z < 0 ||p0_dumy[i].x > 5 * test.H ||p0_dumy[i].y > 2 * test.H) p_dummy.push_back(p0_dumy[i]);
     }
 
     double c = 20 * std::sqrt(9.81 * test.H);
-    test.addWCSPHDummyParticles(p_ghost, make_double3(0, 0, 0), c, test.spacing, 1000);
+    test.addWCSPHDummyParticles(p_dummy, make_double3(0, 0, 0), c, test.spacing, 1000);
     test.addWCSPHParticles(p_SPH, make_double3(0, 0, 0), c, test.spacing, 1000, 1.e-3);
     
     test.setDomain(make_double3(0,0,0) - thick_w, make_double3(5*test.H,2*test.H,2*test.H) + 2*thick_w);
