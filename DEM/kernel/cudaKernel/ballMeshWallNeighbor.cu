@@ -51,6 +51,10 @@ cudaStream_t stream)
     sptialGrids.gridSize, 
     sptialGrids.deviceSize(), 
     numTri);
+    CUDA_CHECK(cudaGetLastError());
+
+    CUDA_CHECK(cudaMemsetAsync(sptialGrids.cellHashStart(), 0xFF, numTri * sizeof(int), stream));
+    CUDA_CHECK(cudaMemsetAsync(sptialGrids.cellHashEnd(), 0xFF, numTri * sizeof(int), stream));
 
     buildHashStartEnd(sptialGrids.cellHashStart(), 
     sptialGrids.cellHashEnd(),

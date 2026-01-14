@@ -46,9 +46,6 @@ cudaStream_t stream)
 {
     if (gridDim * blockDim < hashListSize) return;
 
-    cudaMemsetAsync(start, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
-    cudaMemsetAsync(end, 0xFF, static_cast<size_t>(maxHashValue) * sizeof(int), stream);
-
     setHashIndex <<<gridDim, blockDim, 0, stream>>> (hashIndex, hashListSize);
 
     auto exec = thrust::cuda::par.on(stream);
@@ -58,7 +55,7 @@ cudaStream_t stream)
         if (err0 != cudaSuccess)
         {
             std::cerr << "[buildHashStartEnd] before sort, cudaGetLastError = "
-                      << cudaGetErrorString(err0) << "\n";
+            << cudaGetErrorString(err0) << "\n";
         }
 
         thrust::sort_by_key(exec,
@@ -70,7 +67,7 @@ cudaStream_t stream)
         if (err1 != cudaSuccess)
         {
             std::cerr << "[buildHashStartEnd] after sort, cudaGetLastError = "
-                      << cudaGetErrorString(err1) << "\n";
+            << cudaGetErrorString(err1) << "\n";
         }
     }
     catch (thrust::system_error& e)
