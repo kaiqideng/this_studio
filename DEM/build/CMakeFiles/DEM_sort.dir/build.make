@@ -70,11 +70,10 @@ include CMakeFiles/DEM_sort.dir/progress.make
 include CMakeFiles/DEM_sort.dir/flags.make
 
 CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o: CMakeFiles/DEM_sort.dir/flags.make
-CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o: CMakeFiles/DEM_sort.dir/includes_CUDA.rsp
 CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o: /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu
 CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o: CMakeFiles/DEM_sort.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/teamspace/studios/this_studio/DEM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CUDA object CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o"
-	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o -MF CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o.d -x cu -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu -o CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o
+	/usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o -MF CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o.d -x cu -rdc=true -c /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu -o CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.o
 
 CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CUDA source to CMakeFiles/DEM_sort.dir/kernel/cudaKernel/cudaSort/biuldHashStartEnd.cu.i"

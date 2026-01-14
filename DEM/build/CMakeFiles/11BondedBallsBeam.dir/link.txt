@@ -1,1 +1,1 @@
-/usr/bin/g++-12 -O3 -DNDEBUG CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.o CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o -o bin/11BondedBallsBeam   -L/usr/lib/x86_64-linux-gnu/stubs  lib/libDEM_core.a lib/libDEM_sort.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl 
+/usr/bin/g++-12 -g CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.o CMakeFiles/11BondedBallsBeam.dir/cmake_device_link.o -o bin/11BondedBallsBeam   -L/usr/lib/x86_64-linux-gnu/stubs  lib/libDEM_core.a lib/libDEM_sort.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl 

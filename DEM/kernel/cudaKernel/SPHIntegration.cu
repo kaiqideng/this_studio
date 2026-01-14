@@ -135,6 +135,17 @@ const size_t numSPHs)
     density[idx_i] += dRho * timeStep;
 }
 
+__global__ void SPHPositionIntegrationKernel(double3* position,
+double3* velocity,
+const double dt,
+const size_t num)
+{
+	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= num) return;
+
+	position[idx_i] += dt * velocity[idx_i];
+}
+
 __global__ void calWCSPHPressureKernel(double* pressure,
 double* density,
 const double* soundSpeed,
@@ -187,7 +198,6 @@ const size_t numSPHs)
         double h_j = smoothLength[idx_j];
         double rho_j = density[idx_j];
         double P_R = pressure[idx_j];
-
         double m_j = mass[idx_j];
 
         double3 r_ij = r_i - r_j;
@@ -242,7 +252,7 @@ cudaStream_t stream)
     0.5 * timeStep, 
     WCSPHs.SPHDeviceSize());
 
-    positionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.position(), 
+    SPHPositionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.position(), 
     WCSPHs.velocity(), 
     timeStep, 
     WCSPHs.SPHDeviceSize());
@@ -254,7 +264,7 @@ interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
 const size_t gridDim,
-const size_t blockDim, 
+const size_t blockDim,
 cudaStream_t stream)
 {
     updateWCSPHDensityKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.density(),
@@ -265,7 +275,7 @@ cudaStream_t stream)
     WCSPHs.mass(),
     WCSPHs.initialDensity(),
     WCSPHs.smoothLength(),
-    WCSPHs.normal(), 
+    WCSPHs.normal(),
     SPHInteractionMap.prefixSumA(),
     SPHInteractions.objectPointing(),
     gravity,

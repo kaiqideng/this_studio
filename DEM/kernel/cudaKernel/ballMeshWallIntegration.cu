@@ -291,10 +291,31 @@ const size_t numBalls)
 	}
 }
 
+__global__ void wallOrientationIntegrationKernel(quaternion* orientation, 
+double3* angularVelocity, 
+const double dt, 
+const size_t num)
+{
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx >= num) return;
+
+	orientation[idx] = quaternionRotate(orientation[idx], angularVelocity[idx], dt);
+}
+
+__global__ void wallPositionIntegrationKernel(double3* position, double3* velocity, 
+const double dt,
+const size_t num)
+{
+	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx_i >= num) return;
+
+	position[idx_i] += dt * velocity[idx_i];
+}
+
 __global__ void triangleGlobalVerticesIntegrationKernel(double3* globalVertices, 
 const double3* localVertices,
 const int* triangleIndex_v,
-const int* numTrianglesPrefixSum_v,
+const int* trianglesPrefixSum_v,
 const int* wallIndex_t,
 quaternion* orientation_w,
 double3* position_w,
@@ -305,7 +326,7 @@ const size_t numVertices)
 	if (idx_v >= numVertices) return;
 
 	size_t idx_t = 0;
-	if(idx_v > 0) idx_t = triangleIndex_v[numTrianglesPrefixSum_v[idx_v - 1]];
+	if(idx_v > 0) idx_t = triangleIndex_v[trianglesPrefixSum_v[idx_v - 1]];
 	size_t idx_w = wallIndex_t[idx_t];
 	globalVertices[idx_v] = position_w[idx_w] + rotateVectorByQuaternion(orientation_w[idx_w], localVertices[idx_v]);
 }
@@ -393,12 +414,12 @@ cudaStream_t stream)
 	size_t gridDim = 1, blockDim = 1;
 	if (setGPUGridBlockDim(gridDim, blockDim, meshWalls.deviceSize(), maxThreadsPerBlock))
 	{
-		orientationIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.orientation(), 
+		wallOrientationIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.orientation(), 
 		meshWalls.angularVelocity(),
 		timeStep,
 		meshWalls.deviceSize());
 
-		positionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.position(),
+		wallPositionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.position(),
 		meshWalls.velocity(),
 		timeStep,
 		meshWalls.deviceSize());

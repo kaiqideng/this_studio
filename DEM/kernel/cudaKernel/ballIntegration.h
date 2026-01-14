@@ -311,15 +311,6 @@ const double torsionFrictionCoefficient)
 	}
 }
 
-__global__ void positionIntegrationKernel(double3* position, double3* velocity, 
-const double dt,
-const size_t num);
-
-__global__ void orientationIntegrationKernel(quaternion* orientation, 
-double3* angularVelocity, 
-const double dt, 
-const size_t num);
-
 extern "C" void launchBall1stHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 

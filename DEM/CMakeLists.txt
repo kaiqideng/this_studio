@@ -35,9 +35,6 @@ if (NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
     if (DEM_CUDA_USE_NATIVE_ARCH)
         # Best when configuring on a machine that has a GPU
         set(CMAKE_CUDA_ARCHITECTURES native CACHE STRING "CUDA arch list" FORCE)
-    else()
-        # Portable fallback: adjust if you want fewer/more archs
-        set(CMAKE_CUDA_ARCHITECTURES 75 CACHE STRING "CUDA arch list" FORCE)
     endif()
 endif()
 
@@ -59,20 +56,14 @@ set(SORT_CUDA "${SOURCE_ROOT}/cudaKernel/cudaSort/biuldHashStartEnd.cu")
 list(FILTER CORE_CUDA EXCLUDE REGEX ".*/biuldHashStartEnd\\.cu$")
 
 # ============================================================
-# DEM_sort (RDC OFF)
+# DEM_sort (RDC ON)
 # ============================================================
 add_library(DEM_sort STATIC
     ${SORT_CUDA}
 )
 
-target_include_directories(DEM_sort PUBLIC
-    ${SOURCE_ROOT}
-    ${SOURCE_ROOT}/myStruct
-    ${SOURCE_ROOT}/myStruct/myUtility
-)
-
 set_target_properties(DEM_sort PROPERTIES
-    CUDA_SEPARABLE_COMPILATION OFF
+    CUDA_SEPARABLE_COMPILATION ON
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES}
 )

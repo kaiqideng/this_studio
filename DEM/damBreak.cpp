@@ -55,7 +55,7 @@ int main()
     std::vector<double3> p_dummy;
     for(size_t i = 0; i < p0_dumy.size(); i++)
     {
-        if(p0_dumy[i].x < 0 ||p0_dumy[i].y < 0 ||p0_dumy[i].z < 0 ||p0_dumy[i].x > 5 * test.H ||p0_dumy[i].y > 2 * test.H) p_dummy.push_back(p0_dumy[i]);
+        if (p0_dumy[i].x < 0 || p0_dumy[i].y < 0 || p0_dumy[i].z < 0 || p0_dumy[i].x > 5 * test.H || p0_dumy[i].y > 2 * test.H) p_dummy.push_back(p0_dumy[i]);
     }
 
     double c = 20 * std::sqrt(9.81 * test.H);

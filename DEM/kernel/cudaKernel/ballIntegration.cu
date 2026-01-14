@@ -391,8 +391,8 @@ const size_t num)
 }
 
 __global__ void positionIntegrationKernel(double3* position, double3* velocity, 
-	const double dt,
-	const size_t num)
+const double dt,
+const size_t num)
 {
 	size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
 	if (idx_i >= num) return;

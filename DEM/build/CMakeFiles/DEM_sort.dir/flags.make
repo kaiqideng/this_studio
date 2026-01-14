@@ -4,7 +4,7 @@
 # compile CUDA with /usr/bin/nvcc
 CUDA_DEFINES = 
 
-CUDA_INCLUDES = --options-file CMakeFiles/DEM_sort.dir/includes_CUDA.rsp
+CUDA_INCLUDES = 
 
-CUDA_FLAGS = -O3 -DNDEBUG -std=c++17 "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -lineinfo
+CUDA_FLAGS = -g -std=c++17 "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -lineinfo
 

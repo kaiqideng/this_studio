@@ -7,11 +7,11 @@ CUDA_DEFINES =
 
 CUDA_INCLUDES = --options-file CMakeFiles/DEM_core.dir/includes_CUDA.rsp
 
-CUDA_FLAGS = -O3 -DNDEBUG -std=c++17 "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -lineinfo
+CUDA_FLAGS = -g -std=c++17 "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -lineinfo
 
 CXX_DEFINES = 
 
 CXX_INCLUDES = -I/teamspace/studios/this_studio/DEM/kernel -I/teamspace/studios/this_studio/DEM/kernel/myStruct -I/teamspace/studios/this_studio/DEM/kernel/myStruct/myUtility
 
-CXX_FLAGS = -O3 -DNDEBUG -std=gnu++17
+CXX_FLAGS = -g -std=gnu++17
 

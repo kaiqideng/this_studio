@@ -127,8 +127,8 @@ private:
 
     void integration(const double dt)
     {
-		WCSPHHandler_.WCSPH1stIntegration(getGravity(), dt, SPHGridDim_, SPHBlockDim_, stream_);
-		WCSPHHandler_.WCSPH2ndIntegration(getGravity(), dt, SPHGridDim_, SPHBlockDim_, stream_);
+		//WCSPHHandler_.WCSPH1stIntegration(getGravity(), dt, SPHGridDim_, SPHBlockDim_, stream_);
+		//WCSPHHandler_.WCSPH2ndIntegration(getGravity(), dt, SPHGridDim_, SPHBlockDim_, stream_);
     }
 
     bool setNameFlag_;

@@ -7,11 +7,6 @@ public:
     double ct = 0.005;
 
     problem(): DEMBallMeshWallSolver(0) {}
-
-    bool handleHostArrayInLoop() override
-    {
-        return false;
-    }
 };
 
 int main()

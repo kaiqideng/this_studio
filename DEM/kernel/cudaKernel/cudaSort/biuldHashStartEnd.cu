@@ -82,7 +82,7 @@ cudaStream_t stream)
     findStartAndEnd <<<gridDim, blockDim, 0, stream>>> (start, end, hashValue, maxHashValue, hashListSize);
 }
 
-extern "C" void buildPrefixSum(int* prefixSum, 
+extern "C" void buildPrefixSum(int* prefixSum,
 int* count, 
 const size_t size, 
 cudaStream_t stream)
