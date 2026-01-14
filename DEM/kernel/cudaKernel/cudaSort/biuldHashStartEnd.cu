@@ -46,7 +46,8 @@ cudaStream_t stream)
 {
     if (gridD * blockD < hashListSize) return;
 
-    setHashIndex <<<gridD, blockD, 0, stream>>> (hashIndex, hashListSize);
+    setHashIndex <<<gridD, blockD, 0, stream>>> (hashIndex, 
+    hashListSize);
 
     auto exec = thrust::cuda::par.on(stream);
     try
@@ -76,7 +77,11 @@ cudaStream_t stream)
         throw;
     }
 
-    findStartAndEnd <<<gridD, blockD, 0, stream>>> (start, end, hashValue, maxHashValue, hashListSize);
+    findStartAndEnd <<<gridD, blockD, 0, stream>>> (start, 
+    end, 
+    hashValue, 
+    maxHashValue, 
+    hashListSize);
 }
 
 extern "C" void buildPrefixSum(int* prefixSum,
