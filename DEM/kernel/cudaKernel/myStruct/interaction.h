@@ -698,12 +698,19 @@ public:
     interactionMap(interactionMap&&) noexcept = default;
     interactionMap& operator=(interactionMap&&) noexcept = default;
 
-    void alloc(size_t objectASize, size_t objectBSize, cudaStream_t stream)
+    void alloc(size_t objectASize, size_t objectBSize, size_t hashListSize, cudaStream_t stream)
     {
         countA_.allocDeviceArray(objectASize, stream);
         prefixSumA_.allocDeviceArray(objectASize, stream);
         startB_.allocDeviceArray(objectBSize, stream);
         endB_.allocDeviceArray(objectBSize, stream);
+        hashIndex_.allocDeviceArray(hashListSize, stream);
+        hashValue_.allocDeviceArray(hashListSize, stream);
+
+        CUDA_CHECK(cudaMemsetAsync(startB_.d_ptr, 0xFF, startB_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr, 0xFF, endB_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
     }
 
     void hashInit(int* hashValue, size_t activeSize, cudaStream_t stream)

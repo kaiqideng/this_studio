@@ -3,7 +3,6 @@
 #include "cudaKernel/myStruct/spatialGrid.h"
 #include "cudaKernel/myStruct/interaction.h"
 #include "cudaKernel/myStruct/myUtility/myFileEdit.h"
-#include "cudaKernel/ballNeighborSearch.h"
 #include "cudaKernel/ballIntegration.h"
 
 class ballHandler
@@ -119,7 +118,10 @@ public:
             balls_.download(stream);
 
             ballInteractions_.alloc(balls_.deviceSize() * 6, stream);
-            ballInteractionMap_.alloc(balls_.deviceSize(), balls_.deviceSize(), stream);
+            ballInteractionMap_.alloc(balls_.deviceSize(), 
+            balls_.deviceSize(), 
+            balls_.deviceSize() * 6, 
+            stream);
             double cellSizeOneDim = 0.0;
             std::vector<double> rad = balls_.radiusVector();
             if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * 1.1;

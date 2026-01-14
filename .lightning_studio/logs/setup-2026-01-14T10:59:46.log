@@ -1,0 +1,137 @@
+
+# >>>>>>>>>>>>>>>>>>>>>> ERROR REPORT <<<<<<<<<<<<<<<<<<<<<<
+
+    Traceback (most recent call last):
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/conda/exception_handler.py", line 28, in __call__
+        return func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/conda/cli/main.py", line 75, in main_sourced
+        context.__init__()
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/conda/base/context.py", line 549, in __init__
+        self._set_search_path(
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/conda/common/configuration.py", line 1457, in _set_search_path
+        self._set_raw_data(dict(self._load_search_path(self._search_path)))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/conda/common/configuration.py", line 1446, in _load_search_path
+        yield path, YamlRawParameter.make_raw_parameters_from_file(path)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/conda/common/configuration.py", line 396, in make_raw_parameters_from_file
+        yaml_obj = yaml_round_trip_load(fh)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/conda/common/serialize/__init__.py", line 36, in yaml_round_trip_load
+        return _yaml_round_trip().load(string)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/ruamel/yaml/main.py", line 432, in load
+        constructor, parser = self.get_constructor_parser(stream)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/ruamel/yaml/main.py", line 483, in get_constructor_parser
+        self.reader.stream = stream
+        ^^^^^^^^^^^^^^^^^^
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/ruamel/yaml/reader.py", line 133, in stream
+        self.determine_encoding()
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/ruamel/yaml/reader.py", line 193, in determine_encoding
+        self.update_raw()
+      File "/home/zeus/miniconda3/lib/python3.12/site-packages/ruamel/yaml/reader.py", line 288, in update_raw
+        data = self.stream.read(size)
+               ^^^^^^^^^^^^^^^^^^^^^^
+    OSError: [Errno 5] Input/output error
+
+`$ /home/zeus/miniconda3/bin/conda shell.posix activate cloudspace`
+
+  environment variables:
+                 CIO_TEST=<not set>
+        CONDA_DEFAULT_ENV=cloudspace
+                CONDA_EXE=/home/zeus/miniconda3/bin/conda
+             CONDA_PREFIX=/home/zeus/miniconda3/envs/cloudspace
+         CONDA_PYTHON_EXE=/home/zeus/miniconda3/bin/python
+               CONDA_ROOT=/home/zeus/miniconda3
+              CONDA_SHLVL=0
+           CURL_CA_BUNDLE=<not set>
+          LD_LIBRARY_PATH=/opt/amazon/efa/lib:/opt/aws-ofi-
+                          nccl/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+               LD_PRELOAD=<not set>
+             LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+                     PATH=/home/zeus/miniconda3/condabin:/home/zeus/.local/bin:/usr/local/cuda/b
+                          in:/usr/local/nvidia/bin:/usr/local/cuda/bin:/opt/amazon/efa/bin:/opt/
+                          aws-ofi-nccl/bin:/commands:/teamspace/studios/this_studio/.nvm/version
+                          s/node/v20.9.0/bin:/home/zeus/miniconda3/envs/cloudspace/bin:/home/zeu
+                          s/miniconda3/condabin/bin:/opt/amazon/efa/bin:/opt/aws-ofi-nccl/bin:/u
+                          sr/local/cuda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local
+                          /sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/home/ze
+                          us/.local/bin:/usr/local/cuda/bin:/usr/local/nvidia/bin:/usr/local/cud
+                          a/bin:/opt/amazon/efa/bin:/opt/aws-ofi-nccl/bin:/commands:/teamspace/s
+                          tudios/this_studio/.nvm/versions/node/v20.9.0/bin:/home/zeus/miniconda
+                          3/envs/cloudspace/bin:/home/zeus/miniconda3/condabin/bin:/opt/amazon/e
+                          fa/bin:/opt/aws-ofi-nccl/bin:/usr/local/cuda/bin:/usr/local/nvidia/bin
+                          :/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+                          :/sbin:/bin:/usr/games:/home/zeus/.local/bin:/usr/local/cuda/bin:/usr/
+                          local/nvidia/bin:/usr/local/cuda/bin:/opt/amazon/efa/bin:/opt/aws-ofi-
+                          nccl/bin:/commands:/teamspace/studios/this_studio/.nvm/versions/node/v
+                          20.9.0/bin:/home/zeus/miniconda3/envs/cloudspace/bin:/home/zeus/minico
+                          nda3/condabin/bin:/opt/amazon/efa/bin:/opt/aws-ofi-nccl/bin:/usr/local
+                          /cuda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/u
+                          sr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/home/zeus/.loca
+                          l/bin:/usr/local/cuda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/o
+                          pt/amazon/efa/bin:/opt/aws-ofi-nccl/bin:/commands:/teamspace/studios/t
+                          his_studio/.nvm/versions/node/v20.9.0/bin:/home/zeus/miniconda3/envs/c
+                          loudspace/bin:/home/zeus/miniconda3/condabin/bin:/opt/amazon/efa/bin:/
+                          opt/aws-ofi-nccl/bin:/usr/local/cuda/bin:/usr/local/nvidia/bin:/usr/lo
+                          cal/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/
+                          bin:/usr/games
+         PYTHONUNBUFFERED=true
+       REQUESTS_CA_BUNDLE=<not set>
+            SSL_CERT_FILE=<not set>
+
+     active environment : cloudspace
+    active env location : /home/zeus/miniconda3/envs/cloudspace
+            shell level : 0
+       user config file : /teamspace/studios/this_studio/.condarc
+ populated config files : 
+          conda version : 25.9.1
+    conda-build version : not installed
+         python version : 3.12.1.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=haswell
+                          __conda=25.9.1=0
+                          __cuda=12.8=0
+                          __glibc=2.39=0
+                          __linux=6.8.0=0
+                          __unix=0=0
+       base environment : /home/zeus/miniconda3  (writable)
+      conda av data dir : /home/zeus/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : 
+          package cache : /home/zeus/miniconda3/pkgs
+                          /teamspace/studios/this_studio/.conda/pkgs
+       envs directories : /home/zeus/miniconda3/envs
+                          /teamspace/studios/this_studio/.conda/envs
+               platform : linux-64
+             user-agent : conda/25.9.1 requests/2.31.0 CPython/3.12.1 Linux/6.8.0-1007-gcp ubuntu/24.04.3 glibc/2.39 solver/libmamba conda-libmamba-solver/25.4.0 libmambapy/2.0.5
+                UID:GID : 1000:1000
+             netrc file : None
+           offline mode : False
+
+
+An unexpected error has occurred. Conda has prepared the above report.
+If you suspect this error is being caused by a malfunctioning plugin,
+consider using the --no-plugins option to turn off plugins.
+
+Example: conda --no-plugins install <package>
+
+Alternatively, you can set the CONDA_NO_PLUGINS environment variable on
+the command line to run the command without plugins enabled.
+
+Example: CONDA_NO_PLUGINS=true conda install <package>
+
+
+Timeout reached. No report sent.
+
+⚡ ~ setup.sh
+"Setting up Node.js..."
+v20.9.0 is already installed.
+Now using node v20.9.0 (npm v10.1.0)
+[0;32mdefault[0m [0;90m->[0m [0;32m20.9.0[0m ([0;90m->[0m [0;32mv20.9.0[0m)
+[?25l([100;90m⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂[0m) ⠦ idealTree:lib: [7msill[0m [35midealTree[0m buildDeps[0m[K([100;90m⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂[0m) ⠦ idealTree:lib: [7msill[0m [35midealTree[0m buildDeps[0m[K([100;90m⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂[0m) ⠦ idealTree:lib: [7msill[0m [35midealTree[0m buildDeps[0m[K([100;90m⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂⠂[0m) ⠦ idealTree:lib: [7msill[0m [35midealTree[0m buildDeps[0m[K([107;97m#########[0m[100;90m⠂⠂⠂⠂⠂⠂⠂⠂⠂[0m) ⠋ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m#########[0m[100;90m⠂⠂⠂⠂⠂⠂⠂⠂⠂[0m) ⠋ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m#########[0m[100;90m⠂⠂⠂⠂⠂⠂⠂⠂⠂[0m) ⠋ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K([107;97m##################[0m) ⠴ reify:yarn: [32;40mtiming[0m [35mreify:loadBundles[0m Completed in 0ms[0m[K[K[?25h
+changed 1 package in 1s
+mkdir: cannot create directory ‘react_templates’: File exists
+[1m[3m%[23m[1m[0m                                                                                k../zeus/content\]7;file://cs-01kexz4k8bkd3pw7bvja6gaarm/home/zeus/content\[0m[23m[24m[J⚡ main /home/zeus/content [K[?1h=[?2004h

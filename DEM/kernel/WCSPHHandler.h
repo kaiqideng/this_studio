@@ -47,10 +47,9 @@ public:
         if (downloadFlag_)
         {
             WCSPHs_.download(stream);
-            SPHInteractions_.alloc(WCSPHs_.SPHDeviceSize() * 80, stream);
-            SPHInteractionMap_.alloc(WCSPHs_.SPHDeviceSize() + WCSPHs_.dummyDeviceSize(),
-            WCSPHs_.SPHDeviceSize() + WCSPHs_.dummyDeviceSize(), 
-            stream);
+            const size_t num = WCSPHs_.SPHDeviceSize() + WCSPHs_.dummyDeviceSize();
+            SPHInteractions_.alloc(num * 80, stream);
+            SPHInteractionMap_.alloc(num, num, num * 80, stream);
             double cellSizeOneDim = 0.0;
             std::vector<double> h = WCSPHs_.smoothLengthVector();
             if (h.size() > 0) cellSizeOneDim = *std::max_element(h.begin(), h.end()) * 2.0;

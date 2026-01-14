@@ -50,7 +50,10 @@ private:
             triangleSpatialGrids_.set(getDomainOrigin(), getDomainSize(), cellSizeOneDim, stream_);
         }
         ballTriangleInteractions_.alloc(getBallHandler().getBalls().deviceSize(), stream_);
-        ballTriangleInteractionMap_.alloc(getBallHandler().getBalls().deviceSize(), wallHandler_.getMeshWalls().deviceSize(), stream_);
+        ballTriangleInteractionMap_.alloc(getBallHandler().getBalls().deviceSize(), 
+        wallHandler_.getMeshWalls().deviceSize(), 
+        std::max(getBallHandler().getBalls().deviceSize(), wallHandler_.getMeshWalls().deviceSize()), 
+        stream_);
 
         const size_t numBalls = getBallHandler().getBalls().deviceSize();
         const size_t maxThreads = getGPUMaxThreadsPerBlock();
