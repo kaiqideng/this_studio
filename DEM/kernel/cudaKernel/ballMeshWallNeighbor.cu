@@ -36,11 +36,11 @@ const int* index1,
 const int* index2, 
 double3* vertexGlobalPosition, 
 const size_t numTri,
-const size_t gridDim,
-const size_t blockDim,
+const size_t gridD,
+const size_t blockD,
 cudaStream_t stream)
 {
-    calculateTriangleHash <<< gridDim, blockDim, 0, stream >>> (hashValue, 
+    calculateTriangleHash <<< gridD, blockD, 0, stream >>> (hashValue, 
     index0, 
     index1, 
     index2, 
@@ -62,8 +62,8 @@ cudaStream_t stream)
     hashValue,
     static_cast<int>(sptialGrids.deviceSize()),
     numTri,
-    gridDim, 
-    blockDim, 
+    gridD, 
+    blockD, 
     stream);
 }
 
@@ -229,8 +229,8 @@ spatialGrid& triangleSpatialGrids,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-    size_t gridDim = 1, blockDim = 1;
-    if (setGPUGridBlockDim(gridDim, blockDim, meshWalls.triangles().deviceSize(), maxThreadsPerBlock))
+    size_t gridD = 1, blockD = 1;
+    if (setGPUGridBlockDim(gridD, blockD, meshWalls.triangles().deviceSize(), maxThreadsPerBlock))
     {
         updateTriGridCellStartEnd(triangleSpatialGrids,
         meshWalls.triangles().hashIndex(),
@@ -240,16 +240,16 @@ cudaStream_t stream)
         meshWalls.triangles().index2(),
         meshWalls.globalVertices(),
         meshWalls.triangles().deviceSize(),
-        gridDim,
-        blockDim,
+        gridD,
+        blockD,
         stream);
     }
 
     ballTriangleInteractions.updateHistory(stream);
 
-    if (setGPUGridBlockDim(gridDim, blockDim, balls.deviceSize(), maxThreadsPerBlock))
+    if (setGPUGridBlockDim(gridD, blockD, balls.deviceSize(), maxThreadsPerBlock))
     {
-        countBallTriangleInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (balls.position(),
+        countBallTriangleInteractionsKernel <<<gridD, blockD, 0, stream>>> (balls.position(),
         balls.radius(),
         balls.inverseMass(),
         meshWalls.triangles().hashIndex(),
@@ -273,7 +273,7 @@ cudaStream_t stream)
         cuda_copy_sync(&activeNumber, ballTriangleInteractionMap.prefixSumA() + ballTriangleInteractionMap.ASize() - 1, 1, CopyDir::D2H);
         ballTriangleInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
 
-        writeBallTriangleInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (ballTriangleInteractions.objectPointed(),
+        writeBallTriangleInteractionsKernel <<<gridD, blockD, 0, stream>>> (ballTriangleInteractions.objectPointed(),
         ballTriangleInteractions.objectPointing(),
         ballTriangleInteractions.force(),
         ballTriangleInteractions.torque(),
@@ -305,7 +305,7 @@ cudaStream_t stream)
 
         ballTriangleInteractionMap.hashInit(ballTriangleInteractions.objectPointing(), ballTriangleInteractions.activeSize(), stream);
         
-        if (setGPUGridBlockDim(gridDim, blockDim, ballTriangleInteractionMap.activeHashSize(), maxThreadsPerBlock))
+        if (setGPUGridBlockDim(gridD, blockD, ballTriangleInteractionMap.activeHashSize(), maxThreadsPerBlock))
         {
             buildHashStartEnd(ballTriangleInteractionMap.startB(), 
             ballTriangleInteractionMap.endB(), 
@@ -313,8 +313,8 @@ cudaStream_t stream)
             ballTriangleInteractionMap.hashValue(),
             static_cast<int>(ballTriangleInteractionMap.BSize()),
             ballTriangleInteractionMap.activeHashSize(), 
-            gridDim,
-            blockDim,
+            gridD,
+            blockD,
             stream);
         }
     }

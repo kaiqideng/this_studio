@@ -30,11 +30,11 @@ int* hashIndex,
 int* hashValue, 
 double3* position, 
 const size_t numObjects,
-const size_t gridDim, 
-const size_t blockDim, 
+const size_t gridD, 
+const size_t blockD, 
 cudaStream_t stream)
 {
-    calculateHash <<< gridDim, blockDim, 0, stream >>> (hashValue, 
+    calculateHash <<< gridD, blockD, 0, stream >>> (hashValue, 
     position, 
     sptialGrids.minBound, 
     sptialGrids.maxBound, 
@@ -53,8 +53,8 @@ cudaStream_t stream)
     hashValue, 
     static_cast<int>(sptialGrids.deviceSize()),
     numObjects,
-    gridDim,
-    blockDim, 
+    gridD,
+    blockD, 
     stream);
 }
 
@@ -206,23 +206,23 @@ spatialGrid& spatialGrids,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-    size_t gridDim = 1, blockDim = 1;
-    if (setGPUGridBlockDim(gridDim, blockDim, balls.deviceSize(), maxThreadsPerBlock))
+    size_t gridD = 1, blockD = 1;
+    if (setGPUGridBlockDim(gridD, blockD, balls.deviceSize(), maxThreadsPerBlock))
     {
         updateGridCellStartEnd(spatialGrids,
         balls.hashIndex(),
         balls.hashValue(),
         balls.position(),
         balls.deviceSize(),
-        gridDim, 
-        blockDim, 
+        gridD, 
+        blockD, 
         stream);
 
         ballInteractions.updateHistory(stream);
 
         //debug_dump_device_array(spatialGrids.cellHashStart(), spatialGrids.deviceSize(), "spatialGrids.cellHashStart");
         //debug_dump_device_array(spatialGrids.cellHashEnd(), spatialGrids.deviceSize(), "spatialGrids.cellHashEnd");
-        countBallInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (balls.position(),
+        countBallInteractionsKernel <<<gridD, blockD, 0, stream>>> (balls.position(),
         balls.radius(),
         balls.inverseMass(),
         balls.clumpID(),
@@ -244,7 +244,7 @@ cudaStream_t stream)
         cuda_copy_sync(&activeNumber, ballInteractionMap.prefixSumA() + ballInteractionMap.ASize() - 1, 1, CopyDir::D2H);
         ballInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
 
-        writeBallInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (ballInteractions.objectPointed(),
+        writeBallInteractionsKernel <<<gridD, blockD, 0, stream>>> (ballInteractions.objectPointed(),
         ballInteractions.objectPointing(),
         ballInteractions.force(),
         ballInteractions.torque(),
@@ -274,7 +274,7 @@ cudaStream_t stream)
 
     ballInteractionMap.hashInit(ballInteractions.objectPointing(), ballInteractions.activeSize(), stream);
 
-    if (setGPUGridBlockDim(gridDim, blockDim, ballInteractionMap.activeHashSize(), maxThreadsPerBlock))
+    if (setGPUGridBlockDim(gridD, blockD, ballInteractionMap.activeHashSize(), maxThreadsPerBlock))
     {
         buildHashStartEnd(ballInteractionMap.startB(), 
         ballInteractionMap.endB(), 
@@ -282,8 +282,8 @@ cudaStream_t stream)
         ballInteractionMap.hashValue(),
         static_cast<int>(ballInteractionMap.BSize()),
         ballInteractionMap.activeHashSize(),
-        gridDim,
-        blockDim,
+        gridD,
+        blockD,
         stream);
     }
 }

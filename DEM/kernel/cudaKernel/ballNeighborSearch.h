@@ -22,8 +22,8 @@ int* hashIndex,
 int* hashValue, 
 double3* position, 
 const size_t numObjects,
-const size_t gridDim, 
-const size_t blockDim, 
+const size_t gridD, 
+const size_t blockD, 
 cudaStream_t stream);
 
 extern "C" void launchBallNeighborSearch(solidInteraction& ballInteractions, 

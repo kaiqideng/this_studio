@@ -403,11 +403,11 @@ const size_t num)
 extern "C" void launchBall1stHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream)
 {
-	ballVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (balls.velocity(), 
+	ballVelocityAngularVelocityIntegrationKernel <<<gridD, blockD, 0, stream>>> (balls.velocity(), 
 	balls.angularVelocity(), 
 	balls.force(), 
 	balls.torque(), 
@@ -418,7 +418,7 @@ cudaStream_t stream)
 	0.5 * timeStep, 
 	balls.deviceSize());
 
-	positionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (balls.position(), 
+	positionIntegrationKernel <<<gridD, blockD, 0, stream>>> (balls.position(), 
 	balls.velocity(), 
 	timeStep,
 	balls.deviceSize());
@@ -430,11 +430,11 @@ cudaStream_t stream)
 extern "C" void launchBall2ndHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream)
 {
-	ballVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (balls.velocity(), 
+	ballVelocityAngularVelocityIntegrationKernel <<<gridD, blockD, 0, stream>>> (balls.velocity(), 
     balls.angularVelocity(), 
 	balls.force(), 
     balls.torque(), 
@@ -450,11 +450,11 @@ extern "C" void launchClump1stHalfIntegration(clump& clumps,
 ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream)
 {
-	clumpVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.velocity(),
+	clumpVelocityAngularVelocityIntegrationKernel <<<gridD, blockD, 0, stream>>> (clumps.velocity(),
 	clumps.angularVelocity(),
 	clumps.position(),
 	clumps.force(),
@@ -471,12 +471,12 @@ cudaStream_t stream)
 	0.5 * timeStep,
 	clumps.deviceSize());
 
-	orientationIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.orientation(), 
+	orientationIntegrationKernel <<<gridD, blockD, 0, stream>>> (clumps.orientation(), 
 	clumps.angularVelocity(), 
 	timeStep, 
 	clumps.deviceSize());
 
-	positionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.position(), 
+	positionIntegrationKernel <<<gridD, blockD, 0, stream>>> (clumps.position(), 
     clumps.velocity(), 
     timeStep,
     clumps.deviceSize());
@@ -489,11 +489,11 @@ extern "C" void launchClump2ndHalfIntegration(clump& clumps,
 ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream)
 {
-	sumClumpForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (clumps.force(), 
+	sumClumpForceTorqueKernel <<<gridD, blockD, 0, stream>>> (clumps.force(), 
 	clumps.torque(), 
 	clumps.position(), 
 	clumps.pebbleStart(), 
@@ -503,7 +503,7 @@ cudaStream_t stream)
 	balls.position(), 
 	clumps.deviceSize());
 
-	clumpVelocityAngularVelocityIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (clumps.velocity(),
+	clumpVelocityAngularVelocityIntegrationKernel <<<gridD, blockD, 0, stream>>> (clumps.velocity(),
 	clumps.angularVelocity(),
 	clumps.position(),
 	clumps.force(),
@@ -530,10 +530,10 @@ const double timeStep,
 const size_t maxThreadsPerBlock, 
 cudaStream_t stream)
 {
-    size_t gridDim = 1, blockDim = 1;
-	if (setGPUGridBlockDim(gridDim, blockDim, ballInteractions.activeSize(), maxThreadsPerBlock))
+    size_t gridD = 1, blockD = 1;
+	if (setGPUGridBlockDim(gridD, blockD, ballInteractions.activeSize(), maxThreadsPerBlock))
 	{
-		calBallContactForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (ballInteractions.force(),
+		calBallContactForceTorqueKernel <<<gridD, blockD, 0, stream>>> (ballInteractions.force(),
 		ballInteractions.torque(),
 		ballInteractions.contactPoint(),
 		ballInteractions.slidingSpring(),
@@ -572,9 +572,9 @@ cudaStream_t stream)
 		ballInteractions.activeSize());
 	}
 
-	if (setGPUGridBlockDim(gridDim, blockDim, bondedBallInteractions.deviceSize(), maxThreadsPerBlock))
+	if (setGPUGridBlockDim(gridD, blockD, bondedBallInteractions.deviceSize(), maxThreadsPerBlock))
 	{
-		calBondedForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (bondedBallInteractions.normalForce(),
+		calBondedForceTorqueKernel <<<gridD, blockD, 0, stream>>> (bondedBallInteractions.normalForce(),
 		bondedBallInteractions.torsionTorque(),
 		bondedBallInteractions.shearForce(),
 		bondedBallInteractions.bendingTorque(),
@@ -607,9 +607,9 @@ cudaStream_t stream)
 		bondedBallInteractions.deviceSize());
 	}
 	
-	if (setGPUGridBlockDim(gridDim, blockDim, balls.deviceSize(), maxThreadsPerBlock))
+	if (setGPUGridBlockDim(gridD, blockD, balls.deviceSize(), maxThreadsPerBlock))
 	{
-		sumForceTorqueFromInteractionKernel <<<gridDim, blockDim, 0, stream>>> (ballInteractions.force(),
+		sumForceTorqueFromInteractionKernel <<<gridD, blockD, 0, stream>>> (ballInteractions.force(),
 		ballInteractions.torque(),
 		ballInteractions.contactPoint(),
 		ballInteractions.objectPointed(),

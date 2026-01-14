@@ -9,8 +9,8 @@ int* hashIndex,
 int* hashValue, 
 const int maxHashValue, //size of ptr "start/end"
 const size_t hashListSize, 
-const size_t gridDim, 
-const size_t blockDim, 
+const size_t gridD, 
+const size_t blockD, 
 cudaStream_t stream);
 
 extern "C" void buildPrefixSum(int* prefixSum, 

@@ -11,7 +11,7 @@ const int* index2,
 double3* vertexGlobalPosition, 
 const size_t numTri,
 const size_t gridDim, 
-const size_t blockDim, 
+const size_t blockD, 
 cudaStream_t stream);
 
 extern "C" void launchBallTriangleNeighborSearch(solidInteraction& ballTriangleInteractions, 

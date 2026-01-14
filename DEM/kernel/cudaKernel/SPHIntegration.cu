@@ -49,10 +49,10 @@ interactionMap& SPHInteractionMap,
 const size_t maxThreadPerBlock,
 cudaStream_t stream)
 {
-    size_t gridDim = 1, blockDim = 1;
-    if (setGPUGridBlockDim(gridDim, blockDim, WCSPHs.dummyDeviceSize(), maxThreadPerBlock))
+    size_t gridD = 1, blockD = 1;
+    if (setGPUGridBlockDim(gridD, blockD, WCSPHs.dummyDeviceSize(), maxThreadPerBlock))
     {
-        calDummyParticleNormalKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.normal(), 
+        calDummyParticleNormalKernel <<<gridD, blockD, 0, stream>>> (WCSPHs.normal(), 
         WCSPHs.position(), 
         WCSPHs.density(), 
         WCSPHs.mass(), 
@@ -116,8 +116,7 @@ const size_t numSPHs)
             U_L = dot(-n_w, v_i);
             U_R = -U_L + 2.0 * dot(-n_w, v_j);
             P_R = P_L + rho_i * dot(gravity, r_j - r_i);
-            //e_ij = -n_w;
-            //v_j += (U_R - dot(v_j, e_ij)) * e_ij;
+            e_ij = -n_w;
             if (c_j > 0.0) rho_j = P_R / (c_j * c_j) + initialDensity[idx_j];
         }
 
@@ -212,7 +211,6 @@ const size_t numSPHs)
             U_R = -U_L + 2 * dot(-n_w, v_j);
             P_R = P_L + rho_i * dot(gravity, r_j - r_i);
             //e_ij = -n_w;
-            //v_j += (U_R - dot(v_j, e_ij)) * e_ij;
             if (c_j > 0.0) rho_j = P_R / (c_j * c_j) + initialDensity[idx_j];
         }
 
@@ -233,11 +231,11 @@ SPHInteraction& SPHInteractions,
 interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream)
 {
-    updateWCSPHVelocityKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.velocity(),
+    updateWCSPHVelocityKernel <<<gridD, blockD, 0, stream>>> (WCSPHs.velocity(),
     WCSPHs.density(),
     WCSPHs.pressure(),
     WCSPHs.position(),
@@ -252,7 +250,7 @@ cudaStream_t stream)
     0.5 * timeStep, 
     WCSPHs.SPHDeviceSize());
 
-    SPHPositionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.position(), 
+    SPHPositionIntegrationKernel <<<gridD, blockD, 0, stream>>> (WCSPHs.position(), 
     WCSPHs.velocity(), 
     timeStep, 
     WCSPHs.SPHDeviceSize());
@@ -263,11 +261,11 @@ SPHInteraction& SPHInteractions,
 interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t gridDim,
-const size_t blockDim,
+const size_t gridD,
+const size_t blockD,
 cudaStream_t stream)
 {
-    updateWCSPHDensityKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.density(),
+    updateWCSPHDensityKernel <<<gridD, blockD, 0, stream>>> (WCSPHs.density(),
     WCSPHs.pressure(),
     WCSPHs.position(),
     WCSPHs.velocity(),
@@ -282,13 +280,13 @@ cudaStream_t stream)
     timeStep, 
     WCSPHs.SPHDeviceSize());
 
-    calWCSPHPressureKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.pressure(),
+    calWCSPHPressureKernel <<<gridD, blockD, 0, stream>>> (WCSPHs.pressure(),
     WCSPHs.density(),
     WCSPHs.soundSpeed(),
     WCSPHs.initialDensity(),
     WCSPHs.SPHDeviceSize());
 
-    updateWCSPHVelocityKernel <<<gridDim, blockDim, 0, stream>>> (WCSPHs.velocity(),
+    updateWCSPHVelocityKernel <<<gridD, blockD, 0, stream>>> (WCSPHs.velocity(),
     WCSPHs.density(),
     WCSPHs.pressure(),
     WCSPHs.position(),
@@ -555,11 +553,11 @@ SPHInteraction& SPHInteractions,
 interactionMap& SPHInteractionMap,
 const double3 gravity,
 const double timeStep,
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream)
 {
-    calISPHVelocityStarPositionStarKernel <<<gridDim, blockDim, 0, stream>>> (ISPHs.positionStar(),
+    calISPHVelocityStarPositionStarKernel <<<gridD, blockD, 0, stream>>> (ISPHs.positionStar(),
     ISPHs.velocityStar(),
     ISPHs.position(),
     ISPHs.velocity(),
@@ -578,13 +576,13 @@ extern "C" void launchISPH2ndIntegration(ISPH& ISPHs,
 SPHInteraction& SPHInteractions, 
 interactionMap& SPHInteractionMap,
 const double timeStep,
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream)
 {
     size_t numSPHs = ISPHs.SPHDeviceSize();
 
-    calISPHDensityStarKernel <<<gridDim, blockDim, 0, stream>>> (ISPHs.densityStar(),
+    calISPHDensityStarKernel <<<gridD, blockD, 0, stream>>> (ISPHs.densityStar(),
     ISPHs.initialDensity(),
     ISPHs.positionStar(),
     ISPHs.velocityStar(),
@@ -596,7 +594,7 @@ cudaStream_t stream)
     timeStep, 
     numSPHs);
 
-    calISPHPresssureStarKernel <<<gridDim, blockDim, 0, stream>>> (ISPHs.pressureStar(),
+    calISPHPresssureStarKernel <<<gridD, blockD, 0, stream>>> (ISPHs.pressureStar(),
     ISPHs.positionStar(),
     ISPHs.velocityStar(),
     ISPHs.densityStar(),
@@ -611,7 +609,7 @@ cudaStream_t stream)
 
     cuda_copy(ISPHs.pressure(), ISPHs.pressureStar(), numSPHs, CopyDir::D2D, stream);
 
-    ISPHVelocityPositionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (ISPHs.position(),
+    ISPHVelocityPositionIntegrationKernel <<<gridD, blockD, 0, stream>>> (ISPHs.position(),
     ISPHs.velocity(),
     ISPHs.positionStar(),
     ISPHs.velocityStar(),

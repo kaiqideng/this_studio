@@ -110,19 +110,19 @@ const size_t num,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-    size_t gridDim = 1, blockDim = 1;
-    if (setGPUGridBlockDim(gridDim, blockDim, num, maxThreadsPerBlock))
+    size_t gridD = 1, blockD = 1;
+    if (setGPUGridBlockDim(gridD, blockD, num, maxThreadsPerBlock))
     {
         updateGridCellStartEnd(spatialGrids,
         SPHHashIndex,
         SPHHashValue,
         SPHPosition,
         num,
-        gridDim,
-        blockDim,
+        gridD,
+        blockD,
         stream);
 
-        countSPHInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (SPHPosition,
+        countSPHInteractionsKernel <<<gridD, blockD, 0, stream>>> (SPHPosition,
         SPHSmoothLength,
         SPHHashIndex,
         SPHInteractionMap.countA(),
@@ -141,7 +141,7 @@ cudaStream_t stream)
         cuda_copy_sync(&activeNumber, SPHInteractionMap.prefixSumA() + SPHInteractionMap.ASize() - 1, 1, CopyDir::D2H);
         SPHInteractions.setActiveSize(static_cast<size_t>(activeNumber), stream);
 
-        writeSPHInteractionsKernel <<<gridDim, blockDim, 0, stream>>> (SPHInteractions.objectPointed(),
+        writeSPHInteractionsKernel <<<gridD, blockD, 0, stream>>> (SPHInteractions.objectPointed(),
         SPHInteractions.objectPointing(),
         SPHPosition,
         SPHSmoothLength,

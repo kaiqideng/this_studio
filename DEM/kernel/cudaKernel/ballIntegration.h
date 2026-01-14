@@ -314,31 +314,31 @@ const double torsionFrictionCoefficient)
 extern "C" void launchBall1stHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim,
+const size_t gridD,
+const size_t blockD,
 cudaStream_t stream);
 
 extern "C" void launchBall2ndHalfIntegration(ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream);
 
 extern "C" void launchClump1stHalfIntegration(clump& clumps, 
 ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim,
+const size_t gridD,
+const size_t blockD,
 cudaStream_t stream);
 
 extern "C" void launchClump2ndHalfIntegration(clump& clumps, 
 ball& balls, 
 const double3 gravity, 
 const double timeStep, 
-const size_t gridDim,
-const size_t blockDim, 
+const size_t gridD,
+const size_t blockD, 
 cudaStream_t stream);
 
 extern "C" void launchBallContactCalculation(solidInteraction &ballInteractions, 

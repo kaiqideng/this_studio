@@ -340,10 +340,10 @@ const double timeStep,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-	size_t gridDim = 1, blockDim = 1;
-	if (setGPUGridBlockDim(gridDim, blockDim, balls.deviceSize(), maxThreadsPerBlock))
+	size_t gridD = 1, blockD = 1;
+	if (setGPUGridBlockDim(gridD, blockD, balls.deviceSize(), maxThreadsPerBlock))
 	{
-		calBallTriangleContactSpringContactPoint <<<gridDim, blockDim, 0, stream>>> (ballTriangleInteractions.contactPoint(),
+		calBallTriangleContactSpringContactPoint <<<gridD, blockD, 0, stream>>> (ballTriangleInteractions.contactPoint(),
 		ballTriangleInteractions.slidingSpring(),
 		ballTriangleInteractions.rollingSpring(),
 		ballTriangleInteractions.torsionSpring(),
@@ -358,7 +358,7 @@ cudaStream_t stream)
 		meshWalls.globalVertices(),
 		balls.deviceSize());
 
-		calBallTriangleContactForceTorqueKernel <<<gridDim, blockDim, 0, stream>>> (ballTriangleInteractions.force(),
+		calBallTriangleContactForceTorqueKernel <<<gridD, blockD, 0, stream>>> (ballTriangleInteractions.force(),
 		ballTriangleInteractions.torque(),
 		ballTriangleInteractions.contactPoint(),
 		ballTriangleInteractions.slidingSpring(),
@@ -411,22 +411,22 @@ const double timeStep,
 const size_t maxThreadsPerBlock,
 cudaStream_t stream)
 {
-	size_t gridDim = 1, blockDim = 1;
-	if (setGPUGridBlockDim(gridDim, blockDim, meshWalls.deviceSize(), maxThreadsPerBlock))
+	size_t gridD = 1, blockD = 1;
+	if (setGPUGridBlockDim(gridD, blockD, meshWalls.deviceSize(), maxThreadsPerBlock))
 	{
-		wallOrientationIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.orientation(), 
+		wallOrientationIntegrationKernel <<<gridD, blockD, 0, stream>>> (meshWalls.orientation(), 
 		meshWalls.angularVelocity(),
 		timeStep,
 		meshWalls.deviceSize());
 
-		wallPositionIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.position(),
+		wallPositionIntegrationKernel <<<gridD, blockD, 0, stream>>> (meshWalls.position(),
 		meshWalls.velocity(),
 		timeStep,
 		meshWalls.deviceSize());
 
-		if (setGPUGridBlockDim(gridDim, blockDim, meshWalls.vertices().deviceSize(), maxThreadsPerBlock))
+		if (setGPUGridBlockDim(gridD, blockD, meshWalls.vertices().deviceSize(), maxThreadsPerBlock))
 		{
-			triangleGlobalVerticesIntegrationKernel <<<gridDim, blockDim, 0, stream>>> (meshWalls.globalVertices(),
+			triangleGlobalVerticesIntegrationKernel <<<gridD, blockD, 0, stream>>> (meshWalls.globalVertices(),
 			meshWalls.vertices().localPosition(),
 			meshWalls.vertices().triangleIndex(),
 			meshWalls.vertices().trianglesPrefixSum(),
