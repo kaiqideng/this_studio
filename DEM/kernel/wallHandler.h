@@ -64,7 +64,7 @@ public:
 
         out << std::fixed << std::setprecision(10);
 
-        const std::vector<double3> verts = meshWalls_.globalVerticesVector();
+        std::vector<double3> verts = meshWalls_.globalVerticesVector();
         const size_t numPoints = verts.size();
 
         const std::vector<int> tri_i0 = meshWalls_.triangles().index0Vector();

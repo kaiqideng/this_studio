@@ -714,12 +714,12 @@ public:
             hashIndex_.allocDeviceArray(activeSize, stream);
             hashValue_.allocDeviceArray(activeSize, stream);
         }
-        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr,   0xFF, hashValue_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr,   0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
         cuda_copy(hashValue_.d_ptr, hashValue, activeSize,CopyDir::D2D, stream);
 
-        CUDA_CHECK(cudaMemsetAsync(startB_.d_ptr,   0xFF, startB_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr,   0xFF, endB_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(startB_.d_ptr, 0xFF, startB_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr, 0xFF, endB_.deviceSize() * sizeof(int), stream));
     }
 
     size_t ASize() const { return countA_.deviceSize(); }

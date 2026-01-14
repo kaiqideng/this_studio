@@ -785,8 +785,10 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o: /teamspace/studio
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHIntegration.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h \
+  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h \
+  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h \
@@ -1699,6 +1701,7 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o: /teamspace/stu
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h \
+  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h \
   /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h \
@@ -7173,6 +7176,8 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/myStruct/myUtility/myCUDA.cu.o: /teams
 /usr/include/thrust/iterator/detail/iterator_traversal_tags.h:
 
 /usr/include/errno.h:
+
+/teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h:
 
 /usr/include/cub/util_cpp_dialect.cuh:
 

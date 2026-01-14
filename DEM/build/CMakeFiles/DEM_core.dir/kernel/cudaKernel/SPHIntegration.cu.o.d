@@ -909,4 +909,6 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o : /teamspace/studi
     /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myVec.h \
     /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/particle.h \
     /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/spatialGrid.h \
-    /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
+    /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h \
+    /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h \
+    /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h

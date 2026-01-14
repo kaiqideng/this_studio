@@ -1,7 +1,7 @@
 CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /teamspace/studios/this_studio/DEM/damBreak.cpp \
  /usr/include/stdc-predef.h \
- /teamspace/studios/this_studio/DEM/kernel/SPHSolver.h \
+ /teamspace/studios/this_studio/DEM/kernel/WCSPHSolver.h \
  /teamspace/studios/this_studio/DEM/kernel/solverParams.h \
  /usr/include/c++/12/cmath \
  /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
@@ -195,7 +195,7 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
  /usr/include/surface_types.h /usr/include/texture_types.h \
  /usr/include/cuda_device_runtime_api.h /usr/include/vector_functions.hpp \
- /teamspace/studios/this_studio/DEM/kernel/SPHHandler.h \
+ /teamspace/studios/this_studio/DEM/kernel/WCSPHHandler.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h \
@@ -654,7 +654,9 @@ CMakeFiles/damBreak.dir/damBreak.cpp.o: \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/particle.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/spatialGrid.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h \
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHIntegration.h \
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h \
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myFileEdit.h \
  /usr/include/c++/12/fstream \
  /usr/include/x86_64-linux-gnu/c++/12/bits/basic_file.h \

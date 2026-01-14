@@ -173,8 +173,7 @@ inline void debug_dump_device_array<double3>(const double3* d_ptr, std::size_t n
     std::ios old_state(nullptr);
     old_state.copyfmt(std::cout);
 
-    // 科学计数法 + 指定有效数字位数
-    std::cout << std::scientific << std::setprecision(3);  // 比如 1.000e-10
+    std::cout << std::scientific << std::setprecision(3);
 
     for (std::size_t i = 0; i < n; ++i)
     {

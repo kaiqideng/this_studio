@@ -3,13 +3,15 @@
 
 CMakeFiles/damBreak.dir/damBreak.cpp.o
  /teamspace/studios/this_studio/DEM/damBreak.cpp
- /teamspace/studios/this_studio/DEM/kernel/SPHHandler.h
- /teamspace/studios/this_studio/DEM/kernel/SPHSolver.h
+ /teamspace/studios/this_studio/DEM/kernel/WCSPHHandler.h
+ /teamspace/studios/this_studio/DEM/kernel/WCSPHSolver.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myFileEdit.h

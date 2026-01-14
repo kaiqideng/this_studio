@@ -230,10 +230,12 @@ const size_t numBalls)
 		double3 epsilon_r = rollingSpring[idx_c];
 		double3 epsilon_t = torsionSpring[idx_c];
 
-		const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], materialID_w[idx_w], 
-		numMaterials, contactParaArraySize);
 		if (contactParaArraySize <= 0) return;
-
+		const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], 
+		materialID_w[idx_w], 
+		numMaterials, 
+		contactParaArraySize);
+		
 		if (linearK_n[param_ij] > 1.e-20)
 		{
 			LinearContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,

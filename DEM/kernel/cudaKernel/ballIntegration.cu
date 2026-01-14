@@ -69,9 +69,11 @@ const size_t numInteractions)
 	double3 epsilon_r = rollingSpring[idx];
 	double3 epsilon_t = torsionSpring[idx];
 
-	const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], materialID[idx_j], 
-	numMaterials, contactParaArraySize);
-	if (contactParaArraySize <= 0) return;
+    if (contactParaArraySize <= 0) return;
+	const size_t param_ij = getContactParameterArraryIndex(materialID[idx_i], 
+	materialID[idx_j], 
+	numMaterials, 
+	contactParaArraySize);
 
 	if (linearK_n[param_ij] > 1.e-20)
 	{

@@ -787,8 +787,10 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/GPUConfig.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballIntegration.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h
@@ -1702,6 +1704,7 @@ CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/SPHNeighborSearch.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/ballNeighborSearch.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/cudaSort/buildHashStartEnd.h
+ /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/SPH.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/interaction.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myCUDA.h
  /teamspace/studios/this_studio/DEM/kernel/cudaKernel/myStruct/myUtility/myHostDeviceArray1D.h

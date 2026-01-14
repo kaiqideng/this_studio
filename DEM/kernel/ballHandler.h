@@ -138,9 +138,9 @@ public:
         out << std::fixed << std::setprecision(10);
 
         const size_t N = balls_.hostSize();
-        const std::vector<double3> p = balls_.positionVector();
-        const std::vector<double3> v = balls_.velocityVector();
-        const std::vector<double3> a = balls_.angularVelocityVector();
+        std::vector<double3> p = balls_.positionVector();
+        std::vector<double3> v = balls_.velocityVector();
+        std::vector<double3> a = balls_.angularVelocityVector();
         const std::vector<double> r = balls_.radiusVector();
         const std::vector<int> materialID = balls_.materialIDVector();
         const std::vector<int> clumpID = balls_.clumpIDVector();

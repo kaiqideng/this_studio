@@ -37,7 +37,7 @@ if (NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
         set(CMAKE_CUDA_ARCHITECTURES native CACHE STRING "CUDA arch list" FORCE)
     else()
         # Portable fallback: adjust if you want fewer/more archs
-        set(CMAKE_CUDA_ARCHITECTURES 52 CACHE STRING "CUDA arch list" FORCE)
+        set(CMAKE_CUDA_ARCHITECTURES 75 CACHE STRING "CUDA arch list" FORCE)
     endif()
 endif()
 
