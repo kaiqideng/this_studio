@@ -10,7 +10,7 @@ class ballHandler
 public:
     ballHandler()
     {
-        downloadFlag_ = false;
+        uploadFlag_ = false;
     }
 
     ~ballHandler() = default;
@@ -24,10 +24,10 @@ public:
     cudaStream_t stream,
     int clumpID = -1)
     {
-        if(!downloadFlag_) 
+        if(!uploadFlag_) 
         {
-            downloadFlag_ = true;
-            balls_.upload(stream);
+            uploadFlag_ = true;
+            balls_.download(stream);
         }
         for (size_t i = 0; i < positions.size(); i++)
         {
@@ -52,10 +52,10 @@ public:
     cudaStream_t stream,
     int clumpID = -1)
     {
-        if(!downloadFlag_)
+        if(!uploadFlag_)
         {
-            downloadFlag_ = true;
-            balls_.upload(stream);
+            uploadFlag_ = true;
+            balls_.download(stream);
         }
         for (size_t i = 0; i < positions.size(); i++)
         {
@@ -111,11 +111,11 @@ public:
 
     solidInteraction& getBallInteractions() {return ballInteractions_;}
 
-    void download(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
+    void upload(const double3 domainOrigin, const double3 domainSize, cudaStream_t stream)
     {
-        if(downloadFlag_)
+        if(uploadFlag_)
         {
-            balls_.download(stream);
+            balls_.upload(stream);
 
             ballInteractions_.alloc(balls_.deviceSize() * 6, stream);
             ballInteractionMap_.alloc(balls_.deviceSize(), 
@@ -126,7 +126,7 @@ public:
             std::vector<double> rad = balls_.radiusVector();
             if(rad.size() > 0) cellSizeOneDim = *std::max_element(rad.begin(), rad.end()) * 2.0 * 1.1;
             spatialGrids_.set(domainOrigin, domainSize, cellSizeOneDim, stream);
-            downloadFlag_ = false;
+            uploadFlag_ = false;
         }
     }
 
@@ -260,7 +260,7 @@ public:
     }
 
 private:
-    bool downloadFlag_;
+    bool uploadFlag_;
     ball balls_;
     spatialGrid spatialGrids_;
 

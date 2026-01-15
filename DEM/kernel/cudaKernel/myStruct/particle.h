@@ -85,18 +85,18 @@ public:
     }
 
     // H2D: allocate/reallocate device arrays and copy host -> device
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
-        position_.download(stream);
-        velocity_.download(stream);
-        angularVelocity_.download(stream);
-        force_.download(stream);
-        torque_.download(stream);
+        position_.upload(stream);
+        velocity_.upload(stream);
+        angularVelocity_.upload(stream);
+        force_.upload(stream);
+        torque_.upload(stream);
 
-        radius_.download(stream);
-        inverseMass_.download(stream);
-        materialID_.download(stream);
-        clumpID_.download(stream);
+        radius_.upload(stream);
+        inverseMass_.upload(stream);
+        materialID_.upload(stream);
+        clumpID_.upload(stream);
 
         // device-only arrays sized according to number of particles
         const size_t n = deviceSize();
@@ -107,13 +107,13 @@ public:
     }
 
     // D2H: only for non-constant fields
-    void upload(cudaStream_t stream)
+    void download(cudaStream_t stream)
     {
-        position_.upload(stream);
-        velocity_.upload(stream);
-        angularVelocity_.upload(stream);
-        force_.upload(stream);
-        torque_.upload(stream);
+        position_.download(stream);
+        velocity_.download(stream);
+        angularVelocity_.download(stream);
+        force_.download(stream);
+        torque_.download(stream);
     }
 
     // device pointers accessors
@@ -147,14 +147,14 @@ public:
     {
         if(F.size() != hostSize()) return;
         force_.setHostData(F);
-        force_.download(s);
+        force_.upload(s);
     }
 
     void setTorqueVector(const std::vector<double3> T, cudaStream_t s)
     {
         if(T.size() != hostSize()) return;
         torque_.setHostData(T);
-        torque_.download(s);
+        torque_.upload(s);
     }
 };
 
@@ -243,22 +243,6 @@ public:
         pebbleEnd_.clearHostData();
     }
 
-    void download(cudaStream_t stream)
-    {
-        position_.download(stream);
-        velocity_.download(stream);
-        angularVelocity_.download(stream);
-        force_.download(stream);
-        torque_.download(stream);
-        orientation_.download(stream);
-
-        inverseInertiaTensor_.download(stream);
-        inverseMass_.download(stream);
-        materialID_.download(stream);
-        pebbleStart_.download(stream);
-        pebbleEnd_.download(stream);
-    }
-
     void upload(cudaStream_t stream)
     {
         position_.upload(stream);
@@ -267,6 +251,22 @@ public:
         force_.upload(stream);
         torque_.upload(stream);
         orientation_.upload(stream);
+
+        inverseInertiaTensor_.upload(stream);
+        inverseMass_.upload(stream);
+        materialID_.upload(stream);
+        pebbleStart_.upload(stream);
+        pebbleEnd_.upload(stream);
+    }
+
+    void download(cudaStream_t stream)
+    {
+        position_.download(stream);
+        velocity_.download(stream);
+        angularVelocity_.download(stream);
+        force_.download(stream);
+        torque_.download(stream);
+        orientation_.download(stream);
     }
 
     double3* position() { return position_.d_ptr; }

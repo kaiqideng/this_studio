@@ -157,19 +157,6 @@ DEM_core/fast:
 .PHONY : 11BondedBallsBeam/fast
 
 #=============================================================================
-# Target rules for targets named damBreak
-
-# Build rule for target.
-damBreak: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 damBreak
-.PHONY : damBreak
-
-# fast build rule for target.
-damBreak/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/damBreak.dir/build.make CMakeFiles/damBreak.dir/build
-.PHONY : damBreak/fast
-
-#=============================================================================
 # Target rules for targets named elasticBounce
 
 # Build rule for target.
@@ -205,30 +192,6 @@ elasticBounce/fast:
 11BondedBallsBeam.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/11BondedBallsBeam.dir/build.make CMakeFiles/11BondedBallsBeam.dir/11BondedBallsBeam.cpp.s
 .PHONY : 11BondedBallsBeam.cpp.s
-
-damBreak.o: damBreak.cpp.o
-.PHONY : damBreak.o
-
-# target to build an object file
-damBreak.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/damBreak.dir/build.make CMakeFiles/damBreak.dir/damBreak.cpp.o
-.PHONY : damBreak.cpp.o
-
-damBreak.i: damBreak.cpp.i
-.PHONY : damBreak.i
-
-# target to preprocess a source file
-damBreak.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/damBreak.dir/build.make CMakeFiles/damBreak.dir/damBreak.cpp.i
-.PHONY : damBreak.cpp.i
-
-damBreak.s: damBreak.cpp.s
-.PHONY : damBreak.s
-
-# target to generate assembly for a file
-damBreak.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/damBreak.dir/build.make CMakeFiles/damBreak.dir/damBreak.cpp.s
-.PHONY : damBreak.cpp.s
 
 elasticBounce.o: elasticBounce.cpp.o
 .PHONY : elasticBounce.o
@@ -277,54 +240,6 @@ kernel/DEMBaseSolver.s: kernel/DEMBaseSolver.cpp.s
 kernel/DEMBaseSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/DEMBaseSolver.cpp.s
 .PHONY : kernel/DEMBaseSolver.cpp.s
-
-kernel/cudaKernel/SPHIntegration.o: kernel/cudaKernel/SPHIntegration.cu.o
-.PHONY : kernel/cudaKernel/SPHIntegration.o
-
-# target to build an object file
-kernel/cudaKernel/SPHIntegration.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.o
-.PHONY : kernel/cudaKernel/SPHIntegration.cu.o
-
-kernel/cudaKernel/SPHIntegration.i: kernel/cudaKernel/SPHIntegration.cu.i
-.PHONY : kernel/cudaKernel/SPHIntegration.i
-
-# target to preprocess a source file
-kernel/cudaKernel/SPHIntegration.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.i
-.PHONY : kernel/cudaKernel/SPHIntegration.cu.i
-
-kernel/cudaKernel/SPHIntegration.s: kernel/cudaKernel/SPHIntegration.cu.s
-.PHONY : kernel/cudaKernel/SPHIntegration.s
-
-# target to generate assembly for a file
-kernel/cudaKernel/SPHIntegration.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHIntegration.cu.s
-.PHONY : kernel/cudaKernel/SPHIntegration.cu.s
-
-kernel/cudaKernel/SPHNeighborSearch.o: kernel/cudaKernel/SPHNeighborSearch.cu.o
-.PHONY : kernel/cudaKernel/SPHNeighborSearch.o
-
-# target to build an object file
-kernel/cudaKernel/SPHNeighborSearch.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.o
-.PHONY : kernel/cudaKernel/SPHNeighborSearch.cu.o
-
-kernel/cudaKernel/SPHNeighborSearch.i: kernel/cudaKernel/SPHNeighborSearch.cu.i
-.PHONY : kernel/cudaKernel/SPHNeighborSearch.i
-
-# target to preprocess a source file
-kernel/cudaKernel/SPHNeighborSearch.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.i
-.PHONY : kernel/cudaKernel/SPHNeighborSearch.cu.i
-
-kernel/cudaKernel/SPHNeighborSearch.s: kernel/cudaKernel/SPHNeighborSearch.cu.s
-.PHONY : kernel/cudaKernel/SPHNeighborSearch.s
-
-# target to generate assembly for a file
-kernel/cudaKernel/SPHNeighborSearch.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEM_core.dir/build.make CMakeFiles/DEM_core.dir/kernel/cudaKernel/SPHNeighborSearch.cu.s
-.PHONY : kernel/cudaKernel/SPHNeighborSearch.cu.s
 
 kernel/cudaKernel/ballIntegration.o: kernel/cudaKernel/ballIntegration.cu.o
 .PHONY : kernel/cudaKernel/ballIntegration.o
@@ -481,26 +396,16 @@ help:
 	@echo "... 11BondedBallsBeam"
 	@echo "... DEM_core"
 	@echo "... DEM_sort"
-	@echo "... damBreak"
 	@echo "... elasticBounce"
 	@echo "... 11BondedBallsBeam.o"
 	@echo "... 11BondedBallsBeam.i"
 	@echo "... 11BondedBallsBeam.s"
-	@echo "... damBreak.o"
-	@echo "... damBreak.i"
-	@echo "... damBreak.s"
 	@echo "... elasticBounce.o"
 	@echo "... elasticBounce.i"
 	@echo "... elasticBounce.s"
 	@echo "... kernel/DEMBaseSolver.o"
 	@echo "... kernel/DEMBaseSolver.i"
 	@echo "... kernel/DEMBaseSolver.s"
-	@echo "... kernel/cudaKernel/SPHIntegration.o"
-	@echo "... kernel/cudaKernel/SPHIntegration.i"
-	@echo "... kernel/cudaKernel/SPHIntegration.s"
-	@echo "... kernel/cudaKernel/SPHNeighborSearch.o"
-	@echo "... kernel/cudaKernel/SPHNeighborSearch.i"
-	@echo "... kernel/cudaKernel/SPHNeighborSearch.s"
 	@echo "... kernel/cudaKernel/ballIntegration.o"
 	@echo "... kernel/cudaKernel/ballIntegration.i"
 	@echo "... kernel/cudaKernel/ballIntegration.s"

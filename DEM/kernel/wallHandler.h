@@ -9,7 +9,7 @@ class wallHandler
 public:
     wallHandler()
     {
-        downLoadFlag_ = false;
+        uploadFlag_ = false;
     }
 
     ~wallHandler() = default;
@@ -22,10 +22,10 @@ public:
     int matirialID,
     cudaStream_t stream)
     {
-        if(!downLoadFlag_)
+        if(!uploadFlag_)
         {
-            meshWalls_.upload(stream);
-            downLoadFlag_ = true;
+            meshWalls_.download(stream);
+            uploadFlag_ = true;
         }
         meshWalls_.addWallFromMesh(vertices, 
         triIndices, 
@@ -38,12 +38,12 @@ public:
 
     meshWall& getMeshWalls() {return meshWalls_;}
 
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
-        if(downLoadFlag_)
+        if(uploadFlag_)
         {
-            meshWalls_.download(stream);
-            downLoadFlag_ = false;
+            meshWalls_.upload(stream);
+            uploadFlag_ = false;
         }
     }
 
@@ -164,7 +164,7 @@ public:
 	}
 
 private:
-    bool downLoadFlag_ ;
+    bool uploadFlag_ ;
 
     meshWall meshWalls_;
     spatialGrid spatialGrids_;

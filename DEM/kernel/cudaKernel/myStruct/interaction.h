@@ -145,7 +145,7 @@ public:
     {
         if (ob0.size() != ob1.size()) return;
 
-        upload(stream);
+        download(stream);
 
         std::vector<int> existingPointed  = objectPointed_.getHostData();
         std::vector<int> existingPointing = objectPointing_.getHostData();
@@ -191,7 +191,7 @@ public:
             isBonded_.addHostData(1);
         }
 
-        download(stream);
+        upload(stream);
     }
 
     // ---------- host-side operations ----------
@@ -220,19 +220,6 @@ public:
     }
 
     // ---------- host -> device ----------
-    void download(cudaStream_t stream)
-    {
-        objectPointed_.download(stream);
-        objectPointing_.download(stream);
-        normalForce_.download(stream);
-        torsionTorque_.download(stream);
-        shearForce_.download(stream);
-        bendingTorque_.download(stream);
-        contactNormal_.download(stream);
-        isBonded_.download(stream);
-    }
-
-    // ---------- device -> host ----------
     void upload(cudaStream_t stream)
     {
         objectPointed_.upload(stream);
@@ -243,6 +230,19 @@ public:
         bendingTorque_.upload(stream);
         contactNormal_.upload(stream);
         isBonded_.upload(stream);
+    }
+
+    // ---------- device -> host ----------
+    void download(cudaStream_t stream)
+    {
+        objectPointed_.download(stream);
+        objectPointing_.download(stream);
+        normalForce_.download(stream);
+        torsionTorque_.download(stream);
+        shearForce_.download(stream);
+        bendingTorque_.download(stream);
+        contactNormal_.download(stream);
+        isBonded_.download(stream);
     }
 
     // ---------- device pointers ----------
@@ -681,13 +681,11 @@ struct interactionMap
 {
 private:
     DeviceArray1D<int> hashIndex_;
-    DeviceArray1D<int> hashValue_;
     DeviceArray1D<int> countA_;
     DeviceArray1D<int> prefixSumA_;
     DeviceArray1D<int> startB_;
     DeviceArray1D<int> endB_;
 
-    size_t activeHashSize_;
 public:
     interactionMap() = default;
     ~interactionMap() = default;
@@ -705,35 +703,21 @@ public:
         startB_.allocDeviceArray(objectBSize, stream);
         endB_.allocDeviceArray(objectBSize, stream);
         hashIndex_.allocDeviceArray(hashListSize, stream);
-        hashValue_.allocDeviceArray(hashListSize, stream);
 
         CUDA_CHECK(cudaMemsetAsync(startB_.d_ptr, 0xFF, startB_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr, 0xFF, endB_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
     }
 
-    void hashInit(int* hashValue, size_t activeSize, cudaStream_t stream)
+    void resizeHashIndex(const size_t n, cudaStream_t stream)
     {
-        activeHashSize_ = activeSize;
-        if(activeSize > hashValue_.deviceSize()) 
-        {
-            hashIndex_.allocDeviceArray(activeSize, stream);
-            hashValue_.allocDeviceArray(activeSize, stream);
-        }
-        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
+        if (n > hashIndex_.deviceSize()) hashIndex_.allocDeviceArray(n, stream);
         CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
-        cuda_copy(hashValue_.d_ptr, hashValue, activeSize,CopyDir::D2D, stream);
-
-        CUDA_CHECK(cudaMemsetAsync(startB_.d_ptr, 0xFF, startB_.deviceSize() * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr, 0xFF, endB_.deviceSize() * sizeof(int), stream));
     }
 
     size_t ASize() const { return countA_.deviceSize(); }
     size_t BSize() const { return startB_.deviceSize(); }
-    size_t activeHashSize() const { return activeHashSize_; }
     int* hashIndex() { return hashIndex_.d_ptr; }
-    int* hashValue() { return hashValue_.d_ptr; }
     int* countA() { return countA_.d_ptr; }
     int* prefixSumA() { return prefixSumA_.d_ptr; }
     int* startB() { return startB_.d_ptr; }

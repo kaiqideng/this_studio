@@ -16,12 +16,12 @@ public:
     ~DEMClumpMeshWallSolver() = default;
 
 private:
-    void download() override
+    void upload() override
     {
-        downloadContactModelParams(stream_);
-        getBallHandler().download(getDomainOrigin(), getDomainSize(), stream_);
-        getClumpHandler().download(stream_);
-        wallHandler_.download(stream_);
+        uploadContactModelParams(stream_);
+        getBallHandler().upload(getDomainOrigin(), getDomainSize(), stream_);
+        getClumpHandler().upload(stream_);
+        wallHandler_.upload(stream_);
 
         std::vector<double> rad = getBallHandler().getBalls().radiusVector();
         double maxBallDiameter = 0.0;

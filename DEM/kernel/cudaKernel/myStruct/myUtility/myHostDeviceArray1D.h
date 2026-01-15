@@ -112,7 +112,7 @@ public:
     // ---------------------------------------------------------------------
     // Host <-> Device transfer
     // ---------------------------------------------------------------------
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
         const size_t h_size = hostSize();
 
@@ -120,14 +120,13 @@ public:
         {
             allocDeviceArray(h_size, stream);
         }
-
         if (h_size > 0)
         {
             cuda_copy(d_ptr, h_data.data(), h_size, CopyDir::H2D, stream);
         }
     }
 
-    void upload(cudaStream_t stream)
+    void download(cudaStream_t stream)
     {
         if (d_size > hostSize())
         {
@@ -240,7 +239,7 @@ public:
         h_data = newData;
     }
 
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
         const size_t h_size = hostSize();
 
@@ -356,16 +355,16 @@ struct structTemplate
         constantDoubleHD_.clearHostData();
     }
 
-    void download(cudaStream_t stream)
-    {
-        double3HD_.download(stream);
-        constantDoubleHD_.download(stream);
-        intD_.allocDeviceArray(deviceSize(), stream);
-    }
-
     void upload(cudaStream_t stream)
     {
         double3HD_.upload(stream);
+        constantDoubleHD_.upload(stream);
+        intD_.allocDeviceArray(deviceSize(), stream);
+    }
+
+    void download(cudaStream_t stream)
+    {
+        double3HD_.download(stream);
     }
 
     double3* double3HD() {return double3HD_.d_ptr;}

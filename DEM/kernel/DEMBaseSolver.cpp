@@ -1,9 +1,9 @@
 #include "DEMBaseSolver.h"
 
-void DEMBaseSolver::download()
+void DEMBaseSolver::upload()
 {
-    downloadContactModelParams(stream_);
-    ballHandler_.download(getDomainOrigin(), getDomainSize(), stream_);
+    uploadContactModelParams(stream_);
+    ballHandler_.upload(getDomainOrigin(), getDomainSize(), stream_);
     
     const size_t maxThreads = getGPUMaxThreadsPerBlock();
     const size_t numBalls = ballHandler_.getBalls().deviceSize();
@@ -25,8 +25,8 @@ bool DEMBaseSolver::initialize()
         << std::endl;
         exit(1);
     }
-    std::cout << "DEM solver: downloading array from host to device..." << std::endl;
-    download();
+    std::cout << "DEM solver: uploading array from host to device..." << std::endl;
+    upload();
     neighborSearch();
     std::cout << "DEM solver: initialization completed." << std::endl;
     return true;
@@ -66,7 +66,7 @@ void DEMBaseSolver::solve()
 
     if (initialize()) 
     {
-        if (handleHostArrayInLoop()) download();
+        if (handleHostArrayInLoop()) upload();
         outputData();
         size_t numSteps = size_t((getMaximumTime()) / timeStep) + 1;
         size_t frameInterval = numSteps / getNumFrames();
@@ -79,7 +79,7 @@ void DEMBaseSolver::solve()
             neighborSearch();
             integration1st(timeStep);
             contactCalculation(timeStep);
-            if(handleHostArrayInLoop()) {download();}
+            if(handleHostArrayInLoop()) {upload();}
             integration2nd(timeStep);
             if (iStep_ % frameInterval == 0) 
             {

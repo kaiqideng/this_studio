@@ -1,5 +1,4 @@
 #include "ballHandler.h"
-#include "cudaKernel/myStruct/myUtility/myVec.h"
 #include "cudaKernel/myStruct/particle.h"
 
 class clumpHandler
@@ -7,7 +6,7 @@ class clumpHandler
 public:
     clumpHandler()
     {
-        downloadFlag_ = false;
+        uploadFlag_ = false;
     }
 
     ~clumpHandler() = default;
@@ -23,10 +22,10 @@ public:
     ballHandler& bH,
     cudaStream_t stream)
     {
-        if (!downloadFlag_)
+        if (!uploadFlag_)
         {
-            clumps_.upload(stream);
-            downloadFlag_ = true;
+            clumps_.download(stream);
+            uploadFlag_ = true;
         }
 
         int clumpID = static_cast<int>(clumps_.hostSize());
@@ -77,10 +76,10 @@ public:
     ballHandler& bH,
     cudaStream_t stream)
     {
-        if (!downloadFlag_)
+        if (!uploadFlag_)
         {
-            clumps_.upload(stream);
-            downloadFlag_ = true;
+            clumps_.download(stream);
+            uploadFlag_ = true;
         }
 
         int clumpID = static_cast<int>(clumps_.hostSize());
@@ -108,12 +107,12 @@ public:
 
     clump &getClumps() { return clumps_; }
 
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
-        if (downloadFlag_)
+        if (uploadFlag_)
         {
-            clumps_.download(stream);
-            downloadFlag_ = false;
+            clumps_.upload(stream);
+            uploadFlag_ = false;
         }
     }
 
@@ -140,6 +139,6 @@ public:
 	}
 
 private:
-    bool downloadFlag_;
+    bool uploadFlag_;
     clump clumps_;
 };

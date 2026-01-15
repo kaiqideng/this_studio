@@ -56,14 +56,14 @@ set(SORT_CUDA "${SOURCE_ROOT}/cudaKernel/cudaSort/biuldHashStartEnd.cu")
 list(FILTER CORE_CUDA EXCLUDE REGEX ".*/biuldHashStartEnd\\.cu$")
 
 # ============================================================
-# DEM_sort (RDC ON)
+# DEM_sort
 # ============================================================
 add_library(DEM_sort STATIC
     ${SORT_CUDA}
 )
 
 set_target_properties(DEM_sort PROPERTIES
-    CUDA_SEPARABLE_COMPILATION ON
+    CUDA_SEPARABLE_COMPILATION OFF
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     CUDA_ARCHITECTURES ${CMAKE_CUDA_ARCHITECTURES}
 )

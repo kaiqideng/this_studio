@@ -69,7 +69,7 @@ protected:
     const size_t& getBallGPUBlockDim() const;
 
 private:
-    virtual void download();
+    virtual void upload();
 
     bool initialize();
 

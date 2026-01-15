@@ -111,21 +111,21 @@ const size_t hashListSize)
 
 __global__ void findStartAndEnd(int* start, 
 int* end, 
-int* hashValue, 
-const int startEndSize,
+int* sortedHashValue, 
+const size_t startEndSize,
 const size_t hashListSize)
 {
     size_t index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= hashListSize) return;
 
-    int h = hashValue[index];
+    int h = sortedHashValue[index];
 
     if (h < 0 || h >= startEndSize) return;
-    if (index == 0 || hashValue[index - 1] != h)
+    if (index == 0 || sortedHashValue[index - 1] != h)
     {
         start[h] = static_cast<int>(index);
     }
-    if (index == hashListSize - 1 || hashValue[index + 1] != h) 
+    if (index == hashListSize - 1 || sortedHashValue[index + 1] != h) 
     {
         end[h] = static_cast<int>(index + 1);
     }
@@ -135,7 +135,7 @@ extern "C" void buildHashStartEnd(int* start,
 int* end, 
 int* hashIndex, 
 int* hashValue, 
-const int startEndSize, 
+const size_t startEndSize, 
 const size_t hashListSize, 
 const size_t gridD, 
 const size_t blockD, 

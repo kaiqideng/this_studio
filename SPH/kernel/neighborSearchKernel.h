@@ -1,0 +1,41 @@
+#pragma once
+#include "buildHashStartEnd.h"
+#include "GPUConfig.h"
+#include "myUtility/myHostDeviceArray.h"
+
+__device__ __forceinline__ int3 calculateGridPosition(double3 position, const double3 minBoundary, const double3 cellSize)
+{
+    return make_int3(int((position.x - minBoundary.x) / cellSize.x),
+    int((position.y - minBoundary.y) / cellSize.y),
+    int((position.z - minBoundary.z) / cellSize.z));
+}
+
+__device__ __forceinline__ int calculateHash(int3 gridPosition, const int3 gridSize)
+{
+    return gridPosition.z * gridSize.y * gridSize.x + gridPosition.y * gridSize.x + gridPosition.x;
+}
+
+extern "C" void launchSPHNeighborSearch(double3* position, 
+double* smoothLength,
+int* hashIndex, 
+int* hashValue,
+int* neighborCount,
+int* neighborPrefixSum,
+
+int* cellHashStart,
+int* cellHashEnd,
+
+int* objectPointed, 
+int* objectPointing,
+const size_t maximumPairs,
+
+const double3 minBound,
+const double3 maxBound,
+const double3 cellSize,
+const int3 gridSize,
+const size_t numGrids,
+
+const size_t num,
+const size_t gridD_GPU, 
+const size_t blockD_GPU, 
+cudaStream_t stream_GPU);

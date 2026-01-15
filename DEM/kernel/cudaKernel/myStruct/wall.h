@@ -40,12 +40,12 @@ public:
         wallIndex_.clearHostData();
     }
 
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
-        index0_.download(stream);
-        index1_.download(stream);
-        index2_.download(stream);
-        wallIndex_.download(stream);
+        index0_.upload(stream);
+        index1_.upload(stream);
+        index2_.upload(stream);
+        wallIndex_.upload(stream);
 
         const size_t n = deviceSize();
         hashIndex_.allocDeviceArray(n, stream);
@@ -108,12 +108,12 @@ public:
         triangleIndex_.clearHostData();
     }
 
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
-        index0_.download(stream);
-        index1_.download(stream);
-        trianglePrefixSum_.download(stream);
-        triangleIndex_.download(stream);
+        index0_.upload(stream);
+        index1_.upload(stream);
+        trianglePrefixSum_.upload(stream);
+        triangleIndex_.upload(stream);
     }
 
     int* index0() { return index0_.d_ptr; }
@@ -174,14 +174,14 @@ public:
         edgeIndex_.clearHostData();
     }
 
-    void download(cudaStream_t stream)
+    void upload(cudaStream_t stream)
     {
-        localPosition_.download(stream);
-        trianglePrefixSum_.download(stream);
-        edgePrefixSum_.download(stream);
+        localPosition_.upload(stream);
+        trianglePrefixSum_.upload(stream);
+        edgePrefixSum_.upload(stream);
 
-        triangleIndex_.download(stream);
-        edgeIndex_.download(stream);
+        triangleIndex_.upload(stream);
+        edgeIndex_.upload(stream);
     }
 
     double3* localPosition() { return localPosition_.d_ptr; }
@@ -403,29 +403,29 @@ public:
         globalVertices_.clearHostData();
     }
 
-    void download(cudaStream_t stream)
-    {
-        position_.download(stream);
-        velocity_.download(stream);
-        angularVelocity_.download(stream);
-        orientation_.download(stream);
-        materialID_.download(stream);
-
-        triangles_.download(stream);
-        edges_.download(stream);
-        vertices_.download(stream);
-
-        globalVertices_.download(stream);
-    }
-
     void upload(cudaStream_t stream)
     {
         position_.upload(stream);
         velocity_.upload(stream);
         angularVelocity_.upload(stream);
         orientation_.upload(stream);
+        materialID_.upload(stream);
+
+        triangles_.upload(stream);
+        edges_.upload(stream);
+        vertices_.upload(stream);
 
         globalVertices_.upload(stream);
+    }
+
+    void download(cudaStream_t stream)
+    {
+        position_.download(stream);
+        velocity_.download(stream);
+        angularVelocity_.download(stream);
+        orientation_.download(stream);
+
+        globalVertices_.download(stream);
     }
 
     double3* position() { return position_.d_ptr; }

@@ -1,10 +1,8 @@
 #pragma once
 #include <cuda_runtime.h>
 #include <iomanip>
-#include <stdexcept>
-#include <string>
-#include <type_traits>
 #include <iostream>
+#include <string>
 #include <vector>
 
 // -----------------------------------------------------------------------------

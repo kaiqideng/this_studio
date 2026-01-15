@@ -61,11 +61,11 @@ protected:
     const size_t& getClumpGPUBlockDim() const { return blockDim_; }
     
 private:
-    void download() override
+    void upload() override
     {
-        downloadContactModelParams(stream_);
-        getBallHandler().download(getDomainOrigin(), getDomainSize(), stream_);
-        clumpHandler_.download(stream_);
+        uploadContactModelParams(stream_);
+        getBallHandler().upload(getDomainOrigin(), getDomainSize(), stream_);
+        clumpHandler_.upload(stream_);
 
         const size_t numBalls = getBallHandler().getBalls().deviceSize();
         const size_t maxThreads = getGPUMaxThreadsPerBlock();

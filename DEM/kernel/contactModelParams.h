@@ -6,7 +6,7 @@ class contactModelParams
 public:
     contactModelParams()
     {
-        downloadFlag_ = false;
+        uploadFlag_ = false;
     }
 
     ~contactModelParams() = default;
@@ -39,7 +39,7 @@ public:
 			torsionFrictionCoeff_mu_t         // -> mu_t
 		});
 
-		downloadFlag_ = true;
+		uploadFlag_ = true;
 	};
 
 	void setLinearContactModelForPair(
@@ -64,11 +64,11 @@ public:
 			materialIdA,
 			materialIdB,
 			normalStiffness_k_n,              // -> k_n
-			slidingStiffness_k_s,               // -> k_s
+			slidingStiffness_k_s,             // -> k_s
 			rollingStiffness_k_r,             // -> k_r
 			torsionStiffness_k_t,             // -> k_t
 			normalDamping_d_n,                // -> d_n
-			slidingDamping_d_s,                 // -> d_s
+			slidingDamping_d_s,               // -> d_s
 			rollingDamping_d_r,               // -> d_r
 			torsionDamping_d_t,               // -> d_t
 			slidingFrictionCoeff_mu_s,        // -> mu_s
@@ -76,7 +76,7 @@ public:
 			torsionFrictionCoeff_mu_t         // -> mu_t
 		});
 
-		downloadFlag_ = true;
+		uploadFlag_ = true;
 	};
 
 	void setBondedContactModelForPair(
@@ -103,19 +103,19 @@ public:
 			frictionCoeff_mu                      // -> mu
 		});
 
-		downloadFlag_ = true;
+		uploadFlag_ = true;
 	};
 	
 protected:
-	void downloadContactModelParams(cudaStream_t stream)
+	void uploadContactModelParams(cudaStream_t stream)
 	{
-		if(downloadFlag_)
+		if(uploadFlag_)
 		{
 			contactModelParams_.buildFromTables(hertzianRows_, 
 			linearRows_, 
 			bondedRows_, 
 			stream);
-			downloadFlag_ = false;
+			uploadFlag_ = false;
 			hertzianRows_.clear();
 			linearRows_.clear();
 			bondedRows_.clear();
@@ -125,7 +125,7 @@ protected:
 	contactModelParameters &getContactModelParams() {return contactModelParams_;}
     
 private:
-    bool downloadFlag_;
+    bool uploadFlag_;
     std::vector<HertzianRow> hertzianRows_;
 	std::vector<LinearRow> linearRows_;
 	std::vector<BondedRow> bondedRows_;
