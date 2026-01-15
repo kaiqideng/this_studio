@@ -7,7 +7,7 @@ extern "C" void buildHashStartEnd(int* start,
 int* end, 
 int* hashIndex, 
 int* hashValue, 
-const int maxHashValue, //size of ptr "start/end"
+const int startEndSize,
 const size_t hashListSize, 
 const size_t gridD, 
 const size_t blockD, 

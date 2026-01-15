@@ -48,18 +48,16 @@ public:
     const double h,
     const double nu)
     {
-        size_t n = SPHHostSize_;
+        position_.insertHostData(0, pos);
+        velocity_.insertHostData(0, vel);
+        density_.insertHostData(0, rho);
+        pressure_.insertHostData(0, p);
 
-        position_.insertHostData(n, pos);
-        velocity_.insertHostData(n, vel);
-        density_.insertHostData(n, rho);
-        pressure_.insertHostData(n, p);
-
-        soundSpeed_.insertHostData(n, c);
-        mass_.insertHostData(n, m);
-        initialDensity_.insertHostData(n, rho0);
-        smoothLength_.insertHostData(n, h);
-        kinematicViscosity_.insertHostData(n, nu);
+        soundSpeed_.insertHostData(0, c);
+        mass_.insertHostData(0, m);
+        initialDensity_.insertHostData(0, rho0);
+        smoothLength_.insertHostData(0, h);
+        kinematicViscosity_.insertHostData(0, nu);
 
         SPHHostSize_++;
     }
@@ -74,18 +72,16 @@ public:
     const double h,
     const double nu)
     {
-        size_t n = SPHHostSize_ + dummyHostSize_; 
+        position_.addHostData(pos);
+        velocity_.addHostData(vel);
+        density_.addHostData(rho);
+        pressure_.addHostData(p);
 
-        position_.insertHostData(n, pos);
-        velocity_.insertHostData(n, vel);
-        density_.insertHostData(n, rho);
-        pressure_.insertHostData(n, p);
-
-        soundSpeed_.insertHostData(n, c);
-        mass_.insertHostData(n, m);
-        initialDensity_.insertHostData(n, rho0);
-        smoothLength_.insertHostData(n, h);
-        kinematicViscosity_.insertHostData(n, nu);
+        soundSpeed_.addHostData(c);
+        mass_.addHostData(m);
+        initialDensity_.addHostData(rho0);
+        smoothLength_.addHostData(h);
+        kinematicViscosity_.addHostData(nu);
 
         dummyHostSize_++;
     }
@@ -216,16 +212,14 @@ public:
     const double h,
     const double nu)
     {
-        size_t n = SPHHostSize_;
+        position_.insertHostData(0, pos);
+        velocity_.insertHostData(0, vel);
+        pressure_.insertHostData(0, p);
 
-        position_.insertHostData(n, pos);
-        velocity_.insertHostData(n, vel);
-        pressure_.insertHostData(n, p);
-
-        mass_.insertHostData(n, m);
-        initialDensity_.insertHostData(n, rho0);
-        smoothLength_.insertHostData(n, h);
-        kinematicViscosity_.insertHostData(n, nu);
+        mass_.insertHostData(0, m);
+        initialDensity_.insertHostData(0, rho0);
+        smoothLength_.insertHostData(0, h);
+        kinematicViscosity_.insertHostData(0, nu);
 
         SPHHostSize_++;
     }
@@ -238,16 +232,14 @@ public:
     const double h,
     const double nu)
     {
-        size_t n = SPHHostSize_ + ghostHostSize_; 
+        position_.addHostData(pos);
+        velocity_.addHostData(vel);
+        pressure_.addHostData(p);
 
-        position_.insertHostData(n, pos);
-        velocity_.insertHostData(n, vel);
-        pressure_.insertHostData(n, p);
-
-        mass_.insertHostData(n, m);
-        initialDensity_.insertHostData(n, rho0);
-        smoothLength_.insertHostData(n, h);
-        kinematicViscosity_.insertHostData(n, nu);
+        mass_.addHostData(m);
+        initialDensity_.addHostData(rho0);
+        smoothLength_.addHostData(h);
+        kinematicViscosity_.addHostData(nu);
 
         ghostHostSize_++;
     }

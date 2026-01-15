@@ -25,7 +25,7 @@ const size_t numObjects)
     }
 }
 
-extern "C" void updateGridCellStartEnd(spatialGrid& sptialGrids, 
+extern "C" void updateGridCellStartEnd(spatialGrid& spatialGrids, 
 int* hashIndex, 
 int* hashValue, 
 double3* position, 
@@ -36,22 +36,22 @@ cudaStream_t stream)
 {
     calculateHash <<< gridD, blockD, 0, stream >>> (hashValue, 
     position, 
-    sptialGrids.minBound, 
-    sptialGrids.maxBound, 
-    sptialGrids.cellSize, 
-    sptialGrids.gridSize, 
-    sptialGrids.deviceSize(), 
+    spatialGrids.minBound, 
+    spatialGrids.maxBound, 
+    spatialGrids.cellSize, 
+    spatialGrids.gridSize, 
+    spatialGrids.deviceSize(), 
     numObjects);
     CUDA_CHECK(cudaGetLastError());
 
-    CUDA_CHECK(cudaMemsetAsync(sptialGrids.cellHashStart(), 0xFF, sptialGrids.deviceSize() * sizeof(int), stream));
-    CUDA_CHECK(cudaMemsetAsync(sptialGrids.cellHashEnd(), 0xFF, sptialGrids.deviceSize() * sizeof(int), stream));
-
-    buildHashStartEnd(sptialGrids.cellHashStart(),
-    sptialGrids.cellHashEnd(),
-    hashIndex, 
-    hashValue, 
-    static_cast<int>(sptialGrids.deviceSize()),
+    //debug_dump_device_array(hashValue, numObjects, "hashValue");
+    CUDA_CHECK(cudaMemsetAsync(spatialGrids.cellHashStart(), 0xFF, spatialGrids.deviceSize() * sizeof(int), stream));
+    CUDA_CHECK(cudaMemsetAsync(spatialGrids.cellHashEnd(), 0xFF, spatialGrids.deviceSize() * sizeof(int), stream));
+    buildHashStartEnd(spatialGrids.cellHashStart(),
+    spatialGrids.cellHashEnd(),
+    hashIndex,
+    hashValue,
+    static_cast<int>(spatialGrids.deviceSize()),
     numObjects,
     gridD,
     blockD, 
@@ -220,8 +220,6 @@ cudaStream_t stream)
 
         ballInteractions.updateHistory(stream);
 
-        //debug_dump_device_array(spatialGrids.cellHashStart(), spatialGrids.deviceSize(), "spatialGrids.cellHashStart");
-        //debug_dump_device_array(spatialGrids.cellHashEnd(), spatialGrids.deviceSize(), "spatialGrids.cellHashEnd");
         countBallInteractionsKernel <<<gridD, blockD, 0, stream>>> (balls.position(),
         balls.radius(),
         balls.inverseMass(),

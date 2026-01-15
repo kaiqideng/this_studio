@@ -28,7 +28,7 @@ const size_t numTri)
     }
 }
 
-extern "C" void updateTriGridCellStartEnd(spatialGrid& sptialGrids, 
+extern "C" void updateTriGridCellStartEnd(spatialGrid& spatialGrids, 
 int* hashIndex, 
 int* hashValue, 
 const int* index0, 
@@ -45,22 +45,21 @@ cudaStream_t stream)
     index1, 
     index2, 
     vertexGlobalPosition, 
-    sptialGrids.minBound, 
-    sptialGrids.maxBound, 
-    sptialGrids.cellSize, 
-    sptialGrids.gridSize, 
-    sptialGrids.deviceSize(), 
+    spatialGrids.minBound, 
+    spatialGrids.maxBound, 
+    spatialGrids.cellSize, 
+    spatialGrids.gridSize, 
+    spatialGrids.deviceSize(), 
     numTri);
     CUDA_CHECK(cudaGetLastError());
 
-    CUDA_CHECK(cudaMemsetAsync(sptialGrids.cellHashStart(), 0xFF, sptialGrids.deviceSize() * sizeof(int), stream));
-    CUDA_CHECK(cudaMemsetAsync(sptialGrids.cellHashEnd(), 0xFF, sptialGrids.deviceSize() * sizeof(int), stream));
-
-    buildHashStartEnd(sptialGrids.cellHashStart(), 
-    sptialGrids.cellHashEnd(),
+    CUDA_CHECK(cudaMemsetAsync(spatialGrids.cellHashStart(), 0xFF, spatialGrids.deviceSize() * sizeof(int), stream));
+    CUDA_CHECK(cudaMemsetAsync(spatialGrids.cellHashEnd(), 0xFF, spatialGrids.deviceSize() * sizeof(int), stream));
+    buildHashStartEnd(spatialGrids.cellHashStart(), 
+    spatialGrids.cellHashEnd(),
     hashIndex,
     hashValue,
-    static_cast<int>(sptialGrids.deviceSize()),
+    static_cast<int>(spatialGrids.deviceSize()),
     numTri,
     gridD, 
     blockD, 
