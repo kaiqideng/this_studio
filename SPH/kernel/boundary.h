@@ -1,5 +1,6 @@
 #pragma once
 #include "myUtility/myHostDeviceArray.h"
+#include "myUtility/myVec.h"
 
 struct spatialGrid
 {

@@ -1,13 +1,11 @@
 #pragma once
+#include "myQua.h" // Assumed to contain quaternion definition
 
 #ifdef __CUDACC__
 #define HOST_DEVICE __host__ __device__
 #else
 #define HOST_DEVICE
 #endif
-
-#include "myQua.h" // Assumed to contain quaternion definition
-#include "myVec.h" // Assumed to contain double3 definition
 
 /**
  * @brief Symmetric 3x3 Matrix structure.

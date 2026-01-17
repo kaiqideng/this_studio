@@ -39,8 +39,6 @@ const size_t gridD_GPU,
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU)
 {
-    if (gridD_GPU * blockD_GPU < numObjects) return;
-
     calculateHash <<< gridD_GPU, blockD_GPU, 0, stream_GPU >>> (hashValue, 
     position, 
     minBound, 

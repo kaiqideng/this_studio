@@ -1,5 +1,5 @@
 #pragma once
-#include "myUtility/myHostDeviceArray.h"
+#include "myUtility/myVec.h"
 
 // Wendland 5th-order (C2) kernel in 3D
 __device__ __forceinline__ double wendlandKernel3D(double r, double h)
@@ -54,6 +54,7 @@ double* mass,
 double* initialDensity,
 double* smoothLength,
 int* neighborPrifixSum,
+int* neighborPrifixSum_dummy,
 
 double3* position_dummy,
 double3* velocity_dummy,
@@ -62,7 +63,6 @@ double* soundSpeed_dummy,
 double* mass_dummy,
 double* initialDensity_dummy,
 double* smoothLength_dummy,
-int* neighborPrifixSum_dummy,
 
 int* objectPointing,
 
@@ -85,6 +85,7 @@ double* mass,
 double* initialDensity,
 double* smoothLength,
 int* neighborPrifixSum,
+int* neighborPrifixSum_dummy,
 
 double3* position_dummy,
 double3* velocity_dummy,
@@ -93,7 +94,6 @@ double* soundSpeed_dummy,
 double* mass_dummy,
 double* initialDensity_dummy,
 double* smoothLength_dummy,
-int* neighborPrifixSum_dummy,
 
 int* objectPointing,
 

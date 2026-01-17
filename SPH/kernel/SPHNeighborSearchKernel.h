@@ -49,7 +49,6 @@ double3* position_dummy,
 double* smoothLength_dummy,
 int* hashIndex_dummy, 
 int* hashValue_dummy,
-const size_t numDummy,
 
 int* cellHashStart,
 int* cellHashEnd,
@@ -62,6 +61,9 @@ const size_t numGrids,
 const size_t numSPH,
 const size_t gridD_GPU, 
 const size_t blockD_GPU,
+const size_t numDummy,
+const size_t gridD1_GPU, 
+const size_t blockD1_GPU,
 cudaStream_t stream_GPU);
 
 extern "C" void launchWriteSPHDummyInteractions(double3* position, 

@@ -16,7 +16,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # CUDA arch (portable default, can override)
 #   cmake -DSPH_CUDA_ARCH=75 ..
 # ============================================================
-set(SPH_CUDA_ARCH "52" CACHE STRING "CUDA architectures, e.g. 52;75;86 or native")
 if (SPH_CUDA_ARCH STREQUAL "native")
     set(CMAKE_CUDA_ARCHITECTURES native)
 else()

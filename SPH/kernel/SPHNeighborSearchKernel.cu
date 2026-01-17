@@ -167,8 +167,8 @@ const size_t numSPH)
     neighborCount[idxA] = count;
 }
 
-__global__ void writeSPHDummyInteractionsKernel(int* objectPointed_SPHDummy, 
-int* objectPointing_SPHDummy,
+__global__ void writeSPHDummyInteractionsKernel(int* objectPointed, 
+int* objectPointing,
 const double3* position, 
 const double* smoothLength,
 const int* neighborPrefixSum,
@@ -218,8 +218,8 @@ const size_t numSPH)
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
                     {
                         int index_w = base_w + countInOneCell;
-                        objectPointed_SPHDummy[index_w] = idxA;
-                        objectPointing_SPHDummy[index_w] = idxB;
+                        objectPointed[index_w] = idxA;
+                        objectPointing[index_w] = idxB;
                         countInOneCell++;
                     }
                 }
@@ -322,7 +322,6 @@ double3* position_dummy,
 double* smoothLength_dummy,
 int* hashIndex_dummy, 
 int* hashValue_dummy,
-const size_t numDummy,
 
 int* cellHashStart,
 int* cellHashEnd,
@@ -335,11 +334,11 @@ const size_t numGrids,
 const size_t numSPH,
 const size_t gridD_GPU, 
 const size_t blockD_GPU,
+const size_t numDummy,
+const size_t gridD1_GPU, 
+const size_t blockD1_GPU,
 cudaStream_t stream_GPU)
 {
-    size_t gridD1_GPU = 1, blockD1_GPU = 256;
-    if (numDummy > 0 && numDummy < 256) blockD1_GPU = numDummy;
-    gridD1_GPU = (numDummy + blockD1_GPU - 1) / blockD1_GPU;
     updateSpatialGridCellHashStartEnd(position_dummy,
     hashIndex_dummy, 
     hashValue_dummy, 

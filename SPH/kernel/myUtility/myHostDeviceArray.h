@@ -1,12 +1,11 @@
 #pragma once
 #include <cassert>
-#include <vector>
+#include <stdexcept>
+#include <tuple>
 #include <utility>
-#include <algorithm>
-#include <string>
-#include <iostream>
+#include <type_traits>
+#include <vector>
 #include <cuda_runtime.h>
-#include "myMat.h"
 
 inline void check_cuda_error(cudaError_t result, const char* func, const char* file, int line)
 {
@@ -157,6 +156,8 @@ public:
 
     const std::vector<T>& hostRef() const { return h_data; }
 
+    void setHost(const std::vector<T>& newData) { h_data = newData; }
+
     // ---------------------------------------------------------------------
     // Host <-> Device transfer
     // ---------------------------------------------------------------------
@@ -217,11 +218,6 @@ public:
         }
         return h_data;
     }
-
-    void setHost(const std::vector<T>& newData)
-    {
-        h_data = newData;
-    }
 };
 
 template <typename... Ts>
@@ -237,15 +233,15 @@ private:
     static constexpr size_t numFields_ {sizeof...(Ts)};
 
     template <typename F, size_t... Is>
-    void forEach_(F&& f, std::index_sequence<Is...>)
+    void forEachIndexImpl_(F&& f, std::index_sequence<Is...>)
     {
-        (f(std::get<Is>(fields_)), ...);
+        (f(std::integral_constant<size_t, Is>{}), ...);
     }
 
-    template <typename F, size_t... Is>
-    void forEachConst_(F&& f, std::index_sequence<Is...>) const
+    template <typename F>
+    void forEachIndex_(F&& f)
     {
-        (f(std::get<Is>(fields_)), ...);
+        forEachIndexImpl_(std::forward<F>(f), std::index_sequence_for<Ts...>{});
     }
 
     void assertSameHostSize_() const
@@ -290,49 +286,97 @@ public:
 
 public:
     // ---------------------------------------------------------------------
+    // forEach (keep your original names)
+    // ---------------------------------------------------------------------
+    template <typename F, size_t... Is>
+    void forEach_(F&& f, std::index_sequence<Is...>)
+    {
+        // f should take (auto&) to avoid copying HostDeviceArray1D (copy is deleted).
+        (f(std::get<Is>(fields_)), ...);
+    }
+
+    template <typename F, size_t... Is>
+    void forEachConst_(F&& f, std::index_sequence<Is...>) const
+    {
+        // f should take (auto const&) to avoid copying HostDeviceArray1D (copy is deleted).
+        (f(std::get<Is>(fields_)), ...);
+    }
+
+    template <typename F, size_t... Is>
+    void forEachIndex_(F&& f, std::index_sequence<Is...>)
+    {
+        (f(std::integral_constant<size_t, Is>{}), ...);
+    }
+
+public:
+    // ---------------------------------------------------------------------
     // Host operations (lock-step)
     // ---------------------------------------------------------------------
     void clearHost()
     {
-        forEach_([&](auto& a)
+        forEachIndex_([&](auto I)
         {
-            a.clearHost();
-        }, std::index_sequence_for<Ts...>{});
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).clearHost();
+        });
     }
 
     void reserveHost(const size_t n)
     {
-        forEach_([&](auto& a)
+        forEachIndex_([&](auto I)
         {
-            a.reserveHost(n);
-        }, std::index_sequence_for<Ts...>{});
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).reserveHost(n);
+        });
     }
 
     void resizeHost(const size_t n)
     {
-        forEach_([&](auto& a)
+        forEachIndex_([&](auto I)
         {
-            a.resizeHost(n);
-        }, std::index_sequence_for<Ts...>{});
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).resizeHost(n);
+        });
     }
 
     void eraseHost(const size_t index)
     {
-        forEach_([&](auto& a)
+        forEachIndex_([&](auto I)
         {
-            a.eraseHost(index);
-        }, std::index_sequence_for<Ts...>{});
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).eraseHost(index);
+        });
     }
 
-    void pushRow(const Ts&... values)
+    template <typename... Us>
+    void pushRow(Us&&... values)
     {
-        (std::get<HostDeviceArray1D<Ts>>(fields_).pushHost(values), ...);
+        static_assert(sizeof...(Us) == numFields_, "SoA1D::pushRow: arity mismatch");
+
+        auto&& valueTuple = std::forward_as_tuple(std::forward<Us>(values)...);
+
+        forEachIndex_([&](auto I)
+        {
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).pushHost(std::get<idx>(valueTuple));
+        });
+
         assertSameHostSize_();
     }
 
-    void insertRow(const size_t index, const Ts&... values)
+    template <typename... Us>
+    void insertRow(const size_t index, Us&&... values)
     {
-        (std::get<HostDeviceArray1D<Ts>>(fields_).insertHost(index, values), ...);
+        static_assert(sizeof...(Us) == numFields_, "SoA1D::insertRow: arity mismatch");
+
+        auto&& valueTuple = std::forward_as_tuple(std::forward<Us>(values)...);
+
+        forEachIndex_([&](auto I)
+        {
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).insertHost(index, std::get<idx>(valueTuple));
+        });
+
         assertSameHostSize_();
     }
 
@@ -344,32 +388,33 @@ public:
     {
         assertSameHostSize_();
 
-        forEach_([&](auto& a)
+        forEachIndex_([&](auto I)
         {
-            a.copyHostToDevice(stream);
-        }, std::index_sequence_for<Ts...>{});
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).copyHostToDevice(stream);
+        });
     }
 
     void copyDeviceToHost(cudaStream_t stream)
     {
-        forEach_([&](auto& a)
+        forEachIndex_([&](auto I)
         {
-            a.copyDeviceToHost(stream);
-        }, std::index_sequence_for<Ts...>{});
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).copyDeviceToHost(stream);
+        });
     }
 
 public:
     // ---------------------------------------------------------------------
     // Device buffer allocation (empty buffer)
     // ---------------------------------------------------------------------
-    // Allocate an empty device buffer of size n for each field.
-    // This does NOT touch host data (no copy back).
     void allocateDevice(const size_t n, cudaStream_t stream, bool zeroFill = true)
     {
-        forEach_([&](auto& a)
+        forEachIndex_([&](auto I)
         {
-            a.allocateDevice(n, stream, zeroFill);
-        }, std::index_sequence_for<Ts...>{});
+            constexpr size_t idx = decltype(I)::value;
+            std::get<idx>(fields_).allocateDevice(n, stream, zeroFill);
+        });
     }
 
 public:
@@ -392,6 +437,13 @@ public:
 
     template <size_t I>
     auto hostCopy()
+    {
+        static_assert(I < numFields_, "SoA1D::hostCopy<I> out of range");
+        return std::get<I>(fields_).getHostCopy();
+    }
+
+    template <size_t I>
+    auto hostCopy() const
     {
         static_assert(I < numFields_, "SoA1D::hostCopy<I> out of range");
         return std::get<I>(fields_).getHostCopy();

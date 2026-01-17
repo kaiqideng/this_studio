@@ -1,12 +1,11 @@
 #pragma once
+#include "myVec.h" // Assumes double3, dot, cross, etc. are defined here
 
 #ifdef __CUDACC__
 #define HOST_DEVICE __host__ __device__
 #else
 #define HOST_DEVICE
 #endif
-
-#include "myVec.h" // Assumes double3, dot, cross, etc. are defined here
 
 struct quaternion {
     double q0; // Scalar part (w)

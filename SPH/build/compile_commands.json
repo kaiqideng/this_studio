@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/SPH_kernels.dir/includes_CUDA.rsp -g -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/SPH/kernel/SPHNeighborSearchKernel.cu -o CMakeFiles/SPH_kernels.dir/kernel/SPHNeighborSearchKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/SPH/kernel/SPHNeighborSearchKernel.cu",
+  "output": "CMakeFiles/SPH_kernels.dir/kernel/SPHNeighborSearchKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/SPH_kernels.dir/includes_CUDA.rsp -g -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/SPH/kernel/WCSPHIntegrationKernel.cu -o CMakeFiles/SPH_kernels.dir/kernel/WCSPHIntegrationKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/SPH/kernel/WCSPHIntegrationKernel.cu",
+  "output": "CMakeFiles/SPH_kernels.dir/kernel/WCSPHIntegrationKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/SPH_kernels.dir/includes_CUDA.rsp -g -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/SPH/kernel/buildHashStartEnd.cu -o CMakeFiles/SPH_kernels.dir/kernel/buildHashStartEnd.cu.o",
+  "file": "/teamspace/studios/this_studio/SPH/kernel/buildHashStartEnd.cu",
+  "output": "CMakeFiles/SPH_kernels.dir/kernel/buildHashStartEnd.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/SPH_kernels.dir/includes_CUDA.rsp -g -std=c++17 \"--generate-code=arch=compute_52,code=[compute_52,sm_52]\" -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/SPH/kernel/neighborSearchKernel.cu -o CMakeFiles/SPH_kernels.dir/kernel/neighborSearchKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/SPH/kernel/neighborSearchKernel.cu",
+  "output": "CMakeFiles/SPH_kernels.dir/kernel/neighborSearchKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/SPH/build",
+  "command": "/usr/bin/c++  -I/teamspace/studios/this_studio/SPH -I/teamspace/studios/this_studio/SPH/kernel -I/teamspace/studios/this_studio/SPH/kernel/myUtility -g -std=gnu++17 -o CMakeFiles/damBreak.dir/damBreak.cpp.o -c /teamspace/studios/this_studio/SPH/damBreak.cpp",
+  "file": "/teamspace/studios/this_studio/SPH/damBreak.cpp",
+  "output": "CMakeFiles/damBreak.dir/damBreak.cpp.o"
+}
+]

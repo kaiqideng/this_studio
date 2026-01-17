@@ -4,6 +4,10 @@
 #include "SPHNeighborSearchKernel.h"
 #include "WCSPHIntegrationKernel.h"
 #include "myUtility/myFileEdit.h"
+#include <iomanip>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 struct SPHInteraction
 {
@@ -16,23 +20,14 @@ class WCSPHSolver
 public:
     WCSPHSolver(cudaStream_t s)
     {
-        threadD_ = 256;
-        blockD_ = 1;
-        gridD_ = 1;
         stream_ = s;
     }
 
     ~WCSPHSolver() = default;
 
 protected:
-    void uploadBoundaryCondition()
+    void initializeBoundaryCondition()
     {
-        size_t numDummy = dummy_.deviceSize();
-        if (numDummy == 0) return;
-        size_t gridD1 = 1, blockD1 = 256;
-        if (numDummy < threadD_) blockD1 = numDummy;
-        gridD1 = (numDummy + blockD1 - 1) / blockD1;
-
         launchCountSPHInteractions(dummy_.position(), 
         dummy_.smoothLength(), 
         dummy_.hashIndex(), 
@@ -46,9 +41,9 @@ protected:
         spatialGrid_.cellSize(), 
         spatialGrid_.gridSize(), 
         spatialGrid_.numGrids(), 
-        numDummy, 
-        gridD1, 
-        blockD1, 
+        dummy_.deviceSize(), 
+        dummy_.gridDim(), 
+        dummy_.blockDim(), 
         stream_);
 
         size_t numNeighborPairs = dummyAndDummy_.objectPointed_.numNeighborPairs();
@@ -68,9 +63,9 @@ protected:
         spatialGrid_.minimumBoundary(),
         spatialGrid_.cellSize(), 
         spatialGrid_.gridSize(), 
-        numDummy, 
-        gridD_, 
-        blockD_, 
+        dummy_.deviceSize(), 
+        dummy_.gridDim(), 
+        dummy_.blockDim(), 
         stream_);
 
         launchCalDummyParticleNormal(dummy_.normal(), 
@@ -81,8 +76,8 @@ protected:
         dummyAndDummy_.objectPointed_.neighborPrefixSum(), 
         dummyAndDummy_.interaction_.objectPointing(), 
         dummy_.deviceSize(), 
-        gridD1, 
-        blockD1, 
+        dummy_.gridDim(), 
+        dummy_.blockDim(), 
         stream_);
     }
 
@@ -99,22 +94,12 @@ protected:
         size_t numDummy = dummy_.deviceSize();
         dummyAndDummy_.objectPointed_.allocateDevice(numDummy, stream_);
         dummyAndDummy_.interaction_.allocateDevice(80 * numDummy, stream_);
-
-        uploadBoundaryCondition();
     }
 
-    void initialize(const double3 minBoundary, const double3 maxBoundary, const size_t deviceID = 0, const size_t maximumThread = 256)
+    void initialize(const double3 minBoundary, const double3 maxBoundary, const size_t maximumThread = 256)
     {
-        cudaError_t cudaStatus = cudaSetDevice(deviceID);
-        if (cudaStatus != cudaSuccess) 
-        {
-            std::cout << "cudaSetDevice( " << deviceID
-            << " ) failed! Do you have a CUDA-capable GPU installed?"
-            << std::endl;
-            exit(1);
-        }
-
-        threadD_ = maximumThread;
+        WCSPH_.setBlockDim(WCSPH_.hostSize() < maximumThread ? WCSPH_.hostSize() : maximumThread);
+        dummy_.setBlockDim(dummy_.hostSize() < maximumThread ? dummy_.hostSize() : maximumThread);
 
         upload();
 
@@ -124,6 +109,8 @@ protected:
         std::vector<double> h1 = dummy_.smoothLengthHostCopy();
         if (h1.size() > 0) cellSizeOneDim = std::max(cellSizeOneDim, *std::max_element(h1.begin(), h1.end()) * 2.0);
         spatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
+
+        initializeBoundaryCondition();
     }
 
     void neighborSearch()
@@ -142,8 +129,8 @@ protected:
         spatialGrid_.gridSize(), 
         spatialGrid_.numGrids(), 
         WCSPH_.deviceSize(), 
-        gridD_, 
-        blockD_, 
+        WCSPH_.gridDim(), 
+        WCSPH_.blockDim(), 
         stream_);
 
         size_t numNeighborPairs = SPHAndSPH_.objectPointed_.numNeighborPairs();
@@ -164,8 +151,8 @@ protected:
         spatialGrid_.cellSize(), 
         spatialGrid_.gridSize(), 
         WCSPH_.deviceSize(), 
-        gridD_, 
-        blockD_, 
+        WCSPH_.gridDim(), 
+        WCSPH_.blockDim(), 
         stream_);
 
         if (dummy_.deviceSize() == 0) return;
@@ -178,7 +165,6 @@ protected:
         dummy_.smoothLength(), 
         dummy_.hashIndex(), 
         dummy_.hashValue(), 
-        dummy_.deviceSize(),
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
         spatialGrid_.minimumBoundary(), 
@@ -187,8 +173,11 @@ protected:
         spatialGrid_.gridSize(), 
         spatialGrid_.numGrids(), 
         WCSPH_.deviceSize(), 
-        gridD_, 
-        blockD_, 
+        WCSPH_.gridDim(), 
+        WCSPH_.blockDim(),
+        dummy_.deviceSize(), 
+        dummy_.gridDim(), 
+        dummy_.blockDim(), 
         stream_);
 
         numNeighborPairs = SPHAndDummy_.objectPointed_.numNeighborPairs();
@@ -211,8 +200,8 @@ protected:
         spatialGrid_.cellSize(), 
         spatialGrid_.gridSize(), 
         WCSPH_.deviceSize(), 
-        gridD_, 
-        blockD_, 
+        WCSPH_.gridDim(), 
+        WCSPH_.blockDim(),
         stream_);
     }
 
@@ -227,6 +216,7 @@ protected:
         WCSPH_.initialDensity(), 
         WCSPH_.smoothLength(), 
         SPHAndSPH_.objectPointed_.neighborPrefixSum(), 
+        SPHAndDummy_.objectPointed_.neighborPrefixSum(), 
         dummy_.position(), 
         dummy_.velocity(), 
         dummy_.normal(), 
@@ -234,14 +224,13 @@ protected:
         dummy_.mass(), 
         dummy_.initialDensity(), 
         dummy_.smoothLength(), 
-        SPHAndDummy_.objectPointed_.neighborPrefixSum(), 
         SPHAndSPH_.interaction_.objectPointing(), 
         SPHAndDummy_.interaction_.objectPointing(), 
         gravity, 
         timeStep, 
         WCSPH_.deviceSize(), 
-        gridD_, 
-        blockD_, 
+        WCSPH_.gridDim(), 
+        WCSPH_.blockDim(),
         stream_);
     }
 
@@ -256,6 +245,7 @@ protected:
         WCSPH_.initialDensity(), 
         WCSPH_.smoothLength(), 
         SPHAndSPH_.objectPointed_.neighborPrefixSum(), 
+        SPHAndDummy_.objectPointed_.neighborPrefixSum(), 
         dummy_.position(), 
         dummy_.velocity(), 
         dummy_.normal(), 
@@ -263,14 +253,13 @@ protected:
         dummy_.mass(), 
         dummy_.initialDensity(), 
         dummy_.smoothLength(), 
-        SPHAndDummy_.objectPointed_.neighborPrefixSum(), 
         SPHAndSPH_.interaction_.objectPointing(), 
         SPHAndDummy_.interaction_.objectPointing(), 
         gravity, 
         timeStep, 
         WCSPH_.deviceSize(), 
-        gridD_, 
-        blockD_, 
+        WCSPH_.gridDim(), 
+        WCSPH_.blockDim(), 
         stream_);
     }
 
@@ -278,7 +267,7 @@ protected:
     {
         MKDIR(dir.c_str());
         std::ostringstream fname;
-        fname << dir << "/SPH_" << std::setw(4) << std::setfill('0') << iFrame << ".vtu";
+        fname << dir << "/SPH_" << setw(4) << std::setfill('0') << iFrame << ".vtu";
         std::ofstream out(fname.str().c_str());
         if (!out) throw std::runtime_error("Cannot open " + fname.str());
         out << std::fixed << std::setprecision(10);
@@ -472,18 +461,29 @@ public:
     const double timeStep, 
     const double maximumTime,
     const size_t numFrame,
-    const std::string dir = "SPHSolverOutput", 
+    const std::string dir, 
     const size_t deviceID = 0, 
     const size_t maximumThread = 256)
     {
         removeVtuFiles(dir);
         removeDatFiles(dir);
 
+        cudaError_t cudaStatus = cudaSetDevice(deviceID);
+        if (cudaStatus != cudaSuccess) 
+        {
+            std::cout << "cudaSetDevice( " << deviceID
+            << " ) failed! Do you have a CUDA-capable GPU installed?"
+            << std::endl;
+            exit(1);
+        }
+
         size_t numStep = size_t(maximumTime / timeStep) + 1;
         size_t frameInterval = numStep / numFrame;
         if (frameInterval < 1) frameInterval = 1;
         
-        initialize(minBoundary, maxBoundary, deviceID, maximumThread);
+        initialize(minBoundary, maxBoundary, maximumThread);
+        std::cout << "Initialization Completed." << std::endl;
+
         outputWCSPHVTU(dir, 0, 0, 0.0);
         outputDummyVTU(dir, 0, 0, 0.0);
 
@@ -499,7 +499,7 @@ public:
             if (iStep % frameInterval == 0) 
             {
                 iFrame++;
-                std::cout << "frame " << iFrame << " at time " << time << std::endl;
+                std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputWCSPHVTU(dir, iFrame, iStep, time);
                 outputDummyVTU(dir, iFrame, iStep, time);
             }
@@ -509,9 +509,6 @@ public:
     }
 
 private:
-    size_t threadD_;
-    size_t blockD_;
-    size_t gridD_;
     cudaStream_t stream_;
 
     WCSPH WCSPH_;

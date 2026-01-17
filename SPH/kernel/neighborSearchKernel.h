@@ -1,5 +1,6 @@
 #pragma once
 #include "buildHashStartEnd.h"
+#include "myUtility/myVec.h"
 #include "myUtility/myHostDeviceArray.h"
 
 __device__ __forceinline__ int3 calculateGridPosition(double3 position, const double3 minBoundary, const double3 cellSize)

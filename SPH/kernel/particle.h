@@ -1,5 +1,6 @@
 #pragma once
 #include "myUtility/myHostDeviceArray.h"
+#include <algorithm>
 
 struct WCSPH
 {
@@ -34,6 +35,8 @@ private:
 
     size_t hostSize_ {0};
     size_t deviceSize_ {0};
+    size_t blockDim_ {256};
+    size_t gridDim_ {0};
 
 private:
     // ---------------------------------------------------------------------
@@ -72,6 +75,19 @@ public:
     // ---------------------------------------------------------------------
     size_t hostSize() const { return hostSize_; }
     size_t deviceSize() const { return deviceSize_; }
+
+public:
+    // ---------------------------------------------------------------------
+    // GPU computation parameters
+    // ---------------------------------------------------------------------  
+    void setBlockDim(const size_t blockDim) 
+    { 
+        if (blockDim == 0) return;
+        blockDim_ = blockDim; 
+    }
+
+    size_t blockDim() const { return blockDim_; }
+    size_t gridDim() const { return gridDim_; }
 
 public:
     // ---------------------------------------------------------------------
@@ -180,6 +196,7 @@ public:
         }
 
         deviceSize_ = hostSize_;
+        if (blockDim_ > 0) gridDim_ = (deviceSize_ + blockDim_ - 1) / blockDim_;
     }
 
     void copyDeviceToHost(cudaStream_t stream)
