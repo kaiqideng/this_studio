@@ -56,6 +56,8 @@ cudaStream_t stream_GPU)
     hashValue,
     numGrids,
     numObjects,
+    gridD_GPU,
+    blockD_GPU,
     stream_GPU);
 }
 

@@ -1,14 +1,14 @@
 #pragma once
 #include "myUtility/myHostDeviceArray.h"
 
-struct interaction
+struct pair
 {
 private:
     // ---------------------------------------------------------------------
-    // Data (SoA)
+    // Data
     // ---------------------------------------------------------------------
-    using Storage = SoA1D<int, int>;   // (objectPointed, objectPointing)
-    Storage data_;
+    HostDeviceArray1D<int> objectPointed_;
+    HostDeviceArray1D<int> objectPointing_;
 
     size_t deviceSize_ {0};
 
@@ -16,14 +16,14 @@ public:
     // ---------------------------------------------------------------------
     // Rule of Five
     // ---------------------------------------------------------------------
-    interaction() = default;
-    ~interaction() = default;
+    pair() = default;
+    ~pair() = default;
 
-    interaction(const interaction&) = delete;
-    interaction& operator=(const interaction&) = delete;
+    pair(const pair&) = delete;
+    pair& operator=(const pair&) = delete;
 
-    interaction(interaction&&) noexcept = default;
-    interaction& operator=(interaction&&) noexcept = default;
+    pair(pair&&) noexcept = default;
+    pair& operator=(pair&&) noexcept = default;
 
 public:
     // ---------------------------------------------------------------------
@@ -32,12 +32,20 @@ public:
     size_t deviceSize() const { return deviceSize_; }
 
 public:
-    // Allocate an empty device buffer of size n (no host touch).
+    // ---------------------------------------------------------------------
+    // Device buffer allocation (empty buffer)
+    // ---------------------------------------------------------------------
     void allocateDevice(const size_t n, cudaStream_t stream, bool zeroFill = true)
     {
-        data_.allocateDevice(n, stream, zeroFill);
-        CUDA_CHECK(cudaMemsetAsync(data_.devicePtr<0>(), 0xFF, n * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(data_.devicePtr<1>(), 0xFF, n * sizeof(int), stream));
+        objectPointed_.allocateDevice(n, stream, zeroFill);
+        objectPointing_.allocateDevice(n, stream, zeroFill);
+
+        if (n > 0)
+        {
+            CUDA_CHECK(cudaMemsetAsync(objectPointed_.d_ptr, 0xFF, n * sizeof(int), stream));
+            CUDA_CHECK(cudaMemsetAsync(objectPointing_.d_ptr, 0xFF, n * sizeof(int), stream));
+        }
+
         deviceSize_ = n;
     }
 
@@ -45,22 +53,25 @@ public:
     // ---------------------------------------------------------------------
     // Device pointers
     // ---------------------------------------------------------------------
-    int* objectPointed() { return data_.devicePtr<0>(); }
-    int* objectPointing() { return data_.devicePtr<1>(); }
+    int* objectPointed() { return objectPointed_.d_ptr; }
+    int* objectPointing() { return objectPointing_.d_ptr; }
 
 public:
     // ---------------------------------------------------------------------
     // Host copies (sync D2H inside HostDeviceArray1D::getHostCopy)
     // ---------------------------------------------------------------------
-    std::vector<int> objectPointedHostCopy() { return data_.hostCopy<0>(); }
-    std::vector<int> objectPointingHostCopy() { return data_.hostCopy<1>(); }
+    std::vector<int> objectPointedHostCopy() { return objectPointed_.getHostCopy(); }
+    std::vector<int> objectPointingHostCopy() { return objectPointing_.getHostCopy(); }
 };
 
 struct objectPointed
 {
 private:
-    using Storage = SoA1D<int, int>;   // (neighborCount, neighborPrefixSum)
-    Storage data_;
+    // ---------------------------------------------------------------------
+    // Data
+    // ---------------------------------------------------------------------
+    HostDeviceArray1D<int> neighborCount_;
+    HostDeviceArray1D<int> neighborPrefixSum_;
 
     size_t deviceSize_ {0};
 
@@ -84,10 +95,13 @@ public:
     size_t deviceSize() const { return deviceSize_; }
 
 public:
-    // Allocate an empty device buffer of size n (no host touch).
+    // ---------------------------------------------------------------------
+    // Device buffer allocation (empty buffer)
+    // ---------------------------------------------------------------------
     void allocateDevice(const size_t n, cudaStream_t stream, bool zeroFill = true)
     {
-        data_.allocateDevice(n, stream, zeroFill);
+        neighborCount_.allocateDevice(n, stream, zeroFill);
+        neighborPrefixSum_.allocateDevice(n, stream, zeroFill);
         deviceSize_ = n;
     }
 
@@ -95,34 +109,38 @@ public:
     // ---------------------------------------------------------------------
     // Device pointers
     // ---------------------------------------------------------------------
-    int* neighborCount() { return data_.devicePtr<0>(); }
-    int* neighborPrefixSum() { return data_.devicePtr<1>(); }
+    int* neighborCount() { return neighborCount_.d_ptr; }
+    int* neighborPrefixSum() { return neighborPrefixSum_.d_ptr; }
 
 public:
     // ---------------------------------------------------------------------
     // Host copies (sync D2H inside HostDeviceArray1D::getHostCopy)
     // ---------------------------------------------------------------------
-    std::vector<int> neighborCountHostCopy() { return data_.hostCopy<0>(); }
-    std::vector<int> neighborPrefixSumHostCopy() { return data_.hostCopy<1>(); }
+    std::vector<int> neighborCountHostCopy() { return neighborCount_.getHostCopy(); }
+    std::vector<int> neighborPrefixSumHostCopy() { return neighborPrefixSum_.getHostCopy(); }
+
     size_t numNeighborPairs()
     {
-        int sum = 0;
-        if (deviceSize_ > 0)
-        {
-            CUDA_CHECK(cudaMemcpy(&sum,
-                                  neighborPrefixSum(),
-                                  deviceSize_ * sizeof(int),
-                                  cudaMemcpyDeviceToHost));
-        }
-        return static_cast<size_t>(sum);
+        if (deviceSize_ == 0) return 0;
+
+        int last = 0;
+        CUDA_CHECK(cudaMemcpy(&last,
+                              neighborPrefixSum_.d_ptr + (deviceSize_ - 1),
+                              sizeof(int),
+                              cudaMemcpyDeviceToHost));
+
+        return static_cast<size_t>(last);
     }
 };
 
 struct objectPointing
 {
 private:
-    using Storage = SoA1D<int, int>;   // (interactionStart, interactionEnd)
-    Storage data_;
+    // ---------------------------------------------------------------------
+    // Data
+    // ---------------------------------------------------------------------
+    HostDeviceArray1D<int> interactionStart_;
+    HostDeviceArray1D<int> interactionEnd_;
 
     size_t deviceSize_ {0};
 
@@ -146,12 +164,20 @@ public:
     size_t deviceSize() const { return deviceSize_; }
 
 public:
-    // Allocate an empty device buffer of size n (no host touch).
+    // ---------------------------------------------------------------------
+    // Device buffer allocation (empty buffer)
+    // ---------------------------------------------------------------------
     void allocateDevice(const size_t n, cudaStream_t stream, bool zeroFill = true)
     {
-        data_.allocateDevice(n, stream, zeroFill);
-        CUDA_CHECK(cudaMemsetAsync(data_.devicePtr<0>(), 0xFF, n * sizeof(int), stream));
-        CUDA_CHECK(cudaMemsetAsync(data_.devicePtr<1>(), 0xFF, n * sizeof(int), stream));
+        interactionStart_.allocateDevice(n, stream, zeroFill);
+        interactionEnd_.allocateDevice(n, stream, zeroFill);
+
+        if (n > 0)
+        {
+            CUDA_CHECK(cudaMemsetAsync(interactionStart_.d_ptr, 0xFF, n * sizeof(int), stream));
+            CUDA_CHECK(cudaMemsetAsync(interactionEnd_.d_ptr, 0xFF, n * sizeof(int), stream));
+        }
+
         deviceSize_ = n;
     }
 
@@ -159,13 +185,13 @@ public:
     // ---------------------------------------------------------------------
     // Device pointers
     // ---------------------------------------------------------------------
-    int* interactionStart() { return data_.devicePtr<0>(); }
-    int* interactionEnd() { return data_.devicePtr<1>(); }
+    int* interactionStart() { return interactionStart_.d_ptr; }
+    int* interactionEnd() { return interactionEnd_.d_ptr; }
 
 public:
     // ---------------------------------------------------------------------
     // Host copies (sync D2H inside HostDeviceArray1D::getHostCopy)
     // ---------------------------------------------------------------------
-    std::vector<int> interactionStartHostCopy() { return data_.hostCopy<0>(); }
-    std::vector<int> interactionEndHostCopy() { return data_.hostCopy<1>(); }
+    std::vector<int> interactionStartHostCopy() { return interactionStart_.getHostCopy(); }
+    std::vector<int> interactionEndHostCopy() { return interactionEnd_.getHostCopy(); }
 };

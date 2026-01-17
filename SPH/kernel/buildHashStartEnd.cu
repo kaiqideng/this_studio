@@ -34,19 +34,17 @@ extern "C" void buildHashStartEnd(int* start,
 int* end, 
 int* hashIndex, 
 int* hashValue, 
-const size_t startEndSize, 
-const size_t hashListSize, 
-cudaStream_t stream)
+const size_t startEndSize,
+
+const size_t hashListSize,
+const size_t gridD_GPU, 
+const size_t blockD_GPU,  
+cudaStream_t stream_GPU)
 {
-    size_t gridD = 1, blockD = 1;
-    blockD = 256 < hashListSize ? 256 : hashListSize;
-    if (blockD == 0) return;
-    gridD = (hashListSize + blockD - 1) / blockD;
-    
-    setHashIndex <<<gridD, blockD, 0, stream>>> (hashIndex, 
+    setHashIndex <<<gridD_GPU, blockD_GPU, 0, stream_GPU>>> (hashIndex, 
     hashListSize);
 
-    auto exec = thrust::cuda::par.on(stream);
+    auto exec = thrust::cuda::par.on(stream_GPU);
     try
     {
         cudaError_t err0 = cudaGetLastError();
@@ -74,7 +72,7 @@ cudaStream_t stream)
         throw;
     }
 
-    findStartAndEnd <<<gridD, blockD, 0, stream>>> (start, 
+    findStartAndEnd <<<gridD_GPU, blockD_GPU, 0, stream_GPU>>> (start, 
     end, 
     hashValue, 
     startEndSize, 

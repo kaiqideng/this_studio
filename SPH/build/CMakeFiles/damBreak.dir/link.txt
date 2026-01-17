@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/damBreak.dir/damBreak.cpp.o CMakeFiles/damBreak.dir/cmake_device_link.o -o damBreak   -L/usr/lib/x86_64-linux-gnu/stubs  -L/usr/lib/gcc/x86_64-linux-gnu/12  libSPH_kernels.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl 

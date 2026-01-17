@@ -6,29 +6,20 @@ struct WCSPH
 {
 private:
     // ---------------------------------------------------------------------
-    // AoS (actually SoA storage):
-    //   0 position
-    //   1 velocity
-    //   2 acceleration
-    //   3 normal
-    //   4 density
-    //   5 pressure
-    //   6 initialDensity
-    //   7 smoothLength
-    //   8 mass
-    //   9 soundSpeed
-    //   10 viscosity
+    // Fields
     // ---------------------------------------------------------------------
-    using Storage = SoA1D<
-        double3, double3,
-        double3, double3,
-        double,  double,
-        double,  double,
-        double,  double,
-        double
-    >;
+    HostDeviceArray1D<double3> position_;
+    HostDeviceArray1D<double3> velocity_;
+    HostDeviceArray1D<double3> acceleration_;
+    HostDeviceArray1D<double3> normal_;
 
-    Storage data_;
+    HostDeviceArray1D<double> density_;
+    HostDeviceArray1D<double> pressure_;
+    HostDeviceArray1D<double> initialDensity_;
+    HostDeviceArray1D<double> smoothLength_;
+    HostDeviceArray1D<double> mass_;
+    HostDeviceArray1D<double> soundSpeed_;
+    HostDeviceArray1D<double> viscosity_;
 
     HostDeviceArray1D<int> hashValue_;
     HostDeviceArray1D<int> hashIndex_;
@@ -45,15 +36,33 @@ private:
     void assertAligned_() const
     {
 #ifndef NDEBUG
-        const size_t n = hostSize();
+        const size_t n = hostSize_;
         bool ok = true;
 
-        ok = ok && (data_.hostSize() == n);
+        ok = ok && (position_.hostSize() == n);
+        ok = ok && (velocity_.hostSize() == n);
+        ok = ok && (acceleration_.hostSize() == n);
+        ok = ok && (normal_.hostSize() == n);
+
+        ok = ok && (density_.hostSize() == n);
+        ok = ok && (pressure_.hostSize() == n);
+        ok = ok && (initialDensity_.hostSize() == n);
+        ok = ok && (smoothLength_.hostSize() == n);
+        ok = ok && (mass_.hostSize() == n);
+        ok = ok && (soundSpeed_.hostSize() == n);
+        ok = ok && (viscosity_.hostSize() == n);
+
         ok = ok && (hashValue_.hostSize() == n);
         ok = ok && (hashIndex_.hostSize() == n);
 
-        assert(ok && "WCSPH: field host sizes mismatch (data_/hash arrays)!");
+        assert(ok && "WCSPH: field host sizes mismatch!");
 #endif
+    }
+
+    void updateGridDim_()
+    {
+        if (blockDim_ == 0) { gridDim_ = 0; return; }
+        gridDim_ = (deviceSize_ + blockDim_ - 1) / blockDim_;
     }
 
 public:
@@ -79,11 +88,12 @@ public:
 public:
     // ---------------------------------------------------------------------
     // GPU computation parameters
-    // ---------------------------------------------------------------------  
-    void setBlockDim(const size_t blockDim) 
-    { 
+    // ---------------------------------------------------------------------
+    void setBlockDim(const size_t blockDim)
+    {
         if (blockDim == 0) return;
-        blockDim_ = blockDim; 
+        blockDim_ = blockDim;
+        updateGridDim_();
     }
 
     size_t blockDim() const { return blockDim_; }
@@ -93,25 +103,29 @@ public:
     // ---------------------------------------------------------------------
     // Host operations
     // ---------------------------------------------------------------------
-    void clearHost()
-    {
-        data_.clearHost();
-        hashValue_.clearHost();
-        hashIndex_.clearHost();
-
-        hostSize_ = 0;
-    }
-
     void eraseHost(std::vector<size_t> index)
     {
         std::sort(index.begin(), index.end(), std::greater<size_t>());
         index.erase(std::unique(index.begin(), index.end()), index.end());
+
         const size_t hostSize0 = hostSize_;
         for (size_t i = 0; i < index.size(); i++)
         {
-            if (index[i] < hostSize0 && index[i] > 0)
+            if (index[i] < hostSize0 && index[i] >= 0)
             {
-                data_.eraseHost(index[i]);
+                position_.eraseHost(index[i]);
+                velocity_.eraseHost(index[i]);
+                acceleration_.eraseHost(index[i]);
+                normal_.eraseHost(index[i]);
+
+                density_.eraseHost(index[i]);
+                pressure_.eraseHost(index[i]);
+                initialDensity_.eraseHost(index[i]);
+                smoothLength_.eraseHost(index[i]);
+                mass_.eraseHost(index[i]);
+                soundSpeed_.eraseHost(index[i]);
+                viscosity_.eraseHost(index[i]);
+
                 hashValue_.eraseHost(index[i]);
                 hashIndex_.eraseHost(index[i]);
 
@@ -120,58 +134,58 @@ public:
         }
     }
 
-    // Append SPH at the end.
     void addHost(const double3 pos,
-                 const double3 vel,
-                 const double  rho,
-                 const double  p,
-                 const double  rho0,
-                 const double  h,
-                 const double  m,
-                 const double  c,
-                 const double  nu)
+    const double3 vel,
+    const double rho,
+    const double p,
+    const double rho0,
+    const double h,
+    const double m,
+    const double c,
+    const double nu)
     {
-        data_.pushRow(pos, vel,
-                      make_double3(0.0, 0.0, 0.0),     // acceleration
-                      make_double3(0.0, 0.0, 0.0),     // normal
-                      rho, p,
-                      rho0, h,
-                      m, c,
-                      nu);
+        position_.pushHost(pos);
+        velocity_.pushHost(vel);
+        acceleration_.pushHost(make_double3(0.0, 0.0, 0.0));
+        normal_.pushHost(make_double3(0.0, 0.0, 0.0));
 
-        // Keep hash arrays aligned (host-side default = -1).
+        density_.pushHost(rho);
+        pressure_.pushHost(p);
+        initialDensity_.pushHost(rho0);
+        smoothLength_.pushHost(h);
+        mass_.pushHost(m);
+        soundSpeed_.pushHost(c);
+        viscosity_.pushHost(nu);
+
         hashValue_.pushHost(-1);
         hashIndex_.pushHost(-1);
 
-        deviceSize_++;
+        hostSize_++;
         assertAligned_();
     }
 
     void copyFromHost(const WCSPH& other)
     {
-        // Copy segmentation on host
         hostSize_ = other.hostSize_;
-        // Do NOT copy device sizes (keep current device state untouched)
-        // SPHDeviceSize_ / dummyDeviceSize_ are left as-is.
+        blockDim_ = other.blockDim_;
 
-        // Copy host vectors of all SoA fields
-        data_.field<0>().setHost(other.data_.field<0>().hostRef());  // position
-        data_.field<1>().setHost(other.data_.field<1>().hostRef());  // velocity
-        data_.field<2>().setHost(other.data_.field<2>().hostRef());  // acceleration
-        data_.field<3>().setHost(other.data_.field<3>().hostRef());  // normal
+        position_.setHost(other.position_.hostRef());
+        velocity_.setHost(other.velocity_.hostRef());
+        acceleration_.setHost(other.acceleration_.hostRef());
+        normal_.setHost(other.normal_.hostRef());
 
-        data_.field<4>().setHost(other.data_.field<4>().hostRef());  // density
-        data_.field<5>().setHost(other.data_.field<5>().hostRef());  // pressure
+        density_.setHost(other.density_.hostRef());
+        pressure_.setHost(other.pressure_.hostRef());
+        initialDensity_.setHost(other.initialDensity_.hostRef());
+        smoothLength_.setHost(other.smoothLength_.hostRef());
+        mass_.setHost(other.mass_.hostRef());
+        soundSpeed_.setHost(other.soundSpeed_.hostRef());
+        viscosity_.setHost(other.viscosity_.hostRef());
 
-        data_.field<6>().setHost(other.data_.field<6>().hostRef());  // initialDensity
-        data_.field<7>().setHost(other.data_.field<7>().hostRef());  // smoothLength
-        data_.field<8>().setHost(other.data_.field<8>().hostRef());  // mass
-        data_.field<9>().setHost(other.data_.field<9>().hostRef());  // soundSpeed
-        data_.field<10>().setHost(other.data_.field<10>().hostRef()); // viscosity
-
-        // Copy host vectors of hash arrays
         hashValue_.setHost(other.hashValue_.hostRef());
         hashIndex_.setHost(other.hashIndex_.hostRef());
+
+        assertAligned_();
     }
 
 public:
@@ -182,12 +196,22 @@ public:
     {
         assertAligned_();
 
-        data_.copyHostToDevice(stream);
+        position_.copyHostToDevice(stream);
+        velocity_.copyHostToDevice(stream);
+        acceleration_.copyHostToDevice(stream);
+        normal_.copyHostToDevice(stream);
+
+        density_.copyHostToDevice(stream);
+        pressure_.copyHostToDevice(stream);
+        initialDensity_.copyHostToDevice(stream);
+        smoothLength_.copyHostToDevice(stream);
+        mass_.copyHostToDevice(stream);
+        soundSpeed_.copyHostToDevice(stream);
+        viscosity_.copyHostToDevice(stream);
 
         hashValue_.copyHostToDevice(stream);
         hashIndex_.copyHostToDevice(stream);
 
-        // Force hash arrays to 0xFF on device (int = -1).
         const size_t n = hostSize_;
         if (n > 0)
         {
@@ -196,12 +220,24 @@ public:
         }
 
         deviceSize_ = hostSize_;
-        if (blockDim_ > 0) gridDim_ = (deviceSize_ + blockDim_ - 1) / blockDim_;
+        updateGridDim_();
     }
 
     void copyDeviceToHost(cudaStream_t stream)
     {
-        data_.copyDeviceToHost(stream);
+        position_.copyDeviceToHost(stream);
+        velocity_.copyDeviceToHost(stream);
+        acceleration_.copyDeviceToHost(stream);
+        normal_.copyDeviceToHost(stream);
+
+        density_.copyDeviceToHost(stream);
+        pressure_.copyDeviceToHost(stream);
+        initialDensity_.copyDeviceToHost(stream);
+        smoothLength_.copyDeviceToHost(stream);
+        mass_.copyDeviceToHost(stream);
+        soundSpeed_.copyDeviceToHost(stream);
+        viscosity_.copyDeviceToHost(stream);
+
         hashValue_.copyDeviceToHost(stream);
         hashIndex_.copyDeviceToHost(stream);
 
@@ -210,21 +246,21 @@ public:
 
 public:
     // ---------------------------------------------------------------------
-    // Device pointers (data)
+    // Device pointers
     // ---------------------------------------------------------------------
-    double3* position() { return data_.devicePtr<0>(); }
-    double3* velocity() { return data_.devicePtr<1>(); }
-    double3* acceleration() { return data_.devicePtr<2>(); }
-    double3* normal() { return data_.devicePtr<3>(); }
+    double3* position() { return position_.d_ptr; }
+    double3* velocity() { return velocity_.d_ptr; }
+    double3* acceleration() { return acceleration_.d_ptr; }
+    double3* normal() { return normal_.d_ptr; }
 
-    double* density() { return data_.devicePtr<4>(); }
-    double* pressure() { return data_.devicePtr<5>(); }
+    double* density() { return density_.d_ptr; }
+    double* pressure() { return pressure_.d_ptr; }
 
-    double* initialDensity() { return data_.devicePtr<6>(); }
-    double* smoothLength() { return data_.devicePtr<7>(); }
-    double* mass() { return data_.devicePtr<8>(); }
-    double* soundSpeed() { return data_.devicePtr<9>(); }
-    double* viscosity() { return data_.devicePtr<10>(); }
+    double* initialDensity() { return initialDensity_.d_ptr; }
+    double* smoothLength() { return smoothLength_.d_ptr; }
+    double* mass() { return mass_.d_ptr; }
+    double* soundSpeed() { return soundSpeed_.d_ptr; }
+    double* viscosity() { return viscosity_.d_ptr; }
 
 public:
     // ---------------------------------------------------------------------
@@ -235,15 +271,15 @@ public:
 
 public:
     // ---------------------------------------------------------------------
-    // Host copies (sync D2H inside HostDeviceArray1D::getHostCopy)
+    // Host copies
     // ---------------------------------------------------------------------
-    std::vector<double3> positionHostCopy() { return data_.hostCopy<0>(); }
-    std::vector<double3> velocityHostCopy() { return data_.hostCopy<1>(); }
-    std::vector<double3> accelerationHostCopy() { return data_.hostCopy<2>(); }
-    std::vector<double3> normalHostCopy() { return data_.hostCopy<3>(); }
+    std::vector<double3> positionHostCopy() { return position_.getHostCopy(); }
+    std::vector<double3> velocityHostCopy() { return velocity_.getHostCopy(); }
+    std::vector<double3> accelerationHostCopy() { return acceleration_.getHostCopy(); }
+    std::vector<double3> normalHostCopy() { return normal_.getHostCopy(); }
 
-    std::vector<double> densityHostCopy() { return data_.hostCopy<4>(); }
-    std::vector<double> pressureHostCopy() { return data_.hostCopy<5>(); }
+    std::vector<double> densityHostCopy() { return density_.getHostCopy(); }
+    std::vector<double> pressureHostCopy() { return pressure_.getHostCopy(); }
 
-    std::vector<double> smoothLengthHostCopy() { return data_.hostCopy<7>(); }
+    std::vector<double> smoothLengthHostCopy() { return smoothLength_.getHostCopy(); }
 };

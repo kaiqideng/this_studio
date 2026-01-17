@@ -16,12 +16,30 @@ private:
 
 private:
     // ---------------------------------------------------------------------
-    // SoA (per-cell arrays)
+    // Per-cell arrays
     //   cellHashStart[h] : start index in sorted list for cell h
     //   cellHashEnd[h]   : end index in sorted list for cell h
     // ---------------------------------------------------------------------
-    using Storage = SoA1D<int, int>;   // (cellHashStart, cellHashEnd)
-    Storage data_;
+    HostDeviceArray1D<int> cellHashStart_;
+    HostDeviceArray1D<int> cellHashEnd_;
+
+private:
+    // ---------------------------------------------------------------------
+    // Device buffer allocation (empty buffer)
+    // ---------------------------------------------------------------------
+    void allocateCellHashDevice(const size_t numGrids,
+    cudaStream_t stream,
+    const bool initToFF = true)
+    {
+        cellHashStart_.allocateDevice(numGrids, stream, /*zeroFill=*/false);
+        cellHashEnd_.allocateDevice(numGrids, stream, /*zeroFill=*/false);
+
+        if (initToFF && numGrids > 0)
+        {
+            CUDA_CHECK(cudaMemsetAsync(cellHashStart_.d_ptr, 0xFF, numGrids * sizeof(int), stream));
+            CUDA_CHECK(cudaMemsetAsync(cellHashEnd_.d_ptr, 0xFF, numGrids * sizeof(int), stream));
+        }
+    }
 
 public:
     // ---------------------------------------------------------------------
@@ -45,27 +63,14 @@ public:
     double3 cellSize() const { return cellSize_; }
     int3 gridSize() const { return gridSize_; }
 
-private:
-    // ---------------------------------------------------------------------
-    // SoA management
-    // ---------------------------------------------------------------------
-    // Allocate per-cell buffers on device (empty buffer).
-    // If initToFF=true, fill both arrays with 0xFF (int = -1) on device.
-    void allocateCellHashDevice(const size_t numGrids,
-                                cudaStream_t stream,
-                                const bool initToFF = true)
-    {
-        data_.allocateDevice(numGrids, stream, /*zeroFill=*/false);
-
-        if (initToFF && numGrids > 0)
-        {
-            CUDA_CHECK(cudaMemsetAsync(data_.devicePtr<0>(), 0xFF, numGrids * sizeof(int), stream));
-            CUDA_CHECK(cudaMemsetAsync(data_.devicePtr<1>(), 0xFF, numGrids * sizeof(int), stream));
-        }
-    }
-
 public:
-    void set(double3 minBoundary, double3 maxBoundary, double cellSizeOneDim, cudaStream_t stream)
+    // ---------------------------------------------------------------------
+    // Set / initialize grid
+    // ---------------------------------------------------------------------
+    void set(double3 minBoundary,
+    double3 maxBoundary,
+    double cellSizeOneDim,
+    cudaStream_t stream)
     {
         if (maxBoundary.x <= minBoundary.x) return;
         if (maxBoundary.y <= minBoundary.y) return;
@@ -74,20 +79,29 @@ public:
 
         minBoundary_ = minBoundary;
         maxBoundary_ = maxBoundary;
-        double3 domainSize = maxBoundary - minBoundary;
+
+        const double3 domainSize = maxBoundary - minBoundary;
+
         gridSize_.x = domainSize.x > cellSizeOneDim ? int(domainSize.x / cellSizeOneDim) : 1;
         gridSize_.y = domainSize.y > cellSizeOneDim ? int(domainSize.y / cellSizeOneDim) : 1;
         gridSize_.z = domainSize.z > cellSizeOneDim ? int(domainSize.z / cellSizeOneDim) : 1;
+
         cellSize_.x = domainSize.x / double(gridSize_.x);
         cellSize_.y = domainSize.y / double(gridSize_.y);
         cellSize_.z = domainSize.z / double(gridSize_.z);
 
-        allocateCellHashDevice(gridSize_.x * gridSize_.y * gridSize_.z, stream);
+        allocateCellHashDevice(size_t(gridSize_.x) * size_t(gridSize_.y) * size_t(gridSize_.z), stream);
     }
+
+public:
     // ---------------------------------------------------------------------
     // Device pointers (cell hash)
     // ---------------------------------------------------------------------
-    int* cellHashStart() { return data_.devicePtr<0>(); }
-    int* cellHashEnd() { return data_.devicePtr<1>(); }
-    size_t numGrids() { return gridSize_.x * gridSize_.y * gridSize_.z; }
+    int* cellHashStart() { return cellHashStart_.d_ptr; }
+    int* cellHashEnd() { return cellHashEnd_.d_ptr; }
+
+    size_t numGrids() const
+    {
+        return size_t(gridSize_.x) * size_t(gridSize_.y) * size_t(gridSize_.z);
+    }
 };

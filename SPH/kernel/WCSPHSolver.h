@@ -1,3 +1,4 @@
+#include "neighborSearchKernel.h"
 #include "particle.h"
 #include "interaction.h"
 #include "boundary.h"
@@ -12,7 +13,7 @@
 struct SPHInteraction
 {
     objectPointed objectPointed_;
-    interaction interaction_;
+    pair pair_;
 };
 
 class WCSPHSolver
@@ -28,6 +29,21 @@ public:
 protected:
     void initializeBoundaryCondition()
     {
+        updateSpatialGridCellHashStartEnd(dummy_.position(), 
+        dummy_.hashIndex(), 
+        dummy_.hashValue(), 
+        spatialGrid_.cellHashStart(), 
+        spatialGrid_.cellHashEnd(), 
+        spatialGrid_.minimumBoundary(), 
+        spatialGrid_.maximumBoundary(), 
+        spatialGrid_.cellSize(), 
+        spatialGrid_.gridSize(), 
+        spatialGrid_.numGrids(),
+        dummy_.deviceSize(), 
+        dummy_.gridDim(), 
+        dummy_.blockDim(), 
+        stream_);
+
         launchCountSPHInteractions(dummy_.position(), 
         dummy_.smoothLength(), 
         dummy_.hashIndex(), 
@@ -36,28 +52,26 @@ protected:
         dummyAndDummy_.objectPointed_.neighborPrefixSum(), 
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
-        spatialGrid_.minimumBoundary(), 
-        spatialGrid_.maximumBoundary(), 
+        spatialGrid_.minimumBoundary(),  
         spatialGrid_.cellSize(), 
-        spatialGrid_.gridSize(), 
-        spatialGrid_.numGrids(), 
+        spatialGrid_.gridSize(),  
         dummy_.deviceSize(), 
         dummy_.gridDim(), 
         dummy_.blockDim(), 
         stream_);
 
         size_t numNeighborPairs = dummyAndDummy_.objectPointed_.numNeighborPairs();
-        if (numNeighborPairs > dummyAndDummy_.interaction_.deviceSize())
+        if (numNeighborPairs > dummyAndDummy_.pair_.deviceSize())
         {
-            dummyAndDummy_.interaction_.allocateDevice(numNeighborPairs, stream_);
+            dummyAndDummy_.pair_.allocateDevice(numNeighborPairs, stream_);
         }
 
         launchWriteSPHInteractions(dummy_.position(), 
         dummy_.smoothLength(), 
         dummy_.hashIndex(), 
         dummyAndDummy_.objectPointed_.neighborPrefixSum(),
-        dummyAndDummy_.interaction_.objectPointed(),
-        dummyAndDummy_.interaction_.objectPointing(),
+        dummyAndDummy_.pair_.objectPointed(),
+        dummyAndDummy_.pair_.objectPointing(),
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
         spatialGrid_.minimumBoundary(),
@@ -74,7 +88,7 @@ protected:
         dummy_.mass(), 
         dummy_.smoothLength(), 
         dummyAndDummy_.objectPointed_.neighborPrefixSum(), 
-        dummyAndDummy_.interaction_.objectPointing(), 
+        dummyAndDummy_.pair_.objectPointing(), 
         dummy_.deviceSize(), 
         dummy_.gridDim(), 
         dummy_.blockDim(), 
@@ -88,12 +102,22 @@ protected:
 
         size_t numSPH = WCSPH_.deviceSize();
         SPHAndSPH_.objectPointed_.allocateDevice(numSPH, stream_);
-        SPHAndSPH_.interaction_.allocateDevice(80 * numSPH, stream_);
+        SPHAndSPH_.pair_.allocateDevice(80 * numSPH, stream_);
         SPHAndDummy_.objectPointed_.allocateDevice(numSPH, stream_);
-        SPHAndDummy_.interaction_.allocateDevice(80 * numSPH, stream_);
+        SPHAndDummy_.pair_.allocateDevice(80 * numSPH, stream_);
         size_t numDummy = dummy_.deviceSize();
         dummyAndDummy_.objectPointed_.allocateDevice(numDummy, stream_);
-        dummyAndDummy_.interaction_.allocateDevice(80 * numDummy, stream_);
+        dummyAndDummy_.pair_.allocateDevice(80 * numDummy, stream_);
+    }
+
+    void initializeSpatialGrid(const double3 minBoundary, const double3 maxBoundary)
+    {
+        double cellSizeOneDim = 0.0;
+        std::vector<double> h = WCSPH_.smoothLengthHostCopy();
+        if (h.size() > 0) cellSizeOneDim = *std::max_element(h.begin(), h.end()) * 2.0;
+        std::vector<double> h1 = dummy_.smoothLengthHostCopy();
+        if (h1.size() > 0) cellSizeOneDim = std::max(cellSizeOneDim, *std::max_element(h1.begin(), h1.end()) * 2.0);
+        spatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
     }
 
     void initialize(const double3 minBoundary, const double3 maxBoundary, const size_t maximumThread = 256)
@@ -103,18 +127,29 @@ protected:
 
         upload();
 
-        double cellSizeOneDim = 0.0;
-        std::vector<double> h = WCSPH_.smoothLengthHostCopy();
-        if (h.size() > 0) cellSizeOneDim = *std::max_element(h.begin(), h.end()) * 2.0;
-        std::vector<double> h1 = dummy_.smoothLengthHostCopy();
-        if (h1.size() > 0) cellSizeOneDim = std::max(cellSizeOneDim, *std::max_element(h1.begin(), h1.end()) * 2.0);
-        spatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
+        initializeSpatialGrid(minBoundary, maxBoundary);
 
         initializeBoundaryCondition();
     }
 
+protected:
     void neighborSearch()
     {
+        updateSpatialGridCellHashStartEnd(WCSPH_.position(), 
+        WCSPH_.hashIndex(), 
+        WCSPH_.hashValue(), 
+        spatialGrid_.cellHashStart(), 
+        spatialGrid_.cellHashEnd(), 
+        spatialGrid_.minimumBoundary(), 
+        spatialGrid_.maximumBoundary(), 
+        spatialGrid_.cellSize(), 
+        spatialGrid_.gridSize(), 
+        spatialGrid_.numGrids(),
+        WCSPH_.deviceSize(), 
+        WCSPH_.gridDim(), 
+        WCSPH_.blockDim(), 
+        stream_);
+
         launchCountSPHInteractions(WCSPH_.position(), 
         WCSPH_.smoothLength(), 
         WCSPH_.hashIndex(), 
@@ -124,27 +159,25 @@ protected:
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
         spatialGrid_.minimumBoundary(), 
-        spatialGrid_.maximumBoundary(), 
         spatialGrid_.cellSize(), 
         spatialGrid_.gridSize(), 
-        spatialGrid_.numGrids(), 
         WCSPH_.deviceSize(), 
         WCSPH_.gridDim(), 
         WCSPH_.blockDim(), 
         stream_);
 
         size_t numNeighborPairs = SPHAndSPH_.objectPointed_.numNeighborPairs();
-        if (numNeighborPairs > SPHAndSPH_.interaction_.deviceSize())
+        if (numNeighborPairs > SPHAndSPH_.pair_.deviceSize())
         {
-            SPHAndSPH_.interaction_.allocateDevice(numNeighborPairs, stream_);
+            SPHAndSPH_.pair_.allocateDevice(numNeighborPairs, stream_);
         }
 
         launchWriteSPHInteractions(WCSPH_.position(), 
         WCSPH_.smoothLength(), 
         WCSPH_.hashIndex(), 
         SPHAndSPH_.objectPointed_.neighborPrefixSum(),
-        SPHAndSPH_.interaction_.objectPointed(),
-        SPHAndSPH_.interaction_.objectPointing(),
+        SPHAndSPH_.pair_.objectPointed(),
+        SPHAndSPH_.pair_.objectPointing(),
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
         spatialGrid_.minimumBoundary(),
@@ -157,6 +190,21 @@ protected:
 
         if (dummy_.deviceSize() == 0) return;
 
+        updateSpatialGridCellHashStartEnd(dummy_.position(), 
+        dummy_.hashIndex(), 
+        dummy_.hashValue(), 
+        spatialGrid_.cellHashStart(), 
+        spatialGrid_.cellHashEnd(), 
+        spatialGrid_.minimumBoundary(), 
+        spatialGrid_.maximumBoundary(), 
+        spatialGrid_.cellSize(), 
+        spatialGrid_.gridSize(), 
+        spatialGrid_.numGrids(),
+        dummy_.deviceSize(), 
+        dummy_.gridDim(), 
+        dummy_.blockDim(), 
+        stream_);
+
         launchCountSPHDummyInteractions(WCSPH_.position(), 
         WCSPH_.smoothLength(), 
         SPHAndDummy_.objectPointed_.neighborCount(), 
@@ -168,22 +216,17 @@ protected:
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
         spatialGrid_.minimumBoundary(), 
-        spatialGrid_.maximumBoundary(), 
         spatialGrid_.cellSize(), 
         spatialGrid_.gridSize(), 
-        spatialGrid_.numGrids(), 
         WCSPH_.deviceSize(), 
         WCSPH_.gridDim(), 
         WCSPH_.blockDim(),
-        dummy_.deviceSize(), 
-        dummy_.gridDim(), 
-        dummy_.blockDim(), 
         stream_);
 
         numNeighborPairs = SPHAndDummy_.objectPointed_.numNeighborPairs();
-        if (numNeighborPairs > SPHAndDummy_.interaction_.deviceSize())
+        if (numNeighborPairs > SPHAndDummy_.pair_.deviceSize())
         {
-            SPHAndDummy_.interaction_.allocateDevice(numNeighborPairs, stream_);
+            SPHAndDummy_.pair_.allocateDevice(numNeighborPairs, stream_);
         }
 
         launchWriteSPHDummyInteractions(WCSPH_.position(), 
@@ -192,8 +235,8 @@ protected:
         dummy_.position(), 
         dummy_.smoothLength(), 
         dummy_.hashIndex(), 
-        SPHAndDummy_.interaction_.objectPointed(),
-        SPHAndDummy_.interaction_.objectPointing(),
+        SPHAndDummy_.pair_.objectPointed(),
+        SPHAndDummy_.pair_.objectPointing(),
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
         spatialGrid_.minimumBoundary(), 
@@ -224,8 +267,8 @@ protected:
         dummy_.mass(), 
         dummy_.initialDensity(), 
         dummy_.smoothLength(), 
-        SPHAndSPH_.interaction_.objectPointing(), 
-        SPHAndDummy_.interaction_.objectPointing(), 
+        SPHAndSPH_.pair_.objectPointing(), 
+        SPHAndDummy_.pair_.objectPointing(), 
         gravity, 
         timeStep, 
         WCSPH_.deviceSize(), 
@@ -253,8 +296,8 @@ protected:
         dummy_.mass(), 
         dummy_.initialDensity(), 
         dummy_.smoothLength(), 
-        SPHAndSPH_.interaction_.objectPointing(), 
-        SPHAndDummy_.interaction_.objectPointing(), 
+        SPHAndSPH_.pair_.objectPointing(), 
+        SPHAndDummy_.pair_.objectPointing(), 
         gravity, 
         timeStep, 
         WCSPH_.deviceSize(), 
@@ -451,9 +494,9 @@ public:
         dummy_.copyFromHost(other);
     }
 
-    const WCSPH& getSPH() const { return WCSPH_; }
+    WCSPH& getSPH() { return WCSPH_; }
 
-    const WCSPH& getDummy() const { return dummy_; }
+    WCSPH& getDummy() { return dummy_; }
 
     void solve(const double3 minBoundary, 
     const double3 maxBoundary, 
