@@ -267,7 +267,7 @@ protected:
     {
         MKDIR(dir.c_str());
         std::ostringstream fname;
-        fname << dir << "/SPH_" << setw(4) << std::setfill('0') << iFrame << ".vtu";
+        fname << dir << "/SPH_" << std::setw(4) << std::setfill('0') << iFrame << ".vtu";
         std::ofstream out(fname.str().c_str());
         if (!out) throw std::runtime_error("Cannot open " + fname.str());
         out << std::fixed << std::setprecision(10);
