@@ -42,7 +42,7 @@ public:
         cellSize.y = domainSize.y / double(gridSize.y);
         cellSize.z = domainSize.z / double(gridSize.z);
 
-        alloc(gridSize.x * gridSize.y * gridSize.z + 1, stream);
+        alloc(gridSize.x * gridSize.y * gridSize.z, stream);
         CUDA_CHECK(cudaMemsetAsync(cellHashStart_.d_ptr, 0xFF, cellHashStart_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(cellHashEnd_.d_ptr,   0xFF, cellHashEnd_.deviceSize() * sizeof(int), stream));
     }

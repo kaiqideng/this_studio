@@ -1,28 +1,26 @@
 #include "ballNeighborSearch.h"
+#include <vector_functions.h>
 
 __global__ void calculateHash(int* hashValue, 
 double3* position, 
 const double3 minBound, 
 const double3 maxBound, 
 const double3 cellSize, 
-const int3 gridSize, 
-const size_t numGrids,
+const int3 gridSize,
 const size_t numObjects)
 {
     size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx >= numObjects) return;
+
     double3 p = position[idx];
-    if (minBound.x <= p.x && p.x < maxBound.x &&
-    minBound.y <= p.y && p.y < maxBound.y &&
-    minBound.z <= p.z && p.z < maxBound.z)
-    {
-        int3 gridPosition = calculateGridPosition(p, minBound, cellSize);
-        hashValue[idx] = calculateHash(gridPosition, gridSize);
-    }
-    else
-    {
-        hashValue[idx] = numGrids - 1;
-    }
+    if (p.x < minBound.x) p.x = minBound.x;
+    else if (p.x >= maxBound.x) p.x = maxBound.x - 0.5 * cellSize.x;
+    if (p.y < minBound.y) p.y = minBound.y;
+    else if (p.y >= maxBound.y) p.y = maxBound.y - 0.5 * cellSize.y;
+    if (p.z < minBound.z) p.z = minBound.z;
+    else if (p.z >= maxBound.z) p.z = maxBound.z - 0.5 * cellSize.z;
+    int3 gridPosition = calculateGridPosition(p, minBound, cellSize);
+    hashValue[idx] = calculateHash(gridPosition, gridSize);
 }
 
 extern "C" void updateGridCellStartEnd(spatialGrid& spatialGrids, 
@@ -39,8 +37,7 @@ cudaStream_t stream)
     spatialGrids.minBound, 
     spatialGrids.maxBound, 
     spatialGrids.cellSize, 
-    spatialGrids.gridSize, 
-    spatialGrids.deviceSize(), 
+    spatialGrids.gridSize,
     numObjects);
     CUDA_CHECK(cudaGetLastError());
 
@@ -78,15 +75,21 @@ const size_t numBalls)
     double3 posA = ballPosition[idxA];
     double radA = radius[idxA];
     int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
-    for (int zz = -1; zz <= 1; zz++)
+    int3 gridStart = make_int3(-1, -1, -1);
+    int3 gridEnd = make_int3(1, 1, 1);
+    if (gridPositionA.x <= 0) {gridPositionA.x = 0; gridStart.x = 0;}
+    if (gridPositionA.x >= gridSize.x - 1) {gridPositionA.x = gridSize.x - 1; gridEnd.x = 0;}
+    if (gridPositionA.y <= 0) {gridPositionA.y = 0; gridStart.y = 0;}
+    if (gridPositionA.y >= gridSize.y - 1) {gridPositionA.y = gridSize.y - 1; gridEnd.y = 0;}
+    if (gridPositionA.z <= 0) {gridPositionA.z = 0; gridStart.z = 0;}
+    if (gridPositionA.z >= gridSize.z - 1) {gridPositionA.z = gridSize.z - 1; gridEnd.z = 0;}
+    for (int zz = gridStart.z; zz <= gridEnd.z; zz++)
     {
-        for (int yy = -1; yy <= 1; yy++)
+        for (int yy = gridStart.y; yy <= gridEnd.y; yy++)
         {
-            for (int xx = -1; xx <= 1; xx++)
+            for (int xx = gridStart.x; xx <= gridEnd.x; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellHashStart[hashB];
                 if (startIndex == 0xFF) continue;
@@ -98,8 +101,7 @@ const size_t numBalls)
                     if (clumpID[idxA] >= 0 && clumpID[idxA] == clumpID[idxB]) continue;
 					if (invMass[idxA] < 1.e-20 && invMass[idxB] < 1.e-20) continue;
                     double cut = 1.1 * (radA + radius[idxB]);
-                    double3 posB = ballPosition[idxB];
-                    double3 rAB = posA - posB;
+                    double3 rAB = posA - ballPosition[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.) count++;
                 }
             }
@@ -143,15 +145,21 @@ const size_t numBalls)
     double3 posA = ballPosition[idxA];
     double radA = radius[idxA];
     int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
-    for (int zz = -1; zz <= 1; zz++)
+    int3 gridStart = make_int3(-1, -1, -1);
+    int3 gridEnd = make_int3(1, 1, 1);
+    if (gridPositionA.x <= 0) {gridPositionA.x = 0; gridStart.x = 0;}
+    if (gridPositionA.x >= gridSize.x - 1) {gridPositionA.x = gridSize.x - 1; gridEnd.x = 0;}
+    if (gridPositionA.y <= 0) {gridPositionA.y = 0; gridStart.y = 0;}
+    if (gridPositionA.y >= gridSize.y - 1) {gridPositionA.y = gridSize.y - 1; gridEnd.y = 0;}
+    if (gridPositionA.z <= 0) {gridPositionA.z = 0; gridStart.z = 0;}
+    if (gridPositionA.z >= gridSize.z - 1) {gridPositionA.z = gridSize.z - 1; gridEnd.z = 0;}
+    for (int zz = gridStart.z; zz <= gridEnd.z; zz++)
     {
-        for (int yy = -1; yy <= 1; yy++)
+        for (int yy = gridStart.y; yy <= gridEnd.y; yy++)
         {
-            for (int xx = -1; xx <= 1; xx++)
+            for (int xx = gridStart.x; xx <= gridEnd.x; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellHashStart[hashB];
                 if (startIndex == 0xFF) continue;
@@ -164,8 +172,7 @@ const size_t numBalls)
                     if (clumpID[idxA] >= 0 && clumpID[idxA] == clumpID[idxB]) continue;
 					if (invMass[idxA] < 1.e-20 && invMass[idxB] < 1.e-20) continue;
                     double cut = 1.1 * (radA + radius[idxB]);
-                    double3 posB = ballPosition[idxB];
-                    double3 rAB = posA - posB;
+                    double3 rAB = posA - ballPosition[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
                     {
                         int index_w = base_w + countInOneCell;

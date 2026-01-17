@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include <vector>
 #include <utility>
 #include <algorithm>
@@ -24,11 +25,11 @@ template <typename T>
 struct HostDeviceArray1D
 {
 private:
-    std::vector<T> h_data; // host data
-    size_t d_size {0}; // number of elements on device
+    std::vector<T> h_data;     // host data
+    size_t d_size {0};         // number of elements on device
 
 public:
-    T* d_ptr {nullptr}; // device pointer
+    T* d_ptr {nullptr};        // device pointer
 
     // ---------------------------------------------------------------------
     // Rule of Five
@@ -37,7 +38,8 @@ public:
 
     ~HostDeviceArray1D()
     {
-        releaseDeviceArray();
+        // Destructor cannot rely on a user-provided stream; use sync free.
+        releaseDeviceSync();
     }
 
     HostDeviceArray1D(const HostDeviceArray1D&) = delete;
@@ -52,11 +54,12 @@ public:
     {
         if (this != &other)
         {
-            releaseDeviceArray();
+            // We cannot safely cudaFreeAsync without a stream here; use sync free.
+            releaseDeviceSync();
 
             h_data = std::move(other.h_data);
 
-            d_ptr = std::exchange(other.d_ptr,  nullptr);
+            d_ptr  = std::exchange(other.d_ptr,  nullptr);
             d_size = std::exchange(other.d_size, 0);
         }
         return *this;
@@ -71,97 +74,340 @@ public:
     // ---------------------------------------------------------------------
     // Device memory management
     // ---------------------------------------------------------------------
-    void releaseDeviceArray()
+
+    // Async free (preferred when you have a stream).
+    void releaseDevice(cudaStream_t stream)
     {
         if (d_ptr)
         {
-            CUDA_CHECK(cudaFreeAsync(d_ptr));
+            CUDA_CHECK(cudaFreeAsync(d_ptr, stream));
             d_ptr = nullptr;
         }
         d_size = 0;
     }
 
-    void allocDeviceArray(size_t n, cudaStream_t stream)
+    // Sync free (safe for destructor / move assignment).
+    void releaseDeviceSync()
     {
-        if (d_size > 0) releaseDeviceArray();
+        if (d_ptr)
+        {
+            CUDA_CHECK(cudaFree(d_ptr));
+            d_ptr = nullptr;
+        }
+        d_size = 0;
+    }
+
+    // Allocate device array of size n.
+    // - Frees old device memory first.
+    // - Uses cudaMallocAsync/cudaFreeAsync on the provided stream.
+    // - If n==0, releases device memory and returns.
+    void allocateDevice(size_t n, cudaStream_t stream, bool zeroFill = true)
+    {
+        // Release old allocation if any.
+        if (d_ptr) releaseDevice(stream);
 
         d_size = n;
-        CUDA_CHECK(cudaMemsetAsync(d_ptr, 0, d_size * sizeof(T), stream));
+        if (d_size == 0)
+        {
+            d_ptr = nullptr;
+            return;
+        }
+
+        CUDA_CHECK(cudaMallocAsync((void**)&d_ptr, d_size * sizeof(T), stream));
+        if (zeroFill)
+        {
+            CUDA_CHECK(cudaMemsetAsync(d_ptr, 0, d_size * sizeof(T), stream));
+        }
     }
 
     // ---------------------------------------------------------------------
     // Host-side modifications
     // ---------------------------------------------------------------------
-    void addHostData(const T& value)
+    void pushHost(const T& value)
     {
         h_data.push_back(value);
     }
 
-    void insertHostData(size_t index, const T& value)
+    void insertHost(size_t index, const T& value)
     {
-        if (index > hostSize()) { h_data.push_back(value); return; }
+        if (index >= hostSize()) { h_data.push_back(value); return; }
         h_data.insert(h_data.begin() + static_cast<std::ptrdiff_t>(index), value);
     }
 
-    void removeHostData(size_t index)
+    void eraseHost(size_t index)
     {
         if (index >= h_data.size()) return;
-        h_data.erase(h_data.begin() + index);
+        h_data.erase(h_data.begin() + static_cast<std::ptrdiff_t>(index));
     }
 
-    void clearHostData()
+    void clearHost()
     {
         h_data.clear();
     }
 
-    void setHostData(const std::vector<T>& newData)
+    void reserveHost(size_t n)
     {
-        h_data = newData;
+        h_data.reserve(n);
     }
+
+    void resizeHost(size_t n)
+    {
+        h_data.resize(n);
+    }
+
+    const std::vector<T>& hostRef() const { return h_data; }
 
     // ---------------------------------------------------------------------
     // Host <-> Device transfer
     // ---------------------------------------------------------------------
-    
-    // host -> device
-    void upload(cudaStream_t stream) 
-    {
-        const size_t h_size = hostSize();
 
-        if (h_size != d_size)
+    // Host -> Device (async).
+    // Allocates device memory to match hostSize().
+    void copyHostToDevice(cudaStream_t stream)
+    {
+        const size_t n = hostSize();
+
+        if (n != d_size || d_ptr == nullptr)
         {
-            allocDeviceArray(h_size, stream);
+            // No need to zero-fill because memcpy overwrites the buffer.
+            allocateDevice(n, stream, /*zeroFill=*/false);
         }
-        if (h_size > 0)
+
+        if (n > 0)
         {
-            CUDA_CHECK(cudaMemcpyAsync(d_ptr, h_data.data(), h_size * sizeof(T), cudaMemcpyHostToDevice, stream));
+            CUDA_CHECK(cudaMemcpyAsync(d_ptr,
+                                       h_data.data(),
+                                       n * sizeof(T),
+                                       cudaMemcpyHostToDevice,
+                                       stream));
         }
     }
 
-    // device -> host
-    void download(cudaStream_t stream)
+    // Device -> Host (async).
+    // After calling this, synchronize the stream before reading h_data.
+    void copyDeviceToHost(cudaStream_t stream)
     {
-        if (d_size > hostSize())
+        if (d_size == 0 || d_ptr == nullptr) return;
+
+        if (d_size != hostSize())
         {
             h_data.resize(d_size);
         }
-        if (d_size > 0 && d_ptr)
-        {
-            CUDA_CHECK(cudaMemcpyAsync(h_data.data(), d_ptr, d_size * sizeof(T), cudaMemcpyDeviceToHost, stream));
-        }
+
+        CUDA_CHECK(cudaMemcpyAsync(h_data.data(),
+                                   d_ptr,
+                                   d_size * sizeof(T),
+                                   cudaMemcpyDeviceToHost,
+                                   stream));
     }
 
-    // device -> host
-    std::vector<T> getHostData()
+    // Device -> Host (sync).
+    std::vector<T> getHostCopy()
     {
         if (d_size > 0 && d_ptr)
         {
-            if (hostSize() < d_size)
+            if (d_size != hostSize())
             {
                 h_data.resize(d_size);
             }
-            CUDA_CHECK(cudaMemcpy(h_data.data(), d_ptr, d_size * sizeof(T), cudaMemcpyDeviceToHost));
+            CUDA_CHECK(cudaMemcpy(h_data.data(),
+                                  d_ptr,
+                                  d_size * sizeof(T),
+                                  cudaMemcpyDeviceToHost));
         }
         return h_data;
+    }
+
+    void setHost(const std::vector<T>& newData)
+    {
+        h_data = newData;
+    }
+};
+
+template <typename... Ts>
+struct SoA1D
+{
+private:
+    std::tuple<HostDeviceArray1D<Ts>...> fields_;
+
+private:
+    // ---------------------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------------------
+    static constexpr size_t numFields_ {sizeof...(Ts)};
+
+    template <typename F, size_t... Is>
+    void forEach_(F&& f, std::index_sequence<Is...>)
+    {
+        (f(std::get<Is>(fields_)), ...);
+    }
+
+    template <typename F, size_t... Is>
+    void forEachConst_(F&& f, std::index_sequence<Is...>) const
+    {
+        (f(std::get<Is>(fields_)), ...);
+    }
+
+    void assertSameHostSize_() const
+    {
+#ifndef NDEBUG
+        if constexpr (numFields_ == 0) return;
+
+        const size_t n = std::get<0>(fields_).hostSize();
+        bool ok = true;
+
+        forEachConst_([&](auto const& a)
+        {
+            ok = ok && (a.hostSize() == n);
+        }, std::index_sequence_for<Ts...>{});
+
+        assert(ok && "SoA1D: host sizes mismatch between fields!");
+#endif
+    }
+
+public:
+    // ---------------------------------------------------------------------
+    // Rule of Five
+    // ---------------------------------------------------------------------
+    SoA1D() = default;
+    ~SoA1D() = default;
+
+    SoA1D(const SoA1D&) = delete;
+    SoA1D& operator=(const SoA1D&) = delete;
+
+    SoA1D(SoA1D&&) noexcept = default;
+    SoA1D& operator=(SoA1D&&) noexcept = default;
+
+public:
+    // ---------------------------------------------------------------------
+    // Sizes
+    // ---------------------------------------------------------------------
+    size_t hostSize() const
+    {
+        if constexpr (numFields_ == 0) return 0;
+        return std::get<0>(fields_).hostSize();
+    }
+
+public:
+    // ---------------------------------------------------------------------
+    // Host operations (lock-step)
+    // ---------------------------------------------------------------------
+    void clearHost()
+    {
+        forEach_([&](auto& a)
+        {
+            a.clearHost();
+        }, std::index_sequence_for<Ts...>{});
+    }
+
+    void reserveHost(const size_t n)
+    {
+        forEach_([&](auto& a)
+        {
+            a.reserveHost(n);
+        }, std::index_sequence_for<Ts...>{});
+    }
+
+    void resizeHost(const size_t n)
+    {
+        forEach_([&](auto& a)
+        {
+            a.resizeHost(n);
+        }, std::index_sequence_for<Ts...>{});
+    }
+
+    void eraseHost(const size_t index)
+    {
+        forEach_([&](auto& a)
+        {
+            a.eraseHost(index);
+        }, std::index_sequence_for<Ts...>{});
+    }
+
+    void pushRow(const Ts&... values)
+    {
+        (std::get<HostDeviceArray1D<Ts>>(fields_).pushHost(values), ...);
+        assertSameHostSize_();
+    }
+
+    void insertRow(const size_t index, const Ts&... values)
+    {
+        (std::get<HostDeviceArray1D<Ts>>(fields_).insertHost(index, values), ...);
+        assertSameHostSize_();
+    }
+
+public:
+    // ---------------------------------------------------------------------
+    // Transfers (lock-step)
+    // ---------------------------------------------------------------------
+    void copyHostToDevice(cudaStream_t stream)
+    {
+        assertSameHostSize_();
+
+        forEach_([&](auto& a)
+        {
+            a.copyHostToDevice(stream);
+        }, std::index_sequence_for<Ts...>{});
+    }
+
+    void copyDeviceToHost(cudaStream_t stream)
+    {
+        forEach_([&](auto& a)
+        {
+            a.copyDeviceToHost(stream);
+        }, std::index_sequence_for<Ts...>{});
+    }
+
+public:
+    // ---------------------------------------------------------------------
+    // Device buffer allocation (empty buffer)
+    // ---------------------------------------------------------------------
+    // Allocate an empty device buffer of size n for each field.
+    // This does NOT touch host data (no copy back).
+    void allocateDevice(const size_t n, cudaStream_t stream, bool zeroFill = true)
+    {
+        forEach_([&](auto& a)
+        {
+            a.allocateDevice(n, stream, zeroFill);
+        }, std::index_sequence_for<Ts...>{});
+    }
+
+public:
+    // ---------------------------------------------------------------------
+    // Field access
+    // ---------------------------------------------------------------------
+    template <size_t I>
+    auto* devicePtr()
+    {
+        static_assert(I < numFields_, "SoA1D::devicePtr<I> out of range");
+        return std::get<I>(fields_).d_ptr;
+    }
+
+    template <size_t I>
+    const auto* devicePtr() const
+    {
+        static_assert(I < numFields_, "SoA1D::devicePtr<I> out of range");
+        return std::get<I>(fields_).d_ptr;
+    }
+
+    template <size_t I>
+    auto hostCopy()
+    {
+        static_assert(I < numFields_, "SoA1D::hostCopy<I> out of range");
+        return std::get<I>(fields_).getHostCopy();
+    }
+
+    template <size_t I>
+    HostDeviceArray1D<std::tuple_element_t<I, std::tuple<Ts...>>>& field()
+    {
+        static_assert(I < numFields_, "SoA1D::field<I> out of range");
+        return std::get<I>(fields_);
+    }
+
+    template <size_t I>
+    const HostDeviceArray1D<std::tuple_element_t<I, std::tuple<Ts...>>>& field() const
+    {
+        static_assert(I < numFields_, "SoA1D::field<I> out of range");
+        return std::get<I>(fields_);
     }
 };

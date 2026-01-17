@@ -1,5 +1,4 @@
 #pragma once
-#include "GPUConfig.h"
 #include "myUtility/myHostDeviceArray.h"
 
 // Wendland 5th-order (C2) kernel in 3D
@@ -41,8 +40,6 @@ int* neighborPrifixSum,
 
 int* objectPointing,
 
-const size_t numSPHs,
-
 const size_t numDummy,
 const size_t gridD_GPU,
 const size_t blockD_GPU, 
@@ -50,7 +47,6 @@ cudaStream_t stream_GPU);
 
 extern "C" void launchWCSPH1stHalfIntegration(double3* position,
 double3* velocity,
-double3* normal,
 double* density,
 double* pressure,
 double* soundSpeed,
@@ -59,19 +55,29 @@ double* initialDensity,
 double* smoothLength,
 int* neighborPrifixSum,
 
+double3* position_dummy,
+double3* velocity_dummy,
+double3* normal_dummy,
+double* soundSpeed_dummy,
+double* mass_dummy,
+double* initialDensity_dummy,
+double* smoothLength_dummy,
+int* neighborPrifixSum_dummy,
+
 int* objectPointing,
+
+int* objectPointing_dummy,
 
 const double3 gravity,
 const double timeStep,
 
-const size_t numSPHs,
+const size_t numSPH,
 const size_t gridD_GPU,
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU);
 
 extern "C" void launchWCSPH2ndHalfIntegration(double3* position,
 double3* velocity,
-double3* normal,
 double* density,
 double* pressure,
 double* soundSpeed,
@@ -80,12 +86,23 @@ double* initialDensity,
 double* smoothLength,
 int* neighborPrifixSum,
 
+double3* position_dummy,
+double3* velocity_dummy,
+double3* normal_dummy,
+double* soundSpeed_dummy,
+double* mass_dummy,
+double* initialDensity_dummy,
+double* smoothLength_dummy,
+int* neighborPrifixSum_dummy,
+
 int* objectPointing,
+
+int* objectPointing_dummy,
 
 const double3 gravity,
 const double timeStep,
 
-const size_t numSPHs,
+const size_t numSPH,
 const size_t gridD_GPU,
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU);
