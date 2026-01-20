@@ -1,10 +1,10 @@
 #pragma once
 #include "neighborSearchKernel.h"
+#include "myUtility/myVec.h"
 
 extern "C" void launchCountSPHInteractions(double3* position, 
 double* smoothLength,
 int* hashIndex, 
-int* hashValue,
 int* neighborCount,
 int* neighborPrefixSum,
 
@@ -46,7 +46,6 @@ int* neighborPrefixSum,
 double3* position_dummy, 
 double* smoothLength_dummy,
 int* hashIndex_dummy, 
-int* hashValue_dummy,
 
 int* cellHashStart,
 int* cellHashEnd,

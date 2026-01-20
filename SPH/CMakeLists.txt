@@ -13,51 +13,56 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ============================================================
-# CUDA arch (portable default, can override)
+# Options
+# ============================================================
+set(SPH_CUDA_ARCH "native" CACHE STRING "CUDA arch: 'native' or a number like 52;75;86")
+option(SPH_ENABLE_RDC "Enable CUDA separable compilation (RDC)" ON)
+option(SPH_ENABLE_PIC "Build position independent code (PIC)" ON)
+
+# ============================================================
+# CUDA arch
 #   cmake -DSPH_CUDA_ARCH=75 ..
+#   cmake -DSPH_CUDA_ARCH=52 ..
+#   cmake -DSPH_CUDA_ARCH="75;86" ..
+#   cmake -DSPH_CUDA_ARCH=native ..
 # ============================================================
 if (SPH_CUDA_ARCH STREQUAL "native")
     set(CMAKE_CUDA_ARCHITECTURES native)
 else()
+    # If user passes a single number or a semicolon list, this works.
     set(CMAKE_CUDA_ARCHITECTURES ${SPH_CUDA_ARCH})
 endif()
 message(STATUS "CMAKE_CUDA_ARCHITECTURES = ${CMAKE_CUDA_ARCHITECTURES}")
 
 # ============================================================
-# RDC / separable compilation
-# ============================================================
-option(SPH_ENABLE_RDC "Enable CUDA separable compilation (RDC)" ON)
-if (SPH_ENABLE_RDC)
-    set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
-endif()
-
-# ============================================================
 # Paths
 # ============================================================
-set(SPH_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(SPH_ROOT   ${CMAKE_CURRENT_SOURCE_DIR})
 set(KERNEL_DIR ${SPH_ROOT}/kernel)
 set(UTIL_DIR   ${KERNEL_DIR}/myUtility)
 
 # ============================================================
+# Helper: apply CUDA / PIC properties per-target
+# ============================================================
+function(sph_apply_target_props tgt)
+    set_target_properties(${tgt} PROPERTIES
+        CUDA_SEPARABLE_COMPILATION ${SPH_ENABLE_RDC}
+        POSITION_INDEPENDENT_CODE  ${SPH_ENABLE_PIC}
+    )
+    target_compile_features(${tgt} PUBLIC cxx_std_17)
+endfunction()
+
+# ============================================================
 # Kernel library (everything under kernel/)
 # ============================================================
-file(GLOB KERNEL_CU CONFIGURE_DEPENDS
+file(GLOB_RECURSE KERNEL_SRCS CONFIGURE_DEPENDS
     ${KERNEL_DIR}/*.cu
-)
-file(GLOB KERNEL_CPP CONFIGURE_DEPENDS
     ${KERNEL_DIR}/*.cpp
-)
-file(GLOB KERNEL_HEADERS CONFIGURE_DEPENDS
-    ${KERNEL_DIR}/*.h
-    ${KERNEL_DIR}/*.hpp
-    ${UTIL_DIR}/*.h
-    ${UTIL_DIR}/*.hpp
+    ${KERNEL_DIR}/*.cxx
 )
 
 add_library(SPH_kernels STATIC
-    ${KERNEL_CU}
-    ${KERNEL_CPP}
-    ${KERNEL_HEADERS}
+    ${KERNEL_SRCS}
 )
 
 target_include_directories(SPH_kernels PUBLIC
@@ -66,33 +71,35 @@ target_include_directories(SPH_kernels PUBLIC
     ${UTIL_DIR}
 )
 
-target_compile_features(SPH_kernels PUBLIC cxx_std_17)
+sph_apply_target_props(SPH_kernels)
 
-set_target_properties(SPH_kernels PROPERTIES
-    CUDA_SEPARABLE_COMPILATION ${SPH_ENABLE_RDC}
-    POSITION_INDEPENDENT_CODE ON
-)
+# If you want explicit cudart linkage (usually not strictly required):
+# find_package(CUDAToolkit REQUIRED)
+# target_link_libraries(SPH_kernels PUBLIC CUDA::cudart)
 
 # ============================================================
 # App sources (top-level only, same level as kernel/)
 # - Create one executable per source file that contains main()
 # - Other top-level .cpp/.cu are compiled into a common static library and linked
 # ============================================================
-file(GLOB APP_CPP CONFIGURE_DEPENDS
+file(GLOB APP_SRCS CONFIGURE_DEPENDS
     ${SPH_ROOT}/*.cpp
-)
-file(GLOB APP_CU CONFIGURE_DEPENDS
+    ${SPH_ROOT}/*.cxx
     ${SPH_ROOT}/*.cu
 )
-set(APP_SRCS ${APP_CPP} ${APP_CU})
 
 set(APP_MAIN_SRCS "")
 set(APP_COMMON_SRCS "")
 
 foreach(src ${APP_SRCS})
-    file(READ "${src}" _src_text)
-    string(REGEX MATCH "([\\n\\r\\t ]|^)main[\\t ]*\\(" _has_main "${_src_text}")
-    if (_has_main)
+    # Heuristic: scan for "main(" in the file (fast, avoids full file read).
+    # NOTE: Not a perfect parser, but good enough for typical projects.
+    file(STRINGS "${src}" _main_hits
+        REGEX "[^A-Za-z0-9_]main[ \t\r\n]*\\("
+        LIMIT_COUNT 2000
+    )
+
+    if (_main_hits)
         list(APPEND APP_MAIN_SRCS "${src}")
     else()
         list(APPEND APP_COMMON_SRCS "${src}")
@@ -111,11 +118,10 @@ if (APP_COMMON_SRCS)
         ${UTIL_DIR}
     )
 
-    target_compile_features(SPH_app_common PUBLIC cxx_std_17)
+    sph_apply_target_props(SPH_app_common)
 
-    set_target_properties(SPH_app_common PROPERTIES
-        CUDA_SEPARABLE_COMPILATION ${SPH_ENABLE_RDC}
-        POSITION_INDEPENDENT_CODE ON
+    target_link_libraries(SPH_app_common PUBLIC
+        SPH_kernels
     )
 endif()
 
@@ -145,9 +151,5 @@ foreach(main_src ${APP_MAIN_SRCS})
         target_link_libraries(${exe_name} PRIVATE SPH_app_common)
     endif()
 
-    target_compile_features(${exe_name} PRIVATE cxx_std_17)
-
-    set_target_properties(${exe_name} PROPERTIES
-        CUDA_SEPARABLE_COMPILATION ${SPH_ENABLE_RDC}
-    )
+    sph_apply_target_props(${exe_name})
 endforeach()

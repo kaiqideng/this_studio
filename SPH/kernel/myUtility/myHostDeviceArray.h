@@ -1,5 +1,4 @@
 #pragma once
-#include <cassert>
 #include <stdexcept>
 #include <vector>
 #include <cuda_runtime.h>

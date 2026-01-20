@@ -140,6 +140,7 @@ const size_t numBalls)
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
     if (idxA >= numBalls) return;
 
+    int count = 0;
     int base_w = 0;
     if (idxA > 0) base_w = neighborPrefixSumA[idxA - 1];
     double3 posA = ballPosition[idxA];
@@ -164,7 +165,6 @@ const size_t numBalls)
                 int startIndex = cellHashStart[hashB];
                 if (startIndex == 0xFF) continue;
                 int endIndex = cellHashEnd[hashB];
-                int countInOneCell = 0;
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = ballHashIndex[i];
@@ -175,7 +175,7 @@ const size_t numBalls)
                     double3 rAB = posA - ballPosition[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
                     {
-                        int index_w = base_w + countInOneCell;
+                        int index_w = base_w + count;
                         objectPointed[index_w] = idxA;
                         objectPointing[index_w] = idxB;
                         contactForce[index_w] = make_double3(0, 0, 0);
@@ -198,7 +198,7 @@ const size_t numBalls)
                                 }
                             }
                         }
-                        countInOneCell++;
+                        count++;
                     }
                 }
             }

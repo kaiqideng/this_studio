@@ -158,6 +158,7 @@ const size_t numBalls)
     if (idxA >= numBalls) return;
     if(invMass[idxA] < 1.e-20) return;
 
+    int count = 0;
     int base_w = 0;
     if (idxA > 0) base_w = interactionMapPrefixSumA[idxA - 1];
     double3 posA = ballPosition[idxA];
@@ -196,7 +197,7 @@ const size_t numBalls)
                     if(t < 0) overlap_plane = radA + t;
                     if(overlap_plane > 0)
                     {
-                        int index_w = base_w + countInOneCell;
+                        int index_w = base_w + count;
                         objectPointed[index_w] = idxA;
                         objectPointing[index_w] = idxB;
                         contactForce[index_w] = make_double3(0, 0, 0);
@@ -219,7 +220,7 @@ const size_t numBalls)
                                 }
                             }
                         }
-                        countInOneCell++;
+                        count++;
                     }
                 }
             }

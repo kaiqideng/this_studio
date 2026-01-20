@@ -5,12 +5,14 @@
       "name": "CUDA Debug (cuda-gdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/DEM/build/bin/damBreak",
+      "program": "${workspaceFolder}/build/damBreak",
       "cwd": "${workspaceFolder}",
       "args": [],
+      "stopAtEntry": false,
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "/usr/local/cuda/bin/cuda-gdb", // 按实际路径改
+      "miDebuggerPath": "/usr/local/cuda/bin/cuda-gdb",
+      "environment": [],
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

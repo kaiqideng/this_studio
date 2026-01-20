@@ -20,12 +20,12 @@ const size_t numSPH)
     int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
     int3 gridStart = make_int3(-1, -1, -1);
     int3 gridEnd = make_int3(1, 1, 1);
-    if (gridPositionA.x <= 0) {gridPositionA.x = 0; gridStart.x = 0;}
-    if (gridPositionA.x >= gridSize.x - 1) {gridPositionA.x = gridSize.x - 1; gridEnd.x = 0;}
-    if (gridPositionA.y <= 0) {gridPositionA.y = 0; gridStart.y = 0;}
-    if (gridPositionA.y >= gridSize.y - 1) {gridPositionA.y = gridSize.y - 1; gridEnd.y = 0;}
-    if (gridPositionA.z <= 0) {gridPositionA.z = 0; gridStart.z = 0;}
-    if (gridPositionA.z >= gridSize.z - 1) {gridPositionA.z = gridSize.z - 1; gridEnd.z = 0;}
+    if (gridPositionA.x <= 0) { gridPositionA.x = 0; gridStart.x = 0; }
+    if (gridPositionA.x >= gridSize.x - 1) { gridPositionA.x = gridSize.x - 1; gridEnd.x = 0; }
+    if (gridPositionA.y <= 0) { gridPositionA.y = 0; gridStart.y = 0; }
+    if (gridPositionA.y >= gridSize.y - 1) { gridPositionA.y = gridSize.y - 1; gridEnd.y = 0; }
+    if (gridPositionA.z <= 0) { gridPositionA.z = 0; gridStart.z = 0; }
+    if (gridPositionA.z >= gridSize.z - 1) { gridPositionA.z = gridSize.z - 1; gridEnd.z = 0; }
     for (int zz = gridStart.z; zz <= gridEnd.z; zz++)
     {
         for (int yy = gridStart.y; yy <= gridEnd.y; yy++)
@@ -33,8 +33,6 @@ const size_t numSPH)
             for (int xx = gridStart.x; xx <= gridEnd.x; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellHashStart[hashB];
                 if (startIndex == 0xFF) continue;
@@ -69,6 +67,7 @@ const size_t numSPH)
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
     if (idxA >= numSPH) return;
 
+    int count = 0;
     int base_w = 0;
     if (idxA > 0) base_w = neighborPrefixSum[idxA - 1];
     double3 posA = position[idxA];
@@ -76,12 +75,12 @@ const size_t numSPH)
     int3 gridPositionA = calculateGridPosition(posA, minBound, cellSize);
     int3 gridStart = make_int3(-1, -1, -1);
     int3 gridEnd = make_int3(1, 1, 1);
-    if (gridPositionA.x <= 0) {gridPositionA.x = 0; gridStart.x = 0;}
-    if (gridPositionA.x >= gridSize.x - 1) {gridPositionA.x = gridSize.x - 1; gridEnd.x = 0;}
-    if (gridPositionA.y <= 0) {gridPositionA.y = 0; gridStart.y = 0;}
-    if (gridPositionA.y >= gridSize.y - 1) {gridPositionA.y = gridSize.y - 1; gridEnd.y = 0;}
-    if (gridPositionA.z <= 0) {gridPositionA.z = 0; gridStart.z = 0;}
-    if (gridPositionA.z >= gridSize.z - 1) {gridPositionA.z = gridSize.z - 1; gridEnd.z = 0;}
+    if (gridPositionA.x <= 0) { gridPositionA.x = 0; gridStart.x = 0; }
+    if (gridPositionA.x >= gridSize.x - 1) { gridPositionA.x = gridSize.x - 1; gridEnd.x = 0; }
+    if (gridPositionA.y <= 0) { gridPositionA.y = 0; gridStart.y = 0; }
+    if (gridPositionA.y >= gridSize.y - 1) { gridPositionA.y = gridSize.y - 1; gridEnd.y = 0; }
+    if (gridPositionA.z <= 0) { gridPositionA.z = 0; gridStart.z = 0; }
+    if (gridPositionA.z >= gridSize.z - 1) { gridPositionA.z = gridSize.z - 1; gridEnd.z = 0; }
     for (int zz = gridStart.z; zz <= gridEnd.z; zz++)
     {
         for (int yy = gridStart.y; yy <= gridEnd.y; yy++)
@@ -89,13 +88,10 @@ const size_t numSPH)
             for (int xx = gridStart.x; xx <= gridEnd.x; xx++)
             {
                 int3 gridPositionB = make_int3(gridPositionA.x + xx, gridPositionA.y + yy, gridPositionA.z + zz);
-                if (gridPositionB.x < 0 || gridPositionB.y < 0 || gridPositionB.z < 0) continue;
-                if (gridPositionB.x >= gridSize.x || gridPositionB.y >= gridSize.y || gridPositionB.z >= gridSize.z) continue;
                 int hashB = calculateHash(gridPositionB, gridSize);
                 int startIndex = cellHashStart[hashB];
                 if (startIndex == 0xFF) continue;
                 int endIndex = cellHashEnd[hashB];
-                int countInOneCell = 0;
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = hashIndex[i];
@@ -104,10 +100,10 @@ const size_t numSPH)
                     double3 rAB = posA - position[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
                     {
-                        int index_w = base_w + countInOneCell;
+                        int index_w = base_w + count;
                         objectPointed[index_w] = idxA;
                         objectPointing[index_w] = idxB;
-                        countInOneCell++;
+                        count++;
                     }
                 }
             }
@@ -185,6 +181,7 @@ const size_t numSPH)
     int idxA = blockIdx.x * blockDim.x + threadIdx.x;
     if (idxA >= numSPH) return;
 
+    int count = 0;
     int base_w = 0;
     if (idxA > 0) base_w = neighborPrefixSum[idxA - 1];
     double3 posA = position[idxA];
@@ -209,7 +206,6 @@ const size_t numSPH)
                 int startIndex = cellHashStart[hashB];
                 if (startIndex == 0xFF) continue;
                 int endIndex = cellHashEnd[hashB];
-                int countInOneCell = 0;
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = hashIndex_dummy[i];
@@ -217,10 +213,10 @@ const size_t numSPH)
                     double3 rAB = posA - position_dummy[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
                     {
-                        int index_w = base_w + countInOneCell;
+                        int index_w = base_w + count;
                         objectPointed[index_w] = idxA;
                         objectPointing[index_w] = idxB;
-                        countInOneCell++;
+                        count++;
                     }
                 }
             }
@@ -231,7 +227,6 @@ const size_t numSPH)
 extern "C" void launchCountSPHInteractions(double3* position, 
 double* smoothLength,
 int* hashIndex, 
-int* hashValue,
 int* neighborCount,
 int* neighborPrefixSum,
 
@@ -304,7 +299,6 @@ int* neighborPrefixSum,
 double3* position_dummy, 
 double* smoothLength_dummy,
 int* hashIndex_dummy, 
-int* hashValue_dummy,
 
 int* cellHashStart,
 int* cellHashEnd,

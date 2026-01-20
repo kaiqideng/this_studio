@@ -47,6 +47,7 @@ cudaStream_t stream_GPU);
 
 extern "C" void launchWCSPH1stHalfIntegration(double3* position,
 double3* velocity,
+double3* acceleration,
 double* density,
 double* pressure,
 double* soundSpeed,
@@ -78,6 +79,8 @@ cudaStream_t stream_GPU);
 
 extern "C" void launchWCSPH2ndHalfIntegration(double3* position,
 double3* velocity,
+double3* acceleration,
+double* densityChange,
 double* density,
 double* pressure,
 double* soundSpeed,

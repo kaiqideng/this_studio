@@ -1,4 +1,3 @@
-#include "neighborSearchKernel.h"
 #include "particle.h"
 #include "interaction.h"
 #include "boundary.h"
@@ -47,7 +46,6 @@ protected:
         launchCountSPHInteractions(dummy_.position(), 
         dummy_.smoothLength(), 
         dummy_.hashIndex(), 
-        dummy_.hashValue(), 
         dummyAndDummy_.objectPointed_.neighborCount(), 
         dummyAndDummy_.objectPointed_.neighborPrefixSum(), 
         spatialGrid_.cellHashStart(), 
@@ -113,9 +111,9 @@ protected:
     void initializeSpatialGrid(const double3 minBoundary, const double3 maxBoundary)
     {
         double cellSizeOneDim = 0.0;
-        std::vector<double> h = WCSPH_.smoothLengthHostCopy();
+        const std::vector<double> h = WCSPH_.smoothLengthHostRef();
         if (h.size() > 0) cellSizeOneDim = *std::max_element(h.begin(), h.end()) * 2.0;
-        std::vector<double> h1 = dummy_.smoothLengthHostCopy();
+        const std::vector<double> h1 = dummy_.smoothLengthHostRef();
         if (h1.size() > 0) cellSizeOneDim = std::max(cellSizeOneDim, *std::max_element(h1.begin(), h1.end()) * 2.0);
         spatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
     }
@@ -153,7 +151,6 @@ protected:
         launchCountSPHInteractions(WCSPH_.position(), 
         WCSPH_.smoothLength(), 
         WCSPH_.hashIndex(), 
-        WCSPH_.hashValue(), 
         SPHAndSPH_.objectPointed_.neighborCount(), 
         SPHAndSPH_.objectPointed_.neighborPrefixSum(), 
         spatialGrid_.cellHashStart(), 
@@ -212,7 +209,6 @@ protected:
         dummy_.position(), 
         dummy_.smoothLength(), 
         dummy_.hashIndex(), 
-        dummy_.hashValue(), 
         spatialGrid_.cellHashStart(), 
         spatialGrid_.cellHashEnd(), 
         spatialGrid_.minimumBoundary(), 
@@ -252,6 +248,7 @@ protected:
     {
         launchWCSPH1stHalfIntegration(WCSPH_.position(), 
         WCSPH_.velocity(), 
+        WCSPH_.acceleration(), 
         WCSPH_.density(), 
         WCSPH_.pressure(), 
         WCSPH_.soundSpeed(), 
@@ -281,6 +278,8 @@ protected:
     {
         launchWCSPH2ndHalfIntegration(WCSPH_.position(), 
         WCSPH_.velocity(), 
+        WCSPH_.acceleration(), 
+        WCSPH_.densityChange(),
         WCSPH_.density(), 
         WCSPH_.pressure(), 
         WCSPH_.soundSpeed(), 
@@ -319,7 +318,7 @@ protected:
         std::vector<double3> p = WCSPH_.positionHostCopy();
         std::vector<double3> v = WCSPH_.velocityHostCopy();
         std::vector<double> pr = WCSPH_.pressureHostCopy();
-        std::vector<double> h = WCSPH_.smoothLengthHostCopy();
+        const std::vector<double> h = WCSPH_.smoothLengthHostRef();
         
         out << "<?xml version=\"1.0\"?>\n"
             "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
@@ -398,7 +397,7 @@ protected:
         size_t N = dummy_.hostSize();
         std::vector<double3> p = dummy_.positionHostCopy();
         std::vector<double3> v = dummy_.velocityHostCopy();
-        std::vector<double> h = dummy_.smoothLengthHostCopy();
+        const std::vector<double> h = dummy_.smoothLengthHostRef();
         
         out << "<?xml version=\"1.0\"?>\n"
             "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
@@ -465,13 +464,17 @@ public:
     void addSPH(double3 position, double3 velocity, double soundSpeed, double spacing, double density, double viscosity)
     {
         double mass = spacing * spacing * spacing * density;
-        WCSPH_.addHost(position, velocity, density, 0.0, density, 1.3 * spacing, mass, soundSpeed, viscosity);
+        double3 zeroVec = make_double3(0., 0., 0.);
+        WCSPH_.addHost(position, velocity, zeroVec, zeroVec, 0.0, density, 0.0, 
+        density, 1.3 * spacing, mass, soundSpeed, viscosity, -1, -1);
     }
 
     void addDummy(double3 position, double3 velocity, double soundSpeed, double spacing, double density, double viscosity)
     {
         double mass = spacing * spacing * spacing * density;
-        dummy_.addHost(position, velocity, density, 0.0, density, 1.3 * spacing, mass, soundSpeed, viscosity);
+        double3 zeroVec = make_double3(0., 0., 0.);
+        dummy_.addHost(position, velocity, zeroVec, zeroVec, 0.0, density, 0.0, 
+        density, 1.3 * spacing, mass, soundSpeed, viscosity, -1, -1);
     }
 
     void eraseSPH(std::vector<size_t> index)
@@ -537,6 +540,8 @@ public:
             iStep++;
             time += timeStep;
             neighborSearch();
+            std::vector<int> obj = SPHAndSPH_.pair_.objectPointingHostCopy();
+            for (auto p: obj) printf("%d\n", p);
             interaction1stHalf(gravity, timeStep);
             interaction2ndHalf(gravity, timeStep);
             if (iStep % frameInterval == 0) 
