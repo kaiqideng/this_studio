@@ -681,6 +681,7 @@ struct interactionMap
 {
 private:
     DeviceArray1D<int> hashIndex_;
+    DeviceArray1D<int> hashValue_;
     DeviceArray1D<int> countA_;
     DeviceArray1D<int> prefixSumA_;
     DeviceArray1D<int> startB_;
@@ -703,21 +704,26 @@ public:
         startB_.allocDeviceArray(objectBSize, stream);
         endB_.allocDeviceArray(objectBSize, stream);
         hashIndex_.allocDeviceArray(hashListSize, stream);
+        hashValue_.allocDeviceArray(hashListSize, stream);
 
         CUDA_CHECK(cudaMemsetAsync(startB_.d_ptr, 0xFF, startB_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(endB_.d_ptr, 0xFF, endB_.deviceSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
     }
 
-    void resizeHashIndex(const size_t n, cudaStream_t stream)
+    void resizeHash(const size_t n, cudaStream_t stream)
     {
         if (n > hashIndex_.deviceSize()) hashIndex_.allocDeviceArray(n, stream);
         CUDA_CHECK(cudaMemsetAsync(hashIndex_.d_ptr, 0xFF, hashIndex_.deviceSize() * sizeof(int), stream));
+        if (n > hashValue_.deviceSize()) hashValue_.allocDeviceArray(n, stream);
+        CUDA_CHECK(cudaMemsetAsync(hashValue_.d_ptr, 0xFF, hashValue_.deviceSize() * sizeof(int), stream));
     }
 
     size_t ASize() const { return countA_.deviceSize(); }
     size_t BSize() const { return startB_.deviceSize(); }
     int* hashIndex() { return hashIndex_.d_ptr; }
+    int* hashValue() { return hashValue_.d_ptr; }
     int* countA() { return countA_.d_ptr; }
     int* prefixSumA() { return prefixSumA_.d_ptr; }
     int* startB() { return startB_.d_ptr; }

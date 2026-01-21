@@ -1,4 +1,0 @@
-/teamspace/studios/this_studio/SPH/build/CMakeFiles/SPH_kernels.dir
-/teamspace/studios/this_studio/SPH/build/CMakeFiles/damBreak.dir
-/teamspace/studios/this_studio/SPH/build/CMakeFiles/edit_cache.dir
-/teamspace/studios/this_studio/SPH/build/CMakeFiles/rebuild_cache.dir

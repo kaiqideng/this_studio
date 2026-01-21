@@ -312,13 +312,14 @@ cudaStream_t stream)
 
         CUDA_CHECK(cudaMemsetAsync(ballTriangleInteractionMap.startB(), 0xFF, ballTriangleInteractionMap.BSize() * sizeof(int), stream));
         CUDA_CHECK(cudaMemsetAsync(ballTriangleInteractionMap.endB(), 0xFF, ballTriangleInteractionMap.BSize() * sizeof(int), stream));
-        ballTriangleInteractionMap.resizeHashIndex(static_cast<size_t>(activeNumber), stream);
+        ballTriangleInteractionMap.resizeHash(static_cast<size_t>(activeNumber), stream);
         if (setGPUGridBlockDim(gridD, blockD, static_cast<size_t>(activeNumber), maxThreadsPerBlock))
         {
+            cuda_copy(ballTriangleInteractionMap.hashValue(), ballTriangleInteractions.objectPointing(), activeNumber,CopyDir::D2D, stream);
             buildHashStartEnd(ballTriangleInteractionMap.startB(), 
             ballTriangleInteractionMap.endB(), 
             ballTriangleInteractionMap.hashIndex(), 
-            ballTriangleInteractions.objectPointing(),
+            ballTriangleInteractionMap.hashValue(),
             ballTriangleInteractionMap.BSize(),
             static_cast<size_t>(activeNumber), 
             gridD,

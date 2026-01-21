@@ -1,2 +1,0 @@
-/usr/bin/ar qc libSPH_kernels.a CMakeFiles/SPH_kernels.dir/kernel/SPHNeighborSearchKernel.cu.o CMakeFiles/SPH_kernels.dir/kernel/WCSPHIntegrationKernel.cu.o CMakeFiles/SPH_kernels.dir/kernel/buildHashStartEnd.cu.o CMakeFiles/SPH_kernels.dir/kernel/neighborSearchKernel.cu.o
-/usr/bin/ranlib libSPH_kernels.a
