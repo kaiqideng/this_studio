@@ -53,59 +53,6 @@ const size_t gridD_GPU,
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU);
 
-extern "C" void launchCountBallDummyInteractions(double3* position, 
-double* radius,
-int* neighborCount,
-int* neighborPrefixSum,
-
-double3* position_dummy, 
-double* radius_dummy,
-int* hashIndex_dummy, 
-
-int* cellHashStart,
-int* cellHashEnd,
-const double3 minBound,
-const double3 cellSize,
-const int3 gridSize,
-
-const size_t numBall,
-const size_t gridD_GPU, 
-const size_t blockD_GPU, 
-cudaStream_t stream_GPU);
-
-extern "C" void launchWriteBallDummyInteractions(double3* position, 
-double* radius,
-int* neighborPrefixSum,
-
-double3* position_dummy, 
-double* radius_dummy,
-int* hashIndex_dummy, 
-int* interactionStart_dummy,
-int* interactionEnd_dummy, 
-
-double3* slidingSpring,
-double3* rollingSpring,
-double3* torsionSpring,
-int* objectPointed,
-int* objectPointing,
-
-double3* slidingSpring_old,
-double3* rollingSpring_old,
-double3* torsionSpring_old,
-int* objectPointed_old,
-int* interactionHashIndex_old,
-
-int* cellHashStart,
-int* cellHashEnd,
-const double3 minBound,
-const double3 cellSize,
-const int3 gridSize,
-
-const size_t numBall,
-const size_t gridD_GPU, 
-const size_t blockD_GPU, 
-cudaStream_t stream_GPU);
-
 extern "C" void launchCountBallTriangleInteractions(double3* position, 
 double* radius,
 int* neighborCount,

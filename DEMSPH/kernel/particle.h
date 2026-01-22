@@ -25,7 +25,7 @@ private:
 
     size_t hostSize_ {0};
     size_t deviceSize_ {0};
-    size_t blockDim_ {256};
+    size_t blockDim_ {1};
     size_t gridDim_ {0};
 
 private:
@@ -263,6 +263,12 @@ public:
 
     const std::vector<int>& materialIDHostRef() { return materialID_.hostRef(); }
     const std::vector<int>& clumpIDHostRef() { return clumpID_.hostRef(); }
+
+    void setClumpID(const std::vector<int>& c)
+    {
+        if (c.size() != hostSize_) return;
+        clumpID_.setHost(c);
+    }
 };
 
 struct clump
@@ -288,7 +294,7 @@ private:
 
     size_t hostSize_ {0};
     size_t deviceSize_ {0};
-    size_t blockDim_ {256};
+    size_t blockDim_ {1};
     size_t gridDim_ {0};
 
 private:
@@ -521,14 +527,26 @@ public:
     std::vector<double3> forceHostCopy() { return force_.getHostCopy(); }
     std::vector<double3> torqueHostCopy() { return torque_.getHostCopy(); }
 
-    std::vector<quaternion> orientationHostRef() { return orientation_.hostRef(); }
-    std::vector<symMatrix> inverseInertiaTensorHostRef() { return inverseInertiaTensor_.hostRef(); }
+    const std::vector<quaternion>& orientationHostRef() { return orientation_.hostRef(); }
+    const std::vector<symMatrix>& inverseInertiaTensorHostRef() { return inverseInertiaTensor_.hostRef(); }
 
-    std::vector<double> inverseMassHostRef() { return inverseMass_.hostRef(); }
+    const std::vector<double>& inverseMassHostRef() { return inverseMass_.hostRef(); }
 
-    std::vector<int> materialIDHostRef() { return materialID_.hostRef(); }
-    std::vector<int> pebbleStartHostRef() { return pebbleStart_.hostRef(); }
-    std::vector<int> pebbleEndHostRef() { return pebbleEnd_.hostRef(); }
+    const std::vector<int>& materialIDHostRef() { return materialID_.hostRef(); }
+    const std::vector<int>& pebbleStartHostRef() { return pebbleStart_.hostRef(); }
+    const std::vector<int>& pebbleEndHostRef() { return pebbleEnd_.hostRef(); }
+
+    void setPebbleStartHost(const std::vector<int>& s)
+    {
+        if (s.size() != hostSize_) return;
+        pebbleStart_.setHost(s);
+    }
+
+    void setPebbleEndHost(const std::vector<int>& e)
+    {
+        if (e.size() != hostSize_) return;
+        pebbleEnd_.setHost(e);
+    }
 };
 
 struct WCSPH
@@ -556,7 +574,7 @@ private:
 
     size_t hostSize_ {0};
     size_t deviceSize_ {0};
-    size_t blockDim_ {256};
+    size_t blockDim_ {1};
     size_t gridDim_ {0};
 
 private:

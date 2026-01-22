@@ -321,9 +321,7 @@ Edge,
 Vertex
 };
 
-__host__ __device__
-inline SphereTriangleContactType classifySphereTriangleContact(
-const double3& sphereCenter,
+__device__ inline SphereTriangleContactType classifySphereTriangleContact(const double3& sphereCenter,
 const double sphereRadius,
 const double3& v0,
 const double3& v1,
@@ -472,38 +470,6 @@ const size_t gridD,
 const size_t blockD, 
 cudaStream_t stream);
 
-extern "C" void luanchCalculateBallDummyContactForceTorque(double3* position, 
-double3* velocity, 
-double3* angularVelocity, 
-double* radius,
-double* inverseMass,
-int* materialID,
-
-double3* position_dummy, 
-double3* velocity_dummy, 
-double3* angularVelocity_dummy, 
-double* radius_dummy,
-double* inverseMass_dummy,
-int* materialID_dummy,
-
-double3* slidingSpring, 
-double3* rollingSpring, 
-double3* torsionSpring, 
-double3* contactForce,
-double3* contactTorque,
-double3* contactPoint,
-double3* contactNormal,
-double* overlap,
-int* objectPointed, 
-int* objectPointing,
-
-const double timeStep,
-
-const size_t numInteractions,
-const size_t gridD,
-const size_t blockD, 
-cudaStream_t stream);
-
 extern "C" void luanchCalculateBondedForceTorque(double3* position, 
 double3* velocity, 
 double3* angularVelocity, 
@@ -547,20 +513,6 @@ double3* contactForce,
 double3* contactTorque,
 double3* contactPoint,
 int* interactionHashIndex,
-
-const size_t numBall,
-const size_t gridD,
-const size_t blockD, 
-cudaStream_t stream);
-
-extern "C" void luanchSumBallDummyContactForceTorque(double3* position, 
-double3* force, 
-double3* torque,
-int* neighborPrefixSum,
-
-double3* contactForce_dummy,
-double3* contactTorque_dummy,
-double3* contactPoint_dummy,
 
 const size_t numBall,
 const size_t gridD,

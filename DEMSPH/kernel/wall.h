@@ -20,7 +20,7 @@ private:
 
     size_t hostSize_ {0};
     size_t deviceSize_ {0};
-    size_t blockDim_ {256};
+    size_t blockDim_ {1};
     size_t gridDim_ {0};
 
 private:
@@ -226,7 +226,7 @@ private:
 
     size_t hostSize_ {0};
     size_t deviceSize_ {0};
-    size_t blockDim_ {256};
+    size_t blockDim_ {1};
     size_t gridDim_ {0};
 
 private:

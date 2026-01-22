@@ -1,0 +1,1 @@
+/usr/bin/g++-12 -O3 -DNDEBUG CMakeFiles/damBreak.dir/damBreak.cpp.o CMakeFiles/damBreak.dir/cmake_device_link.o -o damBreak   -L/usr/lib/x86_64-linux-gnu/stubs  libDEMSPH_kernels.a libDEMSPH_app_common.a libDEMSPH_kernels.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl 

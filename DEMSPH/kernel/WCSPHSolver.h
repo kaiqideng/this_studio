@@ -477,28 +477,14 @@ public:
         density, 1.3 * spacing, mass, soundSpeed, viscosity, -1, -1);
     }
 
-    void eraseSPH(std::vector<size_t> index)
+    void eraseSPH(const size_t index)
     {
-        std::sort(index.begin(), index.end(), std::greater<size_t>());
-        index.erase(std::unique(index.begin(), index.end()), index.end());
-
-        const size_t hostSize0 = WCSPH_.hostSize();
-        for (size_t i = 0; i < index.size(); i++)
-        {
-            WCSPH_.eraseHost(index[i]);
-        }
+        WCSPH_.eraseHost(index);
     }
 
-    void eraseDummy(std::vector<size_t> index)
+    void eraseDummy(const size_t index)
     {
-        std::sort(index.begin(), index.end(), std::greater<size_t>());
-        index.erase(std::unique(index.begin(), index.end()), index.end());
-
-        const size_t hostSize0 = dummy_.hostSize();
-        for (size_t i = 0; i < index.size(); i++)
-        {
-            dummy_.eraseHost(index[i]);
-        }
+        dummy_.eraseHost(index);
     }
 
     void copySPH(const WCSPH& other)

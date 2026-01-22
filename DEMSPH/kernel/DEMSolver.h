@@ -1,6 +1,7 @@
 #include "buildHashStartEnd.h"
 #include "contactParameters.h"
-#include "myUtility/myMat.h"
+#include "myUtility/myHostDeviceArray.h"
+#include "neighborSearchKernel.h"
 #include "particle.h"
 #include "wall.h"
 #include "interaction.h"
@@ -8,6 +9,7 @@
 #include "ballNeighborSearchKernel.h"
 #include "contactKernel.h"
 #include "ballIntegrationKernel.h"
+#include "wallIntegrationKernel.h"
 #include "myUtility/myFileEdit.h"
 #include <iomanip>
 #include <iostream>
@@ -76,6 +78,13 @@ struct solidInteraction
     }
 };
 
+struct periodicInteraction
+{
+    bool activatedFlag_ { false };
+    HostDeviceArray1D<double3> dummyPosition_;
+    solidInteraction dummyInteraction_;
+};
+
 struct bondedInteraction
 {
     pair pair_;
@@ -87,7 +96,7 @@ struct bondedInteraction
     {
         if (ob0.size() != ob1.size()) return;
 
-        std::vector<int> existingPointed  = pair_.objectPointedHostCopy();
+        std::vector<int> existingPointed = pair_.objectPointedHostCopy();
         std::vector<int> existingPointing = pair_.objectPointingHostCopy();
 
         for (size_t i = 0; i < ob0.size(); ++i)
@@ -152,44 +161,81 @@ private:
         stream_);
 
         ball_.copyHostToDevice(stream_);
-        dummy_.copyHostToDevice(stream_);
         clump_.copyHostToDevice(stream_);
         meshWall_.body_.copyHostToDevice(stream_);
         meshWall_.triangle_.copyHostToDevice(stream_);
         meshWall_.vertex_.copyHostToDevice(stream_);
 
-        ballAndBall_.pair_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballAndBall_.spring_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballAndBall_.contact_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballAndBall_.oldPair_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballAndBall_.oldSpring_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballAndBall_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
-        ballAndBall_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        bondedInteraction_.pair_.copyHostToDevice(stream_);
+        bondedInteraction_.bond_.copyHostToDevice(stream_);
 
-        if (dummy_.deviceSize() > 0)
-        {
-            ballAndDummy_.pair_.allocateDevice(6 * ball_.deviceSize(), stream_);
-            ballAndDummy_.spring_.allocateDevice(6 * ball_.deviceSize(), stream_);
-            ballAndDummy_.contact_.allocateDevice(6 * ball_.deviceSize(), stream_);
-            ballAndDummy_.oldPair_.allocateDevice(6 * ball_.deviceSize(), stream_);
-            ballAndDummy_.oldSpring_.allocateDevice(6 * ball_.deviceSize(), stream_);
-            ballAndDummy_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
-            ballAndDummy_.objectPointing_.allocateDevice(dummy_.deviceSize(), stream_);
-        }
+        ballInteraction_.pair_.allocateDevice(6 * ball_.deviceSize(), stream_);
+        ballInteraction_.spring_.allocateDevice(6 * ball_.deviceSize(), stream_);
+        ballInteraction_.contact_.allocateDevice(6 * ball_.deviceSize(), stream_);
+        ballInteraction_.oldPair_.allocateDevice(6 * ball_.deviceSize(), stream_);
+        ballInteraction_.oldSpring_.allocateDevice(6 * ball_.deviceSize(), stream_);
+        ballInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+        ballInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
 
         if (meshWall_.triangle_.deviceSize() > 0)
         {
-            ballAndTriangle_.pair_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballAndTriangle_.spring_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballAndTriangle_.contact_.allocateDevice(3 *  ball_.deviceSize(), stream_);
-            ballAndTriangle_.oldPair_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballAndTriangle_.oldSpring_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballAndTriangle_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
-            ballAndTriangle_.objectPointing_.allocateDevice(meshWall_.triangle_.deviceSize(), stream_);
+            ballTriangleInteraction_.pair_.allocateDevice(3 * ball_.deviceSize(), stream_);
+            ballTriangleInteraction_.spring_.allocateDevice(3 * ball_.deviceSize(), stream_);
+            ballTriangleInteraction_.contact_.allocateDevice(3 * ball_.deviceSize(), stream_);
+            ballTriangleInteraction_.oldPair_.allocateDevice(3 * ball_.deviceSize(), stream_);
+            ballTriangleInteraction_.oldSpring_.allocateDevice(3 * ball_.deviceSize(), stream_);
+            ballTriangleInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            ballTriangleInteraction_.objectPointing_.allocateDevice(meshWall_.triangle_.deviceSize(), stream_);
         }
 
-        bondedBallAndBall_.pair_.copyHostToDevice(stream_);
-        bondedBallAndBall_.bond_.copyHostToDevice(stream_);
+        if (periodicX_.activatedFlag_) 
+        {
+            periodicX_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicX_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicX_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
+
+        if (periodicY_.activatedFlag_) 
+        {
+            periodicY_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicY_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicY_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
+
+        if (periodicZ_.activatedFlag_) 
+        {
+            periodicZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicZ_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
+
+        if (periodicXY_.activatedFlag_) 
+        {
+            periodicXY_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicXY_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicXY_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
+
+        if (periodicYZ_.activatedFlag_) 
+        {
+            periodicYZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicYZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicYZ_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
+
+        if (periodicXZ_.activatedFlag_) 
+        {
+            periodicXZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicXZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicXZ_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
+
+        if (periodicXYZ_.activatedFlag_) 
+        {
+            periodicXYZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicXYZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            periodicXYZ_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
     }
 
     void initializeSpatialGrid(const double3 minBoundary, const double3 maxBoundary)
@@ -197,8 +243,6 @@ private:
         double cellSizeOneDim = 0.0;
         const std::vector<double> r = ball_.radiusHostRef();
         if (r.size() > 0) cellSizeOneDim = *std::max_element(r.begin(), r.end()) * 2.0;
-        const std::vector<double> r1 = dummy_.radiusHostRef();
-        if (r1.size() > 0) cellSizeOneDim = std::max(cellSizeOneDim, *std::max_element(r1.begin(), r1.end()) * 2.0);
         ballSpatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
 
         double longestEdge = 0.0;
@@ -211,27 +255,154 @@ private:
             longestEdge = std::max(longestEdge, length(v2 - v1));
             longestEdge = std::max(longestEdge, length(v2 - v0));
         }
-        cellSizeOneDim = std::max(cellSizeOneDim, longestEdge);
+        cellSizeOneDim = std::max(cellSizeOneDim, 1.2 * longestEdge);
         triangleSpatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
     }
 
     void initialize(const double3 minBoundary, const double3 maxBoundary, const size_t maximumThread)
     {
         maxThread_ = maximumThread;
-        ball_.setBlockDim(maxThread_);
-        dummy_.setBlockDim(maxThread_);
-        clump_.setBlockDim(maxThread_);
-        meshWall_.body_.setBlockDim(maxThread_);
-        meshWall_.triangle_.setBlockDim(maxThread_);
-        meshWall_.vertex_.setBlockDim(maxThread_);
+
+        ball_.setBlockDim(maxThread_ < ball_.hostSize() ? maxThread_ : ball_.hostSize());
+        clump_.setBlockDim(maxThread_ < clump_.hostSize() ? maxThread_ : clump_.hostSize());
+        meshWall_.body_.setBlockDim(maxThread_ < meshWall_.body_.hostSize() ? maxThread_ : meshWall_.body_.hostSize());
+        meshWall_.triangle_.setBlockDim(maxThread_ < meshWall_.triangle_.hostSize() ? maxThread_ : meshWall_.triangle_.hostSize());
+        meshWall_.vertex_.setBlockDim(maxThread_ < meshWall_.vertex_.hostSize() ? maxThread_ : meshWall_.vertex_.hostSize());
 
         upload();
 
         initializeSpatialGrid(minBoundary, maxBoundary);
     }
 
-    void triangleNeighborSearch()
+    void addDummyContactForceTorque(periodicInteraction& periodic, const int3 directionFlag, const double timeStep)
     {
+        if (periodic.dummyPosition_.deviceSize() == 0 || periodic.dummyPosition_.deviceSize() != ball_.deviceSize()) return;
+
+        launchBuildDummyPosition(periodic.dummyPosition_.d_ptr,
+        ball_.position(), 
+        ballSpatialGrid_.minimumBoundary(), 
+        ballSpatialGrid_.maximumBoundary(), 
+        ballSpatialGrid_.cellSize(), 
+        directionFlag, 
+        ball_.deviceSize(), 
+        ball_.gridDim(), 
+        ball_.blockDim(), 
+        stream_);
+
+        updatePeriodicSpatialGridCellHashStartEnd(periodic.dummyPosition_.d_ptr, 
+        ball_.hashIndex(), 
+        ball_.hashValue(), 
+        ballSpatialGrid_.cellHashStart(), 
+        ballSpatialGrid_.cellHashEnd(), 
+        ballSpatialGrid_.minimumBoundary(), 
+        ballSpatialGrid_.maximumBoundary(), 
+        ballSpatialGrid_.cellSize(), 
+        ballSpatialGrid_.gridSize(), 
+        ballSpatialGrid_.numGrids(),
+        ball_.deviceSize(), 
+        ball_.gridDim(), 
+        ball_.blockDim(), 
+        stream_);
+
+        periodic.dummyInteraction_.updateOldPairOldSpring(stream_);
+
+        launchCountBallInteractions(periodic.dummyPosition_.d_ptr, 
+        ball_.radius(), 
+        ball_.inverseMass(), 
+        ball_.clumpID(), 
+        ball_.hashIndex(), 
+        periodic.dummyInteraction_.objectPointed_.neighborCount(), 
+        periodic.dummyInteraction_.objectPointed_.neighborPrefixSum(), 
+        ballSpatialGrid_.cellHashStart(), 
+        ballSpatialGrid_.cellHashEnd(), 
+        ballSpatialGrid_.minimumBoundary(), 
+        ballSpatialGrid_.cellSize(), 
+        ballSpatialGrid_.gridSize(), 
+        ball_.deviceSize(), 
+        ball_.gridDim(), 
+        ball_.blockDim(), 
+        stream_);
+
+        periodic.dummyInteraction_.resizePair(stream_);
+
+        launchWriteBallInteractions(periodic.dummyPosition_.d_ptr, 
+        ball_.radius(), 
+        ball_.inverseMass(),
+        ball_.clumpID(),
+        ball_.hashIndex(), 
+        periodic.dummyInteraction_.objectPointed_.neighborPrefixSum(),
+        periodic.dummyInteraction_.objectPointing_.interactionStart(),
+        periodic.dummyInteraction_.objectPointing_.interactionEnd(),
+        periodic.dummyInteraction_.spring_.sliding(),
+        periodic.dummyInteraction_.spring_.rolling(),
+        periodic.dummyInteraction_.spring_.torsion(),
+        periodic.dummyInteraction_.pair_.objectPointed(),
+        periodic.dummyInteraction_.pair_.objectPointing(),
+        periodic.dummyInteraction_.oldSpring_.sliding(),
+        periodic.dummyInteraction_.oldSpring_.rolling(),
+        periodic.dummyInteraction_.oldSpring_.torsion(),
+        periodic.dummyInteraction_.oldPair_.objectPointed(),
+        periodic.dummyInteraction_.oldPair_.hashIndex(),
+        ballSpatialGrid_.cellHashStart(), 
+        ballSpatialGrid_.cellHashEnd(), 
+        ballSpatialGrid_.minimumBoundary(),
+        ballSpatialGrid_.cellSize(), 
+        ballSpatialGrid_.gridSize(), 
+        ball_.deviceSize(), 
+        ball_.gridDim(), 
+        ball_.blockDim(),
+        stream_);
+
+        periodic.dummyInteraction_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
+
+        if (periodic.dummyInteraction_.numActivated_ > 0) 
+        {
+            size_t blockD = maxThread_;
+            if (periodic.dummyInteraction_.numActivated_ < maxThread_) blockD = periodic.dummyInteraction_.numActivated_ ;
+            size_t gridD = (periodic.dummyInteraction_.numActivated_ + blockD - 1) / blockD;
+            luanchCalculateBallContactForceTorque(periodic.dummyPosition_.d_ptr,
+            ball_.velocity(),
+            ball_.angularVelocity(),
+            ball_.radius(),
+            ball_.inverseMass(),
+            ball_.materialID(),
+            periodic.dummyInteraction_.spring_.sliding(),
+            periodic.dummyInteraction_.spring_.rolling(),
+            periodic.dummyInteraction_.spring_.torsion(),
+            periodic.dummyInteraction_.contact_.force(),
+            periodic.dummyInteraction_.contact_.torque(),
+            periodic.dummyInteraction_.contact_.point(),
+            periodic.dummyInteraction_.contact_.normal(),
+            periodic.dummyInteraction_.contact_.overlap(),
+            periodic.dummyInteraction_.pair_.objectPointed(),
+            periodic.dummyInteraction_.pair_.objectPointing(),
+            timeStep,
+            periodic.dummyInteraction_.numActivated_ ,
+            gridD,
+            blockD,
+            stream_);
+        }
+
+        luanchSumBallContactForceTorque(periodic.dummyPosition_.d_ptr,
+        ball_.force(),
+        ball_.torque(),
+        periodic.dummyInteraction_.objectPointed_.neighborPrefixSum(),
+        periodic.dummyInteraction_.objectPointing_.interactionStart(),
+        periodic.dummyInteraction_.objectPointing_.interactionEnd(),
+        periodic.dummyInteraction_.contact_.force(),
+        periodic.dummyInteraction_.contact_.torque(),
+        periodic.dummyInteraction_.contact_.point(),
+        periodic.dummyInteraction_.pair_.hashIndex(),
+        ball_.deviceSize(),
+        ball_.gridDim(),
+        ball_.blockDim(),
+        stream_);
+    }
+
+    void addTriangleContactForceTorque(const double timeStep)
+    {
+        if (meshWall_.triangle_.deviceSize() == 0) return;
+
         updateSpatialGridCellHashStartEnd(meshWall_.triangle_.circumcenter(), 
         meshWall_.triangle_.hashIndex(), 
         meshWall_.triangle_.hashValue(), 
@@ -247,12 +418,12 @@ private:
         meshWall_.triangle_.blockDim(), 
         stream_);
 
-        ballAndTriangle_.updateOldPairOldSpring(stream_);
+        ballTriangleInteraction_.updateOldPairOldSpring(stream_);
 
         launchCountBallTriangleInteractions(ball_.position(), 
         ball_.radius(), 
-        ballAndTriangle_.objectPointed_.neighborCount(),
-        ballAndTriangle_.objectPointed_.neighborPrefixSum(),
+        ballTriangleInteraction_.objectPointed_.neighborCount(),
+        ballTriangleInteraction_.objectPointed_.neighborPrefixSum(),
         meshWall_.triangle_.index0(), 
         meshWall_.triangle_.index1(), 
         meshWall_.triangle_.index2(),
@@ -268,28 +439,28 @@ private:
         ball_.blockDim(), 
         stream_);
 
-        ballAndTriangle_.resizePair(stream_);
+        ballTriangleInteraction_.resizePair(stream_);
 
         launchWriteBallTriangleInteractions(ball_.position(), 
         ball_.radius(), 
-        ballAndTriangle_.objectPointed_.neighborPrefixSum(),
+        ballTriangleInteraction_.objectPointed_.neighborPrefixSum(),
         meshWall_.triangle_.index0(), 
         meshWall_.triangle_.index1(), 
         meshWall_.triangle_.index2(),
         meshWall_.triangle_.hashIndex(),
-        ballAndTriangle_.objectPointing_.interactionStart(),
-        ballAndTriangle_.objectPointing_.interactionEnd(),
+        ballTriangleInteraction_.objectPointing_.interactionStart(),
+        ballTriangleInteraction_.objectPointing_.interactionEnd(),
         meshWall_.vertex_.globalPosition(),
-        ballAndTriangle_.spring_.sliding(),
-        ballAndTriangle_.spring_.rolling(),
-        ballAndTriangle_.spring_.torsion(),
-        ballAndTriangle_.pair_.objectPointed(),
-        ballAndTriangle_.pair_.objectPointing(),
-        ballAndTriangle_.oldSpring_.sliding(),
-        ballAndTriangle_.oldSpring_.rolling(),
-        ballAndTriangle_.oldSpring_.torsion(),
-        ballAndTriangle_.oldPair_.objectPointed(),
-        ballAndTriangle_.oldPair_.hashIndex(),
+        ballTriangleInteraction_.spring_.sliding(),
+        ballTriangleInteraction_.spring_.rolling(),
+        ballTriangleInteraction_.spring_.torsion(),
+        ballTriangleInteraction_.pair_.objectPointed(),
+        ballTriangleInteraction_.pair_.objectPointing(),
+        ballTriangleInteraction_.oldSpring_.sliding(),
+        ballTriangleInteraction_.oldSpring_.rolling(),
+        ballTriangleInteraction_.oldSpring_.torsion(),
+        ballTriangleInteraction_.oldPair_.objectPointed(),
+        ballTriangleInteraction_.oldPair_.hashIndex(),
         triangleSpatialGrid_.cellHashStart(), 
         triangleSpatialGrid_.cellHashEnd(),
         triangleSpatialGrid_.minimumBoundary(),
@@ -300,7 +471,45 @@ private:
         ball_.blockDim(),
         stream_);
 
-        ballAndTriangle_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
+        ballTriangleInteraction_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
+
+        if (ballTriangleInteraction_.numActivated_ > 0)
+        {            
+            luanchCalculateBallWallContactForceTorque(ball_.position(),
+            ball_.velocity(),
+            ball_.angularVelocity(),
+            ball_.force(),
+            ball_.torque(),
+            ball_.radius(),
+            ball_.inverseMass(),
+            ball_.materialID(),
+            ballTriangleInteraction_.objectPointed_.neighborPrefixSum(),
+            meshWall_.body_.position(),
+            meshWall_.body_.velocity(),
+            meshWall_.body_.angularVelocity(),
+            meshWall_.body_.materialID(),
+            meshWall_.triangle_.index0(),
+            meshWall_.triangle_.index1(),
+            meshWall_.triangle_.index2(),
+            meshWall_.triangle_.wallIndex(),
+            meshWall_.vertex_.globalPosition(),
+            ballTriangleInteraction_.spring_.sliding(),
+            ballTriangleInteraction_.spring_.rolling(),
+            ballTriangleInteraction_.spring_.torsion(),
+            ballTriangleInteraction_.contact_.force(),
+            ballTriangleInteraction_.contact_.torque(),
+            ballTriangleInteraction_.contact_.point(),
+            ballTriangleInteraction_.contact_.normal(),
+            ballTriangleInteraction_.contact_.overlap(),
+            ballTriangleInteraction_.pair_.objectPointed(),
+            ballTriangleInteraction_.pair_.objectPointing(),
+            ballTriangleInteraction_.pair_.cancelFlag(),
+            timeStep,
+            ball_.deviceSize(),
+            ball_.gridDim(),
+            ball_.blockDim(),
+            stream_);
+        }
     }
 
 protected:
@@ -321,15 +530,15 @@ protected:
         ball_.blockDim(), 
         stream_);
 
-        ballAndBall_.updateOldPairOldSpring(stream_);
+        ballInteraction_.updateOldPairOldSpring(stream_);
 
         launchCountBallInteractions(ball_.position(), 
         ball_.radius(), 
         ball_.inverseMass(), 
         ball_.clumpID(), 
         ball_.hashIndex(), 
-        ballAndBall_.objectPointed_.neighborCount(), 
-        ballAndBall_.objectPointed_.neighborPrefixSum(), 
+        ballInteraction_.objectPointed_.neighborCount(), 
+        ballInteraction_.objectPointed_.neighborPrefixSum(), 
         ballSpatialGrid_.cellHashStart(), 
         ballSpatialGrid_.cellHashEnd(), 
         ballSpatialGrid_.minimumBoundary(), 
@@ -340,26 +549,26 @@ protected:
         ball_.blockDim(), 
         stream_);
 
-        ballAndBall_.resizePair(stream_);
+        ballInteraction_.resizePair(stream_);
 
         launchWriteBallInteractions(ball_.position(), 
         ball_.radius(), 
         ball_.inverseMass(),
         ball_.clumpID(),
         ball_.hashIndex(), 
-        ballAndBall_.objectPointed_.neighborPrefixSum(),
-        ballAndBall_.objectPointing_.interactionStart(),
-        ballAndBall_.objectPointing_.interactionEnd(),
-        ballAndBall_.spring_.sliding(),
-        ballAndBall_.spring_.rolling(),
-        ballAndBall_.spring_.torsion(),
-        ballAndBall_.pair_.objectPointed(),
-        ballAndBall_.pair_.objectPointing(),
-        ballAndBall_.oldSpring_.sliding(),
-        ballAndBall_.oldSpring_.rolling(),
-        ballAndBall_.oldSpring_.torsion(),
-        ballAndBall_.oldPair_.objectPointed(),
-        ballAndBall_.oldPair_.hashIndex(),
+        ballInteraction_.objectPointed_.neighborPrefixSum(),
+        ballInteraction_.objectPointing_.interactionStart(),
+        ballInteraction_.objectPointing_.interactionEnd(),
+        ballInteraction_.spring_.sliding(),
+        ballInteraction_.spring_.rolling(),
+        ballInteraction_.spring_.torsion(),
+        ballInteraction_.pair_.objectPointed(),
+        ballInteraction_.pair_.objectPointing(),
+        ballInteraction_.oldSpring_.sliding(),
+        ballInteraction_.oldSpring_.rolling(),
+        ballInteraction_.oldSpring_.torsion(),
+        ballInteraction_.oldPair_.objectPointed(),
+        ballInteraction_.oldPair_.hashIndex(),
         ballSpatialGrid_.cellHashStart(), 
         ballSpatialGrid_.cellHashEnd(), 
         ballSpatialGrid_.minimumBoundary(),
@@ -370,111 +579,40 @@ protected:
         ball_.blockDim(),
         stream_);
 
-        ballAndBall_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
-
-        if (meshWall_.triangle_.deviceSize() > 0) triangleNeighborSearch();
-
-        if (dummy_.deviceSize() > 0)
-        {
-            updateSpatialGridCellHashStartEnd(dummy_.position(), 
-            dummy_.hashIndex(), 
-            dummy_.hashValue(), 
-            ballSpatialGrid_.cellHashStart(), 
-            ballSpatialGrid_.cellHashEnd(), 
-            ballSpatialGrid_.minimumBoundary(), 
-            ballSpatialGrid_.maximumBoundary(), 
-            ballSpatialGrid_.cellSize(), 
-            ballSpatialGrid_.gridSize(), 
-            ballSpatialGrid_.numGrids(),
-            dummy_.deviceSize(), 
-            dummy_.gridDim(), 
-            dummy_.blockDim(), 
-            stream_);
-
-            ballAndDummy_.updateOldPairOldSpring(stream_);
-
-            launchCountBallDummyInteractions(ball_.position(), 
-            ball_.radius(), 
-            ballAndDummy_.objectPointed_.neighborCount(),
-            ballAndDummy_.objectPointed_.neighborPrefixSum(),
-            dummy_.position(), 
-            dummy_.radius(), 
-            dummy_.hashIndex(), 
-            ballSpatialGrid_.cellHashStart(), 
-            ballSpatialGrid_.cellHashEnd(), 
-            ballSpatialGrid_.minimumBoundary(), 
-            ballSpatialGrid_.cellSize(), 
-            ballSpatialGrid_.gridSize(), 
-            ball_.deviceSize(), 
-            ball_.gridDim(), 
-            ball_.blockDim(), 
-            stream_);
-
-            ballAndDummy_.resizePair(stream_);
-
-            launchWriteBallDummyInteractions(ball_.position(), 
-            ball_.radius(), 
-            ballAndDummy_.objectPointed_.neighborPrefixSum(),
-            dummy_.position(), 
-            dummy_.radius(),
-            dummy_.hashIndex(),
-            ballAndDummy_.objectPointing_.interactionStart(),
-            ballAndDummy_.objectPointing_.interactionEnd(),
-            ballAndDummy_.spring_.sliding(),
-            ballAndDummy_.spring_.rolling(),
-            ballAndDummy_.spring_.torsion(),
-            ballAndDummy_.pair_.objectPointed(),
-            ballAndDummy_.pair_.objectPointing(),
-            ballAndDummy_.oldSpring_.sliding(),
-            ballAndDummy_.oldSpring_.rolling(),
-            ballAndDummy_.oldSpring_.torsion(),
-            ballAndDummy_.oldPair_.objectPointed(),
-            ballAndDummy_.oldPair_.hashIndex(),
-            ballSpatialGrid_.cellHashStart(), 
-            ballSpatialGrid_.cellHashEnd(), 
-            ballSpatialGrid_.minimumBoundary(),
-            ballSpatialGrid_.cellSize(), 
-            ballSpatialGrid_.gridSize(), 
-            ball_.deviceSize(), 
-            ball_.gridDim(),
-            ball_.blockDim(),
-            stream_);
-
-            ballAndDummy_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
-        }
+        ballInteraction_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
     }
 
     void calculateContactForceTorque(const double timeStep)
     {
-        if (ballAndBall_.numActivated_ > 0) 
+        if (ballInteraction_.numActivated_ > 0) 
         {
             size_t blockD = maxThread_;
-            if (ballAndBall_.numActivated_  < maxThread_) blockD = ballAndBall_.numActivated_ ;
-            size_t gridD = (ballAndBall_.numActivated_  + blockD - 1) / blockD;
+            if (ballInteraction_.numActivated_ < maxThread_) blockD = ballInteraction_.numActivated_ ;
+            size_t gridD = (ballInteraction_.numActivated_ + blockD - 1) / blockD;
             luanchCalculateBallContactForceTorque(ball_.position(),
             ball_.velocity(),
             ball_.angularVelocity(),
             ball_.radius(),
             ball_.inverseMass(),
             ball_.materialID(),
-            ballAndBall_.spring_.sliding(),
-            ballAndBall_.spring_.rolling(),
-            ballAndBall_.spring_.torsion(),
-            ballAndBall_.contact_.force(),
-            ballAndBall_.contact_.torque(),
-            ballAndBall_.contact_.point(),
-            ballAndBall_.contact_.normal(),
-            ballAndBall_.contact_.overlap(),
-            ballAndBall_.pair_.objectPointed(),
-            ballAndBall_.pair_.objectPointing(),
+            ballInteraction_.spring_.sliding(),
+            ballInteraction_.spring_.rolling(),
+            ballInteraction_.spring_.torsion(),
+            ballInteraction_.contact_.force(),
+            ballInteraction_.contact_.torque(),
+            ballInteraction_.contact_.point(),
+            ballInteraction_.contact_.normal(),
+            ballInteraction_.contact_.overlap(),
+            ballInteraction_.pair_.objectPointed(),
+            ballInteraction_.pair_.objectPointing(),
             timeStep,
-            ballAndBall_.numActivated_ ,
+            ballInteraction_.numActivated_ ,
             gridD,
             blockD,
             stream_);
         }
 
-        size_t numBondedPairs = bondedBallAndBall_.bond_.deviceSize();
+        size_t numBondedPairs = bondedInteraction_.bond_.deviceSize();
         if (numBondedPairs > 0)
         {
             size_t blockD1 = maxThread_;
@@ -487,21 +625,21 @@ protected:
             ball_.torque(),
             ball_.radius(),
             ball_.materialID(),
-            ballAndBall_.objectPointed_.neighborPrefixSum(),
-            ballAndBall_.contact_.force(),
-            ballAndBall_.contact_.torque(),
-            ballAndBall_.contact_.point(),
-            ballAndBall_.contact_.normal(),
-            ballAndBall_.pair_.objectPointing(),
-            bondedBallAndBall_.bond_.point(),
-            bondedBallAndBall_.bond_.normal(),
-            bondedBallAndBall_.bond_.shearForce(),
-            bondedBallAndBall_.bond_.bendingTorque(),
-            bondedBallAndBall_.bond_.normalForce(),
-            bondedBallAndBall_.bond_.torsionTorque(),
-            bondedBallAndBall_.bond_.isBonded(),
-            bondedBallAndBall_.pair_.objectPointed(),
-            bondedBallAndBall_.pair_.objectPointing(),
+            ballInteraction_.objectPointed_.neighborPrefixSum(),
+            ballInteraction_.contact_.force(),
+            ballInteraction_.contact_.torque(),
+            ballInteraction_.contact_.point(),
+            ballInteraction_.contact_.normal(),
+            ballInteraction_.pair_.objectPointing(),
+            bondedInteraction_.bond_.point(),
+            bondedInteraction_.bond_.normal(),
+            bondedInteraction_.bond_.shearForce(),
+            bondedInteraction_.bond_.bendingTorque(),
+            bondedInteraction_.bond_.normalForce(),
+            bondedInteraction_.bond_.torsionTorque(),
+            bondedInteraction_.bond_.isBonded(),
+            bondedInteraction_.pair_.objectPointed(),
+            bondedInteraction_.pair_.objectPointing(),
             timeStep,
             numBondedPairs,
             gridD1,
@@ -509,104 +647,32 @@ protected:
             stream_);
         }
 
+        addTriangleContactForceTorque(timeStep);
+
         luanchSumBallContactForceTorque(ball_.position(),
         ball_.force(),
         ball_.torque(),
-        ballAndBall_.objectPointed_.neighborPrefixSum(),
-        ballAndBall_.objectPointing_.interactionStart(),
-        ballAndBall_.objectPointing_.interactionEnd(),
-        ballAndBall_.contact_.force(),
-        ballAndBall_.contact_.torque(),
-        ballAndBall_.contact_.point(),
-        ballAndBall_.pair_.hashIndex(),
+        ballInteraction_.objectPointed_.neighborPrefixSum(),
+        ballInteraction_.objectPointing_.interactionStart(),
+        ballInteraction_.objectPointing_.interactionEnd(),
+        ballInteraction_.contact_.force(),
+        ballInteraction_.contact_.torque(),
+        ballInteraction_.contact_.point(),
+        ballInteraction_.pair_.hashIndex(),
         ball_.deviceSize(),
         ball_.gridDim(),
         ball_.blockDim(),
         stream_);
 
-        if (ballAndTriangle_.numActivated_ > 0)
-        {            
-            luanchCalculateBallWallContactForceTorque(ball_.position(),
-            ball_.velocity(),
-            ball_.angularVelocity(),
-            ball_.force(),
-            ball_.torque(),
-            ball_.radius(),
-            ball_.inverseMass(),
-            ball_.materialID(),
-            ballAndTriangle_.objectPointed_.neighborPrefixSum(),
-            meshWall_.body_.position(),
-            meshWall_.body_.velocity(),
-            meshWall_.body_.angularVelocity(),
-            meshWall_.body_.materialID(),
-            meshWall_.triangle_.index0(),
-            meshWall_.triangle_.index1(),
-            meshWall_.triangle_.index2(),
-            meshWall_.triangle_.wallIndex(),
-            meshWall_.vertex_.globalPosition(),
-            ballAndTriangle_.spring_.sliding(),
-            ballAndTriangle_.spring_.rolling(),
-            ballAndTriangle_.spring_.torsion(),
-            ballAndTriangle_.contact_.force(),
-            ballAndTriangle_.contact_.torque(),
-            ballAndTriangle_.contact_.point(),
-            ballAndTriangle_.contact_.normal(),
-            ballAndTriangle_.contact_.overlap(),
-            ballAndTriangle_.pair_.objectPointed(),
-            ballAndTriangle_.pair_.objectPointing(),
-            ballAndTriangle_.pair_.cancelFlag(),
-            timeStep,
-            ball_.deviceSize(),
-            ball_.gridDim(),
-            ball_.blockDim(),
-            stream_);
-        }
+        addTriangleContactForceTorque(timeStep);
 
-        if (ballAndDummy_.numActivated_ > 0) 
-        {
-            size_t blockD = maxThread_;
-            if (ballAndDummy_.numActivated_ < maxThread_) blockD = ballAndDummy_.numActivated_;
-            size_t gridD = (ballAndDummy_.numActivated_ + blockD - 1) / blockD;
-            luanchCalculateBallDummyContactForceTorque(ball_.position(),
-            ball_.velocity(),
-            ball_.angularVelocity(),
-            ball_.radius(),
-            ball_.inverseMass(),
-            ball_.materialID(),
-            dummy_.position(),
-            dummy_.velocity(),
-            dummy_.angularVelocity(),
-            dummy_.radius(),
-            dummy_.inverseMass(),
-            dummy_.materialID(),
-            ballAndDummy_.spring_.sliding(),
-            ballAndDummy_.spring_.rolling(),
-            ballAndDummy_.spring_.torsion(),
-            ballAndDummy_.contact_.force(),
-            ballAndDummy_.contact_.torque(),
-            ballAndDummy_.contact_.point(),
-            ballAndDummy_.contact_.normal(),
-            ballAndDummy_.contact_.overlap(),
-            ballAndDummy_.pair_.objectPointed(),
-            ballAndDummy_.pair_.objectPointing(),
-            timeStep,
-            ballAndDummy_.numActivated_,
-            gridD,
-            blockD,
-            stream_);
-
-            luanchSumBallDummyContactForceTorque(ball_.position(),
-            ball_.force(),
-            ball_.torque(),
-            ballAndDummy_.objectPointed_.neighborPrefixSum(),
-            ballAndDummy_.contact_.force(),
-            ballAndDummy_.contact_.torque(),
-            ballAndDummy_.contact_.point(),
-            ball_.deviceSize(),
-            ball_.gridDim(),
-            ball_.blockDim(),
-            stream_);
-        }
+        addDummyContactForceTorque(periodicX_, make_int3(1, 0, 0), timeStep);
+        addDummyContactForceTorque(periodicY_, make_int3(0, 1, 0), timeStep);
+        addDummyContactForceTorque(periodicZ_, make_int3(0, 0, 1), timeStep);
+        addDummyContactForceTorque(periodicXY_, make_int3(1, 1, 0), timeStep);
+        addDummyContactForceTorque(periodicYZ_, make_int3(0, 1, 1), timeStep);
+        addDummyContactForceTorque(periodicXZ_, make_int3(1, 0, 1), timeStep);
+        addDummyContactForceTorque(periodicXYZ_, make_int3(1, 1, 1), timeStep);
     }
 
     void interaction1stHalf(const double3 gravity, const double timeStep)
@@ -644,6 +710,26 @@ protected:
         ball_.deviceSize(),
         ball_.gridDim(),
         ball_.blockDim(),
+        stream_);
+
+        launchWallIntegration(meshWall_.body_.position(),
+        meshWall_.body_.velocity(),
+        meshWall_.body_.angularVelocity(),
+        meshWall_.body_.orientation(),
+        timeStep,
+        meshWall_.body_.deviceSize(),
+        meshWall_.body_.gridDim(),
+        meshWall_.body_.blockDim(),
+        stream_);
+
+        launchUpdateWallVertexGlobalPosition(meshWall_.vertex_.globalPosition(), 
+        meshWall_.vertex_.localPosition(), 
+        meshWall_.vertex_.wallIndex(), 
+        meshWall_.body_.position(), 
+        meshWall_.body_.orientation(), 
+        meshWall_.vertex_.deviceSize(), 
+        meshWall_.vertex_.gridDim(), 
+        meshWall_.vertex_.blockDim(), 
         stream_);
     }
 
@@ -878,9 +964,23 @@ protected:
             << "</VTKFile>\n";
     }
 
-    pair& getBallPair() { return ballAndBall_.pair_; }
+    virtual bool addInitialCondition() 
+    {
+        return false;
+    }
+
+    virtual void handleDeviceArray(const size_t iStep) 
+    {
+
+    }
+
+    pair& getBallPair() { return ballInteraction_.pair_; }
+
+    pair& getBondedBallPair() { return bondedInteraction_.pair_; }
 
     ball& getBall() { return ball_; }
+
+    clump& getClump() { return clump_; }
 
 public:
 // ---------------------------------------------------------------------
@@ -1019,6 +1119,32 @@ public:
         -1);
     }
 
+    void eraseBall(const size_t index)
+    {
+        ball_.eraseHost(index);
+        std::vector<int> pebbleStart = clump_.pebbleStartHostRef();
+        std::vector<int> pebbleEnd = clump_.pebbleEndHostRef();
+        for (size_t i = 0; i < clump_.hostSize(); i++)
+        {
+            if (pebbleEnd[i] > index)
+            {
+                for (size_t j = i; j < clump_.hostSize(); j++)
+                {
+                    if (pebbleStart[j] > index) pebbleStart[j] -= 1;
+                    pebbleEnd[j] -= 1;
+                }
+                break;
+            }
+        }
+        clump_.setPebbleStartHost(pebbleStart);
+        clump_.setPebbleEndHost(pebbleEnd);
+    }
+
+    void copyBall(const ball& other)
+    {
+        ball_.copyFromHost(other);
+    }
+
     void addClump(std::vector<double3> point, 
     std::vector<double> radius, 
     double3 centroidPosition, 
@@ -1100,6 +1226,11 @@ public:
         pebbleEnd);
     }
 
+    void copyClump(const clump& other)
+    {
+        clump_.copyFromHost(other);
+    }
+
     void addMeshWall(const std::vector<double3> &vertexPosition, 
     const std::vector<int> &triIndex0, 
     const std::vector<int> &triIndex1, 
@@ -1156,16 +1287,11 @@ public:
         }
     }
 
-    void addBondedPair(const std::vector<int>& objectPointed,
+    void addBondedInteraction(const std::vector<int>& objectPointed,
     const std::vector<int>& objectPointing,
-    const std::vector<double3>& position)
+    const std::vector<double3>& ballPosition)
     {
-        bondedBallAndBall_.add(objectPointed, objectPointing, position);
-    }
-
-    virtual bool addInitialCondition() 
-    {
-        return false;
+        bondedInteraction_.add(objectPointed, objectPointing, ballPosition);
     }
 
     void solve(const double3 minBoundary, 
@@ -1217,6 +1343,7 @@ public:
             neighborSearch();
             interaction1stHalf(gravity, timeStep);
             calculateContactForceTorque(timeStep);
+            handleDeviceArray(iStep);
             interaction2ndHalf(gravity, timeStep);
             if (iStep % frameInterval == 0)
             {
@@ -1230,27 +1357,35 @@ public:
         clump_.copyDeviceToHost(stream_);
         meshWall_.body_.copyDeviceToHost(stream_);
         meshWall_.vertex_.copyDeviceToHost(stream_);
+        bondedInteraction_.bond_.copyDeviceToHost(stream_);
     }
 
 private:
-    size_t maxThread_;
     cudaStream_t stream_;
-
-    ball ball_;
-    ball dummy_;
-    clump clump_;
-    meshWall meshWall_;
+    size_t maxThread_;
 
     std::vector<HertzianRow> hertzianTable_;
     std::vector<LinearRow> linearTable_;
     std::vector<BondedRow> bondedTable_;
     contactModelParameters contactModelParameters_;
 
-    solidInteraction ballAndBall_;
-    solidInteraction ballAndDummy_;
-    solidInteraction ballAndTriangle_;
-    bondedInteraction bondedBallAndBall_;
+    ball ball_;
+    clump clump_;
+    meshWall meshWall_;
 
     spatialGrid ballSpatialGrid_;
     spatialGrid triangleSpatialGrid_;
+
+    bondedInteraction bondedInteraction_;
+
+    solidInteraction ballInteraction_;
+    solidInteraction ballTriangleInteraction_;
+
+    periodicInteraction periodicX_;
+    periodicInteraction periodicY_;
+    periodicInteraction periodicZ_;
+    periodicInteraction periodicXY_;
+    periodicInteraction periodicXZ_;
+    periodicInteraction periodicYZ_;
+    periodicInteraction periodicXYZ_;
 };

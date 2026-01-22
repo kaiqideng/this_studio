@@ -3,6 +3,106 @@
 
 __constant__ ContactParamsDevice contactPara;
 
+void contactModelParameters::buildFromTables(const std::vector<HertzianRow>& hertzianTable,
+const std::vector<LinearRow>& linearTable,
+const std::vector<BondedRow>& bondedTable,
+cudaStream_t stream)
+{
+    const int nMat = inferNumberOfMaterials_(hertzianTable, linearTable, bondedTable);
+    if (nMat <= 0) return;
+
+    numberOfMaterials = static_cast<std::size_t>(nMat);
+    pairTableSize = computePairTableSize_(nMat);
+    if (pairTableSize == 0) return;
+
+    std::vector<double> H(static_cast<std::size_t>(H_COUNT) * pairTableSize, 0.0);
+    std::vector<double> L(static_cast<std::size_t>(L_COUNT) * pairTableSize, 0.0);
+    std::vector<double> B(static_cast<std::size_t>(B_COUNT) * pairTableSize, 0.0);
+
+    for (std::size_t idx = 0; idx < pairTableSize; ++idx)
+    {
+        setPacked_(H, pairTableSize, H_RES, idx, 1.0);
+    }
+
+    for (std::size_t idx = 0; idx < pairTableSize; ++idx)
+    {
+        setPacked_(B, pairTableSize, B_GAMMA, idx, 1.0);
+        setPacked_(B, pairTableSize, B_KNKS,  idx, 1.0);
+    }
+
+    auto pairIdx = [&](int a, int b) -> std::size_t
+    {
+        return static_cast<std::size_t>(contactPairParameterIndex(a, b, nMat, static_cast<int>(pairTableSize)));
+    };
+
+    for (const auto& row : hertzianTable)
+    {
+        const std::size_t idx = pairIdx(row.materialIndexA, row.materialIndexB);
+
+        setPacked_(H, pairTableSize, H_E_STAR, idx, row.effectiveYoungsModulus);
+        setPacked_(H, pairTableSize, H_G_STAR, idx, row.effectiveShearModulus);
+        setPacked_(H, pairTableSize, H_RES,    idx, row.restitutionCoefficient);
+        setPacked_(H, pairTableSize, H_KRKS,   idx, row.rollingStiffnessToShearStiffnessRatio);
+        setPacked_(H, pairTableSize, H_KTKS,   idx, row.torsionStiffnessToShearStiffnessRatio);
+        setPacked_(H, pairTableSize, H_MU_S,   idx, row.slidingFrictionCoefficient);
+        setPacked_(H, pairTableSize, H_MU_R,   idx, row.rollingFrictionCoefficient);
+        setPacked_(H, pairTableSize, H_MU_T,   idx, row.torsionFrictionCoefficient);
+    }
+
+    for (const auto& row : linearTable)
+    {
+        const std::size_t idx = pairIdx(row.materialIndexA, row.materialIndexB);
+
+        setPacked_(L, pairTableSize, L_KN,   idx, row.normalStiffness);
+        setPacked_(L, pairTableSize, L_KS,   idx, row.slidingStiffness);
+        setPacked_(L, pairTableSize, L_KR,   idx, row.rollingStiffness);
+        setPacked_(L, pairTableSize, L_KT,   idx, row.torsionStiffness);
+
+        setPacked_(L, pairTableSize, L_DN,   idx, row.normalDampingCoefficient);
+        setPacked_(L, pairTableSize, L_DS,   idx, row.slidingDampingCoefficient);
+        setPacked_(L, pairTableSize, L_DR,   idx, row.rollingDampingCoefficient);
+        setPacked_(L, pairTableSize, L_DT,   idx, row.torsionDampingCoefficient);
+
+        setPacked_(L, pairTableSize, L_MU_S, idx, row.slidingFrictionCoefficient);
+        setPacked_(L, pairTableSize, L_MU_R, idx, row.rollingFrictionCoefficient);
+        setPacked_(L, pairTableSize, L_MU_T, idx, row.torsionFrictionCoefficient);
+    }
+
+    for (const auto& row : bondedTable)
+    {
+        const std::size_t idx = pairIdx(row.materialIndexA, row.materialIndexB);
+
+        setPacked_(B, pairTableSize, B_GAMMA,   idx, row.bondRadiusMultiplier);
+        setPacked_(B, pairTableSize, B_EB,      idx, row.bondYoungsModulus);
+        setPacked_(B, pairTableSize, B_KNKS,    idx, row.normalToShearStiffnessRatio);
+        setPacked_(B, pairTableSize, B_SIGMA_S, idx, row.tensileStrength);
+        setPacked_(B, pairTableSize, B_C,       idx, row.cohesion);
+        setPacked_(B, pairTableSize, B_MU,      idx, row.frictionCoefficient);
+    }
+
+    hertzianPacked_.setHost(H);
+    linearPacked_.setHost(L);
+    bondedPacked_.setHost(B);
+
+    hertzianPacked_.copyHostToDevice(stream);
+    linearPacked_.copyHostToDevice(stream);
+    bondedPacked_.copyHostToDevice(stream);
+
+    ContactParamsDevice dev;
+    dev.nMaterials = static_cast<int>(numberOfMaterials);
+    dev.cap = static_cast<int>(pairTableSize);
+    dev.hertzian = hertzianPacked_.d_ptr;
+    dev.linear   = linearPacked_.d_ptr;
+    dev.bonded   = bondedPacked_.d_ptr;
+
+    CUDA_CHECK(cudaMemcpyToSymbolAsync(contactPara,
+                                       &dev,
+                                       sizeof(ContactParamsDevice),
+                                       0,
+                                       cudaMemcpyHostToDevice,
+                                       stream));
+}
+
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ >= 600)       // sm 6.0+
 __device__ __forceinline__ double atomicAddDouble(double* addr, double val)
 {
@@ -130,29 +230,9 @@ const size_t numInteraction)
         const double mu_r = getLinearParam(ip, L_MU_R);
         const double mu_t = getLinearParam(ip, L_MU_T);
 
-        LinearContact(F_c, 
-        T_c, 
-        epsilon_s, 
-        epsilon_r, 
-        epsilon_t,
-		v_c_ij,
-		w_ij,
-		n_ij,
-		delta,
-		m_ij,
-		rad_ij,
-		dt,
-		k_n,
-		k_s,
-		k_r,
-		k_t,
-		d_n,
-		d_s,
-		d_r,
-		d_t,
-		mu_s,
-		mu_r,
-		mu_t);
+        LinearContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+		v_c_ij, w_ij, n_ij, delta, m_ij, rad_ij, dt, 
+		k_n, k_s, k_r, k_t, d_n, d_s, d_r, d_t, mu_s, mu_r, mu_t);
     }
     else 
     {
@@ -166,198 +246,9 @@ const size_t numInteraction)
         const double mu_r = getHertzianParam(ip, H_MU_R);
         const double mu_t = getHertzianParam(ip, H_MU_T);
 
-        HertzianMindlinContact(F_c, 
-        T_c, 
-        epsilon_s, 
-        epsilon_r, 
-        epsilon_t,
-		v_c_ij,
-		w_ij,
-		n_ij,
-		delta,
-		m_ij,
-		rad_ij,
-		dt,
-		D,
-		E,
-		G,
-		k_r_k_s,
-		k_t_k_s,
-		mu_s,
-		mu_r,
-		mu_t);
-    }
-
-    contactForce[idx] = F_c;
-	contactTorque[idx] = T_c;
-	slidingSpring[idx] = epsilon_s;
-	rollingSpring[idx] = epsilon_r;
-	torsionSpring[idx] = epsilon_t;
-}
-
-__global__ void updateBallDummyContactKernel(double3* contactPoint,
-double3* contactNormal,
-double* overlap,
-const int* objectPointed, 
-const int* objectPointing, 
-const double3* position, 
-const double* radius,
-const double3* position_dummy, 
-const double* radius_dummy,
-const size_t numInteraction)
-{
-    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
-	if (idx >= numInteraction) return;
-
-	const int idx_i = objectPointed[idx];
-	const int idx_j = objectPointing[idx];
-
-    const double3 r_i = position[idx_i];
-	const double3 r_j = position_dummy[idx_j];
-    const double rad_i = radius[idx_i];
-	const double rad_j = radius_dummy[idx_j];
-
-    const double3 r_ij = r_i - r_j;
-    const double3 n_ij = normalize(r_ij);
-    const double delta = rad_i + rad_j - length(r_ij);
-	const double3 r_c = r_j + (rad_j - 0.5 * delta) * n_ij;
-
-    contactPoint[idx] = r_c;
-    contactNormal[idx] = n_ij;
-    overlap[idx] = delta;
-}
-
-__global__ void calBallDummyContactForceTorqueKernel(double3* contactForce, 
-double3* contactTorque,
-double3* slidingSpring, 
-double3* rollingSpring, 
-double3* torsionSpring, 
-const double3* contactPoint,
-const double3* contactNormal,
-const double* overlap,
-const int* objectPointed, 
-const int* objectPointing, 
-const double3* position, 
-const double3* velocity, 
-const double3* angularVelocity, 
-const double* radius, 
-const double* inverseMass,
-const int* materialID,
-const double3* position_dummy, 
-const double3* velocity_dummy, 
-const double3* angularVelocity_dummy, 
-const double* radius_dummy, 
-const double* inverseMass_dummy,
-const int* materialID_dummy,
-const double dt,
-const size_t numInteraction)
-{
-    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
-	if (idx >= numInteraction) return;
-
-	contactForce[idx] = make_double3(0, 0, 0);
-	contactTorque[idx] = make_double3(0, 0, 0);
-
-	const int idx_i = objectPointed[idx];
-	const int idx_j = objectPointing[idx];
-
-    const double3 r_c = contactPoint[idx];
-    const double3 n_ij = contactNormal[idx];
-	const double delta = overlap[idx];
-	
-    const double3 r_i = position[idx_i];
-	const double3 r_j = position_dummy[idx_j];
-	const double rad_i = radius[idx_i];
-	const double rad_j = radius_dummy[idx_j];
-	
-	const double rad_ij = rad_i * rad_j / (rad_i + rad_j);
-	if (inverseMass[idx_i] < 1.e-20) return;
-	const double m_ij = 1. / (inverseMass[idx_i] + inverseMass_dummy[idx_j]);
-
-	const double3 v_i = velocity[idx_i];
-	const double3 v_j = velocity_dummy[idx_j];
-	const double3 w_i = angularVelocity[idx_i];
-	const double3 w_j = angularVelocity_dummy[idx_j];
-	const double3 v_c_ij = v_i + cross(w_i, r_c - r_i) - (v_j + cross(w_j, r_c - r_j));
-	const double3 w_ij = w_i - w_j;
-
-	double3 F_c = make_double3(0, 0, 0);
-	double3 T_c = make_double3(0, 0, 0);
-	double3 epsilon_s = slidingSpring[idx];
-	double3 epsilon_r = rollingSpring[idx];
-	double3 epsilon_t = torsionSpring[idx];
-
-    int ip = contactPairParameterIndex(materialID[idx_i], materialID_dummy[idx_j], contactPara.nMaterials, contactPara.cap);
-    const double k_n = getLinearParam(ip, L_KN);
-    if (k_n > 1.e-20)
-    {
-        const double k_s = getLinearParam(ip, L_KS);
-        const double k_r = getLinearParam(ip, L_KR);
-        const double k_t = getLinearParam(ip, L_KT);
-        const double d_n = getLinearParam(ip, L_DN);
-        const double d_s = getLinearParam(ip, L_DS);
-        const double d_r = getLinearParam(ip, L_DR);
-        const double d_t = getLinearParam(ip, L_DT);
-        const double mu_s = getLinearParam(ip, L_MU_S);
-        const double mu_r = getLinearParam(ip, L_MU_R);
-        const double mu_t = getLinearParam(ip, L_MU_T);
-
-        LinearContact(F_c, 
-        T_c, 
-        epsilon_s, 
-        epsilon_r, 
-        epsilon_t,
-		v_c_ij,
-		w_ij,
-		n_ij,
-		delta,
-		m_ij,
-		rad_ij,
-		dt,
-		k_n,
-		k_s,
-		k_r,
-		k_t,
-		d_n,
-		d_s,
-		d_r,
-		d_t,
-		mu_s,
-		mu_r,
-		mu_t);
-    }
-    else 
-    {
-        const double logR = log(getHertzianParam(ip, H_RES));
-		const double D = -logR / sqrt(logR * logR + pi() * pi());
-        const double E = getHertzianParam(ip, H_E_STAR);
-        const double G = getHertzianParam(ip, H_G_STAR);
-        const double k_r_k_s = getHertzianParam(ip, H_KRKS);
-        const double k_t_k_s = getHertzianParam(ip, H_KTKS);
-        const double mu_s = getHertzianParam(ip, H_MU_S);
-        const double mu_r = getHertzianParam(ip, H_MU_R);
-        const double mu_t = getHertzianParam(ip, H_MU_T);
-
-        HertzianMindlinContact(F_c, 
-        T_c, 
-        epsilon_s, 
-        epsilon_r, 
-        epsilon_t,
-		v_c_ij,
-		w_ij,
-		n_ij,
-		delta,
-		m_ij,
-		rad_ij,
-		dt,
-		D,
-		E,
-		G,
-		k_r_k_s,
-		k_t_k_s,
-		mu_s,
-		mu_r,
-		mu_t);
+        HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+		v_c_ij, w_ij, n_ij, delta, m_ij, rad_ij, dt,
+		D, E, G, k_r_k_s, k_t_k_s, mu_s, mu_r, mu_t);
     }
 
     contactForce[idx] = F_c;
@@ -610,29 +501,9 @@ const size_t numBall)
 			const double mu_r = getLinearParam(ip, L_MU_R);
 			const double mu_t = getLinearParam(ip, L_MU_T);
 
-			LinearContact(F_c, 
-			T_c, 
-			epsilon_s, 
-			epsilon_r, 
-			epsilon_t,
-			v_c_ij,
-			w_ij,
-			n_ij,
-			delta,
-			m_ij,
-			rad_ij,
-			dt,
-			k_n,
-			k_s,
-			k_r,
-			k_t,
-			d_n,
-			d_s,
-			d_r,
-			d_t,
-			mu_s,
-			mu_r,
-			mu_t);
+			LinearContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+			v_c_ij, w_ij, n_ij, delta, m_ij, rad_ij, dt, 
+			k_n, k_s, k_r, k_t, d_n, d_s, d_r, d_t, mu_s, mu_r, mu_t);
 		}
 		else 
 		{
@@ -646,26 +517,9 @@ const size_t numBall)
 			const double mu_r = getHertzianParam(ip, H_MU_R);
 			const double mu_t = getHertzianParam(ip, H_MU_T);
 
-			HertzianMindlinContact(F_c, 
-			T_c, 
-			epsilon_s, 
-			epsilon_r, 
-			epsilon_t,
-			v_c_ij,
-			w_ij,
-			n_ij,
-			delta,
-			m_ij,
-			rad_ij,
-			dt,
-			D,
-			E,
-			G,
-			k_r_k_s,
-			k_t_k_s,
-			mu_s,
-			mu_r,
-			mu_t);
+			HertzianMindlinContact(F_c, T_c, epsilon_s, epsilon_r, epsilon_t,
+			v_c_ij, w_ij, n_ij, delta, m_ij, rad_ij, dt,
+			D, E, G, k_r_k_s, k_t_k_s, mu_s, mu_r, mu_t);
 		}
 
 		contactForce[idx_c] = F_c;
@@ -773,24 +627,9 @@ const size_t numBondedInteraction)
 	double3 F_s = shearForce[idx];
 	double T_t = torsionTorque[idx];
 	double3 T_b = bendingTorque[idx];
-	isBonded[idx] = ParallelBondedContact(F_n, 
-	T_t, 
-	F_s, 
-	T_b,
-	n_ij0,
-	n_ij,
-	v_c_ij,
-	w_i,
-	w_j,
-	rad_i,
-	rad_j,
-	dt,
-	gamma,
-	E_b,
-	k_n_k_s,
-	sigma_s,
-	C,
-	mu);
+	isBonded[idx] = ParallelBondedContact(F_n, T_t, F_s, T_b, 
+	n_ij0, n_ij, v_c_ij, w_i, w_j, rad_i, rad_j, dt,
+	gamma, E_b, k_n_k_s, sigma_s, C, mu);
 
 	normalForce[idx] = F_n;
 	shearForce[idx] = F_s;
@@ -923,75 +762,6 @@ cudaStream_t stream)
 	numInteraction);
 }
 
-extern "C" void luanchCalculateBallDummyContactForceTorque(double3* position, 
-double3* velocity, 
-double3* angularVelocity, 
-double* radius,
-double* inverseMass,
-int* materialID,
-
-double3* position_dummy, 
-double3* velocity_dummy, 
-double3* angularVelocity_dummy, 
-double* radius_dummy,
-double* inverseMass_dummy,
-int* materialID_dummy,
-
-double3* slidingSpring, 
-double3* rollingSpring, 
-double3* torsionSpring, 
-double3* contactForce,
-double3* contactTorque,
-double3* contactPoint,
-double3* contactNormal,
-double* overlap,
-int* objectPointed, 
-int* objectPointing,
-
-const double timeStep,
-
-const size_t numInteraction,
-const size_t gridD,
-const size_t blockD, 
-cudaStream_t stream)
-{
-	updateBallDummyContactKernel <<<gridD, blockD, 0, stream>>> (contactPoint, 
-	contactNormal, 
-	overlap, 
-	objectPointed, 
-	objectPointing, 
-	position, 
-	radius, 
-	position_dummy, 
-	radius_dummy, 
-	numInteraction);
-
-	calBallDummyContactForceTorqueKernel <<<gridD, blockD, 0, stream>>> (contactForce,
-	contactTorque,
-	slidingSpring,
-	rollingSpring,
-	torsionSpring,
-	contactPoint,
-	contactNormal,
-	overlap,
-	objectPointed,
-	objectPointing,
-	position,
-	velocity,
-	angularVelocity,
-	radius,
-	inverseMass,
-	materialID,
-	position_dummy,
-	velocity_dummy,
-	angularVelocity_dummy,
-	radius_dummy,
-	inverseMass_dummy,
-	materialID_dummy,
-	timeStep,
-	numInteraction);
-}
-
 extern "C" void luanchCalculateBondedForceTorque(double3* position, 
 double3* velocity, 
 double3* angularVelocity, 
@@ -1085,30 +855,6 @@ cudaStream_t stream)
 	contactTorque, 
 	contactPoint, 
 	interactionHashIndex, 
-	numBall);
-}
-
-extern "C" void luanchSumBallDummyContactForceTorque(double3* position, 
-double3* force, 
-double3* torque,
-int* neighborPrefixSum,
-
-double3* contactForce_dummy,
-double3* contactTorque_dummy,
-double3* contactPoint_dummy,
-
-const size_t numBall,
-const size_t gridD,
-const size_t blockD, 
-cudaStream_t stream)
-{
-	sumObjectPointedForceTorqueFromInteractionKernel <<<gridD, blockD, 0, stream>>> (force, 
-	torque, 
-	position, 
-	neighborPrefixSum, 
-	contactForce_dummy, 
-	contactTorque_dummy, 
-	contactPoint_dummy, 
 	numBall);
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "myUtility/myHostDeviceArray.h"
-#include <vector_functions.hpp>
 
 struct pair
 {
@@ -58,6 +57,10 @@ public:
         deviceSize_ = n;
     }
 
+public:
+    // ---------------------------------------------------------------------
+    // Host operations
+    // ---------------------------------------------------------------------
     void addHost(const int obj0,
     const int obj1)
     {
@@ -68,6 +71,10 @@ public:
         cancelFlag_.pushHost(0);
     }
 
+public:
+    // ---------------------------------------------------------------------
+    // Transfers
+    // ---------------------------------------------------------------------
     void copyHostToDevice(cudaStream_t stream)
     {
         objectPointed_.copyHostToDevice(stream);
@@ -412,7 +419,11 @@ public:
 
         deviceSize_ = n;
     }
-
+    
+public:
+    // ---------------------------------------------------------------------
+    // Host operations
+    // ---------------------------------------------------------------------
     void addHost(const double3 p,
     const double3 n)
     {
@@ -425,6 +436,10 @@ public:
         bendingTorque_.pushHost(make_double3(0., 0., 0.));
     }
 
+public:
+    // ---------------------------------------------------------------------
+    // Transfers
+    // ---------------------------------------------------------------------
     void copyHostToDevice(cudaStream_t stream)
     {
         isBonded_.copyHostToDevice(stream);
@@ -436,6 +451,17 @@ public:
         bendingTorque_.copyHostToDevice(stream);
 
         deviceSize_ = isBonded_.hostSize();
+    }
+
+    void copyDeviceToHost(cudaStream_t stream)
+    {
+        isBonded_.copyDeviceToHost(stream);
+        point_.copyDeviceToHost(stream);
+        normal_.copyDeviceToHost(stream);
+        normalForce_.copyDeviceToHost(stream);
+        torsionTorque_.copyDeviceToHost(stream);
+        shearForce_.copyDeviceToHost(stream);
+        bendingTorque_.copyDeviceToHost(stream);
     }
 
 public:

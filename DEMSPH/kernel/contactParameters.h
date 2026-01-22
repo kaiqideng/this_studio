@@ -3,7 +3,6 @@
 #include <vector>
 #include <cstddef>
 #include <algorithm>
-#include <cuda_runtime.h>
 
 // You must provide CUDA_CHECK macro yourself.
 
@@ -114,11 +113,9 @@ struct ContactParamsDevice
     int cap {0}; // pairTableSize
 
     const double* hertzian {nullptr}; // size = H_COUNT * cap
-    const double* linear   {nullptr}; // size = L_COUNT * cap
-    const double* bonded   {nullptr}; // size = B_COUNT * cap
+    const double* linear {nullptr}; // size = L_COUNT * cap
+    const double* bonded {nullptr}; // size = B_COUNT * cap
 };
-
-extern __constant__ ContactParamsDevice contactPara;
 
 // ============================================================================
 // Pair index (host/device)
@@ -148,6 +145,9 @@ __host__ __device__ inline int contactPairParameterIndex(int a, int b, int nMate
 // ============================================================================
 // Device access helpers
 // ============================================================================
+#if defined(__CUDACC__)
+extern __constant__ ContactParamsDevice contactPara;
+
 __device__ inline double getHertzianParam(const int pairIdx, const int p)
 {
     return contactPara.hertzian[p * contactPara.cap + pairIdx];
@@ -162,6 +162,7 @@ __device__ inline double getBondedParam(const int pairIdx, const int p)
 {
     return contactPara.bonded[p * contactPara.cap + pairIdx];
 }
+#endif
 
 // ============================================================================
 // contactModelParameters (host-side owner + constant-memory commit)
@@ -185,8 +186,8 @@ private:
     // Helpers
     // ---------------------------------------------------------------------
     static int inferNumberOfMaterials_(const std::vector<HertzianRow>& hertzianTable,
-                                      const std::vector<LinearRow>& linearTable,
-                                      const std::vector<BondedRow>& bondedTable)
+    const std::vector<LinearRow>& linearTable,
+    const std::vector<BondedRow>& bondedTable)
     {
         int maxIndex = -1;
 
@@ -210,10 +211,10 @@ private:
     }
 
     static void setPacked_(std::vector<double>& buf,
-                           const std::size_t cap,
-                           const int param,
-                           const std::size_t idx,
-                           const double value)
+    const std::size_t cap,
+    const int param,
+    const std::size_t idx,
+    const double value)
     {
         buf[static_cast<std::size_t>(param) * cap + idx] = value;
     }
@@ -236,119 +237,7 @@ public:
     // Build + upload + commit constant memory
     // ---------------------------------------------------------------------
     void buildFromTables(const std::vector<HertzianRow>& hertzianTable,
-                         const std::vector<LinearRow>&   linearTable,
-                         const std::vector<BondedRow>&   bondedTable,
-                         cudaStream_t stream)
-    {
-        // --------------------------
-        // Infer sizes
-        // --------------------------
-        const int nMat = inferNumberOfMaterials_(hertzianTable, linearTable, bondedTable);
-        if (nMat <= 0) return;
-
-        numberOfMaterials = static_cast<std::size_t>(nMat);
-        pairTableSize = computePairTableSize_(nMat);
-        if (pairTableSize == 0) return;
-
-        // --------------------------
-        // Host buffers with defaults
-        // --------------------------
-        std::vector<double> H(static_cast<std::size_t>(H_COUNT) * pairTableSize, 0.0);
-        std::vector<double> L(static_cast<std::size_t>(L_COUNT) * pairTableSize, 0.0);
-        std::vector<double> B(static_cast<std::size_t>(B_COUNT) * pairTableSize, 0.0);
-
-        // Default: Hertzian e = 1
-        for (std::size_t idx = 0; idx < pairTableSize; ++idx)
-        {
-            setPacked_(H, pairTableSize, H_RES, idx, 1.0);
-        }
-
-        // Default: Bonded gamma = 1, kn/ks = 1
-        for (std::size_t idx = 0; idx < pairTableSize; ++idx)
-        {
-            setPacked_(B, pairTableSize, B_GAMMA, idx, 1.0);
-            setPacked_(B, pairTableSize, B_KNKS,  idx, 1.0);
-        }
-
-        auto pairIdx = [&](int a, int b) -> std::size_t
-        {
-            return static_cast<std::size_t>(contactPairParameterIndex(a, b, nMat, static_cast<int>(pairTableSize)));
-        };
-
-        // --------------------------
-        // Fill from input tables
-        // --------------------------
-        for (const auto& row : hertzianTable)
-        {
-            const std::size_t idx = pairIdx(row.materialIndexA, row.materialIndexB);
-
-            setPacked_(H, pairTableSize, H_E_STAR, idx, row.effectiveYoungsModulus);
-            setPacked_(H, pairTableSize, H_G_STAR, idx, row.effectiveShearModulus);
-            setPacked_(H, pairTableSize, H_RES,    idx, row.restitutionCoefficient);
-            setPacked_(H, pairTableSize, H_KRKS,   idx, row.rollingStiffnessToShearStiffnessRatio);
-            setPacked_(H, pairTableSize, H_KTKS,   idx, row.torsionStiffnessToShearStiffnessRatio);
-            setPacked_(H, pairTableSize, H_MU_S,   idx, row.slidingFrictionCoefficient);
-            setPacked_(H, pairTableSize, H_MU_R,   idx, row.rollingFrictionCoefficient);
-            setPacked_(H, pairTableSize, H_MU_T,   idx, row.torsionFrictionCoefficient);
-        }
-
-        for (const auto& row : linearTable)
-        {
-            const std::size_t idx = pairIdx(row.materialIndexA, row.materialIndexB);
-
-            setPacked_(L, pairTableSize, L_KN,   idx, row.normalStiffness);
-            setPacked_(L, pairTableSize, L_KS,   idx, row.slidingStiffness);
-            setPacked_(L, pairTableSize, L_KR,   idx, row.rollingStiffness);
-            setPacked_(L, pairTableSize, L_KT,   idx, row.torsionStiffness);
-
-            setPacked_(L, pairTableSize, L_DN,   idx, row.normalDampingCoefficient);
-            setPacked_(L, pairTableSize, L_DS,   idx, row.slidingDampingCoefficient);
-            setPacked_(L, pairTableSize, L_DR,   idx, row.rollingDampingCoefficient);
-            setPacked_(L, pairTableSize, L_DT,   idx, row.torsionDampingCoefficient);
-
-            setPacked_(L, pairTableSize, L_MU_S, idx, row.slidingFrictionCoefficient);
-            setPacked_(L, pairTableSize, L_MU_R, idx, row.rollingFrictionCoefficient);
-            setPacked_(L, pairTableSize, L_MU_T, idx, row.torsionFrictionCoefficient);
-        }
-
-        for (const auto& row : bondedTable)
-        {
-            const std::size_t idx = pairIdx(row.materialIndexA, row.materialIndexB);
-
-            setPacked_(B, pairTableSize, B_GAMMA,   idx, row.bondRadiusMultiplier);
-            setPacked_(B, pairTableSize, B_EB,      idx, row.bondYoungsModulus);
-            setPacked_(B, pairTableSize, B_KNKS,    idx, row.normalToShearStiffnessRatio);
-            setPacked_(B, pairTableSize, B_SIGMA_S, idx, row.tensileStrength);
-            setPacked_(B, pairTableSize, B_C,       idx, row.cohesion);
-            setPacked_(B, pairTableSize, B_MU,      idx, row.frictionCoefficient);
-        }
-
-        // --------------------------
-        // Upload packed arrays
-        // --------------------------
-        hertzianPacked_.setHost(H);
-        linearPacked_.setHost(L);
-        bondedPacked_.setHost(B);
-
-        hertzianPacked_.copyHostToDevice(stream);
-        linearPacked_.copyHostToDevice(stream);
-        bondedPacked_.copyHostToDevice(stream);
-
-        // --------------------------
-        // Commit constant memory (pointers + meta)
-        // --------------------------
-        ContactParamsDevice dev;
-        dev.nMaterials = static_cast<int>(numberOfMaterials);
-        dev.cap = static_cast<int>(pairTableSize);
-        dev.hertzian = hertzianPacked_.d_ptr;
-        dev.linear = linearPacked_.d_ptr;
-        dev.bonded = bondedPacked_.d_ptr;
-
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(contactPara,
-                                           &dev,
-                                           sizeof(ContactParamsDevice),
-                                           0,
-                                           cudaMemcpyHostToDevice,
-                                           stream));
-    }
+    const std::vector<LinearRow>&   linearTable,
+    const std::vector<BondedRow>&   bondedTable,
+    cudaStream_t stream);
 };

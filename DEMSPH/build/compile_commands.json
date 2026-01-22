@@ -1,0 +1,68 @@
+[
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/SPHNeighborSearchKernel.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/SPHNeighborSearchKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/SPHNeighborSearchKernel.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/SPHNeighborSearchKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/WCSPHIntegrationKernel.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/WCSPHIntegrationKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/WCSPHIntegrationKernel.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/WCSPHIntegrationKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/ballIntegrationKernel.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/ballIntegrationKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/ballIntegrationKernel.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/ballIntegrationKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/ballNeighborSearchKernel.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/ballNeighborSearchKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/ballNeighborSearchKernel.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/ballNeighborSearchKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/buildHashStartEnd.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/buildHashStartEnd.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/buildHashStartEnd.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/buildHashStartEnd.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/contactKernel.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/contactKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/contactKernel.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/contactKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/neighborSearchKernel.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/neighborSearchKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/neighborSearchKernel.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/neighborSearchKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_kernels.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/kernel/wallIntegrationKernel.cu -o CMakeFiles/DEMSPH_kernels.dir/kernel/wallIntegrationKernel.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/kernel/wallIntegrationKernel.cu",
+  "output": "CMakeFiles/DEMSPH_kernels.dir/kernel/wallIntegrationKernel.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/DEMSPH_app_common.dir/includes_CUDA.rsp -O3 -DNDEBUG -std=c++17 -arch=native -Xcompiler=-fPIC -x cu -rdc=true -c /teamspace/studios/this_studio/DEMSPH/externalForceTorque.cu -o CMakeFiles/DEMSPH_app_common.dir/externalForceTorque.cu.o",
+  "file": "/teamspace/studios/this_studio/DEMSPH/externalForceTorque.cu",
+  "output": "CMakeFiles/DEMSPH_app_common.dir/externalForceTorque.cu.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/g++-12  -I/teamspace/studios/this_studio/DEMSPH -I/teamspace/studios/this_studio/DEMSPH/kernel -I/teamspace/studios/this_studio/DEMSPH/kernel/myUtility -O3 -DNDEBUG -std=gnu++17 -fPIE -o CMakeFiles/bondedBeam.dir/bondedBeam.cpp.o -c /teamspace/studios/this_studio/DEMSPH/bondedBeam.cpp",
+  "file": "/teamspace/studios/this_studio/DEMSPH/bondedBeam.cpp",
+  "output": "CMakeFiles/bondedBeam.dir/bondedBeam.cpp.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/g++-12  -I/teamspace/studios/this_studio/DEMSPH -I/teamspace/studios/this_studio/DEMSPH/kernel -I/teamspace/studios/this_studio/DEMSPH/kernel/myUtility -O3 -DNDEBUG -std=gnu++17 -fPIE -o CMakeFiles/damBreak.dir/damBreak.cpp.o -c /teamspace/studios/this_studio/DEMSPH/damBreak.cpp",
+  "file": "/teamspace/studios/this_studio/DEMSPH/damBreak.cpp",
+  "output": "CMakeFiles/damBreak.dir/damBreak.cpp.o"
+}
+]
