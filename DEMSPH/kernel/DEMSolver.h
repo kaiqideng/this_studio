@@ -1,18 +1,15 @@
-#include "buildHashStartEnd.h"
 #include "contactParameters.h"
-#include "myUtility/myHostDeviceArray.h"
-#include "neighborSearchKernel.h"
 #include "particle.h"
 #include "wall.h"
 #include "interaction.h"
 #include "boundary.h"
+#include "buildHashStartEnd.h"
+#include "neighborSearchKernel.h"
 #include "ballNeighborSearchKernel.h"
 #include "contactKernel.h"
 #include "ballIntegrationKernel.h"
 #include "wallIntegrationKernel.h"
 #include "myUtility/myFileEdit.h"
-#include <iomanip>
-#include <iostream>
 #include <fstream>
 #include <sstream>
 
@@ -50,7 +47,7 @@ struct solidInteraction
 
     void resizePair(cudaStream_t stream)
     {
-        numActivated_ = objectPointed_.numNeighborPairs();
+        numActivated_ = objectPointed_.numNeighborPairs(stream);
         if (numActivated_ > pair_.deviceSize())
         {
             pair_.allocateDevice(numActivated_, stream);
@@ -62,10 +59,13 @@ struct solidInteraction
     void buildObjectPointingInteractionStartEnd(size_t maxThread, cudaStream_t stream)
     {
         if (numActivated_ == 0) return;
+        CUDA_CHECK(cudaMemsetAsync(pair_.hashIndex(), 0xFF, pair_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemsetAsync(pair_.hashValue(), 0xFF, pair_.deviceSize() * sizeof(int), stream));
+        CUDA_CHECK(cudaMemcpyAsync(pair_.hashValue(), pair_.objectPointing(), numActivated_ * sizeof(int), cudaMemcpyDeviceToDevice, stream));
+
         size_t blockD = maxThread;
         if (numActivated_ < maxThread) blockD = numActivated_;
         size_t gridD = (numActivated_ + blockD - 1) / blockD;
-        CUDA_CHECK(cudaMemcpyAsync(pair_.hashValue(), pair_.objectPointing(), pair_.deviceSize() * sizeof(int), cudaMemcpyDeviceToDevice, stream));
         buildHashStartEnd(objectPointing_.interactionStart(), 
         objectPointing_.interactionEnd(), 
         pair_.hashIndex(), 
@@ -78,7 +78,7 @@ struct solidInteraction
     }
 };
 
-struct periodicInteraction
+struct periodicBoundary
 {
     bool activatedFlag_ { false };
     HostDeviceArray1D<double3> dummyPosition_;
@@ -245,17 +245,14 @@ private:
         if (r.size() > 0) cellSizeOneDim = *std::max_element(r.begin(), r.end()) * 2.0;
         ballSpatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
 
-        double longestEdge = 0.0;
         for (size_t i = 0; i < meshWall_.triangle_.deviceSize(); i++)
         {
             double3 v0 = meshWall_.vertex_.localPositionHostRef()[meshWall_.triangle_.index0HostRef()[i]];
             double3 v1 = meshWall_.vertex_.localPositionHostRef()[meshWall_.triangle_.index1HostRef()[i]];
             double3 v2 = meshWall_.vertex_.localPositionHostRef()[meshWall_.triangle_.index2HostRef()[i]];
-            longestEdge = std::max(longestEdge, length(v1 - v0));
-            longestEdge = std::max(longestEdge, length(v2 - v1));
-            longestEdge = std::max(longestEdge, length(v2 - v0));
+            double3 c = triangleCircumcenter(v0, v1, v2);
+            cellSizeOneDim = std::max(cellSizeOneDim, 2.0 * length(v0 - c));
         }
-        cellSizeOneDim = std::max(cellSizeOneDim, 1.2 * longestEdge);
         triangleSpatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
     }
 
@@ -274,7 +271,8 @@ private:
         initializeSpatialGrid(minBoundary, maxBoundary);
     }
 
-    void addDummyContactForceTorque(periodicInteraction& periodic, const int3 directionFlag, const double timeStep)
+protected:
+    void addDummyContactForceTorque(periodicBoundary& periodic, const int3 directionFlag, const double timeStep)
     {
         if (periodic.dummyPosition_.deviceSize() == 0 || periodic.dummyPosition_.deviceSize() != ball_.deviceSize()) return;
 
@@ -289,7 +287,11 @@ private:
         ball_.blockDim(), 
         stream_);
 
-        updatePeriodicSpatialGridCellHashStartEnd(periodic.dummyPosition_.d_ptr, 
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        launchUpdateDummySpatialGridCellHashStartEnd(periodic.dummyPosition_.d_ptr, 
         ball_.hashIndex(), 
         ball_.hashValue(), 
         ballSpatialGrid_.cellHashStart(), 
@@ -303,6 +305,10 @@ private:
         ball_.gridDim(), 
         ball_.blockDim(), 
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         periodic.dummyInteraction_.updateOldPairOldSpring(stream_);
 
@@ -322,6 +328,10 @@ private:
         ball_.gridDim(), 
         ball_.blockDim(), 
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         periodic.dummyInteraction_.resizePair(stream_);
 
@@ -353,6 +363,10 @@ private:
         ball_.blockDim(),
         stream_);
 
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
         periodic.dummyInteraction_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
 
         if (periodic.dummyInteraction_.numActivated_ > 0) 
@@ -377,11 +391,15 @@ private:
             periodic.dummyInteraction_.pair_.objectPointed(),
             periodic.dummyInteraction_.pair_.objectPointing(),
             timeStep,
-            periodic.dummyInteraction_.numActivated_ ,
+            periodic.dummyInteraction_.numActivated_,
             gridD,
             blockD,
             stream_);
         }
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         luanchSumBallContactForceTorque(periodic.dummyPosition_.d_ptr,
         ball_.force(),
@@ -397,13 +415,17 @@ private:
         ball_.gridDim(),
         ball_.blockDim(),
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
     void addTriangleContactForceTorque(const double timeStep)
     {
         if (meshWall_.triangle_.deviceSize() == 0) return;
 
-        updateSpatialGridCellHashStartEnd(meshWall_.triangle_.circumcenter(), 
+        launchUpdateSpatialGridCellHashStartEnd(meshWall_.triangle_.circumcenter(), 
         meshWall_.triangle_.hashIndex(), 
         meshWall_.triangle_.hashValue(), 
         triangleSpatialGrid_.cellHashStart(), 
@@ -417,6 +439,10 @@ private:
         meshWall_.triangle_.gridDim(), 
         meshWall_.triangle_.blockDim(), 
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         ballTriangleInteraction_.updateOldPairOldSpring(stream_);
 
@@ -438,6 +464,10 @@ private:
         ball_.gridDim(), 
         ball_.blockDim(), 
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         ballTriangleInteraction_.resizePair(stream_);
 
@@ -470,6 +500,10 @@ private:
         ball_.gridDim(),
         ball_.blockDim(),
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         ballTriangleInteraction_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
 
@@ -509,81 +543,46 @@ private:
             ball_.gridDim(),
             ball_.blockDim(),
             stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
         }
+
+        launchWallIntegration(meshWall_.body_.position(),
+        meshWall_.body_.velocity(),
+        meshWall_.body_.angularVelocity(),
+        meshWall_.body_.orientation(),
+        timeStep,
+        meshWall_.body_.deviceSize(),
+        meshWall_.body_.gridDim(),
+        meshWall_.body_.blockDim(),
+        stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        launchUpdateWallVertexGlobalPosition(meshWall_.vertex_.globalPosition(), 
+        meshWall_.vertex_.localPosition(), 
+        meshWall_.vertex_.wallIndex(), 
+        meshWall_.body_.position(), 
+        meshWall_.body_.orientation(), 
+        meshWall_.vertex_.deviceSize(), 
+        meshWall_.vertex_.gridDim(), 
+        meshWall_.vertex_.blockDim(), 
+        stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
-protected:
-    void neighborSearch()
+    void calculateBallContactForceTorque(const double timeStep)
     {
-        updateSpatialGridCellHashStartEnd(ball_.position(), 
-        ball_.hashIndex(), 
-        ball_.hashValue(), 
-        ballSpatialGrid_.cellHashStart(), 
-        ballSpatialGrid_.cellHashEnd(), 
-        ballSpatialGrid_.minimumBoundary(), 
-        ballSpatialGrid_.maximumBoundary(), 
-        ballSpatialGrid_.cellSize(), 
-        ballSpatialGrid_.gridSize(), 
-        ballSpatialGrid_.numGrids(),
-        ball_.deviceSize(), 
-        ball_.gridDim(), 
-        ball_.blockDim(), 
-        stream_);
+        CUDA_CHECK(cudaMemsetAsync(ball_.force(), 0, ball_.deviceSize() * sizeof(double3), stream_));
+        CUDA_CHECK(cudaMemsetAsync(ball_.torque(), 0, ball_.deviceSize() * sizeof(double3), stream_));
 
-        ballInteraction_.updateOldPairOldSpring(stream_);
-
-        launchCountBallInteractions(ball_.position(), 
-        ball_.radius(), 
-        ball_.inverseMass(), 
-        ball_.clumpID(), 
-        ball_.hashIndex(), 
-        ballInteraction_.objectPointed_.neighborCount(), 
-        ballInteraction_.objectPointed_.neighborPrefixSum(), 
-        ballSpatialGrid_.cellHashStart(), 
-        ballSpatialGrid_.cellHashEnd(), 
-        ballSpatialGrid_.minimumBoundary(), 
-        ballSpatialGrid_.cellSize(), 
-        ballSpatialGrid_.gridSize(), 
-        ball_.deviceSize(), 
-        ball_.gridDim(), 
-        ball_.blockDim(), 
-        stream_);
-
-        ballInteraction_.resizePair(stream_);
-
-        launchWriteBallInteractions(ball_.position(), 
-        ball_.radius(), 
-        ball_.inverseMass(),
-        ball_.clumpID(),
-        ball_.hashIndex(), 
-        ballInteraction_.objectPointed_.neighborPrefixSum(),
-        ballInteraction_.objectPointing_.interactionStart(),
-        ballInteraction_.objectPointing_.interactionEnd(),
-        ballInteraction_.spring_.sliding(),
-        ballInteraction_.spring_.rolling(),
-        ballInteraction_.spring_.torsion(),
-        ballInteraction_.pair_.objectPointed(),
-        ballInteraction_.pair_.objectPointing(),
-        ballInteraction_.oldSpring_.sliding(),
-        ballInteraction_.oldSpring_.rolling(),
-        ballInteraction_.oldSpring_.torsion(),
-        ballInteraction_.oldPair_.objectPointed(),
-        ballInteraction_.oldPair_.hashIndex(),
-        ballSpatialGrid_.cellHashStart(), 
-        ballSpatialGrid_.cellHashEnd(), 
-        ballSpatialGrid_.minimumBoundary(),
-        ballSpatialGrid_.cellSize(), 
-        ballSpatialGrid_.gridSize(), 
-        ball_.deviceSize(), 
-        ball_.gridDim(), 
-        ball_.blockDim(),
-        stream_);
-
-        ballInteraction_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
-    }
-
-    void calculateContactForceTorque(const double timeStep)
-    {
         if (ballInteraction_.numActivated_ > 0) 
         {
             size_t blockD = maxThread_;
@@ -610,6 +609,10 @@ protected:
             gridD,
             blockD,
             stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
         }
 
         size_t numBondedPairs = bondedInteraction_.bond_.deviceSize();
@@ -645,9 +648,11 @@ protected:
             gridD1,
             blockD1,
             stream_);
-        }
 
-        addTriangleContactForceTorque(timeStep);
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+        }
 
         luanchSumBallContactForceTorque(ball_.position(),
         ball_.force(),
@@ -664,38 +669,137 @@ protected:
         ball_.blockDim(),
         stream_);
 
-        addTriangleContactForceTorque(timeStep);
-
-        addDummyContactForceTorque(periodicX_, make_int3(1, 0, 0), timeStep);
-        addDummyContactForceTorque(periodicY_, make_int3(0, 1, 0), timeStep);
-        addDummyContactForceTorque(periodicZ_, make_int3(0, 0, 1), timeStep);
-        addDummyContactForceTorque(periodicXY_, make_int3(1, 1, 0), timeStep);
-        addDummyContactForceTorque(periodicYZ_, make_int3(0, 1, 1), timeStep);
-        addDummyContactForceTorque(periodicXZ_, make_int3(1, 0, 1), timeStep);
-        addDummyContactForceTorque(periodicXYZ_, make_int3(1, 1, 1), timeStep);
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
-    void interaction1stHalf(const double3 gravity, const double timeStep)
+protected:
+    void neighborSearch()
     {
-        launchClump1stHalfIntegration(clump_.position(),
-        clump_.velocity(),
-        clump_.angularVelocity(),
-        clump_.force(),
-        clump_.torque(),
-        clump_.inverseMass(),
-        clump_.orientation(),
-        clump_.inverseInertiaTensor(),
-        clump_.pebbleStart(),
-        clump_.pebbleEnd(),
-        ball_.position(),
-        ball_.velocity(),
-        ball_.angularVelocity(),
-        gravity,
-        timeStep,
-        clump_.deviceSize(),
-        clump_.gridDim(),
-        clump_.blockDim(),
+        launchUpdateSpatialGridCellHashStartEnd(ball_.position(), 
+        ball_.hashIndex(), 
+        ball_.hashValue(), 
+        ballSpatialGrid_.cellHashStart(), 
+        ballSpatialGrid_.cellHashEnd(), 
+        ballSpatialGrid_.minimumBoundary(), 
+        ballSpatialGrid_.maximumBoundary(), 
+        ballSpatialGrid_.cellSize(), 
+        ballSpatialGrid_.gridSize(), 
+        ballSpatialGrid_.numGrids(),
+        ball_.deviceSize(), 
+        ball_.gridDim(), 
+        ball_.blockDim(), 
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        ballInteraction_.updateOldPairOldSpring(stream_);
+
+        launchCountBallInteractions(ball_.position(), 
+        ball_.radius(), 
+        ball_.inverseMass(), 
+        ball_.clumpID(), 
+        ball_.hashIndex(), 
+        ballInteraction_.objectPointed_.neighborCount(), 
+        ballInteraction_.objectPointed_.neighborPrefixSum(), 
+        ballSpatialGrid_.cellHashStart(), 
+        ballSpatialGrid_.cellHashEnd(), 
+        ballSpatialGrid_.minimumBoundary(), 
+        ballSpatialGrid_.cellSize(), 
+        ballSpatialGrid_.gridSize(), 
+        ball_.deviceSize(), 
+        ball_.gridDim(), 
+        ball_.blockDim(), 
+        stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        ballInteraction_.resizePair(stream_);
+
+        launchWriteBallInteractions(ball_.position(), 
+        ball_.radius(), 
+        ball_.inverseMass(),
+        ball_.clumpID(),
+        ball_.hashIndex(), 
+        ballInteraction_.objectPointed_.neighborPrefixSum(),
+        ballInteraction_.objectPointing_.interactionStart(),
+        ballInteraction_.objectPointing_.interactionEnd(),
+        ballInteraction_.spring_.sliding(),
+        ballInteraction_.spring_.rolling(),
+        ballInteraction_.spring_.torsion(),
+        ballInteraction_.pair_.objectPointed(),
+        ballInteraction_.pair_.objectPointing(),
+        ballInteraction_.oldSpring_.sliding(),
+        ballInteraction_.oldSpring_.rolling(),
+        ballInteraction_.oldSpring_.torsion(),
+        ballInteraction_.oldPair_.objectPointed(),
+        ballInteraction_.oldPair_.hashIndex(),
+        ballSpatialGrid_.cellHashStart(), 
+        ballSpatialGrid_.cellHashEnd(), 
+        ballSpatialGrid_.minimumBoundary(),
+        ballSpatialGrid_.cellSize(), 
+        ballSpatialGrid_.gridSize(), 
+        ball_.deviceSize(), 
+        ball_.gridDim(), 
+        ball_.blockDim(),
+        stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        ballInteraction_.buildObjectPointingInteractionStartEnd(maxThread_, stream_);
+    }
+
+    void interaction1stHalf(const double3 gravity, const double halfTimeStep, const size_t iStep)
+    {
+        if (clump_.deviceSize() > 0)
+        {
+            launchClump1stHalfIntegration(clump_.position(),
+            clump_.velocity(),
+            clump_.angularVelocity(),
+            clump_.force(),
+            clump_.torque(),
+            clump_.inverseMass(),
+            clump_.orientation(),
+            clump_.inverseInertiaTensor(),
+            clump_.pebbleStart(),
+            clump_.pebbleEnd(),
+            ball_.position(),
+            ball_.force(),
+            ball_.torque(),
+            gravity,
+            halfTimeStep,
+            clump_.deviceSize(),
+            clump_.gridDim(),
+            clump_.blockDim(),
+            stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+            luanchSetPebbleVelocityAngularVelocityKernel(ball_.position(),
+            ball_.velocity(),
+            ball_.angularVelocity(),
+            ball_.clumpID(),
+            clump_.position(),
+            clump_.velocity(),
+            clump_.angularVelocity(),
+            ball_.deviceSize(),
+            ball_.gridDim(),
+            ball_.blockDim(),
+            stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+        }
 
         launchBall1stHalfIntegration(ball_.position(),
         ball_.velocity(),
@@ -706,56 +810,61 @@ protected:
         ball_.inverseMass(),
         ball_.clumpID(),
         gravity,
-        timeStep,
+        halfTimeStep,
         ball_.deviceSize(),
         ball_.gridDim(),
         ball_.blockDim(),
         stream_);
 
-        launchWallIntegration(meshWall_.body_.position(),
-        meshWall_.body_.velocity(),
-        meshWall_.body_.angularVelocity(),
-        meshWall_.body_.orientation(),
-        timeStep,
-        meshWall_.body_.deviceSize(),
-        meshWall_.body_.gridDim(),
-        meshWall_.body_.blockDim(),
-        stream_);
-
-        launchUpdateWallVertexGlobalPosition(meshWall_.vertex_.globalPosition(), 
-        meshWall_.vertex_.localPosition(), 
-        meshWall_.vertex_.wallIndex(), 
-        meshWall_.body_.position(), 
-        meshWall_.body_.orientation(), 
-        meshWall_.vertex_.deviceSize(), 
-        meshWall_.vertex_.gridDim(), 
-        meshWall_.vertex_.blockDim(), 
-        stream_);
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
-    void interaction2ndHalf(const double3 gravity, const double timeStep)
+    void interaction2ndHalf(const double3 gravity, const double halfTimeStep, const size_t iStep)
     {
-        launchClump2ndHalfIntegration(clump_.position(),
-        clump_.velocity(),
-        clump_.angularVelocity(),
-        clump_.force(),
-        clump_.torque(),
-        clump_.inverseMass(),
-        clump_.orientation(),
-        clump_.inverseInertiaTensor(),
-        clump_.pebbleStart(),
-        clump_.pebbleEnd(),
-        ball_.position(),
-        ball_.velocity(),
-        ball_.angularVelocity(),
-        ball_.force(),
-        ball_.torque(),
-        gravity,
-        timeStep,
-        clump_.deviceSize(),
-        clump_.gridDim(),
-        clump_.blockDim(),
-        stream_);
+        if (clump_.deviceSize() > 0)
+        {
+            launchClump2ndHalfIntegration(clump_.position(),
+            clump_.velocity(),
+            clump_.angularVelocity(),
+            clump_.force(),
+            clump_.torque(),
+            clump_.inverseMass(),
+            clump_.orientation(),
+            clump_.inverseInertiaTensor(),
+            clump_.pebbleStart(),
+            clump_.pebbleEnd(),
+            ball_.position(),
+            ball_.force(),
+            ball_.torque(),
+            gravity,
+            halfTimeStep,
+            clump_.deviceSize(),
+            clump_.gridDim(),
+            clump_.blockDim(),
+            stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+            luanchSetPebbleVelocityAngularVelocityKernel(ball_.position(),
+            ball_.velocity(),
+            ball_.angularVelocity(),
+            ball_.clumpID(),
+            clump_.position(),
+            clump_.velocity(),
+            clump_.angularVelocity(),
+            ball_.deviceSize(),
+            ball_.gridDim(),
+            ball_.blockDim(),
+            stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+        }
 
         launchBall2ndHalfIntegration(ball_.velocity(),
         ball_.angularVelocity(),
@@ -765,11 +874,15 @@ protected:
         ball_.inverseMass(),
         ball_.clumpID(),
         gravity,
-        timeStep,
+        halfTimeStep,
         ball_.deviceSize(),
         ball_.gridDim(),
         ball_.blockDim(),
         stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
     void outputBallVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double time)
@@ -964,38 +1077,227 @@ protected:
             << "</VTKFile>\n";
     }
 
+    virtual void addExternalForceTorque(const size_t iStep, const double time) 
+    {
+    }
+
+    void loop_ball(double& time, size_t& iStep, size_t& iFrame, 
+    const double3 gravity, const double timeStep, const size_t numStep, const size_t frameInterval, const std::string dir)
+    {
+        const double halfTimeStep = 0.5 * timeStep;
+        while (iStep <= numStep)
+        {
+            iStep++;
+            time += timeStep;
+            neighborSearch();
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addExternalForceTorque(iStep, time - halfTimeStep);
+
+            interaction1stHalf(gravity, halfTimeStep, iStep);
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addExternalForceTorque(iStep, time);
+
+            interaction2ndHalf(gravity, halfTimeStep, iStep);
+
+            if (iStep % frameInterval == 0)
+            {
+                iFrame++;
+                std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
+                outputBallVTU(dir, iFrame, iStep, time);
+            }
+        }
+    }
+
+    void loop_ball_periodicXYZ(double& time, size_t& iStep, size_t& iFrame, 
+    const double3 gravity, const double timeStep, const size_t numStep, const size_t frameInterval, const std::string dir)
+    {
+        const double halfTimeStep = 0.5 * timeStep;
+        while (iStep <= numStep)
+        {
+            iStep++;
+            time += timeStep;
+            neighborSearch();
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addDummyContactForceTorque(periodicX_, make_int3(1, 0, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicY_, make_int3(0, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicZ_, make_int3(0, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXY_, make_int3(1, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicYZ_, make_int3(0, 1, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXZ_, make_int3(1, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXYZ_, make_int3(1, 1, 1), halfTimeStep);
+            addExternalForceTorque(iStep, time - halfTimeStep);
+
+            interaction1stHalf(gravity, halfTimeStep, iStep);
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addDummyContactForceTorque(periodicX_, make_int3(1, 0, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicY_, make_int3(0, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicZ_, make_int3(0, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXY_, make_int3(1, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicYZ_, make_int3(0, 1, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXZ_, make_int3(1, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXYZ_, make_int3(1, 1, 1), halfTimeStep);
+            addExternalForceTorque(iStep, time);
+
+            interaction2ndHalf(gravity, halfTimeStep, iStep);
+
+            if (iStep % frameInterval == 0)
+            {
+                iFrame++;
+                std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
+                outputBallVTU(dir, iFrame, iStep, time);
+            }
+        }
+    }
+
+    void loop_ball_wall(double& time, size_t& iStep, size_t& iFrame, 
+    const double3 gravity, const double timeStep, const size_t numStep, const size_t frameInterval, const std::string dir)
+    {
+        const double halfTimeStep = 0.5 * timeStep;
+        while (iStep <= numStep)
+        {
+            iStep++;
+            time += timeStep;
+            neighborSearch();
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addTriangleContactForceTorque(timeStep);
+            addExternalForceTorque(iStep, time - halfTimeStep);
+
+            interaction1stHalf(gravity, halfTimeStep, iStep);
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addTriangleContactForceTorque(timeStep);
+            addExternalForceTorque(iStep, time);
+
+            interaction2ndHalf(gravity, halfTimeStep, iStep);
+
+            if (iStep % frameInterval == 0)
+            {
+                iFrame++;
+                std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
+                outputBallVTU(dir, iFrame, iStep, time);
+                outputMeshWallVTU(dir, iFrame, iStep, time);
+            }
+        }
+    }
+
+    void loop_ball_wall_periodicXYZ(double& time, size_t& iStep, size_t& iFrame, 
+    const double3 gravity, const double timeStep, const size_t numStep, const size_t frameInterval, const std::string dir)
+    {
+        const double halfTimeStep = 0.5 * timeStep;
+        while (iStep <= numStep)
+        {
+            iStep++;
+            time += timeStep;
+            neighborSearch();
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addTriangleContactForceTorque(timeStep);
+            addDummyContactForceTorque(periodicX_, make_int3(1, 0, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicY_, make_int3(0, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicZ_, make_int3(0, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXY_, make_int3(1, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicYZ_, make_int3(0, 1, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXZ_, make_int3(1, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXYZ_, make_int3(1, 1, 1), halfTimeStep);
+            addExternalForceTorque(iStep, time - halfTimeStep);
+
+            interaction1stHalf(gravity, halfTimeStep, iStep);
+
+            calculateBallContactForceTorque(halfTimeStep);
+            addTriangleContactForceTorque(timeStep);
+            addDummyContactForceTorque(periodicX_, make_int3(1, 0, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicY_, make_int3(0, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicZ_, make_int3(0, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXY_, make_int3(1, 1, 0), halfTimeStep);
+            addDummyContactForceTorque(periodicYZ_, make_int3(0, 1, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXZ_, make_int3(1, 0, 1), halfTimeStep);
+            addDummyContactForceTorque(periodicXYZ_, make_int3(1, 1, 1), halfTimeStep);
+            addExternalForceTorque(iStep, time);
+
+            interaction2ndHalf(gravity, halfTimeStep, iStep);
+
+            if (iStep % frameInterval == 0)
+            {
+                iFrame++;
+                std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
+                outputBallVTU(dir, iFrame, iStep, time);
+                outputMeshWallVTU(dir, iFrame, iStep, time);
+            }
+        }
+    }
+
     virtual bool addInitialCondition() 
     {
         return false;
     }
 
-    virtual void handleDeviceArray(const size_t iStep) 
-    {
-
-    }
-
-    pair& getBallPair() { return ballInteraction_.pair_; }
-
-    pair& getBondedBallPair() { return bondedInteraction_.pair_; }
-
     ball& getBall() { return ball_; }
 
     clump& getClump() { return clump_; }
+
+    contact& getBallContact() { return ballInteraction_.contact_; }
+
+    contact& getBallTriangleContact() { return ballTriangleInteraction_.contact_; }
+
+    std::vector<int> getBallPairPointed() 
+    { 
+        std::vector<int> p = ballInteraction_.pair_.objectPointedHostCopy();
+        std::vector<int> p1(p.begin(), p.begin() + ballInteraction_.numActivated_);
+        return p1;
+    }
+
+    std::vector<int> getBallPairPointing() 
+    { 
+        std::vector<int> p = ballInteraction_.pair_.objectPointingHostCopy();
+        std::vector<int> p1(p.begin(), p.begin() + ballInteraction_.numActivated_);
+        return p1;
+    }
+
+    std::vector<int> getBallTrianglePairPointed() 
+    { 
+        std::vector<int> p = ballTriangleInteraction_.pair_.objectPointedHostCopy();
+        std::vector<int> p1(p.begin(), p.begin() + ballTriangleInteraction_.numActivated_);
+        return p1;
+    }
+
+    std::vector<int> getBallTrianglePairPointing() 
+    { 
+        std::vector<int> p = ballTriangleInteraction_.pair_.objectPointingHostCopy();
+        std::vector<int> p1(p.begin(), p.begin() + ballTriangleInteraction_.numActivated_);
+        return p1;
+    }
+
+    std::vector<int> getBondedPairPointed() 
+    { 
+        std::vector<int> p = bondedInteraction_.pair_.objectPointedHostCopy();
+        return p;
+    }
+
+    std::vector<int> getBondedPairPointing() 
+    { 
+        std::vector<int> p = bondedInteraction_.pair_.objectPointingHostCopy();
+        return p;
+    }
 
 public:
 // ---------------------------------------------------------------------
     // Hertzian: set one material-pair row (append)
     // ---------------------------------------------------------------------
     void setHertzianPair(const int materialIndexA,
-                         const int materialIndexB,
-                         const double effectiveYoungsModulus,
-                         const double effectiveShearModulus,
-                         const double restitutionCoefficient,
-                         const double rollingStiffnessToShearStiffnessRatio,
-                         const double torsionStiffnessToShearStiffnessRatio,
-                         const double slidingFrictionCoefficient,
-                         const double rollingFrictionCoefficient,
-                         const double torsionFrictionCoefficient)
+    const int materialIndexB,
+    const double effectiveYoungsModulus,
+    const double effectiveShearModulus,
+    const double restitutionCoefficient,
+    const double rollingStiffnessToShearStiffnessRatio,
+    const double torsionStiffnessToShearStiffnessRatio,
+    const double slidingFrictionCoefficient,
+    const double rollingFrictionCoefficient,
+    const double torsionFrictionCoefficient)
     {
         HertzianRow row;
         row.materialIndexA = materialIndexA;
@@ -1017,18 +1319,18 @@ public:
     // Linear: set one material-pair row (append)
     // ---------------------------------------------------------------------
     void setLinearPair(const int materialIndexA,
-                       const int materialIndexB,
-                       const double normalStiffness,
-                       const double slidingStiffness,
-                       const double rollingStiffness,
-                       const double torsionStiffness,
-                       const double normalDampingCoefficient,
-                       const double slidingDampingCoefficient,
-                       const double rollingDampingCoefficient,
-                       const double torsionDampingCoefficient,
-                       const double slidingFrictionCoefficient,
-                       const double rollingFrictionCoefficient,
-                       const double torsionFrictionCoefficient)
+    const int materialIndexB,
+    const double normalStiffness,
+    const double slidingStiffness,
+    const double rollingStiffness,
+    const double torsionStiffness,
+    const double normalDampingCoefficient,
+    const double slidingDampingCoefficient,
+    const double rollingDampingCoefficient,
+    const double torsionDampingCoefficient,
+    const double slidingFrictionCoefficient,
+    const double rollingFrictionCoefficient,
+    const double torsionFrictionCoefficient)
     {
         LinearRow row;
         row.materialIndexA = materialIndexA;
@@ -1055,13 +1357,13 @@ public:
     // Bonded: set one material-pair row (append)
     // ---------------------------------------------------------------------
     void setBondedPair(const int materialIndexA,
-                       const int materialIndexB,
-                       const double bondRadiusMultiplier,
-                       const double bondYoungsModulus,
-                       const double normalToShearStiffnessRatio,
-                       const double tensileStrength,
-                       const double cohesion,
-                       const double frictionCoefficient)
+    const int materialIndexB,
+    const double bondRadiusMultiplier,
+    const double bondYoungsModulus,
+    const double normalToShearStiffnessRatio,
+    const double tensileStrength,
+    const double cohesion,
+    const double frictionCoefficient)
     {
         BondedRow row;
         row.materialIndexA = materialIndexA;
@@ -1238,8 +1540,7 @@ public:
     const double3 &posistion, 
     const double3 &velocity, 
     const double3 &angularVelocity, 
-    int matirialID,
-    cudaStream_t stream)
+    int matirialID)
     {
         if (triIndex0.size() != triIndex1.size() || triIndex0.size() != triIndex2.size()) return;
         int maxIndex0 = *std::max_element(triIndex0.begin(), triIndex0.end());
@@ -1294,6 +1595,23 @@ public:
         bondedInteraction_.add(objectPointed, objectPointing, ballPosition);
     }
 
+    void setPeriodicBoundary(bool X, bool Y, bool Z)
+    {
+        if (X) periodicX_.activatedFlag_ = true;
+        if (Y) 
+        {
+            periodicY_.activatedFlag_ = true;
+            if (X && Y) periodicXY_.activatedFlag_ = true;
+        }
+        if (Z)
+        {
+            periodicZ_.activatedFlag_ = true;
+            if (X && Z) periodicXZ_.activatedFlag_ = true;
+            if (Y && Z) periodicYZ_.activatedFlag_ = true;
+            if (X && Y && Z) periodicXYZ_.activatedFlag_ = true;
+        }
+    }
+
     void solve(const double3 minBoundary, 
     const double3 maxBoundary, 
     const double3 gravity, 
@@ -1327,32 +1645,44 @@ public:
         if (frameInterval < 1) frameInterval = 1;
         
         initialize(minBoundary, maxBoundary, maximumThread);
-        std::cout << "Initialization Completed." << std::endl;
         neighborSearch();
         if (addInitialCondition()) initialize(minBoundary, maxBoundary, maximumThread);
 
-        outputBallVTU(dir, 0, 0, 0.0);
-        outputMeshWallVTU(dir, 0, 0, 0.0);
+        if (ball_.deviceSize() == 0)
+        {
+            std::cout << "failed! The number of particles is equal to 0" << std::endl;
+            return;
+        }
+        std::cout << "Initialization Completed." << std::endl;
 
         size_t iStep = 0, iFrame = 0;
         double time = 0.0;
-        while (iStep <= numStep)
+        outputBallVTU(dir, 0, 0, 0.0);
+        if (periodicX_.activatedFlag_ || periodicY_.activatedFlag_ || periodicZ_.activatedFlag_)
         {
-            iStep++;
-            time += timeStep;
-            neighborSearch();
-            interaction1stHalf(gravity, timeStep);
-            calculateContactForceTorque(timeStep);
-            handleDeviceArray(iStep);
-            interaction2ndHalf(gravity, timeStep);
-            if (iStep % frameInterval == 0)
+            if (meshWall_.body_.deviceSize() > 0)
             {
-                iFrame++;
-                std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
-                outputBallVTU(dir, iFrame, iStep, time);
-                outputMeshWallVTU(dir, iFrame, iStep, time);
+                outputMeshWallVTU(dir, 0, 0, 0.0);
+                loop_ball_wall_periodicXYZ(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
+            }
+            else
+            {
+                loop_ball_periodicXYZ(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
             }
         }
+        else
+        {
+            if (meshWall_.body_.deviceSize() > 0)
+            {
+                outputMeshWallVTU(dir, 0, 0, 0.0);
+                loop_ball_wall(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
+            }
+            else 
+            {
+                loop_ball(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
+            }
+        }
+
         ball_.copyDeviceToHost(stream_);
         clump_.copyDeviceToHost(stream_);
         meshWall_.body_.copyDeviceToHost(stream_);
@@ -1381,11 +1711,11 @@ private:
     solidInteraction ballInteraction_;
     solidInteraction ballTriangleInteraction_;
 
-    periodicInteraction periodicX_;
-    periodicInteraction periodicY_;
-    periodicInteraction periodicZ_;
-    periodicInteraction periodicXY_;
-    periodicInteraction periodicXZ_;
-    periodicInteraction periodicYZ_;
-    periodicInteraction periodicXYZ_;
+    periodicBoundary periodicX_;
+    periodicBoundary periodicY_;
+    periodicBoundary periodicZ_;
+    periodicBoundary periodicXY_;
+    periodicBoundary periodicXZ_;
+    periodicBoundary periodicYZ_;
+    periodicBoundary periodicXYZ_;
 };

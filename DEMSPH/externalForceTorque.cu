@@ -10,7 +10,7 @@ const size_t num)
     force[idx] += force_external[idx];
 }
 
-extern "C" void launchAddConstantForceouble3(double3* force,
+extern "C" void launchAddConstantForce(double3* force,
 const double3* force_external,
 const size_t num,
 const size_t gridD,

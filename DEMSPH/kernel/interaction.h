@@ -161,10 +161,10 @@ public:
     std::vector<int> neighborCountHostCopy() { return neighborCount_.getHostCopy(); }
     std::vector<int> neighborPrefixSumHostCopy() { return neighborPrefixSum_.getHostCopy(); }
 
-    size_t numNeighborPairs()
+    size_t numNeighborPairs(cudaStream_t stream)
     {
         if (deviceSize_ == 0) return 0;
-
+        CUDA_CHECK(cudaStreamSynchronize(stream));
         int last = 0;
         CUDA_CHECK(cudaMemcpy(&last,
                               neighborPrefixSum_.d_ptr + (deviceSize_ - 1),

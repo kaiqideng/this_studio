@@ -1,7 +1,7 @@
 #pragma once
-#include "buildHashStartEnd.h"
-#include "myUtility/myHostDeviceArray.h"
-#include "myUtility/myVec.h"
+#include <cstddef>
+#include <driver_types.h>
+#include <vector_types.h>
 
 __device__ __forceinline__ int3 calculateGridPosition(double3 position, const double3 minBoundary, const double3 cellSize)
 {
@@ -15,7 +15,7 @@ __device__ __forceinline__ int calculateHash(int3 gridPosition, const int3 gridS
     return gridPosition.z * gridSize.y * gridSize.x + gridPosition.y * gridSize.x + gridPosition.x;
 }
 
-extern "C" void updateSpatialGridCellHashStartEnd(double3* position, 
+extern "C" void launchUpdateSpatialGridCellHashStartEnd(double3* position, 
 int* hashIndex, 
 int* hashValue, 
 
@@ -27,12 +27,12 @@ const double3 cellSize,
 const int3 gridSize,
 const size_t numGrids,
 
-const size_t numObjects,
+const size_t numObject,
 const size_t gridD_GPU, 
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU);
 
-extern "C" void updatePeriodicSpatialGridCellHashStartEnd(double3* position, 
+extern "C" void launchUpdateDummySpatialGridCellHashStartEnd(double3* position, 
 int* hashIndex, 
 int* hashValue, 
 
@@ -44,7 +44,7 @@ const double3 cellSize,
 const int3 gridSize,
 const size_t numGrids,
 
-const size_t numObjects,
+const size_t numObject,
 const size_t gridD_GPU, 
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU);
@@ -55,7 +55,7 @@ const double3 minBound,
 const double3 maxBound,
 const double3 cellSize, 
 const int3 directionFlag,
-const size_t numObjects,
+const size_t numObject,
 const size_t gridD_GPU, 
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU);

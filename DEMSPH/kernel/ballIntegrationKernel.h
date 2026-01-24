@@ -11,7 +11,7 @@ double* invMass,
 int* clumpID, 
 
 const double3 gravity, 
-const double timeStep,
+const double halfTimeStep,
 
 const size_t numBall,
 const size_t gridD,
@@ -27,7 +27,7 @@ double* invMass,
 int* clumpID,
 
 const double3 gravity, 
-const double timeStep, 
+const double halfTimeStep, 
 
 const size_t numBall,
 const size_t gridD,
@@ -46,11 +46,11 @@ const int* pebbleStart,
 const int* pebbleEnd,
 
 double3* position_p, 
-double3* velocity_p, 
-double3* angularVelocity_p, 
+double3* force_p, 
+double3* torque_p,
 
 const double3 gravity, 
-const double timeStep,
+const double halfTimeStep,
 
 const size_t numClump,
 const size_t gridD,
@@ -69,15 +69,27 @@ const int* pebbleStart,
 const int* pebbleEnd,
 
 double3* position_p, 
-double3* velocity_p, 
-double3* angularVelocity_p, 
 double3* force_p, 
 double3* torque_p,
 
 const double3 gravity, 
-const double timeStep,
+const double halfTimeStep,
 
 const size_t numClump,
+const size_t gridD,
+const size_t blockD, 
+cudaStream_t stream);
+
+extern "C" void luanchSetPebbleVelocityAngularVelocityKernel(double3* position,
+double3* velocity, 
+double3* angularVelocity,
+int* clumpID,
+
+double3* position_c,
+double3* velocity_c, 
+double3* angularVelocity_c,
+
+const size_t numBall,
 const size_t gridD,
 const size_t blockD, 
 cudaStream_t stream);

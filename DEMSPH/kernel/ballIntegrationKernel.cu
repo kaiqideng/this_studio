@@ -5,9 +5,9 @@ double3* torque_c,
 const double3* position_c, 
 const int* pebbleStart_c, 
 const int* pebbleEnd_c,
-const double3* force_p, 
-const double3* torque_p, 
 const double3* position_p,
+const double3* force_p, 
+const double3* torque_p,
 const size_t numClump)
 {
 	size_t idx_c = blockIdx.x * blockDim.x + threadIdx.x;
@@ -23,8 +23,8 @@ const size_t numClump)
 		T_c += torque_p[i] + cross(r_i - r_c, F_i);
 	}
 
-	force_c[idx_c] += F_c;
-	torque_c[idx_c] += T_c;
+	force_c[idx_c] = F_c;
+	torque_c[idx_c] = T_c;
 }
 
 __global__ void ballVelocityAngularVelocityIntegrationKernel(double3* velocity, 
@@ -50,24 +50,19 @@ const size_t numBall)
 
 	double rad_i = radius[idx_i];
 	if (rad_i < 1.e-20) return;
-	double I_i = 0.4 * rad_i * rad_i / invM_i;
 
+	double I_i = 0.4 * rad_i * rad_i / invM_i;
 	angularVelocity[idx_i] += torque[idx_i] / I_i * dt;
 }
 
 __global__ void clumpVelocityAngularVelocityIntegrationKernel(double3* velocity_c, 
 double3* angularVelocity_c, 
-double3* velocity_p, 
-double3* angularVelocity_p, 
 const double3* position_c, 
 const double3* force_c, 
 const double3* torque_c, 
 const double* invMass_c, 
 const quaternion* orientation_c, 
 const symMatrix* inverseInertiaTensor_c, 
-const int* pebbleStart_c, 
-const int* pebbleEnd_c,
-const double3* position_p, 
 const double3 g,
 const double dt, 
 const size_t numClump)
@@ -76,19 +71,31 @@ const size_t numClump)
 	if (idx_c >= numClump) return;
 
     double invM_c = invMass_c[idx_c];
-	double3 w_c = make_double3(0.0, 0.0, 0.0);
-	if (invM_c > 0.) 
+	if (invM_c > 1.e-20) 
 	{
 		velocity_c[idx_c] += (force_c[idx_c] * invM_c + g) * dt;
 		angularVelocity_c[idx_c] += (rotateInverseInertiaTensor(orientation_c[idx_c], inverseInertiaTensor_c[idx_c]) * torque_c[idx_c]) * dt;
-		w_c = angularVelocity_c[idx_c];
 	}
-	for (size_t i = pebbleStart_c[idx_c]; i < pebbleEnd_c[idx_c]; i++)
-	{
-		double3 r_pc = position_p[i] - position_c[idx_c];
-		velocity_p[i] = velocity_c[idx_c] + cross(w_c, r_pc);
-		angularVelocity_p[i] = w_c;
-	}
+}
+
+__global__ void setPebbleVelocityAngularVelocityKernel(double3* velocity, 
+double3* angularVelocity, 
+const double3* position,
+const int* clumpID,
+const double3* position_c,
+const double3* velocity_c, 
+const double3* angularVelocity_c,
+const size_t numBall)
+{
+	size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx >= numBall) return;
+	
+	int idx_c = clumpID[idx];
+	if (idx_c < 0) return;
+
+    double3 w = angularVelocity_c[idx_c];
+    angularVelocity[idx] = w;
+	velocity[idx] = velocity_c[idx_c] + cross(w, position[idx] - position_c[idx_c]);
 }
 
 __global__ void orientationIntegrationKernel(quaternion* orientation, 
@@ -123,7 +130,7 @@ double* invMass,
 int* clumpID, 
 
 const double3 gravity, 
-const double timeStep,
+const double halfTimeStep,
 
 const size_t numBall,
 const size_t gridD,
@@ -138,16 +145,13 @@ cudaStream_t stream)
 	invMass, 
 	clumpID, 
 	gravity,
-	0.5 * timeStep,
+	halfTimeStep,
 	numBall);
 
 	positionIntegrationKernel <<<gridD, blockD, 0, stream>>> (position, 
 	velocity, 
-	timeStep,
+	2.0 * halfTimeStep,
 	numBall);
-
-	cudaMemsetAsync(force, 0, numBall * sizeof(double3), stream);
-    cudaMemsetAsync(torque, 0, numBall * sizeof(double3), stream);
 }
 
 extern "C" void launchBall2ndHalfIntegration(double3* velocity, 
@@ -159,7 +163,7 @@ double* invMass,
 int* clumpID,
 
 const double3 gravity, 
-const double timeStep, 
+const double halfTimeStep, 
 
 const size_t numBall,
 const size_t gridD,
@@ -174,7 +178,7 @@ cudaStream_t stream)
 	invMass, 
 	clumpID, 
 	gravity,
-	0.5 * timeStep,
+	halfTimeStep,
 	numBall);
 }
 
@@ -190,46 +194,48 @@ const int* pebbleStart,
 const int* pebbleEnd,
 
 double3* position_p, 
-double3* velocity_p, 
-double3* angularVelocity_p, 
+double3* force_p, 
+double3* torque_p,
 
 const double3 gravity, 
-const double timeStep,
+const double halfTimeStep,
 
 const size_t numClump,
 const size_t gridD,
 const size_t blockD, 
 cudaStream_t stream)
 {
+	sumClumpForceTorqueKernel <<<gridD, blockD, 0, stream>>> (force, 
+	torque,
+	position,
+	pebbleStart,
+	pebbleEnd,
+	position_p,
+	force_p,
+	torque_p,
+	numClump);
+
 	clumpVelocityAngularVelocityIntegrationKernel <<<gridD, blockD, 0, stream>>> (velocity, 
 	angularVelocity, 
-	velocity_p, 
-    angularVelocity_p,
 	position, 
 	force, 
 	torque, 
 	invMass, 
     orientation, 
     inverseInertiaTensor, 
-    pebbleStart, 
-    pebbleEnd,
-	position_p,
 	gravity,
-	0.5 * timeStep,
+	halfTimeStep,
 	numClump);
 
 	positionIntegrationKernel <<<gridD, blockD, 0, stream>>> (position, 
 	velocity, 
-	timeStep,
+	2.0 * halfTimeStep,
 	numClump);
 
 	orientationIntegrationKernel <<<gridD, blockD, 0, stream>>> (orientation,
 	angularVelocity,
-	timeStep,
+	2.0 * halfTimeStep,
 	numClump);
-
-	cudaMemsetAsync(force, 0, numClump * sizeof(double3), stream);
-    cudaMemsetAsync(torque, 0, numClump * sizeof(double3), stream);
 }
 
 extern "C" void launchClump2ndHalfIntegration(double3* position, 
@@ -244,13 +250,11 @@ const int* pebbleStart,
 const int* pebbleEnd,
 
 double3* position_p, 
-double3* velocity_p, 
-double3* angularVelocity_p, 
 double3* force_p, 
 double3* torque_p,
 
 const double3 gravity, 
-const double timeStep,
+const double halfTimeStep,
 
 const size_t numClump,
 const size_t gridD,
@@ -262,25 +266,44 @@ cudaStream_t stream)
 	position,
 	pebbleStart,
 	pebbleEnd,
+	position_p,
 	force_p,
 	torque_p,
-	position_p,
 	numClump);
 
 	clumpVelocityAngularVelocityIntegrationKernel <<<gridD, blockD, 0, stream>>> (velocity, 
 	angularVelocity, 
-	velocity_p, 
-    angularVelocity_p,
 	position, 
 	force, 
 	torque, 
 	invMass, 
     orientation, 
-    inverseInertiaTensor, 
-    pebbleStart, 
-    pebbleEnd,
-	position_p,
+    inverseInertiaTensor,
 	gravity,
-	0.5 * timeStep,
+	halfTimeStep,
 	numClump);
+}
+
+extern "C" void luanchSetPebbleVelocityAngularVelocityKernel(double3* position,
+double3* velocity, 
+double3* angularVelocity,
+int* clumpID,
+
+double3* position_c,
+double3* velocity_c, 
+double3* angularVelocity_c,
+
+const size_t numBall,
+const size_t gridD,
+const size_t blockD, 
+cudaStream_t stream)
+{
+	setPebbleVelocityAngularVelocityKernel <<<gridD, blockD, 0, stream>>> (velocity, 
+	angularVelocity, 
+	position, 
+	clumpID, 
+	position_c, 
+	velocity_c, 
+	angularVelocity_c, 
+	numBall);
 }

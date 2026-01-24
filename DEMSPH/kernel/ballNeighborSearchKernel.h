@@ -1,6 +1,7 @@
 #pragma once
-#include "neighborSearchKernel.h"
-#include "myUtility/myVec.h"
+#include <cstddef>
+#include <driver_types.h>
+#include <vector_types.h>
 
 extern "C" void launchCountBallInteractions(double3* position, 
 double* radius,
@@ -40,7 +41,7 @@ double3* slidingSpring_old,
 double3* rollingSpring_old,
 double3* torsionSpring_old,
 int* objectPointed_old,
-int* interactionHashIndex_old,
+int* neighborPairHashIndex_old,
 
 int* cellHashStart,
 int* cellHashEnd,
@@ -99,7 +100,7 @@ double3* slidingSpring_old,
 double3* rollingSpring_old,
 double3* torsionSpring_old,
 int* objectPointed_old,
-int* interactionHashIndex_old,
+int* neighborPairHashIndex_old,
 
 int* cellHashStart,
 int* cellHashEnd,

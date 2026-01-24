@@ -1,2 +1,0 @@
-/usr/bin/ar qc libDEMSPH_kernels.a CMakeFiles/DEMSPH_kernels.dir/kernel/SPHNeighborSearchKernel.cu.o CMakeFiles/DEMSPH_kernels.dir/kernel/WCSPHIntegrationKernel.cu.o CMakeFiles/DEMSPH_kernels.dir/kernel/ballIntegrationKernel.cu.o CMakeFiles/DEMSPH_kernels.dir/kernel/ballNeighborSearchKernel.cu.o CMakeFiles/DEMSPH_kernels.dir/kernel/buildHashStartEnd.cu.o CMakeFiles/DEMSPH_kernels.dir/kernel/contactKernel.cu.o CMakeFiles/DEMSPH_kernels.dir/kernel/neighborSearchKernel.cu.o CMakeFiles/DEMSPH_kernels.dir/kernel/wallIntegrationKernel.cu.o
-/usr/bin/ranlib libDEMSPH_kernels.a

@@ -1,11 +1,11 @@
 #include "particle.h"
 #include "interaction.h"
 #include "boundary.h"
+#include "neighborSearchKernel.h"
 #include "SPHNeighborSearchKernel.h"
 #include "WCSPHIntegrationKernel.h"
 #include "myUtility/myFileEdit.h"
-#include <iomanip>
-#include <iostream>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 
@@ -28,7 +28,7 @@ public:
 private:
     void initializeBoundaryCondition()
     {
-        updateSpatialGridCellHashStartEnd(dummy_.position(), 
+        launchUpdateSpatialGridCellHashStartEnd(dummy_.position(), 
         dummy_.hashIndex(), 
         dummy_.hashValue(), 
         spatialGrid_.cellHashStart(), 
@@ -42,6 +42,10 @@ private:
         dummy_.gridDim(), 
         dummy_.blockDim(), 
         stream_);
+
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         launchCountSPHInteractions(dummy_.position(), 
         dummy_.smoothLength(), 
@@ -58,7 +62,11 @@ private:
         dummy_.blockDim(), 
         stream_);
 
-        size_t numNeighborPairs = dummyAndDummy_.objectPointed_.numNeighborPairs();
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        size_t numNeighborPairs = dummyAndDummy_.objectPointed_.numNeighborPairs(stream_);
         if (numNeighborPairs > dummyAndDummy_.pair_.deviceSize())
         {
             dummyAndDummy_.pair_.allocateDevice(numNeighborPairs, stream_);
@@ -80,6 +88,10 @@ private:
         dummy_.blockDim(), 
         stream_);
 
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
         launchCalDummyParticleNormal(dummy_.normal(), 
         dummy_.position(), 
         dummy_.density(), 
@@ -91,6 +103,10 @@ private:
         dummy_.gridDim(), 
         dummy_.blockDim(), 
         stream_);
+
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
     void upload()
@@ -133,7 +149,7 @@ private:
 protected:
     void neighborSearch()
     {
-        updateSpatialGridCellHashStartEnd(WCSPH_.position(), 
+        launchUpdateSpatialGridCellHashStartEnd(WCSPH_.position(), 
         WCSPH_.hashIndex(), 
         WCSPH_.hashValue(), 
         spatialGrid_.cellHashStart(), 
@@ -147,6 +163,10 @@ protected:
         WCSPH_.gridDim(), 
         WCSPH_.blockDim(), 
         stream_);
+
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         launchCountSPHInteractions(WCSPH_.position(), 
         WCSPH_.smoothLength(), 
@@ -163,7 +183,11 @@ protected:
         WCSPH_.blockDim(), 
         stream_);
 
-        size_t numNeighborPairs = SPHAndSPH_.objectPointed_.numNeighborPairs();
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        size_t numNeighborPairs = SPHAndSPH_.objectPointed_.numNeighborPairs(stream_);
         if (numNeighborPairs > SPHAndSPH_.pair_.deviceSize())
         {
             SPHAndSPH_.pair_.allocateDevice(numNeighborPairs, stream_);
@@ -185,9 +209,13 @@ protected:
         WCSPH_.blockDim(), 
         stream_);
 
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
         if (dummy_.deviceSize() == 0) return;
 
-        updateSpatialGridCellHashStartEnd(dummy_.position(), 
+        launchUpdateSpatialGridCellHashStartEnd(dummy_.position(), 
         dummy_.hashIndex(), 
         dummy_.hashValue(), 
         spatialGrid_.cellHashStart(), 
@@ -201,6 +229,10 @@ protected:
         dummy_.gridDim(), 
         dummy_.blockDim(), 
         stream_);
+
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
 
         launchCountSPHDummyInteractions(WCSPH_.position(), 
         WCSPH_.smoothLength(), 
@@ -219,7 +251,11 @@ protected:
         WCSPH_.blockDim(),
         stream_);
 
-        numNeighborPairs = SPHAndDummy_.objectPointed_.numNeighborPairs();
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        numNeighborPairs = SPHAndDummy_.objectPointed_.numNeighborPairs(stream_);
         if (numNeighborPairs > SPHAndDummy_.pair_.deviceSize())
         {
             SPHAndDummy_.pair_.allocateDevice(numNeighborPairs, stream_);
@@ -242,6 +278,10 @@ protected:
         WCSPH_.gridDim(), 
         WCSPH_.blockDim(),
         stream_);
+
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
     void interaction1stHalf(const double3 gravity, const double timeStep)
@@ -272,6 +312,10 @@ protected:
         WCSPH_.gridDim(), 
         WCSPH_.blockDim(),
         stream_);
+
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
     void interaction2ndHalf(const double3 gravity, const double timeStep)
@@ -303,6 +347,10 @@ protected:
         WCSPH_.gridDim(), 
         WCSPH_.blockDim(), 
         stream_);
+
+#ifdef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
     }
 
     void outputWCSPHVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double time)

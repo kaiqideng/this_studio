@@ -1,0 +1,10 @@
+CompileFlags:
+  Remove:
+    - -forward-unknown-to-host-compiler
+    - "-ccbin=*"
+    - "-Xcompiler=*"
+    - "-rdc=*"
+    - "-arch=*"
+  Add:
+    - "--cuda-path=/usr/local/cuda"
+    - "--cuda-gpu-arch=sm_52"

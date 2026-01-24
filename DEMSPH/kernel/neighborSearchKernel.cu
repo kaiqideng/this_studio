@@ -1,4 +1,7 @@
 #include "neighborSearchKernel.h"
+#include "buildHashStartEnd.h"
+#include "myUtility/myHostDeviceArray.h"
+#include "myUtility/myVec.h"
 
 __global__ void calculateHash(int* hashValue, 
 const double3* position, 
@@ -6,10 +9,10 @@ const double3 minBound,
 const double3 maxBound, 
 const double3 cellSize, 
 const int3 gridSize,
-const size_t numObjects)
+const size_t numObject)
 {
     size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx >= numObjects) return;
+    if (idx >= numObject) return;
     
     double3 p = position[idx];
     if (p.x < minBound.x) p.x = minBound.x;
@@ -18,20 +21,21 @@ const size_t numObjects)
     else if (p.y >= maxBound.y) p.y = maxBound.y - 0.5 * cellSize.y;
     if (p.z < minBound.z) p.z = minBound.z;
     else if (p.z >= maxBound.z) p.z = maxBound.z - 0.5 * cellSize.z;
+    
     int3 gridPosition = calculateGridPosition(p, minBound, cellSize);
     hashValue[idx] = calculateHash(gridPosition, gridSize);
 }
 
-__global__ void calculateHashPeriodic(int* hashValue, 
+__global__ void calculateDummyHash(int* hashValue, 
 const double3* position, 
 const double3 minBound, 
 const double3 maxBound, 
 const double3 cellSize, 
 const int3 gridSize,
-const size_t numObjects)
+const size_t numObject)
 {
     size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx >= numObjects) return;
+    if (idx >= numObject) return;
     
     hashValue[idx] = -1;
 
@@ -57,10 +61,10 @@ const double3 minBound,
 const double3 maxBound,
 const double3 cellSize, 
 const int3 directionFlag,
-const size_t numObjects)
+const size_t numObject)
 {
     size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx >= numObjects) return;
+    if (idx >= numObject) return;
 
     double3 domainSize = maxBound - minBound;
     double3 p = position[idx];
@@ -72,7 +76,7 @@ const size_t numObjects)
     position_dummy[idx] = p;
 }
 
-extern "C" void updateSpatialGridCellHashStartEnd(double3* position, 
+extern "C" void launchUpdateSpatialGridCellHashStartEnd(double3* position, 
 int* hashIndex, 
 int* hashValue, 
 
@@ -84,7 +88,7 @@ const double3 cellSize,
 const int3 gridSize,
 const size_t numGrids,
 
-const size_t numObjects,
+const size_t numObject,
 const size_t gridD_GPU, 
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU)
@@ -95,8 +99,7 @@ cudaStream_t stream_GPU)
     maxBound, 
     cellSize, 
     gridSize,
-    numObjects);
-    CUDA_CHECK(cudaGetLastError());
+    numObject);
 
     CUDA_CHECK(cudaMemsetAsync(cellHashStart, 0xFF, numGrids * sizeof(int), stream_GPU));
     CUDA_CHECK(cudaMemsetAsync(cellHashEnd, 0xFF, numGrids * sizeof(int), stream_GPU));
@@ -105,13 +108,13 @@ cudaStream_t stream_GPU)
     hashIndex,
     hashValue,
     numGrids,
-    numObjects,
+    numObject,
     gridD_GPU,
     blockD_GPU,
     stream_GPU);
 }
 
-extern "C" void updatePeriodicSpatialGridCellHashStartEnd(double3* position, 
+extern "C" void launchUpdateDummySpatialGridCellHashStartEnd(double3* position, 
 int* hashIndex, 
 int* hashValue, 
 
@@ -123,19 +126,18 @@ const double3 cellSize,
 const int3 gridSize,
 const size_t numGrids,
 
-const size_t numObjects,
+const size_t numObject,
 const size_t gridD_GPU, 
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU)
 {
-    calculateHashPeriodic <<< gridD_GPU, blockD_GPU, 0, stream_GPU >>> (hashValue, 
+    calculateDummyHash <<< gridD_GPU, blockD_GPU, 0, stream_GPU >>> (hashValue, 
     position, 
     minBound, 
     maxBound, 
     cellSize, 
     gridSize,
-    numObjects);
-    CUDA_CHECK(cudaGetLastError());
+    numObject);
 
     CUDA_CHECK(cudaMemsetAsync(cellHashStart, 0xFF, numGrids * sizeof(int), stream_GPU));
     CUDA_CHECK(cudaMemsetAsync(cellHashEnd, 0xFF, numGrids * sizeof(int), stream_GPU));
@@ -144,7 +146,7 @@ cudaStream_t stream_GPU)
     hashIndex,
     hashValue,
     numGrids,
-    numObjects,
+    numObject,
     gridD_GPU,
     blockD_GPU,
     stream_GPU);
@@ -156,7 +158,7 @@ const double3 minBound,
 const double3 maxBound,
 const double3 cellSize, 
 const int3 directionFlag,
-const size_t numObjects,
+const size_t numObject,
 const size_t gridD_GPU, 
 const size_t blockD_GPU, 
 cudaStream_t stream_GPU)
@@ -167,5 +169,5 @@ cudaStream_t stream_GPU)
     maxBound,
     cellSize, 
     directionFlag,
-    numObjects);
+    numObject);
 }

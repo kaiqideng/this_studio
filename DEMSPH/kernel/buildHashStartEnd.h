@@ -1,7 +1,6 @@
 #pragma once
-#include <thrust/device_vector.h>
-#include <thrust/sort.h>
-#include <thrust/scan.h>
+#include <cstddef>
+#include <driver_types.h>
 
 extern "C" void buildHashStartEnd(int* start, 
 int* end, 

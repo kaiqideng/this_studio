@@ -5,7 +5,7 @@
       "name": "CUDA Debug (cuda-gdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/damBreak",
+      "program": "${workspaceFolder}/DEMSPH/build/elasticBounce",
       "cwd": "${workspaceFolder}",
       "args": [],
       "stopAtEntry": false,

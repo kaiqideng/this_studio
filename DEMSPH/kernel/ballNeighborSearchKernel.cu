@@ -1,4 +1,7 @@
 #include "ballNeighborSearchKernel.h"
+#include "myUtility/myVec.h"
+#include "buildHashStartEnd.h"
+#include "neighborSearchKernel.h"
 
 __global__ void countBallInteractionsKernel(int* neighborCount,
 const double3* position, 
@@ -44,7 +47,7 @@ const size_t numBall)
                     int idxB = hashIndex[i];
                     if (idxA >= idxB) continue;
                     if (inverseMass[idxA] == 0 && inverseMass[idxB] == 0) continue;
-                    if (clumpID[idxA] == clumpID[idxB]) continue;
+                    if (clumpID[idxB] >= 0 && clumpID[idxA] == clumpID[idxB]) continue;
                     double cut = 1.1 * (radA + radius[idxB]);
                     double3 rAB = posA - position[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.) count++;
@@ -64,7 +67,7 @@ const double3* slidingSpring_old,
 const double3* rollingSpring_old,
 const double3* torsionSpring_old,
 const int* objectPointed_old,
-const int* interactionHashIndex_old,
+const int* neighborPairHashIndex_old,
 const double3* position, 
 const double* radius,
 const double* inverseMass,
@@ -113,7 +116,7 @@ const size_t numBall)
                     int idxB = hashIndex[i];
                     if (idxA >= idxB) continue;
                     if (inverseMass[idxA] == 0 && inverseMass[idxB] == 0) continue;
-                    if (clumpID[idxA] == clumpID[idxB]) continue;
+                    if (clumpID[idxB] >= 0 && clumpID[idxA] == clumpID[idxB]) continue;
                     double cut = 1.1 * (radA + radius[idxB]);
                     double3 rAB = posA - position[idxB];
                     if ((cut * cut - dot(rAB, rAB)) >= 0.)
@@ -128,7 +131,7 @@ const size_t numBall)
                         {
                             for (int j = interactionStart_old[idxB]; j < interactionEnd_old[idxB]; j++)
                             {
-                                int j1 = interactionHashIndex_old[j];
+                                int j1 = neighborPairHashIndex_old[j];
                                 int idxA1 = objectPointed_old[j1];
                                 if (idxA == idxA1)
                                 {
@@ -216,7 +219,7 @@ const double3* slidingSpring_old,
 const double3* rollingSpring_old,
 const double3* torsionSpring_old,
 const int* objectPointed_old,
-const int* interactionHashIndex_old,
+const int* neighborPairHashIndex_old,
 const double3* position, 
 const double* radius,
 const int* neighborPrefixSum,
@@ -285,7 +288,7 @@ const size_t numBall)
                         {
                             for (int j = interactionStart_old_tri[idxB]; j < interactionEnd_old_tri[idxB]; j++)
                             {
-                                int j1 = interactionHashIndex_old[j];
+                                int j1 = neighborPairHashIndex_old[j];
                                 int idxA1 = objectPointed_old[j1];
                                 if (idxA == idxA1)
                                 {
@@ -336,6 +339,8 @@ cudaStream_t stream_GPU)
     gridSize,
     numBall);
 
+    //debug_dump_device_array(neighborCount, numBall, "neighborCount", stream_GPU);
+
     buildPrefixSum(neighborPrefixSum, 
     neighborCount, 
     numBall,
@@ -361,7 +366,7 @@ double3* slidingSpring_old,
 double3* rollingSpring_old,
 double3* torsionSpring_old,
 int* objectPointed_old,
-int* interactionHashIndex_old,
+int* neighborPairHashIndex_old,
 
 int* cellHashStart,
 int* cellHashEnd,
@@ -383,7 +388,7 @@ cudaStream_t stream_GPU)
     rollingSpring_old,
     torsionSpring_old,
     objectPointed_old,
-    interactionHashIndex_old,
+    neighborPairHashIndex_old,
     position,
     radius,
     inverseMass,
@@ -467,7 +472,7 @@ double3* slidingSpring_old,
 double3* rollingSpring_old,
 double3* torsionSpring_old,
 int* objectPointed_old,
-int* interactionHashIndex_old,
+int* neighborPairHashIndex_old,
 
 int* cellHashStart,
 int* cellHashEnd,
@@ -489,7 +494,7 @@ cudaStream_t stream_GPU)
     rollingSpring_old,
     torsionSpring_old,
     objectPointed_old,
-    interactionHashIndex_old,
+    neighborPairHashIndex_old,
     position,
     radius,
     neighborPrefixSum,

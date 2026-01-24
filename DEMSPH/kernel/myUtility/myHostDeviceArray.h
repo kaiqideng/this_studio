@@ -1,10 +1,16 @@
 #pragma once
-#include <stdexcept>
+#include <iomanip>
+#include <iostream>
 #include <vector>
 #include <cuda_runtime.h>
 
+#ifndef NDEBUG
+#include <stdexcept>
+#endif
+
 inline void check_cuda_error(cudaError_t result, const char* func, const char* file, int line)
 {
+#ifndef NDEBUG
     if (result != cudaSuccess) 
     {
         std::string msg = std::string("CUDA Error at ") + file + ":" + std::to_string(line) +
@@ -12,9 +18,73 @@ inline void check_cuda_error(cudaError_t result, const char* func, const char* f
         // Throw exception to allow destructors (RAII) to clean up
         throw std::runtime_error(msg);
     }
+#endif
 }
 
 #define CUDA_CHECK(val) check_cuda_error((val), #val, __FILE__, __LINE__)
+
+template <typename T>
+void debug_dump_device_array(const T* d_ptr,
+std::size_t n,
+const char* name,
+cudaStream_t stream = 0)
+{
+    if (n == 0) return;
+
+    if (stream == 0) {
+        CUDA_CHECK(cudaDeviceSynchronize());
+    } else {
+        CUDA_CHECK(cudaStreamSynchronize(stream));
+    }
+
+    std::vector<T> h_buf(n);
+
+    CUDA_CHECK(cudaMemcpy(h_buf.data(), d_ptr,
+    n * sizeof(T),
+    cudaMemcpyDeviceToHost));
+
+    std::cout << "[DEBUG] " << name << " (first " << n << " values):\n";
+    for (std::size_t i = 0; i < n; ++i) {
+        std::cout << "  [" << i << "] = " << h_buf[i] << "\n";
+    }
+}
+
+template <>
+inline void debug_dump_device_array<double3>(const double3* d_ptr, 
+std::size_t n,
+const char* name,
+cudaStream_t stream)
+{
+    if (n == 0) return;
+
+    if (stream == 0) {
+        CUDA_CHECK(cudaDeviceSynchronize());
+    } else {
+        CUDA_CHECK(cudaStreamSynchronize(stream));
+    }
+
+    std::vector<double3> h(n);
+    cudaMemcpyAsync(h.data(), d_ptr, n * sizeof(double3), cudaMemcpyDeviceToHost, stream);
+    cudaStreamSynchronize(stream);
+
+    std::cout << name << ":\n";
+
+    std::ios old_state(nullptr);
+    old_state.copyfmt(std::cout);
+
+    std::cout << std::scientific << std::setprecision(3);
+
+    for (std::size_t i = 0; i < n; ++i)
+    {
+        const auto& v = h[i];
+        std::cout << "  [" << i << "] = ("
+                  << v.x << ", "
+                  << v.y << ", "
+                  << v.z << ")\n";
+    }
+
+    std::cout.copyfmt(old_state);
+}
 
 template <typename T>
 struct HostDeviceArray1D

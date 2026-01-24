@@ -1,5 +1,5 @@
 #pragma once
-#include "myUtility/myMat.h"
+#include "myQua.h"
 
 extern "C" void launchWallIntegration(double3* position, 
 double3* velocity, 

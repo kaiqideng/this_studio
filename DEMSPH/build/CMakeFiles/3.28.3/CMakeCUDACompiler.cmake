@@ -1,6 +1,6 @@
 set(CMAKE_CUDA_COMPILER "/usr/bin/nvcc")
-set(CMAKE_CUDA_HOST_COMPILER "")
-set(CMAKE_CUDA_HOST_LINK_LAUNCHER "/usr/lib/nvidia-cuda-toolkit/bin/g++")
+set(CMAKE_CUDA_HOST_COMPILER "/usr/bin/g++-12")
+set(CMAKE_CUDA_HOST_LINK_LAUNCHER "/usr/bin/g++-12")
 set(CMAKE_CUDA_COMPILER_ID "NVIDIA")
 set(CMAKE_CUDA_COMPILER_VERSION "12.0.140")
 set(CMAKE_CUDA_DEVICE_LINKER "/usr/bin/nvlink")
@@ -56,7 +56,7 @@ set(CMAKE_CUDA_COMPILER_LIBRARY_ROOT "/usr/lib/cuda")
 
 set(CMAKE_CUDA_ARCHITECTURES_ALL "50-real;52-real;53-real;60-real;61-real;62-real;70-real;72-real;75-real;80-real;86-real;87-real;89-real;90")
 set(CMAKE_CUDA_ARCHITECTURES_ALL_MAJOR "50-real;60-real;70-real;80-real;90")
-set(CMAKE_CUDA_ARCHITECTURES_NATIVE "No CUDA devices found.-real")
+set(CMAKE_CUDA_ARCHITECTURES_NATIVE "75-real")
 
 set(CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES "")
 
@@ -66,7 +66,7 @@ set(CMAKE_CUDA_HOST_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")
 
 set(CMAKE_CUDA_IMPLICIT_INCLUDE_DIRECTORIES "/usr/include/c++/12;/usr/include/x86_64-linux-gnu/c++/12;/usr/include/c++/12/backward;/usr/lib/gcc/x86_64-linux-gnu/12/include;/usr/local/include;/usr/include/x86_64-linux-gnu;/usr/include")
 set(CMAKE_CUDA_IMPLICIT_LINK_LIBRARIES "stdc++;m;gcc_s;gcc;c;gcc_s;gcc")
-set(CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES "/usr/lib/x86_64-linux-gnu/stubs;/usr/lib/x86_64-linux-gnu;/usr/lib/gcc/x86_64-linux-gnu/12;/usr/lib;/lib/x86_64-linux-gnu;/lib")
+set(CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES "/usr/lib/x86_64-linux-gnu/stubs;/usr/lib/x86_64-linux-gnu;/usr/lib/gcc/x86_64-linux-gnu/12;/usr/lib;/lib/x86_64-linux-gnu;/lib;/usr/local/cuda/lib64/stubs")
 set(CMAKE_CUDA_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")
 
 set(CMAKE_CUDA_RUNTIME_LIBRARY_DEFAULT "STATIC")

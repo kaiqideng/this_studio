@@ -1,4 +1,7 @@
 #include "SPHNeighborSearchKernel.h"
+#include "myUtility/myVec.h"
+#include "buildHashStartEnd.h"
+#include "neighborSearchKernel.h"
 
 __global__ void countSPHInteractionsKernel(int* neighborCount,
 const double3* position, 

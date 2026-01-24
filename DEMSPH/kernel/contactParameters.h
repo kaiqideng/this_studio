@@ -1,7 +1,5 @@
 #pragma once
 #include "myUtility/myHostDeviceArray.h"
-#include <vector>
-#include <cstddef>
 #include <algorithm>
 
 // You must provide CUDA_CHECK macro yourself.
@@ -118,7 +116,7 @@ struct ContactParamsDevice
 };
 
 // ============================================================================
-// Pair index (host/device)
+// Pair parameter index (host/device)
 //   - symmetric (i,j)==(j,i)
 //   - last slot (cap-1) is fallback for invalid indices
 // ============================================================================
@@ -135,7 +133,7 @@ __host__ __device__ inline int contactPairParameterIndex(int a, int b, int nMate
     if (i > j) { int t = i; i = j; j = t; }
 
     long long idx = (static_cast<long long>(i) * (2LL * nMaterials - i + 1LL)) / 2LL
-                    + static_cast<long long>(j - i);
+    + static_cast<long long>(j - i);
 
     if (idx < 0) idx = 0;
     if (idx >= cap) idx = cap - 1;
@@ -237,7 +235,7 @@ public:
     // Build + upload + commit constant memory
     // ---------------------------------------------------------------------
     void buildFromTables(const std::vector<HertzianRow>& hertzianTable,
-    const std::vector<LinearRow>&   linearTable,
-    const std::vector<BondedRow>&   bondedTable,
+    const std::vector<LinearRow>& linearTable,
+    const std::vector<BondedRow>& bondedTable,
     cudaStream_t stream);
 };

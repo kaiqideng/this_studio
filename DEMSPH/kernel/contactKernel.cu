@@ -92,15 +92,15 @@ cudaStream_t stream)
     dev.nMaterials = static_cast<int>(numberOfMaterials);
     dev.cap = static_cast<int>(pairTableSize);
     dev.hertzian = hertzianPacked_.d_ptr;
-    dev.linear   = linearPacked_.d_ptr;
-    dev.bonded   = bondedPacked_.d_ptr;
+    dev.linear = linearPacked_.d_ptr;
+    dev.bonded = bondedPacked_.d_ptr;
 
     CUDA_CHECK(cudaMemcpyToSymbolAsync(contactPara,
-                                       &dev,
-                                       sizeof(ContactParamsDevice),
-                                       0,
-                                       cudaMemcpyHostToDevice,
-                                       stream));
+    &dev,
+    sizeof(ContactParamsDevice),
+    0,
+    cudaMemcpyHostToDevice,
+    stream));
 }
 
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ >= 600)       // sm 6.0+
@@ -342,7 +342,6 @@ const size_t numBall)
 				if (type1 == SphereTriangleContactType::None) continue;
 				else if (type1 == SphereTriangleContactType::Face)
 				{
-					// Find sharing face
 					if (lengthSquared(cross(r_c - p01, p11 - p01)) < 1.e-20) 
 					{
 						slidingSpring[idx_c] = slidingSpring[idx_c1];

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libDEMSPH_app_common.a CMakeFiles/DEMSPH_app_common.dir/externalForceTorque.cu.o
-/usr/bin/ranlib libDEMSPH_app_common.a

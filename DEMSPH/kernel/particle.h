@@ -260,7 +260,7 @@ public:
     std::vector<double3> torqueHostCopy() { return torque_.getHostCopy(); }
 
     const std::vector<double>& radiusHostRef() { return radius_.hostRef(); }
-
+    const std::vector<double>& inverseMassHostRef() { return inverseMass_.hostRef(); }
     const std::vector<int>& materialIDHostRef() { return materialID_.hostRef(); }
     const std::vector<int>& clumpIDHostRef() { return clumpID_.hostRef(); }
 

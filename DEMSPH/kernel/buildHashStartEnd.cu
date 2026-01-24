@@ -1,4 +1,7 @@
 #include "buildHashStartEnd.h"
+#include <thrust/device_vector.h>
+#include <thrust/sort.h>
+#include <thrust/scan.h>
 
 __global__ void setHashIndex(int* hashIndex, 
 const size_t hashListSize)
