@@ -297,6 +297,54 @@ build elasticBounce: CXX_EXECUTABLE_LINKER__elasticBounce_Release CMakeFiles/ela
   TARGET_FILE = elasticBounce
   TARGET_PDB = elasticBounce.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target iceCylinderInteraction
+
+
+#############################################
+# Order-only phony target for iceCylinderInteraction
+
+build cmake_object_order_depends_target_iceCylinderInteraction: phony || cmake_object_order_depends_target_DEMSPH_app_common cmake_object_order_depends_target_DEMSPH_kernels
+
+build CMakeFiles/iceCylinderInteraction.dir/iceCylinderInteraction.cpp.o: CXX_COMPILER__iceCylinderInteraction_unscanned_Release /teamspace/studios/this_studio/DEMSPH/iceCylinderInteraction.cpp || cmake_object_order_depends_target_iceCylinderInteraction
+  DEP_FILE = CMakeFiles/iceCylinderInteraction.dir/iceCylinderInteraction.cpp.o.d
+  FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIE
+  INCLUDES = -I/teamspace/studios/this_studio/DEMSPH -I/teamspace/studios/this_studio/DEMSPH/kernel -I/teamspace/studios/this_studio/DEMSPH/kernel/myUtility
+  OBJECT_DIR = CMakeFiles/iceCylinderInteraction.dir
+  OBJECT_FILE_DIR = CMakeFiles/iceCylinderInteraction.dir
+
+
+# =============================================================================
+# Device Link build statements for EXECUTABLE target iceCylinderInteraction
+
+
+#############################################
+# Link the executable CMakeFiles/iceCylinderInteraction.dir/cmake_device_link.o
+
+build CMakeFiles/iceCylinderInteraction.dir/cmake_device_link.o: CXX_EXECUTABLE_DEVICE_LINKER__iceCylinderInteraction_Release CMakeFiles/iceCylinderInteraction.dir/iceCylinderInteraction.cpp.o | libDEMSPH_kernels.a libDEMSPH_app_common.a libDEMSPH_kernels.a || libDEMSPH_app_common.a libDEMSPH_kernels.a
+  LANGUAGE_COMPILE_FLAGS = -O3 -DNDEBUG -arch=native
+  LINK_LIBRARIES = libDEMSPH_kernels.a libDEMSPH_app_common.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl
+  LINK_PATH = -L/usr/lib/x86_64-linux-gnu/stubs
+  OBJECT_DIR = CMakeFiles/iceCylinderInteraction.dir
+  TARGET_FILE = CMakeFiles/iceCylinderInteraction.dir/cmake_device_link.o
+
+# =============================================================================
+# Link build statements for EXECUTABLE target iceCylinderInteraction
+
+
+#############################################
+# Link the executable iceCylinderInteraction
+
+build iceCylinderInteraction: CXX_EXECUTABLE_LINKER__iceCylinderInteraction_Release CMakeFiles/iceCylinderInteraction.dir/iceCylinderInteraction.cpp.o CMakeFiles/iceCylinderInteraction.dir/cmake_device_link.o | libDEMSPH_kernels.a libDEMSPH_app_common.a libDEMSPH_kernels.a || libDEMSPH_app_common.a libDEMSPH_kernels.a
+  FLAGS = -O3 -DNDEBUG
+  LINK_LIBRARIES = libDEMSPH_kernels.a  libDEMSPH_app_common.a  libDEMSPH_kernels.a  -lcudadevrt  -lcudart_static  -lrt  -lpthread  -ldl
+  LINK_PATH = -L/usr/lib/x86_64-linux-gnu/stubs
+  OBJECT_DIR = CMakeFiles/iceCylinderInteraction.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = iceCylinderInteraction
+  TARGET_PDB = iceCylinderInteraction.dbg
+
 
 #############################################
 # Utility command for edit_cache
@@ -335,7 +383,7 @@ build DEMSPH_kernels: phony libDEMSPH_kernels.a
 #############################################
 # Folder: /teamspace/studios/this_studio/DEMSPH/build
 
-build all: phony libDEMSPH_kernels.a libDEMSPH_app_common.a bondedParticleBeam damBreak elasticBounce
+build all: phony libDEMSPH_kernels.a libDEMSPH_app_common.a bondedParticleBeam damBreak elasticBounce iceCylinderInteraction
 
 # =============================================================================
 # Built-in targets

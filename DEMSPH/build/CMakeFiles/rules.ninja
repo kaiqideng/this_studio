@@ -134,6 +134,34 @@ rule CXX_EXECUTABLE_LINKER__elasticBounce_Release
 
 
 #############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__iceCylinderInteraction_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}/usr/bin/g++-12 $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_DEVICE_LINKER__iceCylinderInteraction_Release
+  command = /usr/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-12 $LANGUAGE_COMPILE_FLAGS $LINK_FLAGS -Xcompiler=-fPIC -Wno-deprecated-gpu-targets -shared -dlink $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES -L"/lib/x86_64-linux-gnu"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__iceCylinderInteraction_Release
+  command = $PRE_LINK && /usr/bin/g++-12 $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
 # Rule for running custom commands.
 
 rule CUSTOM_COMMAND

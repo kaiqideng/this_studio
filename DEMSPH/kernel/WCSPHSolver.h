@@ -365,6 +365,7 @@ CUDA_CHECK(cudaGetLastError());
         size_t N = WCSPH_.hostSize();
         std::vector<double3> p = WCSPH_.positionHostCopy();
         std::vector<double3> v = WCSPH_.velocityHostCopy();
+        std::vector<double> d = WCSPH_.densityHostCopy();
         std::vector<double> pr = WCSPH_.pressureHostCopy();
         const std::vector<double> h = WCSPH_.smoothLengthHostRef();
         
@@ -408,6 +409,10 @@ CUDA_CHECK(cudaGetLastError());
         for (int i = 0; i < N; ++i) out << ' ' << h[i];
         out << "\n        </DataArray>\n";
 
+        out << "        <DataArray type=\"Float32\" Name=\"density\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << d[i];
+        out << "\n        </DataArray>\n";
+
         out << "        <DataArray type=\"Float32\" Name=\"pressure\" format=\"ascii\">\n";
         for (int i = 0; i < N; ++i) out << ' ' << pr[i];
         out << "\n        </DataArray>\n";
@@ -445,6 +450,7 @@ CUDA_CHECK(cudaGetLastError());
         size_t N = dummy_.hostSize();
         std::vector<double3> p = dummy_.positionHostCopy();
         std::vector<double3> v = dummy_.velocityHostCopy();
+        std::vector<double3> n = dummy_.normalHostCopy();
         const std::vector<double> h = dummy_.smoothLengthHostRef();
         
         out << "<?xml version=\"1.0\"?>\n"
@@ -491,7 +497,8 @@ CUDA_CHECK(cudaGetLastError());
             const char* name;
             const std::vector<double3>& vec;
         } vec3s[] = {
-            { "velocity"       , v     }
+            { "velocity"       , v     },
+            { "normal"         , n     }
         };
         for (size_t k = 0; k < sizeof(vec3s) / sizeof(vec3s[0]); ++k) {
             out << "        <DataArray type=\"Float32\" Name=\"" << vec3s[k].name
@@ -511,6 +518,8 @@ CUDA_CHECK(cudaGetLastError());
 public:
     void addSPH(double3 position, double3 velocity, double soundSpeed, double spacing, double density, double viscosity)
     {
+        if (density <= 0.) return;
+        if (soundSpeed <= 0.) return;
         double mass = spacing * spacing * spacing * density;
         double3 zeroVec = make_double3(0., 0., 0.);
         WCSPH_.addHost(position, velocity, zeroVec, zeroVec, 0.0, density, 0.0, 
@@ -519,6 +528,8 @@ public:
 
     void addDummy(double3 position, double3 velocity, double soundSpeed, double spacing, double density, double viscosity)
     {
+        if (density <= 0.) return;
+        if (soundSpeed <= 0.) return;
         double mass = spacing * spacing * spacing * density;
         double3 zeroVec = make_double3(0., 0., 0.);
         dummy_.addHost(position, velocity, zeroVec, zeroVec, 0.0, density, 0.0, 

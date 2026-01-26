@@ -49,9 +49,6 @@ public:
         std::vector<double3> pos = getBall().positionHostCopy();
         addBondedInteraction(obj0, obj1, pos);
         return true;
-
-        f_e.allocateDevice(n_bond + 1, 0);
-        return true;
     }
 };
 
@@ -78,5 +75,5 @@ int main()
     test.dt, 
     test.T_max, 
     10, 
-    "bondedBeam");
+    "bondedParticleBeam");
 }

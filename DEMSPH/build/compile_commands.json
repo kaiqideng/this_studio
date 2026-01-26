@@ -70,5 +70,11 @@
   "command": "/usr/bin/g++-12 -I/teamspace/studios/this_studio/DEMSPH -I/teamspace/studios/this_studio/DEMSPH/kernel -I/teamspace/studios/this_studio/DEMSPH/kernel/myUtility -O3 -DNDEBUG -std=gnu++17 -fPIE -o CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o -c /teamspace/studios/this_studio/DEMSPH/elasticBounce.cpp",
   "file": "/teamspace/studios/this_studio/DEMSPH/elasticBounce.cpp",
   "output": "CMakeFiles/elasticBounce.dir/elasticBounce.cpp.o"
+},
+{
+  "directory": "/teamspace/studios/this_studio/DEMSPH/build",
+  "command": "/usr/bin/g++-12 -I/teamspace/studios/this_studio/DEMSPH -I/teamspace/studios/this_studio/DEMSPH/kernel -I/teamspace/studios/this_studio/DEMSPH/kernel/myUtility -O3 -DNDEBUG -std=gnu++17 -fPIE -o CMakeFiles/iceCylinderInteraction.dir/iceCylinderInteraction.cpp.o -c /teamspace/studios/this_studio/DEMSPH/iceCylinderInteraction.cpp",
+  "file": "/teamspace/studios/this_studio/DEMSPH/iceCylinderInteraction.cpp",
+  "output": "CMakeFiles/iceCylinderInteraction.dir/iceCylinderInteraction.cpp.o"
 }
 ]

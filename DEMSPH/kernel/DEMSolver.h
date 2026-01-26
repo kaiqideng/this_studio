@@ -169,15 +169,18 @@ private:
         bondedInteraction_.pair_.copyHostToDevice(stream_);
         bondedInteraction_.bond_.copyHostToDevice(stream_);
 
-        ballInteraction_.pair_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballInteraction_.spring_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballInteraction_.contact_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballInteraction_.oldPair_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballInteraction_.oldSpring_.allocateDevice(6 * ball_.deviceSize(), stream_);
-        ballInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
-        ballInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        if (ball_.deviceSize() > 0 && ballInteraction_.numActivated_ == 0)
+        {
+            ballInteraction_.pair_.allocateDevice(6 * ball_.deviceSize(), stream_);
+            ballInteraction_.spring_.allocateDevice(6 * ball_.deviceSize(), stream_);
+            ballInteraction_.contact_.allocateDevice(6 * ball_.deviceSize(), stream_);
+            ballInteraction_.oldPair_.allocateDevice(6 * ball_.deviceSize(), stream_);
+            ballInteraction_.oldSpring_.allocateDevice(6 * ball_.deviceSize(), stream_);
+            ballInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
+            ballInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
+        }
 
-        if (meshWall_.triangle_.deviceSize() > 0)
+        if (meshWall_.triangle_.deviceSize() > 0 && ballTriangleInteraction_.numActivated_ == 0)
         {
             ballTriangleInteraction_.pair_.allocateDevice(3 * ball_.deviceSize(), stream_);
             ballTriangleInteraction_.spring_.allocateDevice(3 * ball_.deviceSize(), stream_);
@@ -188,49 +191,49 @@ private:
             ballTriangleInteraction_.objectPointing_.allocateDevice(meshWall_.triangle_.deviceSize(), stream_);
         }
 
-        if (periodicX_.activatedFlag_) 
+        if (periodicX_.activatedFlag_ && periodicX_.dummyInteraction_.numActivated_ == 0) 
         {
             periodicX_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
             periodicX_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
             periodicX_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
         }
 
-        if (periodicY_.activatedFlag_) 
+        if (periodicY_.activatedFlag_ && periodicY_.dummyInteraction_.numActivated_ == 0) 
         {
             periodicY_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
             periodicY_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
             periodicY_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
         }
 
-        if (periodicZ_.activatedFlag_) 
+        if (periodicZ_.activatedFlag_ && periodicZ_.dummyInteraction_.numActivated_ == 0) 
         {
             periodicZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
             periodicZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
             periodicZ_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
         }
 
-        if (periodicXY_.activatedFlag_) 
+        if (periodicXY_.activatedFlag_ && periodicXY_.dummyInteraction_.numActivated_ == 0) 
         {
             periodicXY_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
             periodicXY_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
             periodicXY_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
         }
 
-        if (periodicYZ_.activatedFlag_) 
+        if (periodicYZ_.activatedFlag_ && periodicYZ_.dummyInteraction_.numActivated_ == 0) 
         {
             periodicYZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
             periodicYZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
             periodicYZ_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
         }
 
-        if (periodicXZ_.activatedFlag_) 
+        if (periodicXZ_.activatedFlag_ && periodicXZ_.dummyInteraction_.numActivated_ == 0) 
         {
             periodicXZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
             periodicXZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
             periodicXZ_.dummyInteraction_.objectPointing_.allocateDevice(ball_.deviceSize(), stream_);
         }
 
-        if (periodicXYZ_.activatedFlag_) 
+        if (periodicXYZ_.activatedFlag_ && periodicXYZ_.dummyInteraction_.numActivated_ == 0) 
         {
             periodicXYZ_.dummyPosition_.allocateDevice(ball_.deviceSize(), stream_);
             periodicXYZ_.dummyInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
@@ -1077,6 +1080,176 @@ CUDA_CHECK(cudaGetLastError());
             << "</VTKFile>\n";
     }
 
+    void outputBallInteractionVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double time)
+    {
+        MKDIR(dir.c_str());
+        std::ostringstream fname;
+        fname << dir << "/ballInteraction_" << std::setw(4) << std::setfill('0') << iFrame << ".vtu";
+        std::ofstream out(fname.str().c_str());
+        if (!out) throw std::runtime_error("Cannot open " + fname.str());
+        out << std::fixed << std::setprecision(10);
+
+        const size_t N = ballInteraction_.numActivated_;
+        std::vector<double3> p = ballInteraction_.contact_.pointHostCopy();
+        std::vector<double> o = ballInteraction_.contact_.overlapHostCopy();
+        std::vector<double3> n = ballInteraction_.contact_.normalHostCopy();
+        std::vector<double3> f_c = ballInteraction_.contact_.forceHostCopy();
+        std::vector<double3> t_c = ballInteraction_.contact_.torqueHostCopy();
+        std::vector<double3> s_s = ballInteraction_.spring_.slidingHostCopy();
+        std::vector<double3> s_r = ballInteraction_.spring_.rollingHostCopy();
+        std::vector<double3> s_t = ballInteraction_.spring_.torsionHostCopy();
+        
+        out << "<?xml version=\"1.0\"?>\n"
+            "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+            "  <UnstructuredGrid>\n";
+
+        out << "    <FieldData>\n"
+            "      <DataArray type=\"Float32\" Name=\"TIME\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << time << " </DataArray>\n"
+            "      <DataArray type=\"Int32\"   Name=\"STEP\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << iStep << " </DataArray>\n"
+            "    </FieldData>\n";
+
+        out << "    <Piece NumberOfPoints=\"" << N
+            << "\" NumberOfCells=\"" << N << "\">\n";
+
+        out << "      <Points>\n"
+            "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) {
+            out << ' ' << p[i].x << ' ' << p[i].y << ' ' << p[i].z;
+        }
+        out << "\n        </DataArray>\n"
+            "      </Points>\n";
+
+        out << "      <Cells>\n"
+            "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << i;
+        out << "\n        </DataArray>\n"
+            "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">\n";
+        for (int i = 1; i <= N; ++i) out << ' ' << i;
+        out << "\n        </DataArray>\n"
+            "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << " 1";          // 1 = VTK_VERTEX
+        out << "\n        </DataArray>\n"
+            "      </Cells>\n";
+
+        out << "      <PointData Scalars=\"overlap\">\n";
+
+        out << "        <DataArray type=\"Float32\" Name=\"overlap\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << o[i];
+        out << "\n        </DataArray>\n";
+
+        const struct {
+            const char* name;
+            const std::vector<double3>& vec;
+        } vec3s[] = {
+            { "contact normal" , n     },
+            { "contact force"  , f_c   },
+            { "contact torque" , t_c   },
+            { "sliding spring" , s_s   },
+            { "rolling spring" , s_r   },
+            { "torsion spring" , s_t   }
+        };
+        for (size_t k = 0; k < sizeof(vec3s) / sizeof(vec3s[0]); ++k) {
+            out << "        <DataArray type=\"Float32\" Name=\"" << vec3s[k].name
+                << "\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+            const std::vector<double3>& v = vec3s[k].vec;
+            for (size_t i = 0; i < v.size(); ++i)
+                out << ' ' << v[i].x << ' ' << v[i].y << ' ' << v[i].z;
+            out << "\n        </DataArray>\n";
+        }
+
+        out << "      </PointData>\n"
+            "    </Piece>\n"
+            "  </UnstructuredGrid>\n"
+            "</VTKFile>\n";
+    }
+
+    void outputBallTriangleInteractionVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double time)
+    {
+        MKDIR(dir.c_str());
+        std::ostringstream fname;
+        fname << dir << "/ballTriangleInteraction_" << std::setw(4) << std::setfill('0') << iFrame << ".vtu";
+        std::ofstream out(fname.str().c_str());
+        if (!out) throw std::runtime_error("Cannot open " + fname.str());
+        out << std::fixed << std::setprecision(10);
+
+        const size_t N = ballTriangleInteraction_.numActivated_;
+        std::vector<double3> p = ballTriangleInteraction_.contact_.pointHostCopy();
+        std::vector<double> o = ballTriangleInteraction_.contact_.overlapHostCopy();
+        std::vector<double3> n = ballTriangleInteraction_.contact_.normalHostCopy();
+        std::vector<double3> f_c = ballTriangleInteraction_.contact_.forceHostCopy();
+        std::vector<double3> t_c = ballTriangleInteraction_.contact_.torqueHostCopy();
+        std::vector<double3> s_s = ballTriangleInteraction_.spring_.slidingHostCopy();
+        std::vector<double3> s_r = ballTriangleInteraction_.spring_.rollingHostCopy();
+        std::vector<double3> s_t = ballTriangleInteraction_.spring_.torsionHostCopy();
+        
+        out << "<?xml version=\"1.0\"?>\n"
+            "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+            "  <UnstructuredGrid>\n";
+
+        out << "    <FieldData>\n"
+            "      <DataArray type=\"Float32\" Name=\"TIME\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << time << " </DataArray>\n"
+            "      <DataArray type=\"Int32\"   Name=\"STEP\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << iStep << " </DataArray>\n"
+            "    </FieldData>\n";
+
+        out << "    <Piece NumberOfPoints=\"" << N
+            << "\" NumberOfCells=\"" << N << "\">\n";
+
+        out << "      <Points>\n"
+            "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) {
+            out << ' ' << p[i].x << ' ' << p[i].y << ' ' << p[i].z;
+        }
+        out << "\n        </DataArray>\n"
+            "      </Points>\n";
+
+        out << "      <Cells>\n"
+            "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << i;
+        out << "\n        </DataArray>\n"
+            "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">\n";
+        for (int i = 1; i <= N; ++i) out << ' ' << i;
+        out << "\n        </DataArray>\n"
+            "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << " 1";          // 1 = VTK_VERTEX
+        out << "\n        </DataArray>\n"
+            "      </Cells>\n";
+
+        out << "      <PointData Scalars=\"overlap\">\n";
+
+        out << "        <DataArray type=\"Float32\" Name=\"overlap\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << o[i];
+        out << "\n        </DataArray>\n";
+
+        const struct {
+            const char* name;
+            const std::vector<double3>& vec;
+        } vec3s[] = {
+            { "contact normal" , n     },
+            { "contact force"  , f_c   },
+            { "contact torque" , t_c   },
+            { "sliding spring" , s_s   },
+            { "rolling spring" , s_r   },
+            { "torsion spring" , s_t   }
+        };
+        for (size_t k = 0; k < sizeof(vec3s) / sizeof(vec3s[0]); ++k) {
+            out << "        <DataArray type=\"Float32\" Name=\"" << vec3s[k].name
+                << "\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+            const std::vector<double3>& v = vec3s[k].vec;
+            for (size_t i = 0; i < v.size(); ++i)
+                out << ' ' << v[i].x << ' ' << v[i].y << ' ' << v[i].z;
+            out << "\n        </DataArray>\n";
+        }
+
+        out << "      </PointData>\n"
+            "    </Piece>\n"
+            "  </UnstructuredGrid>\n"
+            "</VTKFile>\n";
+    }
+
     virtual void addExternalForceTorque(const size_t iStep, const double time) 
     {
     }
@@ -1106,6 +1279,7 @@ CUDA_CHECK(cudaGetLastError());
                 iFrame++;
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
+                outputBallInteractionVTU(dir, iFrame, iStep, time);
             }
         }
     }
@@ -1149,6 +1323,7 @@ CUDA_CHECK(cudaGetLastError());
                 iFrame++;
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
+                outputBallInteractionVTU(dir, iFrame, iStep, time);
             }
         }
     }
@@ -1181,6 +1356,8 @@ CUDA_CHECK(cudaGetLastError());
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
                 outputMeshWallVTU(dir, iFrame, iStep, time);
+                outputBallInteractionVTU(dir, iFrame, iStep, time);
+                outputBallTriangleInteractionVTU(dir, iFrame, iStep, time);
             }
         }
     }
@@ -1227,6 +1404,8 @@ CUDA_CHECK(cudaGetLastError());
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
                 outputMeshWallVTU(dir, iFrame, iStep, time);
+                outputBallInteractionVTU(dir, iFrame, iStep, time);
+                outputBallTriangleInteractionVTU(dir, iFrame, iStep, time);
             }
         }
     }
@@ -1240,9 +1419,9 @@ CUDA_CHECK(cudaGetLastError());
 
     clump& getClump() { return clump_; }
 
-    contact& getBallContact() { return ballInteraction_.contact_; }
+    clump& getMeshWallBody() { return meshWall_.body_; }
 
-    contact& getBallTriangleContact() { return ballTriangleInteraction_.contact_; }
+    bondedInteraction& getBondedInteraction() { return bondedInteraction_; }
 
     std::vector<int> getBallPairPointed() 
     { 
@@ -1256,6 +1435,34 @@ CUDA_CHECK(cudaGetLastError());
         std::vector<int> p = ballInteraction_.pair_.objectPointingHostCopy();
         std::vector<int> p1(p.begin(), p.begin() + ballInteraction_.numActivated_);
         return p1;
+    }
+
+    std::vector<double> getBallPairOverlap() 
+    { 
+        std::vector<double> o = ballInteraction_.contact_.overlapHostCopy();
+        std::vector<double> o1(o.begin(), o.begin() + ballInteraction_.numActivated_);
+        return o1;
+    }
+
+    std::vector<double3> getBallPairSlidingSpring() 
+    { 
+        std::vector<double3> s = ballInteraction_.spring_.slidingHostCopy();
+        std::vector<double3> s1(s.begin(), s.begin() + ballInteraction_.numActivated_);
+        return s1;
+    }
+
+    std::vector<double3> getBallPairRollingSpring() 
+    { 
+        std::vector<double3> s = ballInteraction_.spring_.rollingHostCopy();
+        std::vector<double3> s1(s.begin(), s.begin() + ballInteraction_.numActivated_);
+        return s1;
+    }
+
+    std::vector<double3> getBallPairTorsionSpring() 
+    { 
+        std::vector<double3> s = ballInteraction_.spring_.torsionHostCopy();
+        std::vector<double3> s1(s.begin(), s.begin() + ballInteraction_.numActivated_);
+        return s1;
     }
 
     std::vector<int> getBallTrianglePairPointed() 
@@ -1272,16 +1479,32 @@ CUDA_CHECK(cudaGetLastError());
         return p1;
     }
 
-    std::vector<int> getBondedPairPointed() 
+    std::vector<double> getBallTrianglePairOverlap() 
     { 
-        std::vector<int> p = bondedInteraction_.pair_.objectPointedHostCopy();
-        return p;
+        std::vector<double> o = ballInteraction_.contact_.overlapHostCopy();
+        std::vector<double> o1(o.begin(), o.begin() + ballInteraction_.numActivated_);
+        return o1;
     }
 
-    std::vector<int> getBondedPairPointing() 
+    std::vector<double3> getBallTrianglePairSlidingSpring() 
     { 
-        std::vector<int> p = bondedInteraction_.pair_.objectPointingHostCopy();
-        return p;
+        std::vector<double3> s = ballInteraction_.spring_.slidingHostCopy();
+        std::vector<double3> s1(s.begin(), s.begin() + ballInteraction_.numActivated_);
+        return s1;
+    }
+
+    std::vector<double3> getBallTrianglePairRollingSpring() 
+    { 
+        std::vector<double3> s = ballInteraction_.spring_.rollingHostCopy();
+        std::vector<double3> s1(s.begin(), s.begin() + ballInteraction_.numActivated_);
+        return s1;
+    }
+
+    std::vector<double3> getBallTrianglePairTorsionSpring() 
+    { 
+        std::vector<double3> s = ballInteraction_.spring_.torsionHostCopy();
+        std::vector<double3> s1(s.begin(), s.begin() + ballInteraction_.numActivated_);
+        return s1;
     }
 
 public:
@@ -1686,7 +1909,6 @@ public:
         ball_.copyDeviceToHost(stream_);
         clump_.copyDeviceToHost(stream_);
         meshWall_.body_.copyDeviceToHost(stream_);
-        meshWall_.vertex_.copyDeviceToHost(stream_);
         bondedInteraction_.bond_.copyDeviceToHost(stream_);
     }
 

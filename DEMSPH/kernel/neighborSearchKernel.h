@@ -1,7 +1,5 @@
 #pragma once
-#include <cstddef>
-#include <driver_types.h>
-#include <vector_types.h>
+#include <vector_functions.h>
 
 __device__ __forceinline__ int3 calculateGridPosition(double3 position, const double3 minBoundary, const double3 cellSize)
 {

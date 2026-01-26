@@ -8,6 +8,7 @@ set(OLD_GLOB
   "/teamspace/studios/this_studio/DEMSPH/bondedParticleBeam.cpp"
   "/teamspace/studios/this_studio/DEMSPH/damBreak.cpp"
   "/teamspace/studios/this_studio/DEMSPH/elasticBounce.cpp"
+  "/teamspace/studios/this_studio/DEMSPH/iceCylinderInteraction.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")

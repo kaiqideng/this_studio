@@ -1,7 +1,6 @@
 #pragma once
 #include <cstddef>
 #include <driver_types.h>
-#include <vector_types.h>
 
 extern "C" void launchCountBallInteractions(double3* position, 
 double* radius,

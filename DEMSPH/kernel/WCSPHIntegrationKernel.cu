@@ -1,4 +1,5 @@
 #include "WCSPHIntegrationKernel.h"
+#include "myVec.h"
 
 __global__ void calDummyParticleNormalKernel(double3* normal,
 const double3* position,
@@ -32,7 +33,7 @@ const size_t numDummy)
         double3 r_ij = r_i - r_j;
         double3 dW_ij = gradWendlandKernel3D(r_ij, 0.5 * (h_i + h_j));
 
-        if (rho_j > 0.0) Theta -= m_j / rho_j * dW_ij;
+        Theta -= m_j / rho_j * dW_ij;
     }
 
     if (lengthSquared(Theta) > 1.e-10) normal[idx_i] = Theta / length(Theta);
@@ -97,12 +98,13 @@ const size_t numSPH)
         double rho_bar = 0.5 * (rho_i + rho_j);
         double beta = fmin(3.0 * fmax(U_L - U_R, 0.0), c_bar);
         double P_star = 0.5 * (P_L + P_R) + 0.5 * beta * rho_bar * (U_L - U_R);
-        if (rho_i > 0.0 && rho_j > 0.0) acc -= - 2.0 * m_j * (P_star / (rho_i * rho_j)) * dW_ij;
+        acc -= 2.0 * m_j * (P_star / (rho_i * rho_j)) * dW_ij;
     }
 
-    if (idx_i > 0) start = neighborPrifixSum_dummy[idx_i - 1];
-    end = neighborPrifixSum_dummy[idx_i];
-    for (int k = start; k < end; k++)
+    int start_d = 0;
+    if (idx_i > 0) start_d = neighborPrifixSum_dummy[idx_i - 1];
+    int end_d = neighborPrifixSum_dummy[idx_i];
+    for (int k = start_d; k < end_d; k++)
     {
         int idx_j = objectPointing_dummy[k];
 
@@ -117,7 +119,7 @@ const size_t numSPH)
         double U_L = dot(-n_w, v_i);
         double U_R = -U_L + 2.0 * dot(-n_w, v_j);
         double P_R = P_L + rho_i * dot(gravity, r_j - r_i);
-        if (c_j > 0.0) rho_j = P_R / (c_j * c_j) + initialDensity_dummy[idx_j];
+        rho_j = P_R / (c_j * c_j) + initialDensity_dummy[idx_j];
 
         double3 r_ij = r_i - r_j;
         double3 dW_ij = gradWendlandKernel3D(r_ij, 0.5 * (h_i + h_j));
@@ -126,7 +128,7 @@ const size_t numSPH)
         double rho_bar = 0.5 * (rho_i + rho_j);
         double beta = fmin(3.0 * fmax(U_L - U_R, 0.0), c_bar);
         double P_star = 0.5 * (P_L + P_R) + 0.5 * beta * rho_bar * (U_L - U_R);
-        if (rho_i > 0.0 && rho_j > 0.0) acc -= 2.0 * m_j * (P_star / (rho_i * rho_j)) * dW_ij;
+        acc -= 2.0 * m_j * (P_star / (rho_i * rho_j)) * dW_ij;
     }
 
     acceleration[idx_i] = acc + gravity;
@@ -210,13 +212,14 @@ const size_t numSPH)
         double c_bar = 0.5 * (c_i + c_j);
         double rho_bar = 0.5 * (rho_i + rho_j);
         double3 v_star = 0.5 * (v_i + v_j);
-        if (rho_bar > 0.0 && c_bar > 0.0) v_star += 0.5 * ((P_L - P_R) / (rho_bar * c_bar)) * e_ij;
-        if (rho_j > 0.0) dRho += m_j / rho_j * dot(v_i - v_star, dW_ij);
+        v_star += 0.5 * ((P_L - P_R) / (rho_bar * c_bar)) * e_ij;
+        dRho += m_j / rho_j * dot(v_i - v_star, dW_ij);
     }
 
-    if (idx_i > 0) start = neighborPrifixSum_dummy[idx_i - 1];
-    end = neighborPrifixSum_dummy[idx_i];
-    for (int k = start; k < end; k++)
+    int start_d = 0;
+    if (idx_i > 0) start_d = neighborPrifixSum_dummy[idx_i - 1];
+    int end_d = neighborPrifixSum_dummy[idx_i];
+    for (int k = start_d; k < end_d; k++)
     {
         int idx_j = objectPointing_dummy[k];
 
@@ -228,26 +231,28 @@ const size_t numSPH)
         double m_j = mass_dummy[idx_j];
 
         double P_R = P_L + rho_i * dot(gravity, r_j - r_i);
-        if (c_j > 0.0) rho_j = P_R / (c_j * c_j) + initialDensity_dummy[idx_j];
+        rho_j = P_R / (c_j * c_j) + initialDensity_dummy[idx_j];
 
         double3 r_ij = r_i - r_j;
         double3 dW_ij = gradWendlandKernel3D(r_ij, 0.5 * (h_i + h_j));
-        double3 e_ij = -normal_dummy[idx_j];
+        double3 e_ij = -normalize(r_ij);
 
         double c_bar = 0.5 * (c_i + c_j);
         double rho_bar = 0.5 * (rho_i + rho_j);
         double3 v_star = 0.5 * (v_i + v_j);
-        if (rho_bar > 0.0 && c_bar > 0.0) v_star += 0.5 * ((P_L - P_R) / (rho_bar * c_bar)) * e_ij;
-        if (rho_j > 0.0) dRho += m_j / rho_j * dot(v_i - v_star, dW_ij);
+        v_star += 0.5 * ((P_L - P_R) / (rho_bar * c_bar)) * e_ij;
+        dRho += m_j / rho_j * dot(v_i - v_star, dW_ij);
     }
 
     dRho *= 2.0 * rho_i;
     densityChange[idx_i] += dRho * timeStep;
 }
 
-__global__ void SPHDensityIntegrationKernel(double* density,
+__global__ void SPHDensityPressureIntegrationKernel(double* density,
+double* pressure,
 const double* densityChange,
 const double* initialDensity,
+const double* soundSpeed,
 const size_t numSPH)
 {
     size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -255,21 +260,10 @@ const size_t numSPH)
 
     double change = densityChange[idx_i];
     double rho0 = initialDensity[idx_i];
-    if (change < -0.1 * rho0) density[idx_i] = change + rho0;
-    else density[idx_i] = 0.9 * rho0;
-}
-
-__global__ void calWCSPHPressureKernel(double* pressure,
-const double* density,
-const double* soundSpeed,
-const double* initialDensity,
-const size_t numSPH)
-{
-    size_t idx_i = blockIdx.x * blockDim.x + threadIdx.x;
-	if (idx_i >= numSPH) return;
-
+    if (change < -0.1 * rho0) change = -0.1 * rho0;
+    density[idx_i] = change + rho0;
     double c = soundSpeed[idx_i];
-    pressure[idx_i] = c * c * (density[idx_i] - initialDensity[idx_i]);
+    pressure[idx_i] = c * c * change;
 }
 
 extern "C" void launchCalDummyParticleNormal(double3* normal,
@@ -418,10 +412,11 @@ cudaStream_t stream_GPU)
     timeStep, 
     numSPH);
 
-    calWCSPHPressureKernel <<<gridD_GPU, blockD_GPU, 0, stream_GPU>>> (pressure,
-    density,
-    soundSpeed,
+    SPHDensityPressureIntegrationKernel <<<gridD_GPU, blockD_GPU, 0, stream_GPU>>> (density, 
+    pressure,
+    densityChange,
     initialDensity,
+    soundSpeed,
     numSPH);
 
     updateWCSPHAccelerationKernel <<<gridD_GPU, blockD_GPU, 0, stream_GPU>>> (acceleration,
