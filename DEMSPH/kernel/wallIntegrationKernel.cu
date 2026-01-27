@@ -36,6 +36,22 @@ const size_t numVertex)
     globalPosition_v[idx] = position[idx_w] + rotateVectorByQuaternion(orientation[idx_w], localPosition_v[idx]);
 }
 
+__global__ void updateTriangleCircumcenter(double3* circumcenter,
+const int* index0_tri,
+const int* index1_tri,
+const int* index2_tri,
+const double3* globalPosition_v,
+const size_t numTri)
+{
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx >= numTri) return;
+
+    const double3 v0 = globalPosition_v[index0_tri[idx]];
+    const double3 v1 = globalPosition_v[index1_tri[idx]];
+    const double3 v2 = globalPosition_v[index2_tri[idx]];
+	circumcenter[idx] = triangleCircumcenter(v0, v1, v2);
+}
+
 extern "C" void launchWallIntegration(double3* position, 
 double3* velocity, 
 double3* angularVelocity,
@@ -75,4 +91,24 @@ cudaStream_t stream)
     position_w,
     orientation_w,
     numVertex);
+}
+
+extern "C" void launchUpdateTriangleCircumcenter(double3* circumcenter,
+int* index0_tri,
+int* index1_tri,
+int* index2_tri,
+
+double3* globalPosition_v,
+
+const size_t numTri,
+const size_t gridD,
+const size_t blockD, 
+cudaStream_t stream)
+{
+	updateTriangleCircumcenter <<<gridD, blockD, 0, stream>>> (circumcenter,
+	index0_tri,
+	index1_tri,
+	index2_tri,
+	globalPosition_v,
+	numTri);
 }

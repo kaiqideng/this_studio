@@ -2,6 +2,8 @@
 #include "myUtility/myVec.h"
 #include "buildHashStartEnd.h"
 #include "neighborSearchKernel.h"
+#include "contactKernel.h"
+#include <cstdio>
 
 __global__ void countBallInteractionsKernel(int* neighborCount,
 const double3* position, 
@@ -194,15 +196,32 @@ const size_t numBall)
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = hashIndex_tri[i];
-                    double3 pos0B = globalPosition_ver[index0_tri[idxB]];
-                    double3 pos1B = globalPosition_ver[index1_tri[idxB]];
-                    double3 pos2B = globalPosition_ver[index2_tri[idxB]];
-                    double3 n = normalize(cross(pos1B - pos0B, pos2B - pos1B));
-                    double t = dot(posA - pos0B, n);
-                    double overlap_plane = 0.0;
-                    if (t >= 0) overlap_plane = radA - t;
-                    if (t < 0) overlap_plane = radA + t;
-                    if (overlap_plane > 0) count++;
+                    
+                    const double3 v0 = globalPosition_ver[index0_tri[idxB]];
+                    const double3 v1 = globalPosition_ver[index1_tri[idxB]];
+                    const double3 v2 = globalPosition_ver[index2_tri[idxB]];
+
+                    // triangle AABB
+                    const double minx = fmin(v0.x, fmin(v1.x, v2.x));
+                    const double miny = fmin(v0.y, fmin(v1.y, v2.y));
+                    const double minz = fmin(v0.z, fmin(v1.z, v2.z));
+                    const double maxx = fmax(v0.x, fmax(v1.x, v2.x));
+                    const double maxy = fmax(v0.y, fmax(v1.y, v2.y));
+                    const double maxz = fmax(v0.z, fmax(v1.z, v2.z));
+
+                    // point-to-AABB distance^2
+                    const double cx = fmin(fmax(posA.x, minx), maxx);
+                    const double cy = fmin(fmax(posA.y, miny), maxy);
+                    const double cz = fmin(fmax(posA.z, minz), maxz);
+
+                    const double dx = posA.x - cx;
+                    const double dy = posA.y - cy;
+                    const double dz = posA.z - cz;
+
+                    if (dx*dx + dy*dy + dz*dz <= radA * radA) 
+                    {
+                        count++;
+                    }
                 }
             }
         }
@@ -268,15 +287,29 @@ const size_t numBall)
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     int idxB = hashIndex_tri[i];
-                    double3 pos0B = globalPosition_ver[index0_tri[idxB]];
-                    double3 pos1B = globalPosition_ver[index1_tri[idxB]];
-                    double3 pos2B = globalPosition_ver[index2_tri[idxB]];
-                    double3 n = normalize(cross(pos1B - pos0B, pos2B - pos1B));
-                    double t = dot(posA - pos0B, n);
-                    double overlap_plane = 0.0;
-                    if (t >= 0) overlap_plane = radA - t;
-                    if (t < 0) overlap_plane = radA + t;
-                    if (overlap_plane > 0)
+
+                    const double3 v0 = globalPosition_ver[index0_tri[idxB]];
+                    const double3 v1 = globalPosition_ver[index1_tri[idxB]];
+                    const double3 v2 = globalPosition_ver[index2_tri[idxB]];
+
+                    // triangle AABB
+                    const double minx = fmin(v0.x, fmin(v1.x, v2.x));
+                    const double miny = fmin(v0.y, fmin(v1.y, v2.y));
+                    const double minz = fmin(v0.z, fmin(v1.z, v2.z));
+                    const double maxx = fmax(v0.x, fmax(v1.x, v2.x));
+                    const double maxy = fmax(v0.y, fmax(v1.y, v2.y));
+                    const double maxz = fmax(v0.z, fmax(v1.z, v2.z));
+
+                    // point-to-AABB distance^2
+                    const double cx = fmin(fmax(posA.x, minx), maxx);
+                    const double cy = fmin(fmax(posA.y, miny), maxy);
+                    const double cz = fmin(fmax(posA.z, minz), maxz);
+
+                    const double dx = posA.x - cx;
+                    const double dy = posA.y - cy;
+                    const double dz = posA.z - cz;
+
+                    if (dx*dx + dy*dy + dz*dz <= radA * radA)
                     {
                         int index_w = base_w + count;
                         objectPointed[index_w] = idxA;

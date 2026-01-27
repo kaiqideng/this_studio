@@ -281,168 +281,215 @@ const double torsionFrictionCoefficient)
 	}
 }
 
-__device__ inline bool isSphereEdgeContact(const double3& edgeP0,
-const double3& edgeP1,
-const double3& sphereCenter,
-double sphereRadius)
+enum class SphereTriangleContactType
 {
-    // Edge direction
-    double3 edge = edgeP1 - edgeP0;
-    double edgeLen2 = dot(edge, edge);
-    if (edgeLen2 <= 1e-20) {
-        // Degenerate edge -> treat as no edge contact
-        return false;
-    }
-
-    // Project sphere center onto the infinite line of the edge
-    double3 v = sphereCenter - edgeP0;
-    double t = dot(v, edge) / edgeLen2;
-
-    // If projection lies outside [0,1], closest point is a vertex => not edge contact
-    if (t <= 0.0 || t >= 1.0) {
-        return false;
-    }
-
-    // Closest point on the segment
-    double3 closest = edgeP0 + edge * t;
-
-    // Check distance to the sphere
-    double3 diff = sphereCenter - closest;
-    double dist2 = dot(diff, diff);
-    double r2 = sphereRadius * sphereRadius;
-
-    return dist2 <= r2;
-}
-
-enum class SphereTriangleContactType {
-None,
-Face,
-Edge,
-Vertex
+    None,
+    Face,
+    Edge,
+    Vertex
 };
 
-__device__ inline SphereTriangleContactType classifySphereTriangleContact(const double3& sphereCenter,
-const double sphereRadius,
-const double3& v0,
-const double3& v1,
-const double3& v2,
-double3& closestPoint)
+// ------------------------------------------------------------
+// Small helpers
+// ------------------------------------------------------------
+__device__ __forceinline__ double clamp01(const double x)
 {
-    double3 edge01 = v1 - v0;
-    double3 edge02 = v2 - v0;
-    double3 v0_to_p = sphereCenter - v0;
+    return (x < 0.0) ? 0.0 : ((x > 1.0) ? 1.0 : x);
+}
 
-    const double r2 = sphereRadius * sphereRadius;
-    const double eps = 1e-12;
+__device__ __forceinline__ double dist2(const double3& a, const double3& b)
+{
+    const double3 d = a - b;
+    return dot(d, d);
+}
 
-    double3 n = cross(edge01, edge02);
-    double area2 = dot(n, n);
-    if (area2 < 1e-20)
+// Closest point on segment [a,b] to p. Returns q and outputs t in [0,1].
+__device__ __forceinline__
+double3 closestPointOnSegment(const double3& a,
+                              const double3& b,
+                              const double3& p,
+                              double& tOut)
+{
+    const double3 ab  = b - a;
+    const double  ab2 = dot(ab, ab);
+    if (ab2 <= 1e-30)
     {
-        double3 diff0 = sphereCenter - v0;
-        double3 diff1 = sphereCenter - v1;
-        double3 diff2 = sphereCenter - v2;
+        tOut = 0.0;
+        return a;
+    }
+    tOut = clamp01(dot(p - a, ab) / ab2);
+    return a + ab * tOut;
+}
 
-        double d0 = dot(diff0, diff0);
-        double d1 = dot(diff1, diff1);
-        double d2 = dot(diff2, diff2);
+// ------------------------------------------------------------
+// Edge-contact test (strictly edge interior, not vertices)
+// ------------------------------------------------------------
+__device__ __forceinline__
+bool isSphereEdgeContact(const double3& edgeP0,
+                         const double3& edgeP1,
+                         const double3& sphereCenter,
+                         const double   sphereRadius)
+{
+    const double3 e   = edgeP1 - edgeP0;
+    const double  e2  = dot(e, e);
+    if (e2 <= 1e-30) return false;
 
-        double dmin = d0;
-        closestPoint = v0;
+    const double3 v   = sphereCenter - edgeP0;
+    const double  t   = dot(v, e) / e2;
 
-        if (d1 < dmin)
+    // Interior only: exclude endpoints (t<=0 or t>=1 => vertex contact)
+    // Use a tiny margin to avoid numerical flicker near vertices.
+    const double tEps = 1e-14;
+    if (t <= tEps || t >= 1.0 - tEps) return false;
+
+    const double3 q   = edgeP0 + e * t;
+    const double  r2  = sphereRadius * sphereRadius;
+
+    // Scale-aware epsilon on distance^2
+    const double eps2 = 1e-12 * fmax(1.0, r2);
+
+    return dist2(sphereCenter, q) <= r2 + eps2;
+}
+
+// ------------------------------------------------------------
+// Main classifier: returns contact type and closestPoint.
+// - Uses Ericson region tests for non-degenerate triangle.
+// - Degenerate triangle handled as 3 segments.
+// ------------------------------------------------------------
+__device__ __forceinline__
+SphereTriangleContactType classifySphereTriangleContact(const double3& sphereCenter,
+                                                        const double  sphereRadius,
+                                                        const double3& v0,
+                                                        const double3& v1,
+                                                        const double3& v2,
+                                                        double3& closestPoint)
+{
+    const double r2   = sphereRadius * sphereRadius;
+    const double eps2 = 1e-12 * fmax(1.0, r2);
+
+    const double3 ab = v1 - v0;
+    const double3 ac = v2 - v0;
+
+    const double3 n     = cross(ab, ac);
+    const double  area2 = dot(n, n);
+
+    // --------------------------------------------------------
+    // Degenerate triangle -> treat as 3 segments
+    // --------------------------------------------------------
+    if (area2 <= 1e-20)
+    {
+        double t01, t02, t12;
+        const double3 q01 = closestPointOnSegment(v0, v1, sphereCenter, t01);
+        const double3 q02 = closestPointOnSegment(v0, v2, sphereCenter, t02);
+        const double3 q12 = closestPointOnSegment(v1, v2, sphereCenter, t12);
+
+        double dmin = dist2(sphereCenter, q01);
+        closestPoint = q01;
+        SphereTriangleContactType type =
+            (t01 > 0.0 && t01 < 1.0) ? SphereTriangleContactType::Edge
+                                     : SphereTriangleContactType::Vertex;
+
+        const double d02 = dist2(sphereCenter, q02);
+        if (d02 < dmin)
         {
-            dmin = d1;
-            closestPoint = v1;
-        }
-        if (d2 < dmin)
-        {
-            dmin = d2;
-            closestPoint = v2;
+            dmin = d02;
+            closestPoint = q02;
+            type = (t02 > 0.0 && t02 < 1.0) ? SphereTriangleContactType::Edge
+                                           : SphereTriangleContactType::Vertex;
         }
 
-        if (dmin <= r2 + eps) return SphereTriangleContactType::Vertex;
-        return SphereTriangleContactType::None;
+        const double d12 = dist2(sphereCenter, q12);
+        if (d12 < dmin)
+        {
+            dmin = d12;
+            closestPoint = q12;
+            type = (t12 > 0.0 && t12 < 1.0) ? SphereTriangleContactType::Edge
+                                           : SphereTriangleContactType::Vertex;
+        }
+
+        return (dmin <= r2 + eps2) ? type : SphereTriangleContactType::None;
     }
 
-    double dot01_v0 = dot(edge01, v0_to_p);
-    double dot02_v0 = dot(edge02, v0_to_p);
-    if (dot01_v0 <= 0.0 && dot02_v0 <= 0.0)
+    // --------------------------------------------------------
+    // Ericson region tests (non-degenerate triangle)
+    // Naming follows "Real-Time Collision Detection" style:
+    // d1 = ab·ap, d2 = ac·ap, etc.
+    // --------------------------------------------------------
+    const double3 ap = sphereCenter - v0;
+    const double  d1 = dot(ab, ap);
+    const double  d2 = dot(ac, ap);
+
+    // Vertex region v0
+    if (d1 <= 0.0 && d2 <= 0.0)
     {
         closestPoint = v0;
-        double3 diff = sphereCenter - closestPoint;
-        if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Vertex;
-        return SphereTriangleContactType::None;
+        return (dist2(sphereCenter, v0) <= r2 + eps2) ? SphereTriangleContactType::Vertex
+                                                      : SphereTriangleContactType::None;
     }
 
-    double3 v1_to_p = sphereCenter - v1;
-    double dot01_v1 = dot(edge01, v1_to_p);
-    double dot02_v1 = dot(edge02, v1_to_p);
-    if (dot01_v1 >= 0.0 && dot02_v1 <= dot01_v1)
+    // Vertex region v1
+    const double3 bp = sphereCenter - v1;
+    const double  d3 = dot(ab, bp);
+    const double  d4 = dot(ac, bp);
+    if (d3 >= 0.0 && d4 <= d3)
     {
         closestPoint = v1;
-        double3 diff = sphereCenter - closestPoint;
-        if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Vertex;
-        return SphereTriangleContactType::None;
+        return (dist2(sphereCenter, v1) <= r2 + eps2) ? SphereTriangleContactType::Vertex
+                                                      : SphereTriangleContactType::None;
     }
 
-    double vc = dot01_v0 * dot02_v1 - dot01_v1 * dot02_v0;
-    if (vc <= 0.0 && dot01_v0 >= 0.0 && dot01_v1 <= 0.0)
+    // Edge region v0-v1
+    const double vc = d1 * d4 - d3 * d2;
+    if (vc <= 0.0 && d1 >= 0.0 && d3 <= 0.0)
     {
-        double t = dot01_v0 / (dot01_v0 - dot01_v1);
-        closestPoint = v0 + edge01 * t;
-        double3 diff = sphereCenter - closestPoint;
-        if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Edge;
-        return SphereTriangleContactType::None;
+        const double t = d1 / (d1 - d3); // in [0,1]
+        closestPoint = v0 + ab * t;
+        return (dist2(sphereCenter, closestPoint) <= r2 + eps2) ? SphereTriangleContactType::Edge
+                                                                : SphereTriangleContactType::None;
     }
 
-    double3 v2_to_p = sphereCenter - v2;
-    double dot01_v2 = dot(edge01, v2_to_p);
-    double dot02_v2 = dot(edge02, v2_to_p);
-    if (dot02_v2 >= 0.0 && dot01_v2 <= dot02_v2)
+    // Vertex region v2
+    const double3 cp = sphereCenter - v2;
+    const double  d5 = dot(ab, cp);
+    const double  d6 = dot(ac, cp);
+    if (d6 >= 0.0 && d5 <= d6)
     {
         closestPoint = v2;
-        double3 diff = sphereCenter - closestPoint;
-        if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Vertex;
-        return SphereTriangleContactType::None;
+        return (dist2(sphereCenter, v2) <= r2 + eps2) ? SphereTriangleContactType::Vertex
+                                                      : SphereTriangleContactType::None;
     }
 
-    double vb = dot01_v2 * dot02_v0 - dot01_v0 * dot02_v2;
-    if (vb <= 0.0 && dot02_v0 >= 0.0 && dot02_v2 <= 0.0)
+    // Edge region v0-v2
+    const double vb = d5 * d2 - d1 * d6;
+    if (vb <= 0.0 && d2 >= 0.0 && d6 <= 0.0)
     {
-        double t = dot02_v0 / (dot02_v0 - dot02_v2);
-        closestPoint = v0 + edge02 * t;
-        double3 diff = sphereCenter - closestPoint;
-        if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Edge;
-        return SphereTriangleContactType::None;
+        const double t = d2 / (d2 - d6); // in [0,1]
+        closestPoint = v0 + ac * t;
+        return (dist2(sphereCenter, closestPoint) <= r2 + eps2) ? SphereTriangleContactType::Edge
+                                                                : SphereTriangleContactType::None;
     }
 
-    double va = dot01_v1 * dot02_v2 - dot01_v2 * dot02_v1;
-    if (va <= 0.0 && (dot02_v1 - dot01_v1) >= 0.0 && (dot01_v2 - dot02_v2) >= 0.0)
+    // Edge region v1-v2
+    const double va = d3 * d6 - d5 * d4;
+    if (va <= 0.0 && (d4 - d3) >= 0.0 && (d5 - d6) >= 0.0)
     {
-        double t = (dot02_v1 - dot01_v1) /
-        ((dot02_v1 - dot01_v1) + (dot01_v2 - dot02_v2));
+        const double t = (d4 - d3) / ((d4 - d3) + (d5 - d6)); // in [0,1]
         closestPoint = v1 + (v2 - v1) * t;
-        double3 diff = sphereCenter - closestPoint;
-        if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Edge;
-        return SphereTriangleContactType::None;
+        return (dist2(sphereCenter, closestPoint) <= r2 + eps2) ? SphereTriangleContactType::Edge
+                                                                : SphereTriangleContactType::None;
     }
 
-    double sum = va + vb + vc;
-    if (fabs(sum) < 1e-20)
-    {
-        return SphereTriangleContactType::None;
-    }
+    // Face region
+    const double sum = va + vb + vc;
+    if (fabs(sum) <= 1e-30) return SphereTriangleContactType::None;
 
-    double denom  = 1.0 / sum;
-    double bary_v = vb * denom;
-    double bary_w = vc * denom;
+    const double invSum = 1.0 / sum;
+    const double v = vb * invSum;
+    const double w = vc * invSum;
+    closestPoint = v0 + ab * v + ac * w;
 
-    closestPoint = v0 + edge01 * bary_v + edge02 * bary_w;
-    double3 diff = sphereCenter - closestPoint;
-    if (dot(diff, diff) <= r2 + eps) return SphereTriangleContactType::Face;
-
-    return SphereTriangleContactType::None;
+    return (dist2(sphereCenter, closestPoint) <= r2 + eps2) ? SphereTriangleContactType::Face
+                                                            : SphereTriangleContactType::None;
 }
 
 extern "C" void luanchCalculateBallContactForceTorque(double3* position, 

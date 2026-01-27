@@ -58,10 +58,10 @@ cudaStream_t stream)
         setPacked_(L, pairTableSize, L_KR,   idx, row.rollingStiffness);
         setPacked_(L, pairTableSize, L_KT,   idx, row.torsionStiffness);
 
-        setPacked_(L, pairTableSize, L_DN,   idx, row.normalDampingCoefficient);
-        setPacked_(L, pairTableSize, L_DS,   idx, row.slidingDampingCoefficient);
-        setPacked_(L, pairTableSize, L_DR,   idx, row.rollingDampingCoefficient);
-        setPacked_(L, pairTableSize, L_DT,   idx, row.torsionDampingCoefficient);
+        setPacked_(L, pairTableSize, L_DN,   idx, row.normalDissipation);
+        setPacked_(L, pairTableSize, L_DS,   idx, row.slidingDissipation);
+        setPacked_(L, pairTableSize, L_DR,   idx, row.rollingDissipation);
+        setPacked_(L, pairTableSize, L_DT,   idx, row.torsionDissipation);
 
         setPacked_(L, pairTableSize, L_MU_S, idx, row.slidingFrictionCoefficient);
         setPacked_(L, pairTableSize, L_MU_R, idx, row.rollingFrictionCoefficient);

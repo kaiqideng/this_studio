@@ -5,7 +5,7 @@
       "name": "CUDA Debug (cuda-gdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/DEMSPH/build/elasticBounce",
+      "program": "${workspaceFolder}/DEMSPH/build/iceCylinderInteraction",
       "cwd": "${workspaceFolder}",
       "args": [],
       "stopAtEntry": false,

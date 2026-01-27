@@ -32,10 +32,10 @@ struct LinearRow
     double rollingStiffness;           // k_r
     double torsionStiffness;           // k_t
 
-    double normalDampingCoefficient;   // d_n
-    double slidingDampingCoefficient;  // d_s
-    double rollingDampingCoefficient;  // d_r
-    double torsionDampingCoefficient;  // d_t
+    double normalDissipation;   // d_n
+    double slidingDissipation;  // d_s
+    double rollingDissipation;  // d_r
+    double torsionDissipation;  // d_t
 
     double slidingFrictionCoefficient; // mu_s
     double rollingFrictionCoefficient; // mu_r

@@ -101,6 +101,7 @@ cudaStream_t stream_GPU)
     gridSize,
     numObject);
 
+    //debug_dump_device_array(hashValue, numObject, "hash value");
     CUDA_CHECK(cudaMemsetAsync(cellHashStart, 0xFF, numGrids * sizeof(int), stream_GPU));
     CUDA_CHECK(cudaMemsetAsync(cellHashEnd, 0xFF, numGrids * sizeof(int), stream_GPU));
     buildHashStartEnd(cellHashStart,

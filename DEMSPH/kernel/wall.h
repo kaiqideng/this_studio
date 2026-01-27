@@ -1,6 +1,5 @@
 #pragma once
 #include "myUtility/myHostDeviceArray.h"
-#include "myUtility/myVec.h"
 #include <cassert>
 
 struct triangle
@@ -369,30 +368,3 @@ public:
     const std::vector<double3>& localPositionHostRef() { return localPosition_.hostRef(); }
     const std::vector<int>& wallIndexHostRef() { return wallIndex_.hostRef(); }
 };
-
-inline double3 triangleCircumcenter(const double3& a,
-const double3& b,
-const double3& c)
-{
-    // Edges from vertex a
-    double3 ab = b - a;
-    double3 ac = c - a;
-
-    // Triangle normal
-    double3 n  = cross(ab, ac);
-    double n2  = dot(n, n);   // |n|^2
-
-    // Degenerate triangle: fall back to centroid
-    if (n2 < 1e-30)
-    {
-        return (a + b + c) / 3.0;
-    }
-
-    // Formula:
-    // O = a + ( |ac|^2 * (n × ab) + |ab|^2 * (ac × n) ) / (2 |n|^2)
-    double3 term1 = cross(n,  ab) * dot(ac, ac);
-    double3 term2 = cross(ac, n ) * dot(ab, ab);
-    double invDen = 1.0 / (2.0 * n2);
-
-    return a + (term1 + term2) * invDen;
-}

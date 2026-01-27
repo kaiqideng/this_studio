@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
+  <UnstructuredGrid>
+    <FieldData>
+      <DataArray type="Float32" Name="TIME"  NumberOfTuples="1" format="ascii"> 3.1000000000 </DataArray>
+      <DataArray type="Int32"   Name="STEP"  NumberOfTuples="1" format="ascii"> 775000 </DataArray>
+    </FieldData>
+    <Piece NumberOfPoints="4" NumberOfCells="4">
+      <Points>
+        <DataArray type="Float32" NumberOfComponents="3" format="ascii">
+ -0.3033020016 10.5990097957 -0.0149209584 -0.3136670086 10.6138125599 -0.0338206864 -0.2659170012 10.5456184820 0.0532474795 -0.3033020016 10.5990097957 0.0000000000
+        </DataArray>
+      </Points>
+      <Cells>
+        <DataArray type="Int32" Name="connectivity" format="ascii">
+ 0 1 2 3
+        </DataArray>
+        <DataArray type="Int32" Name="offsets" format="ascii">
+ 1 2 3 4
+        </DataArray>
+        <DataArray type="UInt8" Name="types" format="ascii">
+ 1 1 1 1
+        </DataArray>
+      </Cells>
+      <PointData Scalars="overlap">
+        <DataArray type="Float32" Name="overlap" format="ascii">
+ -0.0093229226 -0.0124066560 -0.0443838910 -0.0103364690
+        </DataArray>
+        <DataArray type="Float32" Name="contact normal" NumberOfComponents="3" format="ascii">
+ 0.8191520443 0.5735764364 0.0000000000 0.8888895559 0.4261517060 0.1681370896 0.3613082787 0.8040811571 -0.4721332657 0.8116273458 0.5683075858 -0.1352314293
+        </DataArray>
+        <DataArray type="Float32" Name="contact force" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
+        </DataArray>
+        <DataArray type="Float32" Name="contact torque" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
+        </DataArray>
+        <DataArray type="Float32" Name="sliding spring" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
+        </DataArray>
+        <DataArray type="Float32" Name="rolling spring" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
+        </DataArray>
+        <DataArray type="Float32" Name="torsion spring" NumberOfComponents="3" format="ascii">
+ 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
+        </DataArray>
+      </PointData>
+    </Piece>
+  </UnstructuredGrid>
+</VTKFile>

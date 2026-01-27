@@ -255,14 +255,14 @@ private:
             double3 v2 = meshWall_.vertex_.localPositionHostRef()[meshWall_.triangle_.index2HostRef()[i]];
             double3 c = triangleCircumcenter(v0, v1, v2);
             cellSizeOneDim = std::max(cellSizeOneDim, 2.0 * length(v0 - c));
+            cellSizeOneDim = std::max(cellSizeOneDim, 2.0 * length(v1 - c));
+            cellSizeOneDim = std::max(cellSizeOneDim, 2.0 * length(v2 - c));
         }
         triangleSpatialGrid_.set(minBoundary, maxBoundary, cellSizeOneDim, stream_);
     }
 
-    void initialize(const double3 minBoundary, const double3 maxBoundary, const size_t maximumThread)
+    void initialize(const double3 minBoundary, const double3 maxBoundary)
     {
-        maxThread_ = maximumThread;
-
         ball_.setBlockDim(maxThread_ < ball_.hostSize() ? maxThread_ : ball_.hostSize());
         clump_.setBlockDim(maxThread_ < clump_.hostSize() ? maxThread_ : clump_.hostSize());
         meshWall_.body_.setBlockDim(maxThread_ < meshWall_.body_.hostSize() ? maxThread_ : meshWall_.body_.hostSize());
@@ -277,7 +277,7 @@ private:
 protected:
     void addDummyContactForceTorque(periodicBoundary& periodic, const int3 directionFlag, const double timeStep)
     {
-        if (periodic.dummyPosition_.deviceSize() == 0 || periodic.dummyPosition_.deviceSize() != ball_.deviceSize()) return;
+        if (periodic.dummyPosition_.deviceSize() == 0) return;
 
         launchBuildDummyPosition(periodic.dummyPosition_.d_ptr,
         ball_.position(), 
@@ -574,6 +574,20 @@ CUDA_CHECK(cudaGetLastError());
         meshWall_.vertex_.deviceSize(), 
         meshWall_.vertex_.gridDim(), 
         meshWall_.vertex_.blockDim(), 
+        stream_);
+
+#ifndef NDEBUG
+CUDA_CHECK(cudaGetLastError());
+#endif
+
+        launchUpdateTriangleCircumcenter(meshWall_.triangle_.circumcenter(),
+        meshWall_.triangle_.index0(),
+        meshWall_.triangle_.index1(),
+        meshWall_.triangle_.index2(),
+        meshWall_.vertex_.globalPosition(),
+        meshWall_.triangle_.deviceSize(),
+        meshWall_.triangle_.gridDim(),
+        meshWall_.triangle_.blockDim(),
         stream_);
 
 #ifndef NDEBUG
@@ -1150,11 +1164,102 @@ CUDA_CHECK(cudaGetLastError());
             { "rolling spring" , s_r   },
             { "torsion spring" , s_t   }
         };
+
         for (size_t k = 0; k < sizeof(vec3s) / sizeof(vec3s[0]); ++k) {
             out << "        <DataArray type=\"Float32\" Name=\"" << vec3s[k].name
                 << "\" NumberOfComponents=\"3\" format=\"ascii\">\n";
             const std::vector<double3>& v = vec3s[k].vec;
-            for (size_t i = 0; i < v.size(); ++i)
+            for (size_t i = 0; i < N; ++i)
+                out << ' ' << v[i].x << ' ' << v[i].y << ' ' << v[i].z;
+            out << "\n        </DataArray>\n";
+        }
+
+        out << "      </PointData>\n"
+            "    </Piece>\n"
+            "  </UnstructuredGrid>\n"
+            "</VTKFile>\n";
+    }
+
+    void outputBondedInteractionVTU(const std::string &dir, const size_t iFrame, const size_t iStep, const double time)
+    {
+        MKDIR(dir.c_str());
+        std::ostringstream fname;
+        fname << dir << "/bondedInteraction_" << std::setw(4) << std::setfill('0') << iFrame << ".vtu";
+        std::ofstream out(fname.str().c_str());
+        if (!out) throw std::runtime_error("Cannot open " + fname.str());
+        out << std::fixed << std::setprecision(10);
+
+        const size_t N = bondedInteraction_.pair_.deviceSize();
+        std::vector<double3> p = bondedInteraction_.bond_.pointHostCopy();
+        std::vector<double3> n = bondedInteraction_.bond_.normalHostCopy();
+        std::vector<int> isBonded = bondedInteraction_.bond_.isBondedHostCopy();
+        std::vector<double> f_n = bondedInteraction_.bond_.normalForceHostCopy();
+        std::vector<double> t_n = bondedInteraction_.bond_.torsionTorqueHostCopy();
+        std::vector<double3> f_s = bondedInteraction_.bond_.shearForceHostCopy();
+        std::vector<double3> t_s = bondedInteraction_.bond_.bendingTorqueHostCopy();
+        
+        out << "<?xml version=\"1.0\"?>\n"
+            "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+            "  <UnstructuredGrid>\n";
+
+        out << "    <FieldData>\n"
+            "      <DataArray type=\"Float32\" Name=\"TIME\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << time << " </DataArray>\n"
+            "      <DataArray type=\"Int32\"   Name=\"STEP\"  NumberOfTuples=\"1\" format=\"ascii\"> "
+            << iStep << " </DataArray>\n"
+            "    </FieldData>\n";
+
+        out << "    <Piece NumberOfPoints=\"" << N
+            << "\" NumberOfCells=\"" << N << "\">\n";
+
+        out << "      <Points>\n"
+            "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) {
+            out << ' ' << p[i].x << ' ' << p[i].y << ' ' << p[i].z;
+        }
+        out << "\n        </DataArray>\n"
+            "      </Points>\n";
+
+        out << "      <Cells>\n"
+            "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << i;
+        out << "\n        </DataArray>\n"
+            "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">\n";
+        for (int i = 1; i <= N; ++i) out << ' ' << i;
+        out << "\n        </DataArray>\n"
+            "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << " 1";          // 1 = VTK_VERTEX
+        out << "\n        </DataArray>\n"
+            "      </Cells>\n";
+
+        out << "      <PointData Scalars=\"overlap\">\n";
+
+        out << "        <DataArray type=\"Int32\" Name=\"is bonded\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << isBonded[i];
+        out << "\n        </DataArray>\n";
+
+        out << "        <DataArray type=\"Float32\" Name=\"normal force\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << f_n[i];
+        out << "\n        </DataArray>\n";
+
+        out << "        <DataArray type=\"Float32\" Name=\"torsion torque\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << t_n[i];
+        out << "\n        </DataArray>\n";
+
+        const struct {
+            const char* name;
+            const std::vector<double3>& vec;
+        } vec3s[] = {
+            { "contact normal" , n     },
+            { "shearing force" , f_s   },
+            { "bending torque" , t_s   }
+        };
+
+        for (size_t k = 0; k < sizeof(vec3s) / sizeof(vec3s[0]); ++k) {
+            out << "        <DataArray type=\"Float32\" Name=\"" << vec3s[k].name
+                << "\" NumberOfComponents=\"3\" format=\"ascii\">\n";
+            const std::vector<double3>& v = vec3s[k].vec;
+            for (size_t i = 0; i < N; ++i)
                 out << ' ' << v[i].x << ' ' << v[i].y << ' ' << v[i].z;
             out << "\n        </DataArray>\n";
         }
@@ -1235,11 +1340,12 @@ CUDA_CHECK(cudaGetLastError());
             { "rolling spring" , s_r   },
             { "torsion spring" , s_t   }
         };
+
         for (size_t k = 0; k < sizeof(vec3s) / sizeof(vec3s[0]); ++k) {
             out << "        <DataArray type=\"Float32\" Name=\"" << vec3s[k].name
                 << "\" NumberOfComponents=\"3\" format=\"ascii\">\n";
             const std::vector<double3>& v = vec3s[k].vec;
-            for (size_t i = 0; i < v.size(); ++i)
+            for (size_t i = 0; i < N; ++i)
                 out << ' ' << v[i].x << ' ' << v[i].y << ' ' << v[i].z;
             out << "\n        </DataArray>\n";
         }
@@ -1279,6 +1385,7 @@ CUDA_CHECK(cudaGetLastError());
                 iFrame++;
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
+                outputBondedInteractionVTU(dir, iFrame, iStep, time);
                 outputBallInteractionVTU(dir, iFrame, iStep, time);
             }
         }
@@ -1323,6 +1430,7 @@ CUDA_CHECK(cudaGetLastError());
                 iFrame++;
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
+                outputBondedInteractionVTU(dir, iFrame, iStep, time);
                 outputBallInteractionVTU(dir, iFrame, iStep, time);
             }
         }
@@ -1356,6 +1464,7 @@ CUDA_CHECK(cudaGetLastError());
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
                 outputMeshWallVTU(dir, iFrame, iStep, time);
+                outputBondedInteractionVTU(dir, iFrame, iStep, time);
                 outputBallInteractionVTU(dir, iFrame, iStep, time);
                 outputBallTriangleInteractionVTU(dir, iFrame, iStep, time);
             }
@@ -1404,6 +1513,7 @@ CUDA_CHECK(cudaGetLastError());
                 std::cout << "Frame " << iFrame << " at Time " << time << std::endl;
                 outputBallVTU(dir, iFrame, iStep, time);
                 outputMeshWallVTU(dir, iFrame, iStep, time);
+                outputBondedInteractionVTU(dir, iFrame, iStep, time);
                 outputBallInteractionVTU(dir, iFrame, iStep, time);
                 outputBallTriangleInteractionVTU(dir, iFrame, iStep, time);
             }
@@ -1547,10 +1657,10 @@ public:
     const double slidingStiffness,
     const double rollingStiffness,
     const double torsionStiffness,
-    const double normalDampingCoefficient,
-    const double slidingDampingCoefficient,
-    const double rollingDampingCoefficient,
-    const double torsionDampingCoefficient,
+    const double normalDissipation,
+    const double slidingDissipation,
+    const double rollingDissipation,
+    const double torsionDissipation,
     const double slidingFrictionCoefficient,
     const double rollingFrictionCoefficient,
     const double torsionFrictionCoefficient)
@@ -1564,10 +1674,10 @@ public:
         row.rollingStiffness = rollingStiffness;
         row.torsionStiffness = torsionStiffness;
 
-        row.normalDampingCoefficient = normalDampingCoefficient;
-        row.slidingDampingCoefficient = slidingDampingCoefficient;
-        row.rollingDampingCoefficient = rollingDampingCoefficient;
-        row.torsionDampingCoefficient = torsionDampingCoefficient;
+        row.normalDissipation = normalDissipation;
+        row.slidingDissipation = slidingDissipation;
+        row.rollingDissipation = rollingDissipation;
+        row.torsionDissipation = torsionDissipation;
 
         row.slidingFrictionCoefficient = slidingFrictionCoefficient;
         row.rollingFrictionCoefficient = rollingFrictionCoefficient;
@@ -1787,11 +1897,18 @@ public:
         vertexStart, 
         vertexStart + vertexPosition.size());
 
+        for (size_t i = 0; i < vertexPosition.size(); i++)
+        {
+            meshWall_.vertex_.addHost(vertexPosition[i], 
+            vertexPosition[i] + posistion, 
+            wallIndex);
+        }
+
         for (size_t i = 0; i < triIndex0.size(); i++)
         {
-            double3 v0 = vertexPosition[triIndex0[i]];
-            double3 v1 = vertexPosition[triIndex1[i]];
-            double3 v2 = vertexPosition[triIndex2[i]];
+            double3 v0 = vertexPosition[triIndex0[i]] + posistion;
+            double3 v1 = vertexPosition[triIndex1[i]] + posistion;
+            double3 v2 = vertexPosition[triIndex2[i]] + posistion;
 
             double3 c = triangleCircumcenter(v0, v1, v2);
             meshWall_.triangle_.addHost(triIndex0[i], 
@@ -1801,13 +1918,6 @@ public:
             c,
             -1, 
             -1);
-        }
-
-        for (size_t i = 0; i < vertexPosition.size(); i++)
-        {
-            meshWall_.vertex_.addHost(vertexPosition[i], 
-            vertexPosition[i] + posistion, 
-            wallIndex);
         }
     }
 
@@ -1867,9 +1977,12 @@ public:
         if (numFrame > 0) frameInterval = numStep / numFrame;
         if (frameInterval < 1) frameInterval = 1;
         
-        initialize(minBoundary, maxBoundary, maximumThread);
+        maxThread_ = maximumThread;
+        initialize(minBoundary, maxBoundary);
         neighborSearch();
-        if (addInitialCondition()) initialize(minBoundary, maxBoundary, maximumThread);
+        calculateBallContactForceTorque(0.);
+        if (meshWall_.triangle_.deviceSize() > 0) addTriangleContactForceTorque(0.);
+        if (addInitialCondition()) initialize(minBoundary, maxBoundary);
 
         if (ball_.deviceSize() == 0)
         {
@@ -1883,25 +1996,35 @@ public:
         outputBallVTU(dir, 0, 0, 0.0);
         if (periodicX_.activatedFlag_ || periodicY_.activatedFlag_ || periodicZ_.activatedFlag_)
         {
-            if (meshWall_.body_.deviceSize() > 0)
+            if (meshWall_.triangle_.deviceSize() > 0)
             {
                 outputMeshWallVTU(dir, 0, 0, 0.0);
+                outputBondedInteractionVTU(dir, 0, 0, 0.0);
+                outputBallInteractionVTU(dir, 0, 0, 0.0);
+                outputBallTriangleInteractionVTU(dir, 0, 0, 0.0);
                 loop_ball_wall_periodicXYZ(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
             }
             else
             {
+                outputBondedInteractionVTU(dir, 0, 0, 0.0);
+                outputBallInteractionVTU(dir, 0, 0, 0.0);
                 loop_ball_periodicXYZ(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
             }
         }
         else
         {
-            if (meshWall_.body_.deviceSize() > 0)
+            if (meshWall_.triangle_.deviceSize() > 0)
             {
                 outputMeshWallVTU(dir, 0, 0, 0.0);
+                outputBondedInteractionVTU(dir, 0, 0, 0.0);
+                outputBallInteractionVTU(dir, 0, 0, 0.0);
+                outputBallTriangleInteractionVTU(dir, 0, 0, 0.0);
                 loop_ball_wall(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
             }
             else 
             {
+                outputBondedInteractionVTU(dir, 0, 0, 0.0);
+                outputBallInteractionVTU(dir, 0, 0, 0.0);
                 loop_ball(time, iStep, iFrame, gravity, timeStep, numStep, frameInterval, dir);
             }
         }

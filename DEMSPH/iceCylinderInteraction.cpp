@@ -1,7 +1,6 @@
 #include "kernel/DEMSolver.h"
 #include "externalForceTorque.h"
 #include "pointCloudGeneration.h"
-#include <vector_functions.hpp>
 
 inline double waterSurfaceHeightForStaticSphere(double R,
                                                double rhoBall,
@@ -30,7 +29,7 @@ inline double waterSurfaceHeightForStaticSphere(double R,
         const double mid = 0.5 * (lo + hi);
         const double fm  = submergedFraction(mid);
         if (fm < f) lo = mid;
-        else        hi = mid;
+        else hi = mid;
     }
     return 0.5 * (lo + hi);
 }
@@ -52,19 +51,28 @@ public:
         getBall().inverseMass(),
         1000.,
         0.1,
-        make_double3(0., 0., 9.81),
-        make_double3(-0.1, 0., 0.),
+        make_double3(0., 0., -9.81),
+        make_double3(-0.4, 0., 0.),
         waterLevel,
         getBall().deviceSize(),
         getBall().gridDim(),
         getBall().blockDim(),
         0);
     }
+
+    bool addInitialCondition() override
+    {
+        std::vector<int> obj0 = getBallPairPointed();
+        std::vector<int> obj1 = getBallPairPointing();
+        std::vector<double3> pos = getBall().positionHostCopy();
+        addBondedInteraction(obj0, obj1, pos);
+        return true;
+    }
 };
 
 int main()
 {
-    double tc = 0.001;
+    double tc = 0.0002;
     double r = 0.1;
     double den = 900.;
     double m = r * r * r * pi() * 4. / 3. * den;
@@ -74,24 +82,31 @@ int main()
     problem test;
     test.waterLevel = waterSurfaceHeightForStaticSphere(r, den, 1000);
 
-    test.setBondedPair(0, 0, 1., E, 2.6, 1.e6, 1.e6, 0.1);
-    test.setLinearPair(0, 0, kn, kn / 2.6, 0., 0., 0., 0., 0., 0., 0.1, 0., 0.);
-    test.setLinearPair(0, 1, kn, kn / 2.6, 0., 0., 0., 0., 0., 0., 0.1, 0., 0.);
+    test.setBondedPair(0, 0, 1., E, 2.6, 0.5e6, 0.5e6, 0.1);
+    test.setLinearPair(0, 0, kn, kn / 2.6, 0., 0., 0.1, 0.1, 0., 0., 0.1, 0., 0.);
+    test.setLinearPair(0, 1, kn, kn / 2.6, 0., 0., 0.1, 0.1, 0., 0., 0.1, 0., 0.);
 
     std::vector<double3> points;
-    PeriodicYBox pbcY;
-    generateHexPointCloudPeriodicY(points, pbcY, 200, 100, 2. * r, make_double3(0., 0., 0.));
-    TriangleMesh mesh = makeCylinderMesh(make_double3(-0.51, 0., 0.), 
+    HexPBC2D pbc;
+    generateHexPointCloud(make_double3(0., 0., 0.), 
+    make_double3(200 * r, 200 * r, 0.), 
+    2 * r, 
+    false, 
+    true, 
+    points, 
+    pbc);
+
+    TriangleMesh mesh = makeCylinderMesh(make_double3(0., 0., 0.), 
     make_double3(0., 0., 1.), 
-    0.5,
-    10.,
+    1.,
+    6.,
     36,
-    1);
+    36);
 
     for (size_t i = 0; i < points.size(); i++)
     {
         test.addBall(points[i], 
-        make_double3(0., 0., 0.), 
+        make_double3(-0.4, 0., 0.), 
         make_double3(0., 0., 0.), 
         r, 
         den, 
@@ -102,18 +117,16 @@ int main()
     mesh.tri0, 
     mesh.tri1, 
     mesh.tri2, 
-    make_double3(-0.51, 0., 0.), 
+    make_double3(-1.1, 100 * r, 0.), 
     make_double3(0., 0., 0.), 
     make_double3(0., 0., 0.), 
     1);
-    
-    test.setPeriodicBoundary(false, true, false);
 
-    test.solve(make_double3(-200 * r, pbcY.y0, -3.), 
-    make_double3(200 * r, pbcY.y0 + pbcY.Ly, 3.), 
+    test.solve(make_double3(-pbc.max.x, pbc.min.y, -3.), 
+    make_double3(pbc.max.x, pbc.max.y, 3.), 
     make_double3(0., 0., -9.81), 
     tc / 50., 
-    10., 
-    200, 
+    50., 
+    1000, 
     "iceCylinderInteraction");
 }
