@@ -1,4 +1,4 @@
-#include "wallIntegrationKernel.h"
+#include "wallIntegrationKernel.cuh"
 
 __global__ void wallOrientationIntegrationKernel(quaternion* orientation, 
 const double3* angularVelocity, 

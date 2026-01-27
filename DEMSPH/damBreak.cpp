@@ -30,7 +30,7 @@ int main()
     for(size_t i = 0; i < p0_dummy.size(); i++)
     {
         if (p0_dummy[i].x < 0 || p0_dummy[i].y < 0 || p0_dummy[i].z < 0 || 
-        p0_dummy[i].x > 5 * test.H || p0_dummy[i].y > 2 * test.H || p0_dummy[i].z > 3 * test.H) p_dummy.push_back(p0_dummy[i]);
+        p0_dummy[i].x > 5 * test.H || p0_dummy[i].y > 2 * test.H) p_dummy.push_back(p0_dummy[i]);
     }
 
     double c = 20. * std::sqrt(9.81 * test.H);

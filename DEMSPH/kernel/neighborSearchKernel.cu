@@ -1,5 +1,5 @@
-#include "neighborSearchKernel.h"
-#include "buildHashStartEnd.h"
+#include "neighborSearchKernel.cuh"
+#include "buildHashStartEnd.cuh"
 #include "myUtility/myHostDeviceArray.h"
 #include "myUtility/myVec.h"
 

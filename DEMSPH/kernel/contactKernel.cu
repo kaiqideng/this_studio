@@ -1,4 +1,4 @@
-#include "contactKernel.h"
+#include "contactKernel.cuh"
 #include "contactParameters.h"
 
 __constant__ ContactParamsDevice contactPara;

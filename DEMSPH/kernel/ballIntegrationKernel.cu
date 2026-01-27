@@ -1,4 +1,4 @@
-#include "ballIntegrationKernel.h"
+#include "ballIntegrationKernel.cuh"
 
 __global__ void sumClumpForceTorqueKernel(double3* force_c, 
 double3* torque_c, 

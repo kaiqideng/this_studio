@@ -73,14 +73,8 @@ endif()
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/teamspace/studios/this_studio/DEMSPH/kernel/*.h")
 set(OLD_GLOB
   "/teamspace/studios/this_studio/DEMSPH/kernel/DEMSolver.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/SPHNeighborSearchKernel.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/WCSPHIntegrationKernel.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/WCSPHSolver.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/ballIntegrationKernel.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/ballNeighborSearchKernel.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/boundary.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/buildHashStartEnd.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/contactKernel.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/contactParameters.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/interaction.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/myUtility/myFileEdit.h"
@@ -88,10 +82,8 @@ set(OLD_GLOB
   "/teamspace/studios/this_studio/DEMSPH/kernel/myUtility/myMat.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/myUtility/myQua.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/myUtility/myVec.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/neighborSearchKernel.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/particle.h"
   "/teamspace/studios/this_studio/DEMSPH/kernel/wall.h"
-  "/teamspace/studios/this_studio/DEMSPH/kernel/wallIntegrationKernel.h"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")

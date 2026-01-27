@@ -1,4 +1,4 @@
-#include "WCSPHIntegrationKernel.h"
+#include "WCSPHIntegrationKernel.cuh"
 #include "myVec.h"
 
 __global__ void calDummyParticleNormalKernel(double3* normal,
@@ -118,7 +118,9 @@ const size_t numSPH)
         double3 n_w = normal_dummy[idx_j];
         double U_L = dot(-n_w, v_i);
         double U_R = -U_L + 2.0 * dot(-n_w, v_j);
-        double P_R = P_L + rho_i * dot(gravity, r_j - r_i);
+        double g_r_ji = dot(gravity, r_j - r_i);
+        if (g_r_ji < 0.) g_r_ji = 0.;
+        double P_R = P_L + rho_i * g_r_ji;
         rho_j = P_R / (c_j * c_j) + initialDensity_dummy[idx_j];
 
         double3 r_ij = r_i - r_j;
@@ -230,7 +232,9 @@ const size_t numSPH)
         double rho_j = initialDensity_dummy[idx_j];
         double m_j = mass_dummy[idx_j];
 
-        double P_R = P_L + rho_i * dot(gravity, r_j - r_i);
+        double g_r_ji = dot(gravity, r_j - r_i);
+        if (g_r_ji < 0.) g_r_ji = 0.;
+        double P_R = P_L + rho_i * g_r_ji;
         rho_j = P_R / (c_j * c_j) + initialDensity_dummy[idx_j];
 
         double3 r_ij = r_i - r_j;

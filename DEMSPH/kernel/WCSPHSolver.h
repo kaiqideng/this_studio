@@ -1,9 +1,9 @@
 #include "particle.h"
 #include "interaction.h"
 #include "boundary.h"
-#include "neighborSearchKernel.h"
-#include "SPHNeighborSearchKernel.h"
-#include "WCSPHIntegrationKernel.h"
+#include "neighborSearchKernel.cuh"
+#include "SPHNeighborSearchKernel.cuh"
+#include "WCSPHIntegrationKernel.cuh"
 #include "myUtility/myFileEdit.h"
 #include <algorithm>
 #include <fstream>

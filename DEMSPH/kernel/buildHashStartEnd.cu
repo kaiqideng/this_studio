@@ -1,4 +1,4 @@
-#include "buildHashStartEnd.h"
+#include "buildHashStartEnd.cuh"
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #include <thrust/scan.h>
