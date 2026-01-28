@@ -381,9 +381,12 @@ private:
     HostDeviceArray1D<double> torsionTorque_;
     HostDeviceArray1D<double3> shearForce_;
     HostDeviceArray1D<double3> bendingTorque_;
+    HostDeviceArray1D<double> maxNormalStress_;
+    HostDeviceArray1D<double> maxShearStress_;
 
+    size_t hostSize_ {0};
     size_t deviceSize_ {0};
-
+    
 public:
     // ---------------------------------------------------------------------
     // Rule of Five
@@ -401,6 +404,7 @@ public:
     // ---------------------------------------------------------------------
     // Sizes
     // ---------------------------------------------------------------------
+    size_t hostSize() const { return hostSize_; }
     size_t deviceSize() const { return deviceSize_; }
 
 public:
@@ -416,6 +420,8 @@ public:
         torsionTorque_.allocateDevice(n, stream, zeroFill);
         shearForce_.allocateDevice(n, stream, zeroFill);
         bendingTorque_.allocateDevice(n, stream, zeroFill);
+        maxNormalStress_.allocateDevice(n, stream, zeroFill);
+        maxShearStress_.allocateDevice(n, stream, zeroFill);
 
         deviceSize_ = n;
     }
@@ -434,6 +440,10 @@ public:
         torsionTorque_.pushHost(0.0);
         shearForce_.pushHost(make_double3(0., 0., 0.));
         bendingTorque_.pushHost(make_double3(0., 0., 0.));
+        maxNormalStress_.pushHost(0.0);
+        maxShearStress_.pushHost(0.0);
+
+        hostSize_++;
     }
 
 public:
@@ -449,8 +459,10 @@ public:
         torsionTorque_.copyHostToDevice(stream);
         shearForce_.copyHostToDevice(stream);
         bendingTorque_.copyHostToDevice(stream);
+        maxNormalStress_.copyHostToDevice(stream);
+        maxShearStress_.copyHostToDevice(stream);
 
-        deviceSize_ = isBonded_.hostSize();
+        deviceSize_ = hostSize_;
     }
 
     void copyDeviceToHost(cudaStream_t stream)
@@ -462,6 +474,10 @@ public:
         torsionTorque_.copyDeviceToHost(stream);
         shearForce_.copyDeviceToHost(stream);
         bendingTorque_.copyDeviceToHost(stream);
+        maxNormalStress_.copyDeviceToHost(stream);
+        maxShearStress_.copyDeviceToHost(stream);
+
+        hostSize_ = deviceSize_;
     }
 
 public:
@@ -475,6 +491,8 @@ public:
     double* torsionTorque() { return torsionTorque_.d_ptr; }
     double3* shearForce() { return shearForce_.d_ptr; }
     double3* bendingTorque() { return bendingTorque_.d_ptr; }
+    double* maxNormalStress() { return maxNormalStress_.d_ptr; }
+    double* maxShearStress() { return maxShearStress_.d_ptr; }
 
 public:
     // ---------------------------------------------------------------------
@@ -487,4 +505,6 @@ public:
     std::vector<double> torsionTorqueHostCopy() { return torsionTorque_.getHostCopy(); }
     std::vector<double3> shearForceHostCopy() { return shearForce_.getHostCopy(); }
     std::vector<double3> bendingTorqueHostCopy() { return bendingTorque_.getHostCopy(); }
+    std::vector<double> maxNormalStressHostCopy() { return maxNormalStress_.getHostCopy(); }
+    std::vector<double> maxShearStressHostCopy() { return maxShearStress_.getHostCopy(); }
 };

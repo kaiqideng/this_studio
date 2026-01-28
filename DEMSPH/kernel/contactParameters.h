@@ -91,7 +91,7 @@ enum LinearParam : int
 enum BondedParam : int
 {
     B_GAMMA = 0,
-    B_EB,
+    B_E,
     B_KNKS,
     B_SIGMA_S,
     B_C,

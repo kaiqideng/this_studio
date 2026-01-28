@@ -182,11 +182,12 @@ private:
 
         if (meshWall_.triangle_.deviceSize() > 0 && ballTriangleInteraction_.numActivated_ == 0)
         {
-            ballTriangleInteraction_.pair_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballTriangleInteraction_.spring_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballTriangleInteraction_.contact_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballTriangleInteraction_.oldPair_.allocateDevice(3 * ball_.deviceSize(), stream_);
-            ballTriangleInteraction_.oldSpring_.allocateDevice(3 * ball_.deviceSize(), stream_);
+            /*const size_t n = std::max(meshWall_.triangle_.deviceSize(), ball_.deviceSize());
+            ballTriangleInteraction_.pair_.allocateDevice(n, stream_);
+            ballTriangleInteraction_.spring_.allocateDevice(n, stream_);
+            ballTriangleInteraction_.contact_.allocateDevice(n, stream_);
+            ballTriangleInteraction_.oldPair_.allocateDevice(n, stream_);
+            ballTriangleInteraction_.oldSpring_.allocateDevice(n, stream_);*/
             ballTriangleInteraction_.objectPointed_.allocateDevice(ball_.deviceSize(), stream_);
             ballTriangleInteraction_.objectPointing_.allocateDevice(meshWall_.triangle_.deviceSize(), stream_);
         }
@@ -657,6 +658,8 @@ CUDA_CHECK(cudaGetLastError());
             bondedInteraction_.bond_.bendingTorque(),
             bondedInteraction_.bond_.normalForce(),
             bondedInteraction_.bond_.torsionTorque(),
+            bondedInteraction_.bond_.maxNormalStress(),
+            bondedInteraction_.bond_.maxShearStress(),
             bondedInteraction_.bond_.isBonded(),
             bondedInteraction_.pair_.objectPointed(),
             bondedInteraction_.pair_.objectPointing(),
@@ -1197,6 +1200,8 @@ CUDA_CHECK(cudaGetLastError());
         std::vector<double> t_n = bondedInteraction_.bond_.torsionTorqueHostCopy();
         std::vector<double3> f_s = bondedInteraction_.bond_.shearForceHostCopy();
         std::vector<double3> t_s = bondedInteraction_.bond_.bendingTorqueHostCopy();
+        std::vector<double> sigma_max = bondedInteraction_.bond_.maxNormalStressHostCopy();
+        std::vector<double> tau_max = bondedInteraction_.bond_.maxShearStressHostCopy();
         
         out << "<?xml version=\"1.0\"?>\n"
             "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
@@ -1244,6 +1249,14 @@ CUDA_CHECK(cudaGetLastError());
 
         out << "        <DataArray type=\"Float32\" Name=\"torsion torque\" format=\"ascii\">\n";
         for (int i = 0; i < N; ++i) out << ' ' << t_n[i];
+        out << "\n        </DataArray>\n";
+
+        out << "        <DataArray type=\"Float32\" Name=\"maximum normal stress\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << sigma_max[i];
+        out << "\n        </DataArray>\n";
+
+        out << "        <DataArray type=\"Float32\" Name=\"maximum shear stress\" format=\"ascii\">\n";
+        for (int i = 0; i < N; ++i) out << ' ' << tau_max[i];
         out << "\n        </DataArray>\n";
 
         const struct {
@@ -1368,7 +1381,7 @@ CUDA_CHECK(cudaGetLastError());
         {
             iStep++;
             time += timeStep;
-            neighborSearch();
+            if(iStep % 5 == 0) neighborSearch();
 
             calculateBallContactForceTorque(halfTimeStep);
             addExternalForceTorque(iStep, time - halfTimeStep);
@@ -1399,7 +1412,7 @@ CUDA_CHECK(cudaGetLastError());
         {
             iStep++;
             time += timeStep;
-            neighborSearch();
+            if(iStep % 5 == 0) neighborSearch();
 
             calculateBallContactForceTorque(halfTimeStep);
             addDummyContactForceTorque(periodicX_, make_int3(1, 0, 0), halfTimeStep);
@@ -1444,7 +1457,7 @@ CUDA_CHECK(cudaGetLastError());
         {
             iStep++;
             time += timeStep;
-            neighborSearch();
+            if(iStep % 5 == 0) neighborSearch();
 
             calculateBallContactForceTorque(halfTimeStep);
             addTriangleContactForceTorque(timeStep);
@@ -1479,7 +1492,7 @@ CUDA_CHECK(cudaGetLastError());
         {
             iStep++;
             time += timeStep;
-            neighborSearch();
+            if(iStep % 5 == 0) neighborSearch();
 
             calculateBallContactForceTorque(halfTimeStep);
             addTriangleContactForceTorque(timeStep);

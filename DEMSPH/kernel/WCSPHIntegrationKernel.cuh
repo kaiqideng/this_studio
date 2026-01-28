@@ -54,6 +54,7 @@ double* soundSpeed,
 double* mass,
 double* initialDensity,
 double* smoothLength,
+double* viscosity,
 int* neighborPrifixSum,
 int* neighborPrifixSum_dummy,
 
@@ -64,6 +65,7 @@ double* soundSpeed_dummy,
 double* mass_dummy,
 double* initialDensity_dummy,
 double* smoothLength_dummy,
+double* viscosity_dummy,
 
 int* objectPointing,
 
@@ -87,6 +89,7 @@ double* soundSpeed,
 double* mass,
 double* initialDensity,
 double* smoothLength,
+double* viscosity,
 int* neighborPrifixSum,
 int* neighborPrifixSum_dummy,
 
@@ -97,6 +100,7 @@ double* soundSpeed_dummy,
 double* mass_dummy,
 double* initialDensity_dummy,
 double* smoothLength_dummy,
+double* viscosity_dummy,
 
 int* objectPointing,
 

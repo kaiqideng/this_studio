@@ -73,7 +73,7 @@ cudaStream_t stream)
         const std::size_t idx = pairIdx(row.materialIndexA, row.materialIndexB);
 
         setPacked_(B, pairTableSize, B_GAMMA,   idx, row.bondRadiusMultiplier);
-        setPacked_(B, pairTableSize, B_EB,      idx, row.bondYoungsModulus);
+        setPacked_(B, pairTableSize, B_E,      idx, row.bondYoungsModulus);
         setPacked_(B, pairTableSize, B_KNKS,    idx, row.normalToShearStiffnessRatio);
         setPacked_(B, pairTableSize, B_SIGMA_S, idx, row.tensileStrength);
         setPacked_(B, pairTableSize, B_C,       idx, row.cohesion);
@@ -538,6 +538,8 @@ double3* shearForce,
 double3* bendingTorque,
 double* normalForce, 
 double* torsionTorque, 
+double* maxNormalStress,
+double* maxShearStress,
 int* isBonded, 
 
 double3* contactForce, 
@@ -616,7 +618,7 @@ const size_t numBondedInteraction)
 
     int ip = contactPairParameterIndex(materialID[idx_i], materialID[idx_j], contactPara.nMaterials, contactPara.cap);
 	const double gamma = getBondedParam(ip, B_GAMMA);
-    const double E_b = getBondedParam(ip, B_EB);
+    const double E_b = getBondedParam(ip, B_E);
     const double k_n_k_s = getBondedParam(ip, B_KNKS);
     const double sigma_s = getBondedParam(ip, B_SIGMA_S);
     const double C = getBondedParam(ip, B_C);
@@ -626,7 +628,9 @@ const size_t numBondedInteraction)
 	double3 F_s = shearForce[idx];
 	double T_t = torsionTorque[idx];
 	double3 T_b = bendingTorque[idx];
-	isBonded[idx] = ParallelBondedContact(F_n, T_t, F_s, T_b, 
+	double sigma_max = maxNormalStress[idx];
+	double tau_max = maxShearStress[idx];
+	isBonded[idx] = ParallelBondedContact(F_n, T_t, F_s, T_b, sigma_max, tau_max,
 	n_ij0, n_ij, v_c_ij, w_i, w_j, rad_i, rad_j, dt,
 	gamma, E_b, k_n_k_s, sigma_s, C, mu);
 
@@ -634,6 +638,8 @@ const size_t numBondedInteraction)
 	shearForce[idx] = F_s;
 	torsionTorque[idx] = T_t;
 	bendingTorque[idx] = T_b;
+	maxNormalStress[idx] = sigma_max;
+	maxShearStress[idx] = tau_max;
 
 	if (!flag)
 	{
@@ -782,6 +788,8 @@ double3* shearForce,
 double3* bendingTorque,
 double* normalForce, 
 double* torsionTorque, 
+double* maxNormalStress,
+double* maxShearStress,
 int* isBonded, 
 int* objectPointed_b, 
 int* objectPointing_b,
@@ -799,6 +807,8 @@ cudaStream_t stream)
 	bendingTorque, 
 	normalForce, 
 	torsionTorque, 
+	maxNormalStress, 
+	maxShearStress, 
 	isBonded, 
 	contactForce, 
 	contactTorque, 

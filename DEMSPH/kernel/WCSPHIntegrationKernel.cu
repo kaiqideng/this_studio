@@ -48,6 +48,7 @@ const double* soundSpeed,
 const double* mass,
 const double* initialDensity,
 const double* smoothLength,
+const double* viscosity,
 const int* neighborPrifixSum,
 const int* neighborPrifixSum_dummy,
 const double3* position_dummy,
@@ -57,6 +58,7 @@ const double* soundSpeed_dummy,
 const double* mass_dummy,
 const double* initialDensity_dummy,
 const double* smoothLength_dummy,
+const double* viscosity_dummy,
 const int* objectPointing,
 const int* objectPointing_dummy,
 const double3 gravity,
@@ -69,6 +71,7 @@ const size_t numSPH)
     double3 v_i = velocity[idx_i];
     double c_i = soundSpeed[idx_i];
     double h_i = smoothLength[idx_i];
+    double nu_i = viscosity[idx_i];
     double rho_i = density[idx_i];
     double P_L = pressure[idx_i];
 
@@ -84,6 +87,7 @@ const size_t numSPH)
         double3 v_j = velocity[idx_j];
         double c_j = soundSpeed[idx_j];
         double h_j = smoothLength[idx_j];
+        double nu_j = viscosity[idx_j];
         double rho_j = density[idx_j];
         double P_R = pressure[idx_j];
         double m_j = mass[idx_j];
@@ -99,6 +103,9 @@ const size_t numSPH)
         double beta = fmin(3.0 * fmax(U_L - U_R, 0.0), c_bar);
         double P_star = 0.5 * (P_L + P_R) + 0.5 * beta * rho_bar * (U_L - U_R);
         acc -= 2.0 * m_j * (P_star / (rho_i * rho_j)) * dW_ij;
+
+        double nu_ij = 0.5 * (nu_i + nu_j);
+        acc += 2.0 * nu_ij * dot(normalize(r_ij), dW_ij) * (v_i - v_j) * m_j / (rho_i * rho_j);
     }
 
     int start_d = 0;
@@ -112,6 +119,7 @@ const size_t numSPH)
         double3 v_j = velocity_dummy[idx_j];
         double c_j = soundSpeed_dummy[idx_j];
         double h_j = smoothLength_dummy[idx_j];
+        double nu_j = viscosity_dummy[idx_j];
         double rho_j = initialDensity_dummy[idx_j];
         double m_j = mass_dummy[idx_j];
 
@@ -131,6 +139,9 @@ const size_t numSPH)
         double beta = fmin(3.0 * fmax(U_L - U_R, 0.0), c_bar);
         double P_star = 0.5 * (P_L + P_R) + 0.5 * beta * rho_bar * (U_L - U_R);
         acc -= 2.0 * m_j * (P_star / (rho_i * rho_j)) * dW_ij;
+
+        double nu_ij = 0.5 * (nu_i + nu_j);
+        acc += 2.0 * nu_ij * dot(normalize(r_ij), dW_ij) * (v_i - v_j) * m_j / (rho_i * rho_j);
     }
 
     acceleration[idx_i] = acc + gravity;
@@ -303,6 +314,7 @@ double* soundSpeed,
 double* mass,
 double* initialDensity,
 double* smoothLength,
+double* viscosity,
 int* neighborPrifixSum,
 int* neighborPrifixSum_dummy,
 
@@ -313,6 +325,7 @@ double* soundSpeed_dummy,
 double* mass_dummy,
 double* initialDensity_dummy,
 double* smoothLength_dummy,
+double* viscosity_dummy,
 
 int* objectPointing,
 
@@ -335,6 +348,7 @@ cudaStream_t stream_GPU)
     mass,
     initialDensity,
     smoothLength,
+    viscosity,
     neighborPrifixSum,
     neighborPrifixSum_dummy,
     position_dummy,
@@ -344,6 +358,7 @@ cudaStream_t stream_GPU)
     mass_dummy,
     initialDensity_dummy,
     smoothLength_dummy,
+    viscosity_dummy,
     objectPointing,
     objectPointing_dummy,
     gravity,
@@ -370,6 +385,7 @@ double* soundSpeed,
 double* mass,
 double* initialDensity,
 double* smoothLength,
+double* viscosity,
 int* neighborPrifixSum,
 int* neighborPrifixSum_dummy,
 
@@ -380,6 +396,7 @@ double* soundSpeed_dummy,
 double* mass_dummy,
 double* initialDensity_dummy,
 double* smoothLength_dummy,
+double* viscosity_dummy,
 
 int* objectPointing,
 
@@ -432,6 +449,7 @@ cudaStream_t stream_GPU)
     mass,
     initialDensity,
     smoothLength,
+    viscosity,
     neighborPrifixSum,
     neighborPrifixSum_dummy,
     position_dummy,
@@ -441,6 +459,7 @@ cudaStream_t stream_GPU)
     mass_dummy,
     initialDensity_dummy,
     smoothLength_dummy,
+    viscosity_dummy,
     objectPointing,
     objectPointing_dummy,
     gravity,

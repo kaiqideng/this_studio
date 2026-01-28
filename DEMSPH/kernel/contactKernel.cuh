@@ -5,6 +5,8 @@ __device__ __forceinline__ int ParallelBondedContact(double& bondNormalForce,
 double& bondTorsionalTorque, 
 double3& bondShearForce, 
 double3& bondBendingTorque,
+double& maxNormalStress,
+double& maxShearStress,
 const double3 contactNormalPrev,
 const double3 contactNormal,
 const double3 relativeVelocityAtContact,
@@ -34,18 +36,18 @@ const double bondFrictionCoefficient)
 	const double normalStiffnessUnitArea = bondElasticModulus / (radiusA + radiusB);
 	const double shearStiffnessUnitArea = normalStiffnessUnitArea / bondStiffnessRatioNormalToShear;
 
-	double3 normalIncrement = dot(relativeVelocityAtContact, contactNormal) * contactNormal * timeStep;
-	double3 tangentialIncrement = relativeVelocityAtContact * timeStep - normalIncrement;
-	bondNormalForce -= dot(normalIncrement * normalStiffnessUnitArea * bondArea, contactNormal);
-	bondShearForce -= tangentialIncrement * shearStiffnessUnitArea * bondArea;
+	const double3 normalTranslationIncrement = dot(relativeVelocityAtContact, contactNormal) * contactNormal * timeStep;
+	const double3 tangentialTranslationIncrement = relativeVelocityAtContact * timeStep - normalTranslationIncrement;
+	bondNormalForce -= dot(normalTranslationIncrement * normalStiffnessUnitArea * bondArea, contactNormal);
+	bondShearForce -= tangentialTranslationIncrement * shearStiffnessUnitArea * bondArea;
 	const double3 relativeAngularVelocity = angularVelocityA - angularVelocityB;
-	normalIncrement = dot(relativeAngularVelocity, contactNormal) * contactNormal * timeStep;
-	tangentialIncrement = relativeAngularVelocity * timeStep - normalIncrement;
-	bondTorsionalTorque -= dot(normalIncrement * shearStiffnessUnitArea * bondPolarInertiaMoment, contactNormal);
-	bondBendingTorque -= tangentialIncrement * normalStiffnessUnitArea * bondInertiaMoment;
+	const double3 normalRotationIncrement = dot(relativeAngularVelocity, contactNormal) * contactNormal * timeStep;
+	const double3 tangentialRotationIncrement = relativeAngularVelocity * timeStep - normalRotationIncrement;
+	bondTorsionalTorque -= dot(normalRotationIncrement * shearStiffnessUnitArea * bondPolarInertiaMoment, contactNormal);
+	bondBendingTorque -= tangentialRotationIncrement * normalStiffnessUnitArea * bondInertiaMoment;
 
-	const double maxNormalStress = -bondNormalForce / bondArea + length(bondBendingTorque) / bondInertiaMoment * bondRadius;// maximum tension stress
-	const double maxShearStress = length(bondShearForce) / bondArea + fabs(bondTorsionalTorque) / bondPolarInertiaMoment * bondRadius;// maximum shear stress
+	maxNormalStress = -bondNormalForce / bondArea + length(bondBendingTorque) / bondInertiaMoment * bondRadius;// maximum tension stress
+	maxShearStress = length(bondShearForce) / bondArea + fabs(bondTorsionalTorque) / bondPolarInertiaMoment * bondRadius;// maximum shear stress
 
 	int isBonded = 1;
 	if (bondTensileStrength > 0 && maxNormalStress > bondTensileStrength)
@@ -69,7 +71,7 @@ const double dampingCoefficient,
 const double timeStep)
 {
 	double3 spring = make_double3(0., 0., 0.);
-	if (frictionCoefficient > 0)
+	if (stiffness > 0.)
 	{
 		double3 springPrev1 = springPrev - dot(springPrev, contactNormal) * contactNormal;
 		double absoluteSpringPrev1 = length(springPrev1);
@@ -78,14 +80,17 @@ const double timeStep)
 			springPrev1 *= length(springPrev) / absoluteSpringPrev1;
 		}
 		spring = springPrev1 + springVelocity * timeStep;
-		double3 springForce = -stiffness * spring - dampingCoefficient * springVelocity;
-		double absoluteSpringForce = length(springForce);
-		double absoluteNormalContactForce = length(normalContactForce);
-		if (absoluteSpringForce > frictionCoefficient * absoluteNormalContactForce)
+		if (frictionCoefficient > 0.)
 		{
-			double ratio = frictionCoefficient * absoluteNormalContactForce / absoluteSpringForce;
-			springForce *= ratio;
-			spring = -(springForce + dampingCoefficient * springVelocity) / stiffness;
+			double3 springForce = -stiffness * spring - dampingCoefficient * springVelocity;
+			double absoluteSpringForce = length(springForce);
+			double absoluteNormalContactForce = length(normalContactForce);
+			if (absoluteSpringForce > frictionCoefficient * absoluteNormalContactForce)
+			{
+				double ratio = frictionCoefficient * absoluteNormalContactForce / absoluteSpringForce;
+				springForce *= ratio;
+				spring = -(springForce + dampingCoefficient * springVelocity) / stiffness;
+			}
 		}
 	}
 	return spring;
@@ -101,17 +106,20 @@ const double dampingCoefficient,
 const double timeStep)
 {
 	double3 spring = make_double3(0., 0., 0.);
-	if (frictionCoefficient > 0)
+	if (stiffness > 0.)
 	{
 		spring = dot(springPrev + torsionRelativeVelocity * timeStep, contactNormal) * contactNormal;
-		double3 springForce = -stiffness * spring - dampingCoefficient * torsionRelativeVelocity;
-		double absoluteSpringForce = length(springForce);
-		double absoluteNormalContactForce = length(normalContactForce);
-		if (absoluteSpringForce > frictionCoefficient * absoluteNormalContactForce)
+		if (frictionCoefficient > 0.)
 		{
-			double ratio = frictionCoefficient * absoluteNormalContactForce / absoluteSpringForce;
-			springForce *= ratio;
-			spring = -(springForce + dampingCoefficient * torsionRelativeVelocity) / stiffness;
+			double3 springForce = -stiffness * spring - dampingCoefficient * torsionRelativeVelocity;
+			double absoluteSpringForce = length(springForce);
+			double absoluteNormalContactForce = length(normalContactForce);
+			if (absoluteSpringForce > frictionCoefficient * absoluteNormalContactForce)
+			{
+				double ratio = frictionCoefficient * absoluteNormalContactForce / absoluteSpringForce;
+				springForce *= ratio;
+				spring = -(springForce + dampingCoefficient * torsionRelativeVelocity) / stiffness;
+			}
 		}
 	}
 	return spring;
@@ -538,13 +546,15 @@ double3* shearForce,
 double3* bendingTorque,
 double* normalForce, 
 double* torsionTorque, 
+double* maxNormalStress,
+double* maxShearStress,
 int* isBonded, 
 int* objectPointed_b, 
 int* objectPointing_b,
 
 const double timeStep,
 
-const size_t numBondedInteractions,
+const size_t numBondedInteraction,
 const size_t gridD,
 const size_t blockD, 
 cudaStream_t stream);
